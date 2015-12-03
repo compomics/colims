@@ -2,7 +2,8 @@ package com.compomics.colims.client.model.table.model;
 
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.repository.hibernate.model.PeptideDTO;
+import com.compomics.colims.repository.hibernate.PeptideDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -64,11 +65,7 @@ public class PeptideTableRow {
      * @param peptideDTO the PeptideDTO instance
      */
     public void addPeptideDTO(PeptideDTO peptideDTO) {
-        if (peptideDTOs.isEmpty()) {
-            peptideDTOs.add(peptideDTO);
-        } else {
-            peptideDTOs.add(peptideDTO);
-        }
+        peptideDTOs.add(peptideDTO);
     }
 
     /**

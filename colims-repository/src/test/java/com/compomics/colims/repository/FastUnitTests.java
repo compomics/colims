@@ -1,5 +1,6 @@
 package com.compomics.colims.repository;
 
+import com.compomics.colims.client.model.PeptideDTOTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -23,7 +24,8 @@ import org.junit.runners.Suite;
         SearchParametersRepositoryTest.class,
         SpectrumRepositoryTest.class,
         TypedCvParamRepositoryTest.class,
-        UserRepositoryTest.class
+        UserRepositoryTest.class,
+        PeptideDTOTest.class
 })
 public class FastUnitTests {
 }

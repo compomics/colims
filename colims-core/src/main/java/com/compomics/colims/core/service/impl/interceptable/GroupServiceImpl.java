@@ -36,8 +36,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group findByName(final String name) {
-        return groupRepository.findByName(name);
+    public Long countByName(final String name) {
+        return groupRepository.countByName(name);
     }
 
     @Override

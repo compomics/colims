@@ -13,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,10 +35,10 @@ public class InstrumentRepositoryTest {
     }
 
     @Test
-    public void testFindInstrumentByName() {
-        Instrument foundInstrument = instrumentRepository.findByName("instrument_1");
+    public void testCountInstrumentByName() {
+        Long count = instrumentRepository.countByName("instrument_1");
 
-        Assert.assertNotNull(foundInstrument);
+        Assert.assertEquals(1L, count.longValue());
     }
 
     @Test

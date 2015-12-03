@@ -28,7 +28,7 @@ public class UserQueryRepositoryTest extends AbstractTransactionalJUnit4SpringCo
 
     @Test
     public void testFindByUserIdAndQueryString() {
-        UserQuery userQuery = userQueryRepository.findByUserIdAndQueryString(1L, "test user query string");
+        UserQuery userQuery = userQueryRepository.findByUserIdAndQueryString(1L, "test user query string 1");
 
         Assert.assertNotNull(userQuery);
     }

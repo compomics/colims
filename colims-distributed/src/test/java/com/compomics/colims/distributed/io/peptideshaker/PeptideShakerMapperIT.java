@@ -1,9 +1,9 @@
 package com.compomics.colims.distributed.io.peptideshaker;
 
+import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.*;
 import com.compomics.colims.model.*;
-import com.compomics.colims.model.UserBean;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,10 +31,10 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 @Transactional
 @Rollback
-public class PeptideShakerImporterIT {
+public class PeptideShakerMapperIT {
 
     @Autowired
-    private PeptideShakerImporter peptideShakerImporter;
+    private PeptideShakerMapper peptideShakerMapper;
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     @Autowired
@@ -89,12 +89,12 @@ public class PeptideShakerImporterIT {
         unpackedPsDataImport.setFastaDbId(fastaDb.getId());
 
         //clear resources
-        peptideShakerImporter.clear();
+        peptideShakerMapper.clear();
 
-        List<AnalyticalRun> analyticalRuns = peptideShakerImporter.importData(unpackedPsDataImport);
+        MappedData mappedData = peptideShakerMapper.mapData(unpackedPsDataImport);
 
         //analytical run
-        AnalyticalRun testAnalyticalRun = analyticalRuns.get(0);
+        AnalyticalRun testAnalyticalRun = mappedData.getAnalyticalRuns().get(0);
         Assert.assertTrue(testAnalyticalRun.getStorageLocation().contains("colims_test_ps_file.cpsx"));
         Assert.assertNotNull(testAnalyticalRun);
         Assert.assertNull(testAnalyticalRun.getSample());
@@ -142,7 +142,7 @@ public class PeptideShakerImporterIT {
         //get sample from db
         Sample sample = sampleService.findAll().get(0);
 
-        for (AnalyticalRun analyticalRun : analyticalRuns) {
+        for (AnalyticalRun analyticalRun : mappedData.getAnalyticalRuns()) {
             Date auditDate = new Date();
 
             SearchAndValidationSettings searchAndValidationSettings = analyticalRun.getSearchAndValidationSettings();

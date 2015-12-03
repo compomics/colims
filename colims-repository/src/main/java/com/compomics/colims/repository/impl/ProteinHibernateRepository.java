@@ -1,6 +1,7 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.Protein;
+import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.repository.ProteinRepository;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
@@ -32,7 +33,16 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
         return sqlQuery.list();
     }
 
-//    @Override
+    @Override
+    public List<ProteinAccession> fetchProteinAccessions(Long proteinId) {
+        Criteria criteria = getCurrentSession().createCriteria(ProteinAccession.class);
+
+        criteria.add(Restrictions.eq("protein.id", proteinId));
+
+        return criteria.list();
+    }
+
+    //    @Override
 //    public Protein hibernateSearchFindBySequence(String sequence) {
 //        FullTextSession fullTextSession = Search.getFullTextSession(getCurrentSession());
 //

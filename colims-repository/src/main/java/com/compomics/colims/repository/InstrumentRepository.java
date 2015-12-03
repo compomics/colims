@@ -11,13 +11,12 @@ import java.util.List;
 public interface InstrumentRepository extends GenericRepository<Instrument, Long> {
 
     /**
-     * Find the instrument by the instrument name, returns null if no instrument
-     * was found.
+     * Count the number of instruments by instrument name.
      *
      * @param name the instrument name
-     * @return the found instrument
+     * @return the number of found instruments
      */
-    Instrument findByName(String name);
+    Long countByName(String name);
 
     /**
      * Find all instruments ordered by name.

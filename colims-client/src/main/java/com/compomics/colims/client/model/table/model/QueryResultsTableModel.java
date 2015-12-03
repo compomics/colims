@@ -15,7 +15,7 @@ public class QueryResultsTableModel extends AbstractTableModel {
     /**
      * The table column names.
      */
-    private String[] columnNames;
+    private String[] columnNames = new String[0];
     /**
      * The query results as a list of arrays. One entry represents a result row.
      */

@@ -18,4 +18,11 @@ public interface ProteinService extends GenericService<Protein, Long> {
      */
     Protein findBySequence(String sequence);
 
+    /**
+     * Fetch the protein accession.
+     *
+     * @param protein the Protein instance
+     */
+    void fetchAccessions(Protein protein);
+
 }

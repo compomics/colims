@@ -36,8 +36,8 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public Permission findByName(final String name) {
-        return permissionRepository.findByName(name);
+    public Long countByName(final String name) {
+        return permissionRepository.countByName(name);
     }
 
     @Override

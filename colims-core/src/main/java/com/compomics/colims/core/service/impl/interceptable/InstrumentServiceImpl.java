@@ -21,7 +21,12 @@ public class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public Instrument findById(final Long id) {
-        return instrumentRepository.findById(id);
+        Instrument instrument = instrumentRepository.findById(id);
+
+        //fetch analyzers
+        instrument.getAnalyzers().size();
+
+        return instrument;
     }
 
     @Override
@@ -30,8 +35,8 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public Instrument findByName(final String name) {
-        return instrumentRepository.findByName(name);
+    public Long countByName(final String name) {
+        return instrumentRepository.countByName(name);
     }
 
     @Override
@@ -46,7 +51,12 @@ public class InstrumentServiceImpl implements InstrumentService {
 
     @Override
     public Instrument merge(Instrument entity) {
-        return instrumentRepository.merge(entity);
+        Instrument merge = instrumentRepository.merge(entity);
+
+        //fetch analyzers
+        merge.getAnalyzers().size();
+
+        return merge;
     }
 
     @Override

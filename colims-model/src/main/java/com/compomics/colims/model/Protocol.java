@@ -1,7 +1,5 @@
 package com.compomics.colims.model;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -55,7 +53,6 @@ public class Protocol extends AuditableDatabaseEntity {
      * The list of chemical labels.
      */
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "protocol_has_chemical_labeling",
             joinColumns = {
                     @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},
@@ -66,7 +63,6 @@ public class Protocol extends AuditableDatabaseEntity {
      * The list of other, user chosen CV terms that define this protocol.
      */
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "protocol_has_other_cv_param",
             joinColumns = {
                     @JoinColumn(name = "l_protocol_id", referencedColumnName = "id")},

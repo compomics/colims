@@ -1,7 +1,5 @@
 package com.compomics.colims.model;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -45,7 +43,6 @@ public class Role extends AuditableDatabaseEntity {
      * The permissions of this role.
      */
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "role_has_permission",
             joinColumns = {
                     @JoinColumn(name = "l_role_id", referencedColumnName = "id")},

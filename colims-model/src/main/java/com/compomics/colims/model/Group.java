@@ -1,7 +1,5 @@
 package com.compomics.colims.model;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -45,7 +43,6 @@ public class Group extends AuditableDatabaseEntity {
      * The roles of the group.
      */
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "group_has_role",
             joinColumns = {
                     @JoinColumn(name = "l_group_id", referencedColumnName = "id")},

@@ -11,12 +11,12 @@ import java.util.List;
 public interface PermissionRepository extends GenericRepository<Permission, Long> {
 
     /**
-     * Find the permission by the permission name.
+     * Count the number of permissions by permission name.
      *
      * @param name the permission name
-     * @return the found permission
+     * @return the number of found permissions
      */
-    Permission findByName(String name);
+    Long countByName(String name);
 
     /**
      * Find all permissions ordered by name.

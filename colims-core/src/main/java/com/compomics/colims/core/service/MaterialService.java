@@ -10,11 +10,11 @@ import com.compomics.colims.model.Material;
 public interface MaterialService extends GenericService<Material, Long> {
 
     /**
-     * Find the material by name, return null if no material was found.
+     * Count the number of materials by material name.
      *
-     * @param name the material by name
-     * @return the found material
+     * @param name the material name
+     * @return the number of found materials
      */
-    Material findByName(String name);
+    Long countByName(String name);
 
 }

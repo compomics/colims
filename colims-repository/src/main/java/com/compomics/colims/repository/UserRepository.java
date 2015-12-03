@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.Institution;
 import com.compomics.colims.model.User;
 
 import java.util.List;
@@ -15,6 +14,14 @@ import java.util.List;
  * @author Niels Hulstaert
  */
 public interface UserRepository extends GenericRepository<User, Long> {
+
+    /**
+     * Count the number of user by user name.
+     *
+     * @param name the user name
+     * @return the number of found users
+     */
+    Long countByName(String name);
 
     /**
      * Find the user by the user name.

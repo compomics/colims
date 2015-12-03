@@ -14,12 +14,12 @@ import com.compomics.colims.model.Role;
 public interface RoleService extends GenericService<Role, Long> {
 
     /**
-     * Find the role by name.
+     * Count the number of roles by role name.
      *
      * @param name the role name
-     * @return the found role
+     * @return the number of found roles
      */
-    Role findByName(String name);
+    Long countByName(String name);
 
     /**
      * Check if the role is a default role.

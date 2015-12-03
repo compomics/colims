@@ -206,6 +206,12 @@
         <dependency>
             <groupId>com.compomics.colims</groupId>
             <artifactId>colims-repository</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -226,7 +232,7 @@
 
         <dependency>
             <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-client</artifactId>
+            <artifactId>activemq-client</artifactId>   
         </dependency>
 
         <dependency>

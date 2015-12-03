@@ -55,8 +55,7 @@ public class NotificationConsumer implements MessageListener {
 
             LOGGER.info("received notification message");
 
-            //set JMS message ID
-            //notification.getDbTask().setMessageId(objectMessage.getJMSMessageID());
+            //post notification on the event bus
             eventBus.post(new NotificationEvent(notification));
         } catch (JMSException | IOException e) {
             LOGGER.error(e.getMessage(), e);

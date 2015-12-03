@@ -5,6 +5,7 @@
  */
 package com.compomics.colims.core.service.impl;
 
+import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AnalyticalRunRepository;
@@ -14,9 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Implementation of the DataStorageService interface.
@@ -33,9 +31,8 @@ public class PersistServiceImpl implements PersistService {
     ProteinGroupRepository proteinGroupRepository;
 
     @Override
-    public void persist(List<AnalyticalRun> analyticalRuns, Sample sample, Instrument instrument, String userName, Date startDate) {
-
-        for (AnalyticalRun analyticalRun : analyticalRuns) {
+    public void persist(MappedData mappedData, Sample sample, Instrument instrument, String userName, Date startDate) {
+        for (AnalyticalRun analyticalRun : mappedData.getAnalyticalRuns()) {
             Date auditDate = new Date();
 
             SearchAndValidationSettings searchAndValidationSettings = analyticalRun.getSearchAndValidationSettings();
@@ -54,19 +51,9 @@ public class PersistServiceImpl implements PersistService {
                 quantificationSettings.setUserName(userName);
             }
 
-            Set<ProteinGroup> proteinGroups = new HashSet<>();
-            //collect all unique ProteinGroup instances
-            //@todo to this smarter, without having to iterate over everything
-            for (Spectrum spectrum : analyticalRun.getSpectrums()) {
-                for (Peptide peptide : spectrum.getPeptides()) {
-                    for (PeptideHasProteinGroup peptideHasProteinGroup : peptide.getPeptideHasProteinGroups()) {
-                        proteinGroups.add(peptideHasProteinGroup.getProteinGroup());
-                    }
-                }
-            }
             //and save them
-            for (ProteinGroup proteinGroup : proteinGroups) {
-                proteinGroupRepository.persist(proteinGroup);
+            for (ProteinGroup proteinGroup : mappedData.getProteinGroups()) {
+                proteinGroupRepository.merge(proteinGroup);
             }
 
             analyticalRun.setCreationDate(auditDate);

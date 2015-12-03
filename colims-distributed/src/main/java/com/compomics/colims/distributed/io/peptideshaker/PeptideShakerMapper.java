@@ -1,9 +1,10 @@
 package com.compomics.colims.distributed.io.peptideshaker;
 
-import com.compomics.colims.core.io.DataImporter;
+import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.FastaDbService;
+import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.distributed.io.SearchSettingsMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinMapper;
@@ -34,21 +35,24 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The DataImporter implementation class for PeptideShaker projects.
  *
  * @author Niels Hulstaert
  */
-@Component("peptideShakerImporter")
-public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShakerImport> {
+@Component("peptideShakerMapper")
+public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImport> {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(PeptideShakerImporter.class);
+    private static final Logger LOGGER = Logger.getLogger(PeptideShakerMapper.class);
     private static final String ANALYTICAL_RUN_NAME_SEPARATOR = ":";
+
     /**
      * Compomics Utilities spectrum factory.
      */
@@ -99,9 +103,10 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
     }
 
     @Override
-    public List<AnalyticalRun> importData(UnpackedPeptideShakerImport dataImport) throws MappingException {
+    public MappedData mapData(UnpackedPeptideShakerImport dataImport) throws MappingException {
         //the analytical runs onto the utilities replicates will be mapped
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
+        Set<ProteinGroup> proteinGroups = new HashSet<>();
 
         try {
             AnalyticalRun analyticalRun = new AnalyticalRun();
@@ -163,6 +168,9 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
 
                     //map the Utilities ProteinMatch instance onto the ProteinGroup instance
                     utilitiesProteinMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
+
+                    //add the protein group to the set
+                    proteinGroups.add(proteinGroup);
 
                     //iterate over the peptide matches
                     PeptideMatchesIterator peptideMatchesIterator = identification.getPeptideMatchesIterator(proteinMatch.getPeptideMatchesKeys(), parameters, false, parameters, null);
@@ -230,7 +238,7 @@ public class PeptideShakerImporter implements DataImporter<UnpackedPeptideShaker
             throw new MappingException(ex.getMessage(), ex);
         }
 
-        return analyticalRuns;
+        return new MappedData(analyticalRuns, proteinGroups);
     }
 
     /**

@@ -297,8 +297,8 @@ public class GroupManagementController implements Controllable {
      */
     private boolean isExistingGroupName(final Group group) {
         boolean isExistingGroupName = true;
-        Group foundGroup = groupService.findByName(group.getName());
-        if (foundGroup == null) {
+        Long count = groupService.countByName(group.getName());
+        if (count.longValue() == 0) {
             isExistingGroupName = false;
         }
 

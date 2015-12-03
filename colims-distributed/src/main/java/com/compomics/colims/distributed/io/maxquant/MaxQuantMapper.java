@@ -1,9 +1,10 @@
 package com.compomics.colims.distributed.io.maxquant;
 
-import com.compomics.colims.core.io.DataImporter;
+import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
+import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.QuantificationSettingsMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
@@ -16,21 +17,23 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * The DataImporter class for MaxQuant projects.
+ * The DataMapper implementation for MaxQuant projects.
  *
  * @author Davy
  * @author Iain
  */
-@Component
-public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
+@Component("maxQuantMapper")
+public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantImporter.class);
+    private static final Logger LOGGER = Logger.getLogger(MaxQuantMapper.class);
 
     /**
      * Quant file name
@@ -55,9 +58,10 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     }
 
     @Override
-    public List<AnalyticalRun> importData(MaxQuantImport maxQuantImport) throws MappingException {
+    public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException {
         LOGGER.info("started mapping folder: " + maxQuantImport.getMaxQuantDirectory().getName());
         List<AnalyticalRun> mappedRuns = new ArrayList<>();
+        Set<ProteinGroup> proteinGroups = new HashSet<>();
 
         try {
             maxQuantParser.clear();
@@ -91,7 +95,7 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
         }
 
-        return mappedRuns;
+        return new MappedData(mappedRuns, proteinGroups);
     }
 
     /**
@@ -125,8 +129,8 @@ public class MaxQuantImporter implements DataImporter<MaxQuantImport> {
     /**
      * Map the quantification settings
      *
-     * @param quantFile The file containing quant data
-     * @param analyticalRun  the AnalyticalRun instance onto the quantification settings will be mapped
+     * @param quantFile     The file containing quant data
+     * @param analyticalRun the AnalyticalRun instance onto the quantification settings will be mapped
      * @return the imported QuantificationSettings instance
      * @throws IOException thrown in case of an I/O related problem
      */

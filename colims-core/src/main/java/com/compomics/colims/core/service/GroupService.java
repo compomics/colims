@@ -10,12 +10,12 @@ import com.compomics.colims.model.Group;
 public interface GroupService extends GenericService<Group, Long> {
 
     /**
-     * Find the group by name.
+     * Count the number of groups by group name.
      *
      * @param name the group name
-     * @return the found group
+     * @return the number of found groups
      */
-    Group findByName(String name);
+    Long countByName(String name);
 
     /**
      * Check if the group is a default group.

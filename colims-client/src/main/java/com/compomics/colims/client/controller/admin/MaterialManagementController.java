@@ -374,8 +374,8 @@ public class MaterialManagementController implements Controllable {
      */
     private boolean isExistingMaterialName(final Material material) {
         boolean isExistingMaterialName = true;
-        Material foundMaterial = materialService.findByName(material.getName());
-        if (foundMaterial == null) {
+        Long count = materialService.countByName(material.getName());
+        if (count.longValue() == 0) {
             isExistingMaterialName = false;
         }
 

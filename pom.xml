@@ -629,7 +629,7 @@
                 </plugins>
             </build>
         </profile>
-        
+
         <profile>
             <id>int-tests</id>
             <activation>

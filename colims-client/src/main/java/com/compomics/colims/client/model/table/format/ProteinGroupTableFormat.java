@@ -2,7 +2,7 @@ package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
+import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 
 import java.util.Comparator;
 

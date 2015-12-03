@@ -144,6 +144,9 @@ public class UtilitiesProteinMapper {
         //check if the protein accession is already linked to the protein
         boolean proteinAccessionPresent = false;
 
+        //fetch the accessions if necessary
+        proteinService.fetchAccessions(protein);
+
         for (ProteinAccession proteinAccession : protein.getProteinAccessions()) {
             if (proteinAccession.getAccession().equals(accession)) {
                 proteinAccessionPresent = true;

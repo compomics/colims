@@ -8,6 +8,7 @@ import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.repository.ExperimentRepository;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -20,8 +21,12 @@ import java.util.List;
 public class ExperimentHibernateRepository extends GenericHibernateRepository<Experiment, Long> implements ExperimentRepository {
 
     @Override
-    public Experiment findByProjectIdAndTitle(Long projectId, String title) {
-        return findUniqueByCriteria(Restrictions.eq("project.id", projectId), Restrictions.eq("title", title));
+    public Long countByProjectIdAndTitle(Long projectId, String title) {
+        Criteria criteria = createCriteria(Restrictions.eq("project.id", projectId), Restrictions.eq("title", title));
+
+        criteria.setProjection(Projections.rowCount());
+
+        return (Long) criteria.uniqueResult();
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.repository.hibernate.model.PeptideDTO;
+import com.compomics.colims.repository.hibernate.PeptideDTO;
 
 import java.util.List;
 

@@ -36,8 +36,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role findByName(final String name) {
-        return roleRepository.findByName(name);
+    public Long countByName(final String name) {
+        return roleRepository.countByName(name);
     }
 
     @Override

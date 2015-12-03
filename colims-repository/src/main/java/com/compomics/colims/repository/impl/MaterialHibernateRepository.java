@@ -1,28 +1,33 @@
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.Material;
+import com.compomics.colims.repository.MaterialRepository;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import com.compomics.colims.model.Material;
-import com.compomics.colims.repository.MaterialRepository;
 import java.util.List;
-import org.hibernate.criterion.Order;
 
 /**
- *
  * @author Niels Hulstaert
  */
 @Repository("materialRepository")
 public class MaterialHibernateRepository extends GenericHibernateRepository<Material, Long> implements MaterialRepository {
-    
+
     @Override
-    public Material findByName(final String name) {
-        return findUniqueByCriteria(Restrictions.eq("name", name));
-    }    
+    public Long countByName(final String name) {
+        Criteria criteria = createCriteria(Restrictions.eq("name", name));
+
+        criteria.setProjection(Projections.rowCount());
+
+        return (Long) criteria.uniqueResult();
+    }
 
     @Override
     public List<Material> findAllOrderedByName() {
         return createCriteria().addOrder(Order.asc("name")).list();
     }
-    
+
 }

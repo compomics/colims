@@ -11,12 +11,12 @@ import java.util.List;
 public interface GroupRepository extends GenericRepository<Group, Long> {
 
     /**
-     * Find the group by the group name.
+     * Count the number of groups by group name.
      *
      * @param name the group name
-     * @return the found group
+     * @return the number of found groups
      */
-    Group findByName(String name);
+    Long countByName(String name);
 
     /**
      * Find all groups ordered by name.

@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -101,6 +102,8 @@ public class UserQueryController implements Controllable {
     public void init() {
         //init view
         userQueryPanel = new UserQueryPanel();
+
+        userQueryPanel.getQueryResultTable().setModel(new QueryResultsTableModel(new ArrayList<>()));
 
         queryStringBindingList = ObservableCollections.observableList(userQueryService.findQueriesByUserId(userBean.getCurrentUser().getId()));
 

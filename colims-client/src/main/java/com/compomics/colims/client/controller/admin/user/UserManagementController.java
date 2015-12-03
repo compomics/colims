@@ -186,8 +186,6 @@ public class UserManagementController implements Controllable {
                     //check if the user is has an ID.
                     //If so, disable the name text field and change the save button label.
                     if (selectedUser.getId() != null) {
-                        userService.fetchAuthenticationRelations(selectedUser);
-
                         userManagementDialog.getUserNameTextField().setEnabled(false);
                         userManagementDialog.getUserSaveOrUpdateButton().setText("update");
                         userManagementDialog.getUserStateInfoLabel().setText("");

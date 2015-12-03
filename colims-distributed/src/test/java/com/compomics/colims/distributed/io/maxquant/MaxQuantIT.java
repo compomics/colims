@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant;
 
+import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.core.service.UserService;
@@ -46,7 +47,7 @@ public class MaxQuantIT {
     @Autowired
     private UserService userService;
     @Autowired
-    MaxQuantImporter maxQuantImporter;
+    MaxQuantMapper maxQuantImporter;
     @Autowired
     private UserBean userBean;
 
@@ -73,12 +74,13 @@ public class MaxQuantIT {
         fastaDbService.persist(maxQuantTestFastaDb);
 
         MaxQuantImport maxQuantImport = new MaxQuantImport(new ClassPathResource(maxQuantTextFolderPath).getFile(), maxQuantTestFastaDb.getId());
-        List<AnalyticalRun> result = maxQuantImporter.importData(maxQuantImport);
+        MappedData mappedData = maxQuantImporter.mapData(maxQuantImport);
+        List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 
-        assertThat(result.size(), is(1));
-        assertThat(result.get(0).getSpectrums().size(), greaterThan(0));
-        assertThat(result.get(0).getSearchAndValidationSettings().getFastaDb(), is(maxQuantTestFastaDb));
-        assertThat(result.get(0).getQuantificationSettings(), notNullValue());
+        assertThat(analyticalRuns.size(), is(1));
+        assertThat(analyticalRuns.get(0).getSpectrums().size(), greaterThan(0));
+        assertThat(analyticalRuns.get(0).getSearchAndValidationSettings().getFastaDb(), is(maxQuantTestFastaDb));
+        assertThat(analyticalRuns.get(0).getQuantificationSettings(), notNullValue());
         // TODO: more assertions
     }
 }

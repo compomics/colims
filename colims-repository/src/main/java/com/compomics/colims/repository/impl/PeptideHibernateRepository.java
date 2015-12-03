@@ -4,7 +4,7 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.repository.PeptideRepository;
-import com.compomics.colims.repository.hibernate.model.PeptideDTO;
+import com.compomics.colims.repository.hibernate.PeptideDTO;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.ProjectionList;

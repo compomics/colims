@@ -10,9 +10,10 @@ import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.distributed.io.maxquant.MaxQuantImporter;
+import com.compomics.colims.core.io.MappedData;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantMapper;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
-import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerImporter;
+import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerMapper;
 import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
@@ -27,7 +28,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
 /**
  * This class handles a PersistDbTask: map the DataImport en store it in the database.
@@ -58,15 +58,15 @@ public class PersistDbTaskHandler {
     @Autowired
     private PeptideShakerIO peptideShakerIO;
     /**
-     * The PeptideShaker data importer.
+     * The PeptideShaker data mapper.
      */
     @Autowired
-    private PeptideShakerImporter peptideShakerImporter;
+    private PeptideShakerMapper peptideShakerMapper;
     /**
-     * The MaxQuant data importer.
+     * The MaxQuant data mapper.
      */
     @Autowired
-    private MaxQuantImporter maxQuantImporter;
+    private MaxQuantMapper maxQuantMapper;
     /**
      * The user entity service.
      */
@@ -115,9 +115,9 @@ public class PersistDbTaskHandler {
             }
 
             //map the task
-            List<AnalyticalRun> analyticalRuns = mapDataImport(persistDbTask);
+            MappedData mappedData = mapDataImport(persistDbTask);
 
-            persistService.persist(analyticalRuns, sample, instrument, userName, persistDbTask.getPersistMetadata().getStartDate());
+            persistService.persist(mappedData, sample, instrument, userName, persistDbTask.getPersistMetadata().getStartDate());
 
             //wrap the PersistDbTask in a CompletedTask and send it to the completed task queue
             completedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), persistDbTask));
@@ -145,8 +145,8 @@ public class PersistDbTaskHandler {
      * @throws java.sql.SQLException                                  thrown in case of an SQL related problem
      * @throws InterruptedException                                   thrown in case a thread is interrupted
      */
-    private List<AnalyticalRun> mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
-        List<AnalyticalRun> analyticalRuns = null;
+    private MappedData mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
+        MappedData mappedData = null;
 
         switch (persistDbTask.getPersistMetadata().getPersistType()) {
             case PEPTIDESHAKER:
@@ -154,9 +154,9 @@ public class PersistDbTaskHandler {
                 UnpackedPeptideShakerImport unpackedPeptideShakerImport = peptideShakerIO.unpackPeptideShakerImport((PeptideShakerImport) (persistDbTask.getDataImport()));
 
                 //clear resources before mapping
-                peptideShakerImporter.clear();
+                peptideShakerMapper.clear();
 
-                analyticalRuns = peptideShakerImporter.importData(unpackedPeptideShakerImport);
+                mappedData = peptideShakerMapper.mapData(unpackedPeptideShakerImport);
 
                 //try to delete the temporary directory with the unpacked .cps file
                 try {
@@ -170,15 +170,15 @@ public class PersistDbTaskHandler {
                 break;
             case MAX_QUANT:
                 //clear resources before mapping
-                maxQuantImporter.clear();
+                maxQuantMapper.clear();
 
-                analyticalRuns = maxQuantImporter.importData((MaxQuantImport) (persistDbTask.getDataImport()));
+                mappedData = maxQuantMapper.mapData((MaxQuantImport) (persistDbTask.getDataImport()));
 
                 break;
             default:
                 break;
         }
 
-        return analyticalRuns;
+        return mappedData;
     }
 }

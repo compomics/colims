@@ -1,28 +1,27 @@
 package com.compomics.colims.client.model;
 
-import com.compomics.colims.client.model.table.model.PeptideTableRow;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.repository.hibernate.model.PeptideDTO;
+import com.compomics.colims.repository.hibernate.PeptideDTO;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Testing the table row class.
  * <p/>
  * Created by Iain on 14/07/2015.
  */
-public class PeptideTableRowTest {
+public class PeptideDTOTest {
 
     private static PeptideDTO peptideDTO1;
     private static PeptideDTO peptideDTO2;
     private static PeptideDTO peptideDTO3;
+    private static List<PeptideDTO> peptideDTOs = new ArrayList<>();
 
     @BeforeClass
     public static void setup() {
@@ -72,41 +71,26 @@ public class PeptideTableRowTest {
 
         peptideDTO3 = new PeptideDTO();
         peptideDTO3.setPeptide(peptide3);
+
+        peptideDTOs.add(peptideDTO1);
     }
 
     /**
-     * Trying to add a PeptideDTO instance that holds a peptide with the same sequence but with different modifications,
-     * should throw an IllegalArgumentException.
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void testAddPeptideDTOMismatch() {
-        PeptideTableRow peptideTableRow = new PeptideTableRow(peptideDTO1, "LENAARTTTWWRWR");
-        peptideTableRow.addPeptideDTO(peptideDTO2);
-    }
-
-    /**
-     * Test the addPeptideDTO method, peptideDTO3 should be added to the PeptideTableRow since only the charge is
-     * different from peptideDTO1.
+     * Test the addition of a PeptideDTO instance that holds a peptide with the same sequence but with different
+     * modifications, the contains method should return false.
      */
     @Test
-    public void testAddPeptideDTO() {
-        PeptideTableRow peptideTableRow = new PeptideTableRow(peptideDTO1, "LENAARTTTWWRWR");
-        peptideTableRow.addPeptideDTO(peptideDTO3);
-
-        Assert.assertEquals(2, peptideTableRow.getSpectrumCount());
+    public void testAddPeptideDTOMismatchToMap() {
+        Assert.assertFalse(peptideDTOs.contains(peptideDTO2));
     }
 
     /**
-     * Test the annotated sequence of a PeptideDTO instance that holds a peptide with 2 modifications.
+     * Test the addition of a PeptideDTO instance that holds a peptide with only it's charge different from peptideDTO1,
+     * the contains method should return true.
      */
     @Test
-    public void testGetAnnotatedSequence() {
-        PeptideTableRow peptideTableRow = new PeptideTableRow(peptideDTO1, "LENAARTTTWWRWR");
-
-//        String annotatedSequence = peptideTableRow.getAnnotatedSequence();
-//
-//        assertThat(annotatedSequence.length(), is(peptideDTO1.getPeptide().getSequence().length() + 14));
-//        assertThat(annotatedSequence, containsString("<b>"));
-//        assertThat(annotatedSequence, is(peptideTableRow.getAnnotatedSequence()));
+    public void testAddPeptideDTOMatchToMap() {
+        Assert.assertTrue(peptideDTOs.contains(peptideDTO3));
     }
+
 }

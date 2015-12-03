@@ -15,13 +15,13 @@ import com.compomics.colims.model.Experiment;
 public interface ExperimentService extends GenericService<Experiment, Long> {
 
     /**
-     * Find the experiment by title and project ID.
+     * Count the experiments by title and project ID.
      *
      * @param projectId the project ID
      * @param title     the experiment title
-     * @return the found experiment
+     * @return the number of found experiments
      */
-    Experiment findByProjectIdAndTitle(Long projectId, String title);
+    Long countByProjectIdAndTitle(Long projectId, String title);
 
     /**
      * Fetch the experiment binary files.

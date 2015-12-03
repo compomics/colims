@@ -228,8 +228,8 @@ public class PermissionManagementController implements Controllable {
      */
     private boolean isExistingPermissionName(final Permission permission) {
         boolean isExistingPermissionName = true;
-        Permission foundPermission = permissionService.findByName(permission.getName());
-        if (foundPermission == null) {
+        Long count = permissionService.countByName(permission.getName());
+        if (count.longValue() == 0) {
             isExistingPermissionName = false;
         }
 
@@ -242,8 +242,8 @@ public class PermissionManagementController implements Controllable {
      * @return the selected permission
      */
     private Permission getSelectedPermission() {
-        int seletedPermissionIndex = userManagementDialog.getPermissionList().getSelectedIndex();
-        return (seletedPermissionIndex != -1) ? permissionBindingList.get(seletedPermissionIndex) : null;
+        int selectedPermissionIndex = userManagementDialog.getPermissionList().getSelectedIndex();
+        return (selectedPermissionIndex != -1) ? permissionBindingList.get(selectedPermissionIndex) : null;
     }
 
     /**

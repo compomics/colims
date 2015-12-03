@@ -5,7 +5,7 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.SortDirection;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
+import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

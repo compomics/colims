@@ -5,7 +5,9 @@
 package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.Role;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultUser;
 import com.compomics.colims.repository.UserRepository;
@@ -49,7 +51,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByName(final String name) {
+    public Long countByName(final String name) {
+        return userRepository.countByName(name);
+    }
+
+    @Override
+    public User findByName(String name) {
         return userRepository.findByName(name);
     }
 
@@ -61,6 +68,12 @@ public class UserServiceImpl implements UserService {
             //merge the user
             User merge = userRepository.merge(user);
             merge.getGroups().size();
+            for (Group group : merge.getGroups()) {
+                group.getRoles().size();
+                for (Role role : group.getRoles()) {
+                    role.getPermissions().size();
+                }
+            }
             user.setGroups(merge.getGroups());
         }
     }

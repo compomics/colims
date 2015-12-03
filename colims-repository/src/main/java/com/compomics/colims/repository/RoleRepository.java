@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Role;
+
 import java.util.List;
 
 /**
@@ -11,12 +12,12 @@ import java.util.List;
 public interface RoleRepository extends GenericRepository<Role, Long> {
 
     /**
-     * Find the role by the role name.
+     * Count the number of roles by role name.
      *
      * @param name the role name
-     * @return the found role
+     * @return the number of found roles
      */
-    Role findByName(String name);
+    Long countByName(String name);
 
     /**
      * Find all roles ordered by name.

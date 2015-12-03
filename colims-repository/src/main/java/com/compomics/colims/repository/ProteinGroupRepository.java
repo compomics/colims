@@ -1,10 +1,9 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.hibernate.SortDirection;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
+import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 
 import java.util.List;
 

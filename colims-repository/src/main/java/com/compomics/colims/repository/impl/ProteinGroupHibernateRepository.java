@@ -4,7 +4,7 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.SortDirection;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
+import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
 import org.hibernate.transform.Transformers;

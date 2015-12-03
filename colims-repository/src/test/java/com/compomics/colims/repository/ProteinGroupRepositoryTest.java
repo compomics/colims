@@ -2,7 +2,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.hibernate.SortDirection;
-import com.compomics.colims.repository.hibernate.model.ProteinGroupDTO;
+import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

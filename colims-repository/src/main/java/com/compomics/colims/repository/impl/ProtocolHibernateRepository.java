@@ -1,5 +1,7 @@
 package com.compomics.colims.repository.impl;
 
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -22,7 +24,18 @@ public class ProtocolHibernateRepository extends GenericHibernateRepository<Prot
 
     @Override
     public List<Protocol> findAllOrderedByName() {
-        return createCriteria().addOrder(Order.asc("name")).list();
+        Criteria criteria = createCriteria();
+
+        //join fetch chemical labels
+        criteria.setFetchMode("chemicalLabels", FetchMode.JOIN);
+
+        //add order
+        criteria.addOrder(Order.asc("name"));
+
+        //return distinct results
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+        return criteria.list();
     }
     
 }

@@ -1,4 +1,4 @@
-package com.compomics.colims.repository.hibernate.model;
+package com.compomics.colims.repository.hibernate;
 
 /**
  * This class represents a protein group data transfer object that holds some additional information about a protein

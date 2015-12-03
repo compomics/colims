@@ -10,11 +10,11 @@ import com.compomics.colims.model.Instrument;
 public interface InstrumentService extends GenericService<Instrument, Long> {
 
     /**
-     * Find the instrument by name, return null if no instrument was found.
+     * Count the number of instruments by instrument name.
      *
-     * @param name the instrument by name
-     * @return the found instrument
+     * @param name the instrument name
+     * @return the number of found instruments
      */
-    Instrument findByName(String name);
+    Long countByName(String name);
 
 }

@@ -1,4 +1,4 @@
-package com.compomics.colims.repository.hibernate.model;
+package com.compomics.colims.repository.hibernate;
 
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.util.CompareUtils;

@@ -61,9 +61,9 @@ public class Sample extends AuditableDatabaseEntity {
     @ManyToMany
     @JoinTable(name = "sample_has_material",
             joinColumns = {
-                @JoinColumn(name = "l_sample_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_sample_id", referencedColumnName = "id")},
             inverseJoinColumns = {
-                @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
+                    @JoinColumn(name = "l_material_id", referencedColumnName = "id")})
     private List<Material> materials = new ArrayList<>();
     /**
      * The analytical runs that were performed using this sample.

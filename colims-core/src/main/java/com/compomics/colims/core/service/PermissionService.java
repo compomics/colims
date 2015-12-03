@@ -14,12 +14,12 @@ import com.compomics.colims.model.Permission;
 public interface PermissionService extends GenericService<Permission, Long> {
 
     /**
-     * Find the permission by name.
+     * Count the number of permissions by permission name.
      *
      * @param name the permission name
-     * @return the found permission
+     * @return the number of found permissions
      */
-    Permission findByName(String name);
+    Long countByName(String name);
 
     /**
      * Check if the permission is a default permission.

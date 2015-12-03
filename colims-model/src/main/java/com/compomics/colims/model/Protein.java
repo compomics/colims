@@ -1,8 +1,6 @@
 package com.compomics.colims.model;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -39,7 +37,6 @@ public class Protein extends DatabaseEntity {
      * The list of protein accessions linked to this protein.
      */
     @OneToMany(mappedBy = "protein", cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
     private List<ProteinAccession> proteinAccessions = new ArrayList<>();
 
     /**

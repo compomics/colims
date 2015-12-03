@@ -11,13 +11,12 @@ import java.util.List;
 public interface MaterialRepository extends GenericRepository<Material, Long> {
 
     /**
-     * Find the material by the material name, returns null if no material
-     * was found.
+     * Count the number of materials by material name.
      *
      * @param name the material name
-     * @return the found material
+     * @return the number of found materials
      */
-    Material findByName(String name);
+    Long countByName(String name);
 
     /**
      * Find all materials ordered by name.

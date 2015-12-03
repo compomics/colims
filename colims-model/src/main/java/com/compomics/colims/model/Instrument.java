@@ -1,7 +1,5 @@
 package com.compomics.colims.model;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -62,7 +60,6 @@ public class Instrument extends AuditableDatabaseEntity {
      */
     @NotEmpty(message = "An instrument must have at least one analyzer.")
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "instrument_has_analyzer",
             joinColumns = {
                     @JoinColumn(name = "l_instrument_id", referencedColumnName = "id")},

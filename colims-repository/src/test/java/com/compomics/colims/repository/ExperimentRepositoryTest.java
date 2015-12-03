@@ -25,21 +25,19 @@ public class ExperimentRepositoryTest {
     @Test
     public void testFindByProjectIdAndTitle() {
         //try to find an existing experiment
-        Experiment foundExperiment = experimentRepository.findByProjectIdAndTitle(1L, "Experiment 1 title");
+        Long count = experimentRepository.countByProjectIdAndTitle(1L, "Experiment 1 title");
 
-        Assert.assertNotNull(foundExperiment);
-        Assert.assertEquals("Experiment 1 title", foundExperiment.getTitle());
-        Assert.assertEquals(Long.parseLong("1"), foundExperiment.getProject().getId().longValue());
+        Assert.assertFalse(count.longValue() == 0);
 
-        //try to find an non existing experiment whithin an existing project
-        foundExperiment = experimentRepository.findByProjectIdAndTitle(1L, "Unknown experiment 1 title");
+        //try to find an non existing experiment within an existing project
+        count = experimentRepository.countByProjectIdAndTitle(1L, "Unknown experiment 1 title");
 
-        Assert.assertNull(foundExperiment);
+        Assert.assertTrue(count.longValue() == 0);
 
-        //try to find an non existing experiment whithin a non existing project
-        foundExperiment = experimentRepository.findByProjectIdAndTitle(44L, "Unknown experiment 1 title");
+        //try to find an non existing experiment within a non existing project
+        count = experimentRepository.countByProjectIdAndTitle(44L, "Unknown experiment 1 title");
 
-        Assert.assertNull(foundExperiment);
+        Assert.assertTrue(count.longValue() == 0);
     }
 
 }

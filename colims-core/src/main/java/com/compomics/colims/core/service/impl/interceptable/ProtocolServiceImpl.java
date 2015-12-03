@@ -21,12 +21,27 @@ public class ProtocolServiceImpl implements ProtocolService {
 
     @Override
     public Protocol findById(final Long id) {
-        return protocolRepository.findById(id);
+        Protocol protocol = protocolRepository.findById(id);
+
+        //fetch the chemical labels
+        protocol.getChemicalLabels().size();
+
+        //fetch the other CV params
+        protocol.getOtherCvParams().size();
+
+        return protocol;
     }
 
     @Override
     public List<Protocol> findAll() {
-        return protocolRepository.findAllOrderedByName();
+        List<Protocol> protocols = protocolRepository.findAllOrderedByName();
+
+        //fetch other CV params
+        for (Protocol protocol : protocols) {
+            protocol.getOtherCvParams().size();
+        }
+
+        return protocols;
     }
 
     @Override

@@ -367,8 +367,8 @@ public class InstrumentManagementController implements Controllable {
      */
     private boolean isExistingInstrumentName(final Instrument instrument) {
         boolean isExistingInstrumentName = true;
-        Instrument foundInstrument = instrumentService.findByName(instrument.getName());
-        if (foundInstrument == null) {
+        Long count = instrumentService.countByName(instrument.getName());
+        if (count.longValue() == 0) {
             isExistingInstrumentName = false;
         }
 

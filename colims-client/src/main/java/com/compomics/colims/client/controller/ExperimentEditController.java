@@ -243,8 +243,8 @@ public class ExperimentEditController implements Controllable {
      */
     private boolean isExistingExperimentTitle(final Experiment experiment) {
         boolean isExistingExperimentTitle = true;
-        Experiment foundExperiment = experimentService.findByProjectIdAndTitle(projectManagementController.getSelectedProject().getId(), experiment.getTitle());
-        if (foundExperiment == null) {
+        Long count = experimentService.countByProjectIdAndTitle(projectManagementController.getSelectedProject().getId(), experiment.getTitle());
+        if (count.longValue() == 0) {
             isExistingExperimentTitle = false;
         }
 

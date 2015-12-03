@@ -1,6 +1,6 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.repository.hibernate.model.PeptideDTO;
+import com.compomics.colims.repository.hibernate.PeptideDTO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
