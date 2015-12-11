@@ -76,4 +76,11 @@ public class SampleServiceImpl implements SampleService {
         return sampleRepository.getMostUsedProtocol();
     }
 
+    @Override
+    public Sample findByIdAndFetchRuns(Long sampleId) {
+        Sample sample = sampleRepository.findById(sampleId);
+        sample.getAnalyticalRuns().size();
+
+        return sample;
+    }
 }

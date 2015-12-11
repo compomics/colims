@@ -76,7 +76,7 @@ public class ProjectRepositoryTest {
 
     @Test
     public void testFindAllWithEagerFetching() {
-        List<Project> projects = projectRepository.findAllWithEagerFetching();
+        List<Project> projects = projectRepository.findAllWithFetchedExperiments();
 
         Assert.assertFalse(projects.isEmpty());
         Assert.assertEquals(3, projects.size());

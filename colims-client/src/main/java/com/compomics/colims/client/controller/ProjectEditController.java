@@ -1,6 +1,8 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.compoment.DualList;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.admin.UserChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
@@ -113,21 +115,26 @@ public class ProjectEditController implements Controllable {
             }
             if (validationMessages.isEmpty()) {
                 int index;
+                EntityChangeEvent.Type type;
 
                 if (projectToEdit.getId() != null) {
                     projectService.merge(projectToEdit);
 
                     index = projectManagementController.getSelectedProjectIndex();
+                    type = EntityChangeEvent.Type.UPDATED;
                 } else {
                     projectService.persist(projectToEdit);
 
                     index = projectManagementController.getProjectsSize() - 1;
+                    type = EntityChangeEvent.Type.CREATED;
 
                     //add project to overview table
                     projectManagementController.addProject(projectToEdit);
 
                     projectEditDialog.getSaveOrUpdateButton().setText("update");
                 }
+                eventBus.post(new ProjectChangeEvent(type, projectToEdit.getId()));
+
                 MessageEvent messageEvent = new MessageEvent("Project store confirmation", "Project " + projectToEdit.getLabel() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                 eventBus.post(messageEvent);
 
@@ -203,12 +210,8 @@ public class ProjectEditController implements Controllable {
      * @return does the project title exist
      */
     private boolean isExistingProjectTitle(final Project project) {
-        boolean isExistingProjectTitle = true;
-        Project foundProject = projectService.findByTitle(project.getTitle());
-        if (foundProject == null) {
-            isExistingProjectTitle = false;
-        }
+        Long count = projectService.countByTitle(project.getTitle());
 
-        return isExistingProjectTitle;
+        return count != 0;
     }
 }

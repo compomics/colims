@@ -47,7 +47,7 @@ public class UtilitiesProteinMapper {
      * @param proteinGroup      the Colims ProteinGroup entity onto the ProteinMatch instance will be mapped
      * @throws MappingException thrown in case of a mapping related problem
      */
-    public void map(final ProteinMatch proteinMatch, PSParameter proteinGroupScore, ProteinGroup proteinGroup) throws MappingException {
+    public void map(final ProteinMatch proteinMatch, final PSParameter proteinGroupScore, final ProteinGroup proteinGroup) throws MappingException {
         try {
             /**
              * Iterate over the theoretic protein accessions.
@@ -63,9 +63,8 @@ public class UtilitiesProteinMapper {
 
                 //get the utilities Protein from SequenceFactory
                 com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
-                //set protein
+                //get protein
                 Protein matchedProtein = getProtein(sourceProtein);
-                proteinGroupHasProtein.setProtein(matchedProtein);
 
                 if (proteinAccession.equals(proteinMatch.getMainMatch())) {
                     //set the is main protein group flag to true
@@ -77,6 +76,8 @@ public class UtilitiesProteinMapper {
 
                 //set entity associations
                 proteinGroupHasProtein.setProteinGroup(proteinGroup);
+                proteinGroupHasProtein.setProtein(matchedProtein);
+
                 proteinGroup.getProteinGroupHasProteins().add(proteinGroupHasProtein);
             }
         } catch (IOException | IllegalArgumentException | InterruptedException ex) {
@@ -118,15 +119,12 @@ public class UtilitiesProteinMapper {
                 //set entity associations
                 proteinAccession.setProtein(targetProtein);
                 targetProtein.getProteinAccessions().add(proteinAccession);
-
-                //add to cached proteins map
-                cachedProteins.put(targetProtein.getSequence(), targetProtein);
             } else {
                 updateAccessions(targetProtein, sourceProtein.getAccession());
-
-                //add to cached proteins
-                cachedProteins.put(targetProtein.getSequence(), targetProtein);
             }
+
+            //add to cached proteins
+            cachedProteins.put(targetProtein.getSequence(), targetProtein);
         } else {
             updateAccessions(targetProtein, sourceProtein.getAccession());
         }

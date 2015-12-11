@@ -39,7 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> findAllWithEagerFetching() {
-        List<Project> projects = projectRepository.findAllWithEagerFetching();
+        List<Project> projects = projectRepository.findAllWithFetchedExperiments();
         for (Project project : projects) {
             for (Experiment experiment : project.getExperiments()) {
                 for (Sample sample : experiment.getSamples()) {
@@ -57,8 +57,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project findByTitle(final String title) {
-        return projectRepository.findByTitle(title);
+    public Long countByTitle(final String title) {
+        return projectRepository.countByTitle(title);
     }
 
     @Override

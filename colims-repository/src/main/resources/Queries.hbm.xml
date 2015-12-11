@@ -5,10 +5,31 @@
 
 <hibernate-mapping>
 
-    <query name="Project.findAllWithEagerFetching">
+    <query name="Project.findAllWithFetchedExperiments">
         select distinct project
         from Project as project
         left join fetch project.experiments as experiment
+    </query>
+
+    <query name="Project.findByIdWithFetchedExperiments">
+        select distinct project
+        from Project as project
+        left join fetch project.experiments as experiment
+        where project.id = :projectId
+    </query>
+
+    <query name="Experiment.findByIdWithFetchedSamples">
+        select distinct experiment
+        from Experiment as experiment
+        left join fetch experiment.samples as sample
+        where experiment.id = :experimentId
+    </query>
+
+    <query name="Sample.findByIdWithFetchedRuns">
+        select distinct sample
+        from Sample as sample
+        left join fetch sample.analyticalRuns as run
+        where sample.id = :sampleId
     </query>
 
     <query name="Peptide.getPeptideDTOByProteinGroupId">

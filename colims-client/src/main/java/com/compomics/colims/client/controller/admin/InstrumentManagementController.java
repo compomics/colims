@@ -18,7 +18,7 @@ import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.InstrumentCvParam;
-import com.compomics.colims.model.comparator.CvParamAccessionComparator;
+import com.compomics.colims.model.comparator.AuditableCvParamAccessionComparator;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.google.common.eventbus.EventBus;
@@ -209,7 +209,7 @@ public class InstrumentManagementController implements Controllable {
         instrumentEditDialog = new InstrumentEditDialog(instrumentManagementDialog, true);
 
         //init dual list
-        instrumentEditDialog.getCvParamDualList().init(new CvParamAccessionComparator());
+        instrumentEditDialog.getCvParamDualList().init(new AuditableCvParamAccessionComparator());
 
         //set model and renderer
         typedCvParamSummaryListModel = new TypedCvParamSummaryListModel();
@@ -366,13 +366,9 @@ public class InstrumentManagementController implements Controllable {
      * @return does the instrument name exist
      */
     private boolean isExistingInstrumentName(final Instrument instrument) {
-        boolean isExistingInstrumentName = true;
         Long count = instrumentService.countByName(instrument.getName());
-        if (count.longValue() == 0) {
-            isExistingInstrumentName = false;
-        }
 
-        return isExistingInstrumentName;
+        return count != 0;
     }
 
     /**

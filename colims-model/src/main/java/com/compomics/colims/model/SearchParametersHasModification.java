@@ -76,4 +76,25 @@ public class SearchParametersHasModification extends DatabaseEntity {
     public void setResidues(String residues) {
         this.residues = residues;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SearchParametersHasModification that = (SearchParametersHasModification) o;
+
+        if (modificationType != that.modificationType) return false;
+        if (residues != null ? !residues.equals(that.residues) : that.residues != null) return false;
+        return !(searchModification != null ? !searchModification.equals(that.searchModification) : that.searchModification != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = modificationType != null ? modificationType.hashCode() : 0;
+        result = 31 * result + (residues != null ? residues.hashCode() : 0);
+        result = 31 * result + (searchModification != null ? searchModification.hashCode() : 0);
+        return result;
+    }
 }

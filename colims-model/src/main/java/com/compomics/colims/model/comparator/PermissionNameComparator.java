@@ -11,8 +11,6 @@ import java.util.Comparator;
  */
 public class PermissionNameComparator implements Comparator<Permission>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     public int compare(final Permission permission1, final Permission permission2) {
         return permission1.getName().compareToIgnoreCase(permission2.getName());

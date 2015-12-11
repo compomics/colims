@@ -284,13 +284,9 @@ public class RoleManagementController implements Controllable {
      * @return does the role name exist
      */
     private boolean isExistingRoleName(final Role role) {
-        boolean isExistingRoleName = true;
         Long count = roleService.countByName(role.getName());
-        if (count.longValue() == 0) {
-            isExistingRoleName = false;
-        }
 
-        return isExistingRoleName;
+        return count != 0;
     }
 
     /**

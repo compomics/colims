@@ -8,6 +8,7 @@ import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.repository.ExperimentRepository;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -36,5 +37,14 @@ public class ExperimentHibernateRepository extends GenericHibernateRepository<Ex
         criteria.add(Restrictions.eq("experiment.id", experimentId));
 
         return criteria.list();
+    }
+
+    @Override
+    public Experiment findByIdWithFetchedSamples(Long experimentId) {
+        Query query = getCurrentSession().getNamedQuery("Experiment.findByIdWithFetchedSamples");
+
+        query.setLong("experimentId", experimentId);
+
+        return (Experiment) query.uniqueResult();
     }
 }

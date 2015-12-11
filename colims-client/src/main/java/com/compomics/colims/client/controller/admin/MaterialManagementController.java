@@ -18,7 +18,7 @@ import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.model.Material;
 import com.compomics.colims.model.MaterialCvParam;
-import com.compomics.colims.model.comparator.CvParamAccessionComparator;
+import com.compomics.colims.model.comparator.AuditableCvParamAccessionComparator;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.google.common.eventbus.EventBus;
@@ -205,7 +205,7 @@ public class MaterialManagementController implements Controllable {
         materialEditDialog = new MaterialEditDialog(materialManagementDialog, true);
 
         //init dual list
-        materialEditDialog.getCvParamDualList().init(new CvParamAccessionComparator());
+        materialEditDialog.getCvParamDualList().init(new AuditableCvParamAccessionComparator());
 
         //add binding
         Binding materialNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, materialManagementDialog.getMaterialList(), ELProperty.create("${selectedElement.name}"), materialEditDialog.getNameTextField(), BeanProperty.create("text"), "materialNameBinding");
@@ -373,13 +373,9 @@ public class MaterialManagementController implements Controllable {
      * @return does the material name exist
      */
     private boolean isExistingMaterialName(final Material material) {
-        boolean isExistingMaterialName = true;
         Long count = materialService.countByName(material.getName());
-        if (count.longValue() == 0) {
-            isExistingMaterialName = false;
-        }
 
-        return isExistingMaterialName;
+        return count != 0;
     }
 
     /**

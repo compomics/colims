@@ -3,10 +3,13 @@ package com.compomics.colims.repository.impl;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.ProteinGroupRepository;
-import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
+import com.compomics.colims.repository.hibernate.SortDirection;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
@@ -106,7 +109,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public void save(ProteinGroup proteinGroup) {
-        getCurrentSession().save(proteinGroup);
+    public void saveOrUpdate(ProteinGroup proteinGroup) {
+        getCurrentSession().saveOrUpdate(proteinGroup);
     }
 }

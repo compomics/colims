@@ -9,6 +9,7 @@ import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AnalyticalRunRepository;
+import com.compomics.colims.repository.PeptideRepository;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,8 @@ public class PersistServiceImpl implements PersistService {
     private AnalyticalRunRepository analyticalRunRepository;
     @Autowired
     ProteinGroupRepository proteinGroupRepository;
+    @Autowired
+    PeptideRepository peptideRepository;
 
     @Override
     public void persist(MappedData mappedData, Sample sample, Instrument instrument, String userName, Date startDate) {
@@ -51,18 +54,17 @@ public class PersistServiceImpl implements PersistService {
                 quantificationSettings.setUserName(userName);
             }
 
-            //and save them
-            for (ProteinGroup proteinGroup : mappedData.getProteinGroups()) {
-                proteinGroupRepository.merge(proteinGroup);
-            }
+            //first, cascade save or update the protein groups
+            mappedData.getProteinGroups().forEach((proteinGroup) -> proteinGroupRepository.saveOrUpdate(proteinGroup));
 
+            //second,  cascade save or update the analytical run
             analyticalRun.setCreationDate(auditDate);
             analyticalRun.setModificationDate(auditDate);
             analyticalRun.setUserName(userName);
             analyticalRun.setStartDate(startDate);
             analyticalRun.setSample(sample);
             analyticalRun.setInstrument(instrument);
-            analyticalRunRepository.merge(analyticalRun);
+            analyticalRunRepository.saveOrUpdate(analyticalRun);
         }
     }
 

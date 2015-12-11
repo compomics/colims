@@ -48,4 +48,9 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
     public void remove(AnalyticalRun entity) {
         analyticalRunRepository.remove(entity);
     }
+
+    @Override
+    public List<AnalyticalRun> findBySampleId(Long sampleId) {
+        return analyticalRunRepository.findBySampleId(sampleId);
+    }
 }

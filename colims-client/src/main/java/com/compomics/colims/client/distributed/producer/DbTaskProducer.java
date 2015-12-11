@@ -47,15 +47,12 @@ public class DbTaskProducer {
         //map to JSON construct
         String jsonDbTask = objectMapper.writeValueAsString(dbTask);
 
-        dbTaskProducerTemplate.send(new MessageCreator() {
-            @Override
-            public Message createMessage(final Session session) throws JMSException {
-                TextMessage dbTaskTextMessage = session.createTextMessage(jsonDbTask);
+        dbTaskProducerTemplate.send(session -> {
+            TextMessage dbTaskTextMessage = session.createTextMessage(jsonDbTask);
 
-                LOGGER.info("Sending JSON db task of class " + dbTask.getClass().getSimpleName());
+            LOGGER.info("Sending JSON db task of class " + dbTask.getClass().getSimpleName());
 
-                return dbTaskTextMessage;
-            }
+            return dbTaskTextMessage;
         });
     }
 

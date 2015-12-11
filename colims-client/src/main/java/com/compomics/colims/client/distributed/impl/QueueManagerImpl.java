@@ -10,12 +10,10 @@ import org.apache.activemq.broker.jmx.QueueViewMBean;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jms.core.BrowserCallback;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.jms.JMSException;
-import javax.jms.Session;
 import javax.jms.TextMessage;
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerInvocationHandler;
@@ -90,34 +88,29 @@ public class QueueManagerImpl implements QueueManager {
     @Override
     public <T extends QueueMessage> List<T> monitorQueue(final String queueName, final Class<T> clazz) {
 
-        return queueManagerTemplate.browse(queueName, new BrowserCallback<List<T>>() {
+        return queueManagerTemplate.browse(queueName, (session, browser) -> {
+            Enumeration enumeration = browser.getEnumeration();
+            List<T> queueMessages = new ArrayList<>();
 
-            @Override
-            public List<T> doInJms(final Session session, final javax.jms.QueueBrowser browser) throws JMSException {
-                Enumeration enumeration = browser.getEnumeration();
-                List<T> queueMessages = new ArrayList<>();
+            while (enumeration.hasMoreElements()) {
+                try {
+                    //get the JSON construct
+                    TextMessage jsonConstruct = (TextMessage) enumeration.nextElement();
 
-                while (enumeration.hasMoreElements()) {
-                    try {
-                        //get the JSON construct
-                        TextMessage jsonConstruct = (TextMessage) enumeration.nextElement();
-                        //map it to it's corresponding java class
+                    //map it to it's corresponding java class
+                    T mappedInstance = objectMapper.readValue(jsonConstruct.getText(), clazz);
 
-                        String text = jsonConstruct.getText();
-                        T mappedInstance = objectMapper.readValue(jsonConstruct.getText(), clazz);
+                    mappedInstance.setMessageId(jsonConstruct.getJMSMessageID());
 
-                        mappedInstance.setMessageId(jsonConstruct.getJMSMessageID());
-
-                        queueMessages.add(mappedInstance);
-                    } catch (IOException e) {
-                        LOGGER.error(e.getMessage(), e);
-                        //@todo what's the best way of wrapping this exception?
-                        throw new JMSException(e.getMessage());
-                    }
+                    queueMessages.add(mappedInstance);
+                } catch (IOException e) {
+                    LOGGER.error(e.getMessage(), e);
+                    //@todo what's the best way of wrapping this exception?
+                    throw new JMSException(e.getMessage());
                 }
-
-                return queueMessages;
             }
+
+            return queueMessages;
         });
     }
 

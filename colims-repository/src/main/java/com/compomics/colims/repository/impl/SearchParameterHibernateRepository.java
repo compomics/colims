@@ -4,8 +4,11 @@
  */
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.SearchCvParam;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.SearchParametersHasModification;
+import com.compomics.colims.model.comparator.CvParamNameComparator;
+import com.compomics.colims.model.comparator.SearchParameterHasModNameComparator;
 import com.compomics.colims.repository.SearchParametersRepository;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
@@ -13,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,13 +57,45 @@ public class SearchParameterHibernateRepository extends GenericHibernateReposito
                 iterator.remove();
                 continue;
             }
-            //check search modifications
-            if (!exampleInstance.getSearchParametersHasModifications().equals(searchParameters.getSearchParametersHasModifications())) {
+
+            /**
+             * Check search modifications equality.
+             */
+            //check the peptideHasModifications size
+            if (exampleInstance.getSearchParametersHasModifications().size() != searchParameters.getSearchParametersHasModifications().size()) {
                 iterator.remove();
                 continue;
             }
-            //check additional parameters
-            if (!exampleInstance.getAdditionalCvParams().equals(searchParameters.getAdditionalCvParams())) {
+
+            //sort the lists of SearchParametersHasModifications instances
+            SearchParameterHasModNameComparator modificationNameComparator = new SearchParameterHasModNameComparator();
+            //create a temporary list to avoid changes in the database
+            List<SearchParametersHasModification> sortedList = searchParameters.getSearchParametersHasModifications();
+            Collections.sort(exampleInstance.getSearchParametersHasModifications(), modificationNameComparator);
+            Collections.sort(sortedList, modificationNameComparator);
+
+            if (!exampleInstance.getSearchParametersHasModifications().equals(sortedList)) {
+                iterator.remove();
+                continue;
+            }
+
+            /**
+             * Check additional parameters equality.
+             */
+            //check the additionalCvParams size
+            if (exampleInstance.getAdditionalCvParams().size() != searchParameters.getAdditionalCvParams().size()) {
+                iterator.remove();
+                continue;
+            }
+
+            //sort the lists of AdditionalCvParams instances
+            CvParamNameComparator nameComparator = new CvParamNameComparator();
+            //create a temporary list to avoid changes in the database
+            List<SearchCvParam> sortedList2 = searchParameters.getAdditionalCvParams();
+            Collections.sort(exampleInstance.getAdditionalCvParams(), nameComparator);
+            Collections.sort(sortedList2, nameComparator);
+
+            if (!exampleInstance.getAdditionalCvParams().equals(sortedList2)) {
                 iterator.remove();
                 continue;
             }

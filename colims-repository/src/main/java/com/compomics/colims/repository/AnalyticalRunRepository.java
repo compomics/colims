@@ -2,9 +2,29 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 
+import java.util.List;
+
 /**
  * This interface provides repository methods for the AnalyticalRun class.
  *
  * @author Niels Hulstaert
  */
-public interface AnalyticalRunRepository extends GenericRepository<AnalyticalRun, Long> {}
+public interface AnalyticalRunRepository extends GenericRepository<AnalyticalRun, Long> {
+
+    /**
+     * Find the runs by sample ID.
+     *
+     * @param sampleId the sample ID
+     * @return the list of analytical runs
+     */
+    List<AnalyticalRun> findBySampleId(Long sampleId);
+
+    /**
+     * Cascade save or update the given analytical run. We don't use the JPA merge method because of consistency with
+     * saveOrUpdate the protein groups in the PersistService.
+     *
+     * @param analyticalRun the AnalyticalRun instance to save or update
+     */
+    void saveOrUpdate(final AnalyticalRun analyticalRun);
+
+}

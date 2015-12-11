@@ -18,7 +18,6 @@ public class Playground {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-repository-context.xml");
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = applicationContext.getBean("&entityManagerFactory", LocalContainerEntityManagerFactoryBean.class);
         EntityManagerFactory emf = entityManagerFactoryBean.getNativeEntityManagerFactory();
-        SessionFactoryImpl sessionFactory = emf.unwrap(SessionFactoryImpl.class);
     }
 
 }

@@ -4,7 +4,6 @@
  */
 package com.compomics.colims.core.util;
 
-import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -17,20 +16,14 @@ import org.springframework.core.io.Resource;
 public final class ResourceUtils {
 
     /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ResourceUtils.class);
-
-    /**
-     * Private no-arg constructor.
+     * Private constructor to prevent instantiation.
      */
     private ResourceUtils() {
     }
 
     /**
-     * Get a resource by its relative path. If the resource is not found on the
-     * file system, the classpath is searched. If nothing is found, null is
-     * returned.
+     * Get a resource by its relative path. If the resource is not found on the file system, the classpath is searched.
+     * If nothing is found, null is returned.
      *
      * @param relativePath the relative path of the resource
      * @return the found resource
@@ -51,14 +44,13 @@ public final class ResourceUtils {
     }
 
     /**
-     * Check if a resource with the given relative path exists on the file
-     * system.
+     * Check if a resource with the given relative path exists on the file system.
      *
      * @param relativePath the relative path of the resource
      * @return the is existing boolean
      */
     public static boolean isExistingFile(final String relativePath) {
-        boolean isExistingResource = Boolean.FALSE;
+        boolean isExistingResource = false;
 
         Resource resource = new FileSystemResource(relativePath);
         if (resource.exists()) {

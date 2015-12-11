@@ -11,8 +11,6 @@ import java.util.Comparator;
  */
 public class RoleNameComparator implements Comparator<Role>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     public int compare(final Role role1, final Role role2) {
         return role1.getName().compareToIgnoreCase(role2.getName());

@@ -86,7 +86,6 @@ public class Protein extends DatabaseEntity {
         Protein protein = (Protein) o;
 
         return sequence.equals(protein.sequence);
-
     }
 
     @Override

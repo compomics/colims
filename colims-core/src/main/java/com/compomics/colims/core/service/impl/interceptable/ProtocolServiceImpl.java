@@ -45,8 +45,8 @@ public class ProtocolServiceImpl implements ProtocolService {
     }
 
     @Override
-    public Protocol findByName(final String name) {
-        return protocolRepository.findByName(name);
+    public Long countByName(final String name) {
+        return protocolRepository.countByName(name);
     }
 
     @Override

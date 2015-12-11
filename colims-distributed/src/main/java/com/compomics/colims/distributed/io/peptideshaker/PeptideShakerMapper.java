@@ -1,10 +1,10 @@
 package com.compomics.colims.distributed.io.peptideshaker;
 
-import com.compomics.colims.distributed.io.DataMapper;
+import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.FastaDbService;
-import com.compomics.colims.core.io.MappedData;
+import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.SearchSettingsMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinMapper;
@@ -104,12 +104,12 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
 
     @Override
     public MappedData mapData(UnpackedPeptideShakerImport dataImport) throws MappingException {
-        //the analytical runs onto the utilities replicates will be mapped
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         Set<ProteinGroup> proteinGroups = new HashSet<>();
 
         try {
             AnalyticalRun analyticalRun = new AnalyticalRun();
+
             //set the path of the .cps archive
             analyticalRun.setStorageLocation(dataImport.getPeptideShakerCpsArchive().getCanonicalPath());
 
@@ -169,7 +169,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
                     //map the Utilities ProteinMatch instance onto the ProteinGroup instance
                     utilitiesProteinMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
 
-                    //add the protein group to the set
+                    //add the protein group to the map
                     proteinGroups.add(proteinGroup);
 
                     //iterate over the peptide matches

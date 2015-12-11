@@ -11,13 +11,12 @@ import java.util.List;
 public interface ProtocolRepository extends GenericRepository<Protocol, Long> {
 
     /**
-     * Find the protocol by the protocol name, returns null if no protocol
-     * was found.
+     * Count the number of protocols by protocol name.
      *
      * @param name the protocol name
-     * @return the found protocol
+     * @return the number of found protocols
      */
-    Protocol findByName(String name);
+    Long countByName(String name);
 
     /**
      * Find all protocols ordered by name.

@@ -2,8 +2,8 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
-import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
+import com.compomics.colims.repository.hibernate.SortDirection;
 
 import java.util.List;
 
@@ -37,14 +37,19 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
     long getProteinGroupCountForRun(final AnalyticalRun analyticalRun, final String filter);
 
     /**
-     * Get the protein groups projections for the given run (Min and max number of distinct peptide sequences per protein group, and min en max
-     * number of spectra per protein group).
+     * Get the protein groups projections for the given run (Min and max number of distinct peptide sequences per
+     * protein group, and min en max number of spectra per protein group).
      *
      * @param analyticalRun the AnalyticalRun instance
      * @return the protein groups projection values for the given run
      */
     Object[] getProteinGroupsProjections(final AnalyticalRun analyticalRun);
 
-    void save(final ProteinGroup proteinGroup);
+    /**
+     * Cascade save or update the given protein group. We don't use the JPA merge method because of cascading issues.
+     *
+     * @param proteinGroup the ProteinGroup instance to save or update
+     */
+    void saveOrUpdate(final ProteinGroup proteinGroup);
 
 }

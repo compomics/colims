@@ -24,15 +24,28 @@ import java.util.List;
 public class ProjectHibernateRepository extends GenericHibernateRepository<Project, Long> implements ProjectRepository {
 
     @Override
-    public Project findByTitle(final String title) {
-        return findUniqueByCriteria(Restrictions.eq("title", title));
+    public Long countByTitle(final String title) {
+        Criteria criteria = createCriteria(Restrictions.eq("title", title));
+
+        criteria.setProjection(Projections.rowCount());
+
+        return (Long) criteria.uniqueResult();
     }
 
     @Override
-    public List<Project> findAllWithEagerFetching() {
-        Query query = getCurrentSession().getNamedQuery("Project.findAllWithEagerFetching");
+    public List<Project> findAllWithFetchedExperiments() {
+        Query query = getCurrentSession().getNamedQuery("Project.findAllWithFetchedExperiments");
 
         return query.list();
+    }
+
+    @Override
+    public Project findByIdWithFetchedExperiments(Long projectId) {
+        Query query = getCurrentSession().getNamedQuery("Project.findByIdWithFetchedExperiments");
+
+        query.setLong("projectId", projectId);
+
+        return (Project) query.uniqueResult();
     }
 
     @Override

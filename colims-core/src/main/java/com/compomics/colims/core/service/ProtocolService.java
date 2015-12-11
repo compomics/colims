@@ -10,11 +10,11 @@ import com.compomics.colims.model.Protocol;
 public interface ProtocolService extends GenericService<Protocol, Long> {
 
     /**
-     * Find the protocol by name, return null if no protocol was found.
+     * Count the number of protocols by protocol name.
      *
-     * @param name the protocol by name
-     * @return the found protocol
+     * @param name the protocol name
+     * @return the number of found protocols
      */
-    Protocol findByName(String name);
+    Long countByName(String name);
 
 }

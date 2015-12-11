@@ -28,4 +28,11 @@ public interface SampleService extends GenericService<Sample, Long> {
      */
     Protocol getMostUsedProtocol();
 
+    /**
+     * Find the sample by ID and fetch the sample runs.
+     *
+     * @param sampleId the sample ID
+     */
+    Sample findByIdAndFetchRuns(Long sampleId);
+
 }

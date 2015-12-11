@@ -30,21 +30,18 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
      */
     @JoinColumn(name = "l_search_engine_id", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.MERGE)
-//    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
     private SearchEngine searchEngine;
     /**
      * The FASTA file used for the searches.
      */
     @JoinColumn(name = "l_fasta_db_id", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.MERGE)
-//    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
     private FastaDb fastaDb;
     /**
      * The search parameters.
      */
     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.MERGE)
-//    @org.hibernate.annotations.Cascade(CascadeType.SAVE_UPDATE)
     private SearchParameters searchParameters;
 
     public List<IdentificationFile> getIdentificationFiles() {

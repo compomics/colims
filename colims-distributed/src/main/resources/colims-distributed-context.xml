@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"       
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-       xmlns:p="http://www.springframework.org/schema/p"      
-       xmlns:context="http://www.springframework.org/schema/context"  
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jms="http://www.springframework.org/schema/jms"
-       xmlns:amq="http://activemq.apache.org/schema/core"     
+       xmlns:amq="http://activemq.apache.org/schema/core"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
        http://www.springframework.org/schema/context
@@ -13,9 +13,9 @@
        http://www.springframework.org/schema/jms/spring-jms.xsd
        http://activemq.apache.org/schema/core 
        http://activemq.apache.org/schema/core/activemq-core.xsd">
-    
-    <import resource="classpath:colims-core-context.xml"/>   
-    
+
+    <import resource="classpath:colims-core-context.xml"/>
+
     <!-- Property placeholder -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="locations">
@@ -23,52 +23,54 @@
                 <value>${property_file.source}:config/colims-distributed.properties
                 </value>
             </list>
-        </property>        
-        <property name="order" value="-1"/>     
+        </property>
+        <property name="order" value="-1"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="ignoreResourceNotFound" value="false"/>
     </bean>
-    
+
     <!-- component beans -->
     <context:component-scan base-package="com.compomics.colims.distributed">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
-    </context:component-scan>  
-        
+    </context:component-scan>
+
     <!-- ActiveMQ connection factory -->
     <amq:connectionFactory id="amqConnectionFactory" brokerURL="${distributed.connectionfactory.broker.url}"/>
-    
+
     <!-- wrap ActiveMQ connection factory in CachingConnectionFactory -->
     <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
-        <constructor-arg ref="amqConnectionFactory" />
+        <constructor-arg ref="amqConnectionFactory"/>
         <!--<property name="exceptionListener" ref="jmsExceptionListener" />-->
-        <property name="sessionCacheSize" value="${distributed.connectionfactory.session.cache.size}" />
+        <property name="sessionCacheSize" value="${distributed.connectionfactory.session.cache.size}"/>
     </bean>
-    
-    <!-- dbtask consumer --> 
-    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" error-handler="dbTaskConsumerErrorHandler" recovery-interval="${distributed.listener.retry_interval}" >                            
+
+    <!-- dbtask consumer -->
+    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default"
+                            error-handler="dbTaskConsumerErrorHandler"
+                            recovery-interval="${distributed.listener.retry_interval}">
         <jms:listener destination="${distributed.queue.dbtask}" ref="dbTaskConsumer"/>
     </jms:listener-container>
-    
-    <!-- storage error queue -->          
-    <amq:queue id="dbTaskErrorDestination" physicalName="${distributed.queue.error}" />
-    
+
+    <!-- storage error queue -->
+    <amq:queue id="dbTaskErrorDestination" physicalName="${distributed.queue.error}"/>
+
     <bean id="dbTaskErrorProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="dbTaskErrorDestination" />    
-    
-    <!-- completed db task queue -->
-    <amq:queue id="completedDbTaskDestination" physicalName="${distributed.queue.completed}" />
-    
+          p:defaultDestination-ref="dbTaskErrorDestination"/>
+
+    <!-- completed db task topic -->
+    <amq:topic id="completedDbTaskDestination" physicalName="${distributed.topic.completed}"/>
+
     <bean id="completedDbTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="completedDbTaskDestination" />
-    
+          p:defaultDestination-ref="completedDbTaskDestination"/>
+
     <!-- notification topic -->
-    <amq:topic id="notificationDestination" physicalName="${distributed.topic.notification}" />
-    
+    <amq:topic id="notificationDestination" physicalName="${distributed.topic.notification}"/>
+
     <bean id="notificationProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="notificationDestination" />                      
-                          
+          p:defaultDestination-ref="notificationDestination"/>
+
 </beans>

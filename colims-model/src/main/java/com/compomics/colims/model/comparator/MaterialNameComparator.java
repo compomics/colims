@@ -13,8 +13,6 @@ import java.util.Comparator;
  */
 public class MaterialNameComparator implements Comparator<Material>, Serializable{
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     public int compare(final Material material1, final Material material2) {
         return material1.getName().compareToIgnoreCase(material2.getName());

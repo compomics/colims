@@ -36,7 +36,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     private static final Logger LOGGER = Logger.getLogger(MaxQuantMapper.class);
 
     /**
-     * Quant file name
+     * Quant file name.
      */
     private static final String QUANT_FILE = "msms.txt";
 
@@ -60,7 +60,8 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     @Override
     public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException {
         LOGGER.info("started mapping folder: " + maxQuantImport.getMaxQuantDirectory().getName());
-        List<AnalyticalRun> mappedRuns = new ArrayList<>();
+
+        List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         Set<ProteinGroup> proteinGroups = new HashSet<>();
 
         try {
@@ -70,36 +71,38 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDb, false);
             maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), fastaDb, parameterParser.getMultiplicity());
 
+            proteinGroups = maxQuantParser.getProteinGroupSet();
+
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
                 analyticalRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());
 
                 SearchAndValidationSettings searchAndValidationSettings = parameterParser.getRunSettings().values().iterator().next();
+                //set search and validation settings-run entity associations
                 analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
                 searchAndValidationSettings.setAnalyticalRun(analyticalRun);
 
-                List<Spectrum> mappedSpectra = new ArrayList<>(analyticalRun.getSpectrums().size());
+                analyticalRun.setQuantificationSettings(importQuantSettings(new File(maxQuantImport.getMaxQuantDirectory(), QUANT_FILE), analyticalRun));
 
+                List<Spectrum> mappedSpectra = new ArrayList<>(analyticalRun.getSpectrums().size());
+                //set spectrum-run entity associations
                 for (Spectrum spectrum : analyticalRun.getSpectrums()) {
                     spectrum.setAnalyticalRun(analyticalRun);
-
                     mappedSpectra.add(mapSpectrum(spectrum));
                 }
-
                 analyticalRun.setSpectrums(mappedSpectra);
-                mappedRuns.add(analyticalRun);
 
-                analyticalRun.setQuantificationSettings(importQuantSettings(new File(maxQuantImport.getMaxQuantDirectory(), QUANT_FILE), analyticalRun));
+                analyticalRuns.add(analyticalRun);
             }
         } catch (IOException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
         }
 
-        return new MappedData(mappedRuns, proteinGroups);
+        return new MappedData(analyticalRuns, proteinGroups);
     }
 
     /**
-     * Create relationships for the children of a spectrum
+     * Create relationships for the children of a spectrum.
      *
      * @param spectrum A spectrum object
      * @return The same object but with a bunch of relations
@@ -127,7 +130,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     }
 
     /**
-     * Map the quantification settings
+     * Map the quantification settings.
      *
      * @param quantFile     The file containing quant data
      * @param analyticalRun the AnalyticalRun instance onto the quantification settings will be mapped

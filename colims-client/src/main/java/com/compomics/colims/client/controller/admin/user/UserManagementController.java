@@ -355,13 +355,9 @@ public class UserManagementController implements Controllable {
      * @return the does exist boolean
      */
     private boolean isExistingUserName(final User user) {
-        boolean isExistingUserName = true;
         User foundUser = userService.findByName(user.getName());
-        if (foundUser == null) {
-            isExistingUserName = false;
-        }
 
-        return isExistingUserName;
+        return foundUser != null;
     }
 
     /**

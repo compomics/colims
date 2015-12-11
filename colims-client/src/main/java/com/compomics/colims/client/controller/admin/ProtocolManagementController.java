@@ -18,7 +18,7 @@ import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.ProtocolCvParam;
-import com.compomics.colims.model.comparator.CvParamAccessionComparator;
+import com.compomics.colims.model.comparator.AuditableCvParamAccessionComparator;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.google.common.eventbus.EventBus;
@@ -214,7 +214,7 @@ public class ProtocolManagementController implements Controllable {
         protocolEditDialog = new ProtocolEditDialog(protocolManagementDialog, true);
 
         //init dual list
-        protocolEditDialog.getCvParamDualList().init(new CvParamAccessionComparator());
+        protocolEditDialog.getCvParamDualList().init(new AuditableCvParamAccessionComparator());
 
         //add binding
         Binding protocolNameBinding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, protocolManagementDialog.getProtocolList(), ELProperty.create("${selectedElement.name}"), protocolEditDialog.getNameTextField(), BeanProperty.create("text"), "protocolNameBinding");
@@ -379,13 +379,9 @@ public class ProtocolManagementController implements Controllable {
      * @return does the protocol name exist
      */
     private boolean isExistingProtocolName(final Protocol protocol) {
-        boolean isExistingProtocolName = true;
-        Protocol foundProtocol = protocolService.findByName(protocol.getName());
-        if (foundProtocol == null) {
-            isExistingProtocolName = false;
-        }
+        Long count = protocolService.countByName(protocol.getName());
 
-        return isExistingProtocolName;
+        return count != 0;
     }
 
     /**

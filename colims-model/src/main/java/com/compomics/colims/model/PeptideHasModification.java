@@ -52,7 +52,6 @@ public class PeptideHasModification extends DatabaseEntity {
      */
     @JoinColumn(name = "l_modification_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-//    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Modification modification;
 
     /**
@@ -121,5 +120,31 @@ public class PeptideHasModification extends DatabaseEntity {
             return false;
         if (modificationType != peptideHasModification.modificationType) return false;
         return modification.equals(peptideHasModification.modification);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PeptideHasModification that = (PeptideHasModification) o;
+
+        if (location != null ? !location.equals(that.location) : that.location != null) return false;
+        if (probabilityScore != null ? !probabilityScore.equals(that.probabilityScore) : that.probabilityScore != null)
+            return false;
+        if (deltaScore != null ? !deltaScore.equals(that.deltaScore) : that.deltaScore != null) return false;
+        if (modificationType != that.modificationType) return false;
+        return !(modification != null ? !modification.equals(that.modification) : that.modification != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = location != null ? location.hashCode() : 0;
+        result = 31 * result + (probabilityScore != null ? probabilityScore.hashCode() : 0);
+        result = 31 * result + (deltaScore != null ? deltaScore.hashCode() : 0);
+        result = 31 * result + (modificationType != null ? modificationType.hashCode() : 0);
+        result = 31 * result + (modification != null ? modification.hashCode() : 0);
+        return result;
     }
 }

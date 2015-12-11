@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"       
+<beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"       
-       xmlns:context="http://www.springframework.org/schema/context"   
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jms="http://www.springframework.org/schema/jms"
-       xmlns:amq="http://activemq.apache.org/schema/core"        
+       xmlns:amq="http://activemq.apache.org/schema/core"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
        http://www.springframework.org/schema/context
@@ -13,9 +13,9 @@
        http://www.springframework.org/schema/jms/spring-jms.xsd
        http://activemq.apache.org/schema/core 
        http://activemq.apache.org/schema/core/activemq-core.xsd">
-    
+
     <import resource="classpath:colims-core-context.xml"/>
-    
+
     <!-- Property placeholder -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="locations">
@@ -23,50 +23,57 @@
                 <value>${property_file.source}:config/colims-client.properties
                 </value>
             </list>
-        </property>        
-        <property name="order" value="-1"/>     
+        </property>
+        <property name="order" value="-1"/>
         <!-- ignore the fact the the db.password property is not found in the client context as it is user input -->
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
-        <property name="ignoreResourceNotFound" value="false"/>        
+        <property name="ignoreResourceNotFound" value="false"/>
     </bean>
-    
+
     <bean id="splashScreen" class="com.compomics.colims.client.SplashScreen"/>
-    
+
     <!-- component beans -->
     <context:component-scan base-package="com.compomics.colims.client">
         <context:include-filter type="annotation"
                                 expression="org.springframework.stereotype.Component"/>
-    </context:component-scan>           
-                     
+    </context:component-scan>
+
     <!-- ActiveMQ connection factory -->
     <bean id="amqConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
         <property name="brokerURL" value="${distributed.connectionfactory.broker.url}"/>
-    </bean>  
-    
+    </bean>
+
     <!-- wrap ActiveMQ connection factory in CachingConnectionFactory -->
     <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
-        <constructor-arg ref="amqConnectionFactory" />
+        <constructor-arg ref="amqConnectionFactory"/>
         <!--<property name="exceptionListener" ref="jmsExceptionListener" />-->
-        <property name="sessionCacheSize" value="${distributed.connectionfactory.session.cache.size}" />
-    </bean>    
-    
+        <property name="sessionCacheSize" value="${distributed.connectionfactory.session.cache.size}"/>
+    </bean>
+
     <!-- notification consumer -->
-    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default" destination-type="topic" recovery-interval="${distributed.listener.retry_interval}" >                            
+    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default"
+                            destination-type="topic" recovery-interval="${distributed.listener.retry_interval}">
         <jms:listener destination="${distributed.topic.notification}" ref="notificationConsumer"/>
-    </jms:listener-container>                
-    
-    <!-- db task queue -->  
-    <amq:queue id="dbTaskDestination" physicalName="${distributed.queue.dbtask}" />
-    
+    </jms:listener-container>
+
+    <!-- completed db task consumer -->
+    <jms:listener-container connection-factory="connectionFactory" acknowledge="auto" container-type="default"
+                            destination-type="topic" recovery-interval="${distributed.listener.retry_interval}">
+        <jms:listener destination="${distributed.topic.completed}" ref="completedDbTaskConsumer"/>
+    </jms:listener-container>
+
+    <!-- db task queue -->
+    <amq:queue id="dbTaskDestination" physicalName="${distributed.queue.dbtask}"/>
+
     <bean id="dbTaskProducerTemplate" class="org.springframework.jms.core.JmsTemplate"
           p:connectionFactory-ref="connectionFactory"
-          p:defaultDestination-ref="dbTaskDestination" />    
-    
+          p:defaultDestination-ref="dbTaskDestination"/>
+
     <bean id="queueManagerTemplate" class="org.springframework.jms.core.JmsTemplate"
-          p:connectionFactory-ref="connectionFactory"/>    
-        
+          p:connectionFactory-ref="connectionFactory"/>
+
     <!-- Client connector for jmx -->
     <bean id="queueManagerConnector" class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean"
-          p:serviceUrl="${distributed.jmx.service.url}" p:connectOnStartup="false"/>    
-    
+          p:serviceUrl="${distributed.jmx.service.url}" p:connectOnStartup="false"/>
+
 </beans>

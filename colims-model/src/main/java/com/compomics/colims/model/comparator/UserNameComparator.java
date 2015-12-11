@@ -11,8 +11,6 @@ import java.util.Comparator;
  */
 public class UserNameComparator implements Comparator<User>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     public int compare(final User user1, final User user2) {
         return user1.getName().compareToIgnoreCase(user2.getName());

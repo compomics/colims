@@ -47,15 +47,12 @@ public class NotificationProducer {
         //map to JSON construct
         String jsonNotification = objectMapper.writeValueAsString(notification);
 
-        notificationProducerTemplate.send(new MessageCreator() {
-            @Override
-            public Message createMessage(final Session session) throws JMSException {
-                TextMessage notificationTextMessage = session.createTextMessage(jsonNotification);
+        notificationProducerTemplate.send(session -> {
+            TextMessage notificationTextMessage = session.createTextMessage(jsonNotification);
 
-                LOGGER.info("Sending notification");
+            LOGGER.info("Sending notification");
 
-                return notificationTextMessage;
-            }
+            return notificationTextMessage;
         });
     }
 

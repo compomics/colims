@@ -50,7 +50,7 @@ public class MaxQuantParser {
      *
      * @param quantFolder File pointer to MaxQuant txt folder
      * @throws IOException          thrown in case of a I/O related problem
-     * @throws MappingException
+     * @throws MappingException     thrown in case of a mapping related problem
      * @throws UnparseableException
      */
     public void parseFolder(File quantFolder, FastaDb fastaDb) throws IOException, MappingException, UnparseableException {
@@ -209,13 +209,12 @@ public class MaxQuantParser {
     }
 
     /**
-     * Get fragmentation type for the given ID.
+     * Get the protein groups as a set.
      *
-     * @param id The given ID
-     * @return A FragmentationType
+     * @return the protein group set
      */
-    public FragmentationType getFragmentationType(Integer id) {
-        return fragmentations.get(id);
+    public Set<ProteinGroup> getProteinGroupSet() {
+        return proteinGroups.values().stream().collect(Collectors.toSet());
     }
 
     /**

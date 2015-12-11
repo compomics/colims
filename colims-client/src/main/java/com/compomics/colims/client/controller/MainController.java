@@ -7,7 +7,7 @@ import com.compomics.colims.client.controller.admin.MaterialManagementController
 import com.compomics.colims.client.controller.admin.ProtocolManagementController;
 import com.compomics.colims.client.controller.admin.user.UserManagementParentController;
 import com.compomics.colims.client.distributed.QueueManager;
-import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.*;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.admin.MaterialChangeEvent;
 import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
@@ -18,11 +18,13 @@ import com.compomics.colims.client.view.MainFrame;
 import com.compomics.colims.client.view.MainHelpDialog;
 import com.compomics.colims.client.view.UserLoginDialog;
 import com.compomics.colims.core.authorization.PermissionException;
+import com.compomics.colims.core.distributed.model.CompletedDbTask;
+import com.compomics.colims.core.distributed.model.DeleteDbTask;
+import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.service.ProjectService;
+import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.User;
-import com.compomics.colims.model.UserBean;
+import com.compomics.colims.model.*;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -95,6 +97,8 @@ public class MainController implements Controllable, ActionListener {
     private UserService userService;
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private SampleService sampleService;
     @Autowired
     private EventBus eventBus;
     @Autowired
@@ -280,6 +284,40 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
+     * Listen to a CompletedDbTaskEvent.
+     *
+     * @param completedDbTaskEvent the completed database task event
+     */
+    @Subscribe
+    public void onCompletedDbTaskEvent(final CompletedDbTaskEvent completedDbTaskEvent) {
+        CompletedDbTask completedDbTask = completedDbTaskEvent.getCompletedDbTask();
+
+        //check task type
+        //if the task is a persist database task, get the sample with fetched runs
+        if (completedDbTask.getDbTask() instanceof PersistDbTask) {
+            PersistDbTask persistDbTask = (PersistDbTask) completedDbTask.getDbTask();
+            Sample sample = sampleService.findByIdAndFetchRuns(persistDbTask.getEnitityId());
+
+            eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.UPDATED, sample));
+        } else {
+            DeleteDbTask deleteDbTask = (DeleteDbTask) completedDbTask.getDbTask();
+            //check the class of the deleted entity
+            if (deleteDbTask.getDbEntityClass().equals(Project.class)) {
+                boolean removed = projects.removeIf(project -> project.getId().equals(deleteDbTask.getEnitityId()));
+                if(removed) {
+                    eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
+                }
+            }
+            else if (deleteDbTask.getDbEntityClass().equals(Experiment.class)) {
+                eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
+            }
+            else if (deleteDbTask.getDbEntityClass().equals(Sample.class)) {
+                eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
+            }
+        }
+    }
+
+    /**
      * Listen to a MessageEvent.
      *
      * @param messageEvent the message event
@@ -295,7 +333,7 @@ public class MainController implements Controllable, ActionListener {
      * @param message the error message
      */
     public void showPermissionErrorDialog(final String message) {
-        showMessageDialog("Permission warning", "A permission warning occured: "
+        showMessageDialog("Permission warning", "A permission warning occurred: "
                 + System.lineSeparator() + message
                 + System.lineSeparator() + "Please contact the admin if you want to change your user permissions.", JOptionPane.WARNING_MESSAGE);
     }

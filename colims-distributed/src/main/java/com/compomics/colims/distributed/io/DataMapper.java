@@ -15,7 +15,7 @@ public interface DataMapper<T extends DataImport> {
      * Map the search input and identification results.
      *
      * @param dataImport The DataImport subclass instance
-     * @return the list of analytical runs
+     * @return the mapped data (protein groups and analytical runs)
      * @throws MappingException thrown in case of an error during the mapping
      */
     MappedData mapData(T dataImport) throws MappingException;

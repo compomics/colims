@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Create grouped proteins from the protein groups file output by MaxQuant
+ * Create grouped proteins from the protein groups file output by MaxQuant.
  *
  * @author Iain
  */
@@ -37,7 +37,7 @@ public class MaxQuantProteinGroupParser {
     };
 
     /**
-     * Parse a data file and return grouped proteins
+     * Parse a data file and return grouped proteins.
      *
      * @param proteinGroupsFile MaxQuant protein groups file
      * @param parsedFasta FASTA parsed into header/sequence pairs
@@ -62,7 +62,7 @@ public class MaxQuantProteinGroupParser {
     }
 
     /**
-     * Construct a group of proteins
+     * Construct a group of proteins.
      *
      * @param values A row of values
      * @param parsedFasta A parsed fasta

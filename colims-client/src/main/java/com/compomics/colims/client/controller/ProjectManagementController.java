@@ -12,6 +12,7 @@ import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
+import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
@@ -28,6 +29,7 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -238,6 +240,8 @@ public class ProjectManagementController implements Controllable {
                     //remove from overview table and clear selection
                     mainController.getProjects().remove(projectToDelete);
                     projectsSelectionModel.clearSelection();
+
+                    eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, projectToDelete.getId()));
                 }
             } else {
                 eventBus.post(new MessageEvent("Project selection", "Please select a project to delete.", JOptionPane.INFORMATION_MESSAGE));
@@ -283,6 +287,7 @@ public class ProjectManagementController implements Controllable {
                     //remove from overview table and clear selection
                     experiments.remove(experimentToDelete);
                     experimentsSelectionModel.clearSelection();
+
                     eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, experimentToDelete));
 
                     //remove experiment from the selected project and update the table
@@ -320,6 +325,7 @@ public class ProjectManagementController implements Controllable {
                     //remove from overview table and clear selection
                     samples.remove(sampleToDelete);
                     samplesSelectionModel.clearSelection();
+
                     eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete));
 
                     //remove sample from the selected experiment and update the table
@@ -369,6 +375,7 @@ public class ProjectManagementController implements Controllable {
      */
     public void addProject(final Project project) {
         mainController.getProjects().add(project);
+        eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.CREATED, project.getId()));
     }
 
     /**
@@ -454,6 +461,22 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
+     * Listen to a ExperimentChangeEvent and update the experiments table if necessary.
+     *
+     * @param experimentChangeEvent the ExperimentChangeEvent instance
+     */
+    @Subscribe
+    public void onExperimentChangeEvent(ExperimentChangeEvent experimentChangeEvent) {
+        if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+            //remove from overview table and clear selection
+            boolean removed = experiments.removeIf(experiment -> experiment.getId().equals(experimentChangeEvent.getExperimentId()));
+            if (removed) {
+                experimentsSelectionModel.clearSelection();
+            }
+        }
+    }
+
+    /**
      * Get the row index of the selected sample in the samples table.
      *
      * @return the selected sample index
@@ -511,6 +534,22 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
+     * Listen to a SampleChangeEvent and update the samples table if necessary.
+     *
+     * @param sampleChangeEvent the sampleChangeEvent
+     */
+    @Subscribe
+    public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
+        if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+            //remove from overview table and clear selection
+            boolean removed = samples.removeIf(sample -> sample.getId().equals(sampleChangeEvent.getSampleId()));
+            if (removed) {
+                samplesSelectionModel.clearSelection();
+            }
+        }
+    }
+
+    /**
      * Delete the database entity (project, experiment, samples) from the database. Shows a confirmation dialog first.
      * When confirmed, a DeleteDbTask JSON message is sent to the DB task queue. A message dialog is shown in case the
      * queue cannot be reached or in case of an IOException thrown by the sendDbTask method.
@@ -525,7 +564,7 @@ public class ProjectManagementController implements Controllable {
         //check delete permissions
         if (userBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
             int option = JOptionPane.showConfirmDialog(mainController.getMainFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
-                    + System.lineSeparator() + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
+                    + System.lineSeparator() + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation", JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 //check connection
                 if (queueManager.isReachable()) {

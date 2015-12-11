@@ -17,19 +17,27 @@ import java.util.List;
 public interface ProjectRepository extends GenericRepository<Project, Long> {
 
     /**
-     * Find the project by title.
+     * Count the projects by title.
      *
      * @param title the project title
-     * @return the found project
+     * @return the number of found projects
      */
-    Project findByTitle(String title);
+    Long countByTitle(String title);
 
     /**
      * Find all projects and fetch the associated experiments.
      *
      * @return the found projects
      */
-    List<Project> findAllWithEagerFetching();
+    List<Project> findAllWithFetchedExperiments();
+
+    /**
+     * Find the project by ID and fetch the associated experiments.
+     *
+     * @param projectId the project ID
+     * @return the found project
+     */
+    Project findByIdWithFetchedExperiments(Long projectId);
 
     /**
      * Get the user that owns the most projects.

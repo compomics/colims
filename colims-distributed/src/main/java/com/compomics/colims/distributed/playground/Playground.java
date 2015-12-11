@@ -2,15 +2,16 @@
 package com.compomics.colims.distributed.playground;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
+import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.service.ExperimentService;
+import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.User;
-import com.compomics.colims.model.UserBean;
+import com.compomics.colims.model.*;
 import org.springframework.context.ApplicationContext;
 
+import java.util.*;
+
 /**
- *
  * @author Niels Hulstaert
  */
 public class Playground {
@@ -29,6 +30,7 @@ public class Playground {
 //        UtilitiesPeptideMapper utilitiesPeptideMapper = applicationContext.getBean("utilitiesPeptideMapper", UtilitiesPeptideMapper.class);
 //        PeptideService peptideService = applicationContext.getBean("peptideService", PeptideService.class);
         ExperimentService experimentService = applicationContext.getBean("experimentService", ExperimentService.class);
+        PersistService persistService = applicationContext.getBean("persistService", PersistService.class);
 
 //        //load mods from test resources instead of user folder
 //        Resource utilitiesMods = new ClassPathResource("data/peptideshaker/searchGUI_mods.xml");
@@ -38,11 +40,63 @@ public class Playground {
         Long bla = experimentService.countByProjectIdAndTitle(1L, "experiment 1");
 
         //set admin user in authentication bean
-        User adminUser = userService.findByName("admin1");
+        User adminUser = userService.findByName("admin");
         userService.fetchAuthenticationRelations(adminUser);
         userBean.setCurrentUser(adminUser);
 
+        //create 2 protein groups, with one shared and one not shared protein
+        //so first create 3 proteins
+        Protein protein1 = new Protein("LENNARTLENNART1");
+        Protein protein2 = new Protein("LENNARTLENNART2");
+        Protein protein3 = new Protein("LENNARTLENNART2");
 
+        ProteinGroup proteinGroup1 = new ProteinGroup();
+        ProteinGroup proteinGroup2 = new ProteinGroup();
+
+        //prot group 1
+        ProteinGroupHasProtein proteinGroupHasProtein1 = new ProteinGroupHasProtein();
+
+        //set entity associations
+//        proteinGroupHasProtein1.setProteinGroup(proteinGroup1);
+//        proteinGroupHasProtein1.setProtein(protein1);
+//
+//        proteinGroup1.getProteinGroupHasProteins().add(proteinGroupHasProtein1);
+
+        ProteinGroupHasProtein proteinGroupHasProtein2 = new ProteinGroupHasProtein();
+
+//        //set entity associations
+        proteinGroupHasProtein2.setProteinGroup(proteinGroup1);
+        proteinGroupHasProtein2.setProtein(protein2);
+
+        proteinGroup1.getProteinGroupHasProteins().add(proteinGroupHasProtein2);
+
+        //prot group 2
+        ProteinGroupHasProtein proteinGroupHasProtein3 = new ProteinGroupHasProtein();
+
+        //set entity associations
+        proteinGroupHasProtein3.setProteinGroup(proteinGroup2);
+        proteinGroupHasProtein3.setProtein(protein2);
+
+        proteinGroup2.getProteinGroupHasProteins().add(proteinGroupHasProtein3);
+
+        ProteinGroupHasProtein proteinGroupHasProtein4 = new ProteinGroupHasProtein();
+
+        //set entity associations
+//        proteinGroupHasProtein4.setProteinGroup(proteinGroup2);
+//        proteinGroupHasProtein4.setProtein(protein3);
+//
+//        proteinGroup2.getProteinGroupHasProteins().add(proteinGroupHasProtein4);
+
+        List<AnalyticalRun> analyticalRuns = new ArrayList<>();
+        analyticalRuns.add(new AnalyticalRun());
+
+        Set<ProteinGroup> proteinGroups = new HashSet<>();
+        proteinGroups.add(proteinGroup1);
+        proteinGroups.add(proteinGroup2);
+
+        MappedData mappedData = new MappedData(analyticalRuns, proteinGroups);
+
+        persistService.persist(mappedData, null, null, "dd", new Date());
 
 //        //import PeptideShaker .cps file
 //        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("small_scale/small_scale.cps").getFile());
@@ -144,5 +198,5 @@ public class Playground {
 //
 //        peptideService.saveOrUpdate(targetPeptide);
     }
-    
+
 }

@@ -48,15 +48,12 @@ public class CompletedTaskProducer {
         //map to JSON construct
         String jsonCompletedDbTask = objectMapper.writeValueAsString(completedDbTask);
 
-        completedDbTaskProducerTemplate.send(new MessageCreator() {
-            @Override
-            public Message createMessage(final Session session) throws JMSException {
-                TextMessage completedDbTaskTextMessage = session.createTextMessage(jsonCompletedDbTask);
+        completedDbTaskProducerTemplate.send(session -> {
+            TextMessage completedDbTaskTextMessage = session.createTextMessage(jsonCompletedDbTask);
 
-                LOGGER.info("Sending completed db task");
+            LOGGER.info("Sending completed db task");
 
-                return completedDbTaskTextMessage;
-            }
+            return completedDbTaskTextMessage;
         });
     }
 

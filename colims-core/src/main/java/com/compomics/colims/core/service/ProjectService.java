@@ -17,12 +17,12 @@ import java.util.List;
 public interface ProjectService extends GenericService<Project, Long> {
 
     /**
-     * Find the project by title.
+     * Count the projects by title.
      *
      * @param title the project title
-     * @return the found project
+     * @return the number of found projects
      */
-    Project findByTitle(String title);
+    Long countByTitle(String title);
 
     /**
      * Find all projects and fetch the associated experiments and samples.

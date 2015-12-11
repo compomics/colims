@@ -1,21 +1,21 @@
 package com.compomics.colims.client.model.table.model;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.core.distributed.model.CompletedDbTask;
 import com.compomics.colims.core.distributed.model.DbTask;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.swing.table.AbstractTableModel;
+import com.compomics.colims.core.service.UserService;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
+import javax.swing.table.AbstractTableModel;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
- *
  * @author Niels Hulstaert
  */
 public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
@@ -40,16 +40,16 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
     public static final int USER_INDEX = 5;
     public static final int START_INDEX = 6;
     public static final int DURATION_INDEX = 7;
+
     private List<CompletedDbTask> messages;
     private UserService userService;
 
+    /**
+     * No-arg constructor.
+     */
     public CompletedDbTaskQueueTableModel() {
         messages = new ArrayList<>();
         userService = ApplicationContextProvider.getInstance().getBean("userService");
-    }
-
-    public CompletedDbTaskQueueTableModel(List<CompletedDbTask> messages) {
-        this.messages = messages;
     }
 
     public List<CompletedDbTask> getMessages() {

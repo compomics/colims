@@ -4,7 +4,6 @@ import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.service.DeleteService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.*;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,10 +50,17 @@ public class DeleteServiceImpl implements DeleteService {
         //collect the IDs of the constraint less proteins, modifications, search parameters and search parameters
         //that can be deleted after the deletion of the analytical runs
         List<Long> runIds = analyticalRuns.stream().map(AnalyticalRun::getId).collect(Collectors.toList());
-        List<Long> proteinIds = proteinRepository.getConstraintLessProteinIdsForRuns(runIds);
-        List<Long> modificationIds = modificationRepository.getConstraintLessModificationIdsForRuns(runIds);
-        List<Long> searchParametersIds = searchParametersRepository.getConstraintLessSearchParameterIdsForRuns(runIds);
-        List<Long> searchModificationIds = searchModificationRepository.getConstraintLessSearchModificationIdsForRuns(runIds);
+
+        List<Long> proteinIds = new ArrayList<>();
+        List<Long> modificationIds = new ArrayList<>();
+        List<Long> searchParametersIds = new ArrayList<>();
+        List<Long> searchModificationIds = new ArrayList<>();
+        if (!runIds.isEmpty()) {
+            proteinIds = proteinRepository.getConstraintLessProteinIdsForRuns(runIds);
+            modificationIds = modificationRepository.getConstraintLessModificationIdsForRuns(runIds);
+            searchParametersIds = searchParametersRepository.getConstraintLessSearchParameterIdsForRuns(runIds);
+            searchModificationIds = searchModificationRepository.getConstraintLessSearchModificationIdsForRuns(runIds);
+        }
 
         //delete the analytical runs
         analyticalRuns.forEach(analyticalRunRepository::remove);
@@ -113,33 +119,29 @@ public class DeleteServiceImpl implements DeleteService {
 
         //get the enity from the database and fetch the children up to the analytical run level
         if (entityClass.equals(Project.class)) {
-            Project projectToDelete = projectRepository.findById(entityId);
-            //fetch children
-            Hibernate.initialize(projectToDelete.getExperiments());
+            Project projectToDelete = projectRepository.findByIdWithFetchedExperiments(entityId);
+            //fetch samples and runs
             for (Experiment experiment : projectToDelete.getExperiments()) {
-                Hibernate.initialize(experiment.getSamples());
+                experiment.getSamples().size();
                 for (Sample sample : experiment.getSamples()) {
-                    Hibernate.initialize(sample.getAnalyticalRuns());
+                    sample.getAnalyticalRuns().size();
                     analyticalRuns.addAll(sample.getAnalyticalRuns());
                 }
             }
         } else if (entityClass.equals(Experiment.class)) {
-            Experiment experimentToDelete = experimentRepository.findById(entityId);
-            //fetch children
-            Hibernate.initialize(experimentToDelete.getSamples());
+            Experiment experimentToDelete = experimentRepository.findByIdWithFetchedSamples(entityId);
+            //fetch runs
             for (Sample sample : experimentToDelete.getSamples()) {
-                Hibernate.initialize(sample.getAnalyticalRuns());
+                sample.getAnalyticalRuns().size();
                 analyticalRuns.addAll(sample.getAnalyticalRuns());
             }
         } else if (entityClass.equals(Sample.class)) {
-            Sample sampleToDelete = sampleRepository.findById(entityId);
-            //fetch children
-            Hibernate.initialize(analyticalRuns);
+            Sample sampleToDelete = sampleRepository.findByIdWithFetchedRuns(entityId);
             analyticalRuns.addAll(sampleToDelete.getAnalyticalRuns());
         } else if (entityClass.equals(AnalyticalRun.class)) {
             analyticalRuns.add(analyticalRunRepository.findById(entityId));
         } else {
-            throw new IllegalArgumentException("Unsupported enity class passed to deleted: " + entityClass.getSimpleName());
+            throw new IllegalArgumentException("Unsupported entity class passed to deleted: " + entityClass.getSimpleName());
         }
 
         return analyticalRuns;

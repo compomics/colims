@@ -6,6 +6,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
+import com.compomics.colims.model.Project;
 
 import java.util.List;
 
@@ -32,4 +33,12 @@ public interface ExperimentRepository extends GenericRepository<Experiment, Long
      * @return the experiment binary files
      */
     List<ExperimentBinaryFile> fetchBinaryFiles(Long experimentId);
+
+    /**
+     * Find the experiment by ID and fetch the associated samples.
+     *
+     * @param experimentId the experiment ID
+     * @return the found experiment
+     */
+    Experiment findByIdWithFetchedSamples(Long experimentId);
 }

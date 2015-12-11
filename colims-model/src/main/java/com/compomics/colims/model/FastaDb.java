@@ -150,24 +150,26 @@ public class FastaDb extends DatabaseEntity {
 
         FastaDb fastaDb = (FastaDb) o;
 
-        if (!name.equals(fastaDb.name)) return false;
-        if (!fileName.equals(fastaDb.fileName)) return false;
-        if (!filePath.equals(fastaDb.filePath)) return false;
+        if (name != null ? !name.equals(fastaDb.name) : fastaDb.name != null) return false;
+        if (fileName != null ? !fileName.equals(fastaDb.fileName) : fastaDb.fileName != null) return false;
+        if (filePath != null ? !filePath.equals(fastaDb.filePath) : fastaDb.filePath != null) return false;
         if (taxonomyAccession != null ? !taxonomyAccession.equals(fastaDb.taxonomyAccession) : fastaDb.taxonomyAccession != null)
             return false;
         if (species != null ? !species.equals(fastaDb.species) : fastaDb.species != null) return false;
-        return !(version != null ? !version.equals(fastaDb.version) : fastaDb.version != null);
+        if (version != null ? !version.equals(fastaDb.version) : fastaDb.version != null) return false;
+        return !(md5CheckSum != null ? !md5CheckSum.equals(fastaDb.md5CheckSum) : fastaDb.md5CheckSum != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + fileName.hashCode();
-        result = 31 * result + filePath.hashCode();
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
+        result = 31 * result + (filePath != null ? filePath.hashCode() : 0);
         result = 31 * result + (taxonomyAccession != null ? taxonomyAccession.hashCode() : 0);
         result = 31 * result + (species != null ? species.hashCode() : 0);
         result = 31 * result + (version != null ? version.hashCode() : 0);
+        result = 31 * result + (md5CheckSum != null ? md5CheckSum.hashCode() : 0);
         return result;
     }
 }

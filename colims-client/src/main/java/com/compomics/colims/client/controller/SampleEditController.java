@@ -296,6 +296,7 @@ public class SampleEditController implements Controllable {
                     //remove from overview table and clear selection
                     analyticalRuns.remove(selectedAnalyticalRun);
                     analyticalRunsSelectionModel.clearSelection();
+
                     eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRun));
 
                     //remove analytical run from the selected sample and update the table

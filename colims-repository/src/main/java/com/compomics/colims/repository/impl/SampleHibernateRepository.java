@@ -6,6 +6,7 @@ import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.SampleBinaryFile;
 import com.compomics.colims.repository.SampleRepository;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -56,5 +57,14 @@ public class SampleHibernateRepository extends GenericHibernateRepository<Sample
         criteria.add(Restrictions.eq("sample.id", sampleId));
 
         return criteria.list();
+    }
+
+    @Override
+    public Sample findByIdWithFetchedRuns(Long sampleId) {
+        Query query = getCurrentSession().getNamedQuery("Sample.findByIdWithFetchedRuns");
+
+        query.setLong("sampleId", sampleId);
+
+        return (Sample) query.uniqueResult();
     }
 }

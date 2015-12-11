@@ -8,6 +8,10 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
+import com.compomics.colims.client.event.ExperimentChangeEvent;
+import com.compomics.colims.client.event.ProjectChangeEvent;
+import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.factory.PsmPanelGenerator;
 import com.compomics.colims.client.model.table.format.PeptideTableFormat;
@@ -29,7 +33,9 @@ import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.util.gui.TableProperties;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import no.uib.jsparklines.renderers.JSparklinesBarChartTableCellRenderer;
+import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import no.uib.jsparklines.renderers.JSparklinesMultiIntervalChartTableCellRenderer;
 import org.apache.log4j.Logger;
 import org.jfree.chart.plot.PlotOrientation;
@@ -51,7 +57,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 
 /**
  * Created by Iain on 19/06/2015.
@@ -64,6 +69,10 @@ public class ProteinOverviewController implements Controllable {
      */
     private static final Logger LOGGER = Logger.getLogger(ProteinOverviewController.class);
 
+    //column filters
+    private static final Pattern HTML_TAGS = Pattern.compile("<[a-z/]{1,5}>");
+
+    private DefaultTreeModel projectTreeModel;
     private ProteinGroupTableModel proteinGroupTableModel;
     private AdvancedTableModel peptideTableModel;
     private AdvancedTableModel psmTableModel;
@@ -103,9 +112,6 @@ public class ProteinOverviewController implements Controllable {
     @Autowired
     private PsmPanelGenerator psmPanelGenerator;
 
-    //column filters
-    private static final Pattern HTML_TAGS = Pattern.compile("<[a-z/]{1,5}>");
-
     /**
      * Get the panel associated with this controller.
      *
@@ -117,22 +123,18 @@ public class ProteinOverviewController implements Controllable {
 
     @Override
     public void init() {
-
+        //register to event bus
         eventBus.register(this);
 
         //init views
         proteinOverviewPanel = new ProteinOverviewPanel();
         psmPopupDialog = new SpectrumPopupDialog(mainController.getMainFrame(), true);
 
-        //disable protein group page buttons
+        //init and populate project tree
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
-
-        mainController.getProjects().stream().forEach((project) -> {
-            projectsNode.add(buildProjectTree(project));
-        });
-
-        DefaultTreeModel treeModel = new DefaultTreeModel(projectsNode);
-        proteinOverviewPanel.getProjectTree().setModel(treeModel);
+        projectTreeModel = new DefaultTreeModel(projectsNode);
+        proteinOverviewPanel.getProjectTree().setModel(projectTreeModel);
+        populateProjectTree();
 
         //init protein group table
         SortedList<ProteinGroupDTO> sortedProteinGroups = new SortedList<>(proteinGroupDTOs, null);
@@ -490,13 +492,63 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Build a node tree for a given project consisting of experiments, samples
-     * and runs.
+     * Listen to a ProjectChangeEvent and update the project tree.
+     *
+     * @param projectChangeEvent the ProjectChangeEvent instance
+     */
+    @Subscribe
+    public void onProjectChangeEvent(ProjectChangeEvent projectChangeEvent) {
+        populateProjectTree();
+    }
+
+    /**
+     * Listen to a ExperimentChangeEvent and update the project tree.
+     *
+     * @param experimentChangeEvent the ExperimentChangeEvent instance
+     */
+    @Subscribe
+    public void onExperimentChangeEvent(ExperimentChangeEvent experimentChangeEvent) {
+        populateProjectTree();
+    }
+
+    /**
+     * Listen to a SampleChangeEvent and update the project tree.
+     *
+     * @param sampleChangeEvent the SampleChangeEvent instance
+     */
+    @Subscribe
+    public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
+        populateProjectTree();
+    }
+
+    /**
+     * Listen to a AnalyticalRunChangeEvent and update the project tree.
+     *
+     * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent instance
+     */
+    @Subscribe
+    public void onAnalyticalRunChangeEvent(AnalyticalRunChangeEvent analyticalRunChangeEvent) {
+        populateProjectTree();
+    }
+
+    /**
+     * Init the project tree.
+     */
+    private void populateProjectTree() {
+        DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) projectTreeModel.getRoot();
+
+        rootNode.removeAllChildren();
+        mainController.getProjects().stream().forEach((project) -> rootNode.add(buildProjectTreeNode(project)));
+        projectTreeModel.reload();
+    }
+
+    /**
+     * Build a node tree for a given project consisting of experiments, samples and runs.
      *
      * @param project A project to represent
      * @return A node of nodes
      */
-    private DefaultMutableTreeNode buildProjectTree(Project project) {
+    private DefaultMutableTreeNode buildProjectTreeNode(Project project) {
         DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project.getTitle());
 
         if (project.getExperiments().size() > 0) {
@@ -513,13 +565,11 @@ public class ProteinOverviewController implements Controllable {
 
                                 sampleNode.add(runNode);
                             }
-
-                            experimentNode.add(sampleNode);
                         }
+                        experimentNode.add(sampleNode);
                     }
-
-                    projectNode.add(experimentNode);
                 }
+                projectNode.add(experimentNode);
             }
         }
 
@@ -562,9 +612,9 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename File to be saved as [filename].tsv
+     * @param filename   File to be saved as [filename].tsv
      * @param tableModel A table model to retrieve data from
-     * @param <T> Class extending TableModel
+     * @param <T>        Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel) {
         exportTable(filename, tableModel, new HashMap<>());
@@ -573,10 +623,10 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename File to be saved as [filename].tsv
-     * @param tableModel A table model to retrieve data from
+     * @param filename      File to be saved as [filename].tsv
+     * @param tableModel    A table model to retrieve data from
      * @param columnFilters Patterns to match and filter values
-     * @param <T> Class extending TableModel
+     * @param <T>           Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel, Map<Integer, Pattern> columnFilters) {
         try (FileWriter fileWriter = new FileWriter(filename + ".tsv")) {
@@ -624,8 +674,8 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Map the list of PeptideDTO instances associated with the given protein
-     * group to a list of PeptideTableRow instances.
+     * Map the list of PeptideDTO instances associated with the given protein group to a list of PeptideTableRow
+     * instances.
      *
      * @param peptideDTOs the set of PeptideDTO instances
      * @return a list of PeptideTableRow instances
@@ -655,8 +705,8 @@ public class ProteinOverviewController implements Controllable {
                 .getColumnModel()
                 .getColumn(PeptideTableFormat.START)
                 .setCellRenderer(new JSparklinesMultiIntervalChartTableCellRenderer(
-                                PlotOrientation.HORIZONTAL, (double) mainSequence.length(),
-                                ((double) mainSequence.length()) / TableProperties.getLabelWidth(), utilitiesUserPreferences.getSparklineColor()));
+                        PlotOrientation.HORIZONTAL, (double) mainSequence.length(),
+                        ((double) mainSequence.length()) / TableProperties.getLabelWidth(), utilitiesUserPreferences.getSparklineColor()));
 
         ((JSparklinesMultiIntervalChartTableCellRenderer) proteinOverviewPanel.getPeptideTable()
                 .getColumnModel()
@@ -681,8 +731,8 @@ public class ProteinOverviewController implements Controllable {
                 .getColumnModel()
                 .getColumn(PeptideTableFormat.START)
                 .setCellRenderer(new JSparklinesMultiIntervalChartTableCellRenderer(
-                                PlotOrientation.HORIZONTAL, (double) mainSequence.length(),
-                                ((double) mainSequence.length()) / TableProperties.getLabelWidth(), utilitiesUserPreferences.getSparklineColor()));
+                        PlotOrientation.HORIZONTAL, (double) mainSequence.length(),
+                        ((double) mainSequence.length()) / TableProperties.getLabelWidth(), utilitiesUserPreferences.getSparklineColor()));
 
         ((JSparklinesMultiIntervalChartTableCellRenderer) proteinOverviewPanel.getPeptideTable()
                 .getColumnModel()

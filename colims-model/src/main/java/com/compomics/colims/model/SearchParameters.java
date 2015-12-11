@@ -102,7 +102,6 @@ public class SearchParameters extends DatabaseEntity {
      * The search parameters other than the modifications searched.
      */
     @ManyToMany
-//    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "search_parameters_has_other_cv_param",
             joinColumns = {
                     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")},

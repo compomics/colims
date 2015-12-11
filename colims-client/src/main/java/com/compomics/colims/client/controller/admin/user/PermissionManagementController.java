@@ -227,13 +227,9 @@ public class PermissionManagementController implements Controllable {
      * @return does the permission name exist
      */
     private boolean isExistingPermissionName(final Permission permission) {
-        boolean isExistingPermissionName = true;
         Long count = permissionService.countByName(permission.getName());
-        if (count.longValue() == 0) {
-            isExistingPermissionName = false;
-        }
 
-        return isExistingPermissionName;
+        return count != 0;
     }
 
     /**

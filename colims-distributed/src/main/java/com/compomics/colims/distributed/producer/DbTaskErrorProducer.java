@@ -47,15 +47,12 @@ public class DbTaskErrorProducer {
         //map to JSON construct
         String jsonDbTaskError = objectMapper.writeValueAsString(dbTaskError);
 
-        dbTaskErrorProducerTemplate.send(new MessageCreator() {
-            @Override
-            public Message createMessage(final Session session) throws JMSException {
-                TextMessage dbTaskErrorTextMessage = session.createTextMessage(jsonDbTaskError);
+        dbTaskErrorProducerTemplate.send(session -> {
+            TextMessage dbTaskErrorTextMessage = session.createTextMessage(jsonDbTaskError);
 
-                LOGGER.info("Sending database task error");
+            LOGGER.info("Sending database task error");
 
-                return dbTaskErrorTextMessage;
-            }
+            return dbTaskErrorTextMessage;
         });
     }
 

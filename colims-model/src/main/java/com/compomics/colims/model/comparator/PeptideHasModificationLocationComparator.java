@@ -12,8 +12,6 @@ import java.util.Comparator;
  */
 public class PeptideHasModificationLocationComparator implements Comparator<PeptideHasModification>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     public int compare(final PeptideHasModification peptideHasModification1, final PeptideHasModification peptideHasModification2) {
         return peptideHasModification1.getLocation().compareTo(peptideHasModification2.getLocation());
