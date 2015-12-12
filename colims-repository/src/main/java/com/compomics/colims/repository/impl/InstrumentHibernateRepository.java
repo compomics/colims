@@ -18,8 +18,13 @@ import java.util.List;
 public class InstrumentHibernateRepository extends GenericHibernateRepository<Instrument, Long> implements InstrumentRepository {
 
     @Override
-    public Long countByName(final String name) {
-        Criteria criteria = createCriteria(Restrictions.eq("name", name));
+    public Long countByName(final Instrument instrument) {
+        Criteria criteria = createCriteria(Restrictions.eq("name", instrument.getName()));
+
+        //in case of an existing instrument, exclude it
+        if (instrument.getId() != null) {
+            criteria.add(Restrictions.ne("id", instrument.getId()));
+        }
 
         criteria.setProjection(Projections.rowCount());
 

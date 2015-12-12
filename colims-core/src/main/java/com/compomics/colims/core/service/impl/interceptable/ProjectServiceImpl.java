@@ -57,8 +57,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Long countByTitle(final String title) {
-        return projectRepository.countByTitle(title);
+    public Long countByTitle(final Project project) {
+        return projectRepository.countByTitle(project);
     }
 
     @Override

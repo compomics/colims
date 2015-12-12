@@ -22,8 +22,13 @@ import java.util.List;
 public class ExperimentHibernateRepository extends GenericHibernateRepository<Experiment, Long> implements ExperimentRepository {
 
     @Override
-    public Long countByProjectIdAndTitle(Long projectId, String title) {
-        Criteria criteria = createCriteria(Restrictions.eq("project.id", projectId), Restrictions.eq("title", title));
+    public Long countByProjectIdAndTitle(Long projectId, Experiment experiment) {
+        Criteria criteria = createCriteria(Restrictions.eq("project.id", projectId), Restrictions.eq("title", experiment.getTitle()));
+
+        //in case of an existing experiment, exclude it
+        if (experiment.getId() != null) {
+            criteria.add(Restrictions.ne("id", experiment.getId()));
+        }
 
         criteria.setProjection(Projections.rowCount());
 

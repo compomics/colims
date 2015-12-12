@@ -35,8 +35,8 @@ public class InstrumentServiceImpl implements InstrumentService {
     }
 
     @Override
-    public Long countByName(final String name) {
-        return instrumentRepository.countByName(name);
+    public Long countByName(final Instrument instrument) {
+        return instrumentRepository.countByName(instrument);
     }
 
     @Override

@@ -19,10 +19,10 @@ public interface ProjectService extends GenericService<Project, Long> {
     /**
      * Count the projects by title.
      *
-     * @param title the project title
+     * @param project the Project instance
      * @return the number of found projects
      */
-    Long countByTitle(String title);
+    Long countByTitle(Project project);
 
     /**
      * Find all projects and fetch the associated experiments and samples.

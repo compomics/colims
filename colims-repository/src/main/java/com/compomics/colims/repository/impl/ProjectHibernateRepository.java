@@ -24,8 +24,13 @@ import java.util.List;
 public class ProjectHibernateRepository extends GenericHibernateRepository<Project, Long> implements ProjectRepository {
 
     @Override
-    public Long countByTitle(final String title) {
-        Criteria criteria = createCriteria(Restrictions.eq("title", title));
+    public Long countByTitle(final Project project) {
+        Criteria criteria = createCriteria(Restrictions.eq("title", project.getTitle()));
+
+        //in case of an existing project, exclude it
+        if (project.getId() != null) {
+            criteria.add(Restrictions.ne("id", project.getId()));
+        }
 
         criteria.setProjection(Projections.rowCount());
 

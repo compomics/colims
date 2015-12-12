@@ -23,19 +23,23 @@ public class ExperimentRepositoryTest {
     private ExperimentRepository experimentRepository;
 
     @Test
-    public void testFindByProjectIdAndTitle() {
+    public void testCountByProjectIdAndTitle() {
         //try to find an existing experiment
-        Long count = experimentRepository.countByProjectIdAndTitle(1L, "Experiment 1 title");
+        //should return 0 because the experiment itself is excluded
+        Experiment experiment = experimentRepository.findById(1L);
+        Long count = experimentRepository.countByProjectIdAndTitle(1L, experiment);
 
-        Assert.assertFalse(count.longValue() == 0);
+        Assert.assertTrue(count.longValue() == 0);
 
         //try to find an non existing experiment within an existing project
-        count = experimentRepository.countByProjectIdAndTitle(1L, "Unknown experiment 1 title");
+        experiment = new Experiment();
+        experiment.setTitle("Unknown experiment 1 title");
+        count = experimentRepository.countByProjectIdAndTitle(1L, experiment);
 
         Assert.assertTrue(count.longValue() == 0);
 
         //try to find an non existing experiment within a non existing project
-        count = experimentRepository.countByProjectIdAndTitle(44L, "Unknown experiment 1 title");
+        count = experimentRepository.countByProjectIdAndTitle(44L, experiment);
 
         Assert.assertTrue(count.longValue() == 0);
     }

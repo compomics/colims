@@ -37,8 +37,6 @@ public class Playground {
 //        PTMFactory.getInstance().clearFactory();
 //        PTMFactory.getInstance().importModifications(utilitiesMods.getFile(), false);
 
-        Long bla = experimentService.countByProjectIdAndTitle(1L, "experiment 1");
-
         //set admin user in authentication bean
         User adminUser = userService.findByName("admin");
         userService.fetchAuthenticationRelations(adminUser);

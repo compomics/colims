@@ -12,9 +12,9 @@ public interface MaterialService extends GenericService<Material, Long> {
     /**
      * Count the number of materials by material name.
      *
-     * @param name the material name
+     * @param material the Material instance
      * @return the number of found materials
      */
-    Long countByName(String name);
+    Long countByName(Material material);
 
 }

@@ -108,8 +108,8 @@ public class ProjectEditController implements Controllable {
 
             //validate project
             List<String> validationMessages = GuiUtils.validateEntity(projectToEdit);
-            //check for a new project if the project title already exists in the db
-            if (projectToEdit.getId() == null && isExistingProjectTitle(projectToEdit)) {
+            //check if the project title already exists in the db
+            if (isExistingProjectTitle(projectToEdit)) {
                 validationMessages.add(projectToEdit.getTitle() + " already exists in the database,"
                         + System.lineSeparator() + "please choose another project title.");
             }
@@ -210,7 +210,7 @@ public class ProjectEditController implements Controllable {
      * @return does the project title exist
      */
     private boolean isExistingProjectTitle(final Project project) {
-        Long count = projectService.countByTitle(project.getTitle());
+        Long count = projectService.countByTitle(project);
 
         return count != 0;
     }

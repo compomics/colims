@@ -306,8 +306,8 @@ public class ProtocolManagementController implements Controllable {
 
             //validate protocol
             List<String> validationMessages = GuiUtils.validateEntity(protocolToEdit);
-            //check for a new protocol if the protocol name already exists in the db
-            if (protocolToEdit.getId() == null && isExistingProtocolName(protocolToEdit)) {
+            //check if the protocol name already exists in the db
+            if (isExistingProtocolName(protocolToEdit)) {
                 validationMessages.add(protocolToEdit.getName() + " already exists in the database,"
                         + System.lineSeparator() + "please choose another protocol name.");
             }
@@ -379,7 +379,7 @@ public class ProtocolManagementController implements Controllable {
      * @return does the protocol name exist
      */
     private boolean isExistingProtocolName(final Protocol protocol) {
-        Long count = protocolService.countByName(protocol.getName());
+        Long count = protocolService.countByName(protocol);
 
         return count != 0;
     }

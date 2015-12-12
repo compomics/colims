@@ -97,9 +97,9 @@ public class ExperimentEditController implements Controllable {
 
             //validate experiment
             validationMessages.addAll(GuiUtils.validateEntity(experimentToEdit));
-            //check for a new experiment if the experiment title already exists in the db
-            if (experimentToEdit.getId() == null && isExistingExperimentTitle(experimentToEdit)) {
-                validationMessages.add(experimentToEdit.getTitle() + " already exists in the database,"
+            //check if the experiment title already exists in the db
+            if (isExistingExperimentTitle(experimentToEdit)) {
+                validationMessages.add(experimentToEdit.getTitle() + " already exists in the database for the project,"
                         + System.lineSeparator() + "please choose another experiment title.");
             }
             if (validationMessages.isEmpty()) {
@@ -242,7 +242,7 @@ public class ExperimentEditController implements Controllable {
      * @return does the experiment title exist
      */
     private boolean isExistingExperimentTitle(final Experiment experiment) {
-        Long count = experimentService.countByProjectIdAndTitle(projectManagementController.getSelectedProject().getId(), experiment.getTitle());
+        Long count = experimentService.countByProjectIdAndTitle(projectManagementController.getSelectedProject().getId(), experiment);
 
         return count != 0;
     }

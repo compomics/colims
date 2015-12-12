@@ -13,10 +13,10 @@ public interface ProtocolRepository extends GenericRepository<Protocol, Long> {
     /**
      * Count the number of protocols by protocol name.
      *
-     * @param name the protocol name
+     * @param protocol the Protocol instance
      * @return the number of found protocols
      */
-    Long countByName(String name);
+    Long countByName(Protocol protocol);
 
     /**
      * Find all protocols ordered by name.

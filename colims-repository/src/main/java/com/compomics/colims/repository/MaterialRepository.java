@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Material;
+
 import java.util.List;
 
 /**
@@ -13,10 +14,10 @@ public interface MaterialRepository extends GenericRepository<Material, Long> {
     /**
      * Count the number of materials by material name.
      *
-     * @param name the material name
+     * @param material the Material instance
      * @return the number of found materials
      */
-    Long countByName(String name);
+    Long countByName(Material material);
 
     /**
      * Find all materials ordered by name.

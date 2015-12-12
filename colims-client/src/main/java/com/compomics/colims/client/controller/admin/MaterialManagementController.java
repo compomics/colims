@@ -300,8 +300,8 @@ public class MaterialManagementController implements Controllable {
 
             //validate material
             List<String> validationMessages = GuiUtils.validateEntity(materialToEdit);
-            //check for a new material if the material name already exists in the db
-            if (materialToEdit.getId() == null && isExistingMaterialName(materialToEdit)) {
+            //check if the material name already exists in the db
+            if (isExistingMaterialName(materialToEdit)) {
                 validationMessages.add(materialToEdit.getName() + " already exists in the database,"
                         + System.lineSeparator() + "please choose another material name.");
             }
@@ -373,7 +373,7 @@ public class MaterialManagementController implements Controllable {
      * @return does the material name exist
      */
     private boolean isExistingMaterialName(final Material material) {
-        Long count = materialService.countByName(material.getName());
+        Long count = materialService.countByName(material);
 
         return count != 0;
     }

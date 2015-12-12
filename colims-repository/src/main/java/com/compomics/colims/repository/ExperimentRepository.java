@@ -21,10 +21,10 @@ public interface ExperimentRepository extends GenericRepository<Experiment, Long
      * Count the experiments by title and project ID.
      *
      * @param projectId the project ID
-     * @param title     the experiment title
+     * @param experiment the Experiment instance
      * @return the number of found experiments
      */
-    Long countByProjectIdAndTitle(Long projectId, String title);
+    Long countByProjectIdAndTitle(Long projectId, Experiment experiment);
 
     /**
      * Fetch the binary files for the given experiment.

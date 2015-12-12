@@ -18,8 +18,13 @@ import java.util.List;
 public class ProtocolHibernateRepository extends GenericHibernateRepository<Protocol, Long> implements ProtocolRepository {
 
     @Override
-    public Long countByName(final String name) {
-        Criteria criteria = createCriteria(Restrictions.eq("name", name));
+    public Long countByName(final Protocol protocol) {
+        Criteria criteria = createCriteria(Restrictions.eq("name", protocol.getName()));
+
+        //in case of an existing protocol, exclude it
+        if (protocol.getId() != null) {
+            criteria.add(Restrictions.ne("id", protocol.getId()));
+        }
 
         criteria.setProjection(Projections.rowCount());
 

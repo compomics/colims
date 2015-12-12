@@ -30,8 +30,8 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public Long countByName(final String name) {
-        return materialRepository.countByName(name);
+    public Long countByName(final Material material) {
+        return materialRepository.countByName(material);
     }
 
     @Override

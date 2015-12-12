@@ -36,9 +36,10 @@ public class InstrumentRepositoryTest {
 
     @Test
     public void testCountInstrumentByName() {
-        Long count = instrumentRepository.countByName("instrument_1");
+        Long count = instrumentRepository.countByName(instrument);
 
-        Assert.assertEquals(1L, count.longValue());
+        //should return 0 because the instrument itself is excluded
+        Assert.assertEquals(0L, count.longValue());
     }
 
     @Test

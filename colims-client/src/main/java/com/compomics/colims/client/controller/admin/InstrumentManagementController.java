@@ -293,8 +293,8 @@ public class InstrumentManagementController implements Controllable {
 
             //validate instrument
             List<String> validationMessages = GuiUtils.validateEntity(instrumentToEdit);
-            //check for a new instrument if the instrument name already exists in the db
-            if (instrumentToEdit.getId() == null && isExistingInstrumentName(instrumentToEdit)) {
+            //check if the instrument name already exists in the db
+            if (isExistingInstrumentName(instrumentToEdit)) {
                 validationMessages.add(instrumentToEdit.getName() + " already exists in the database,"
                         + System.lineSeparator() + "please choose another instrument name.");
             }
@@ -366,7 +366,7 @@ public class InstrumentManagementController implements Controllable {
      * @return does the instrument name exist
      */
     private boolean isExistingInstrumentName(final Instrument instrument) {
-        Long count = instrumentService.countByName(instrument.getName());
+        Long count = instrumentService.countByName(instrument);
 
         return count != 0;
     }

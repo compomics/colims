@@ -17,8 +17,13 @@ import java.util.List;
 public class MaterialHibernateRepository extends GenericHibernateRepository<Material, Long> implements MaterialRepository {
 
     @Override
-    public Long countByName(final String name) {
-        Criteria criteria = createCriteria(Restrictions.eq("name", name));
+    public Long countByName(final Material material) {
+        Criteria criteria = createCriteria(Restrictions.eq("name", material.getName()));
+
+        //in case of an existing project, exclude it
+        if (material.getId() != null) {
+            criteria.add(Restrictions.ne("id", material.getId()));
+        }
 
         criteria.setProjection(Projections.rowCount());
 

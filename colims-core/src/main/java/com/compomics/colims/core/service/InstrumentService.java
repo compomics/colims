@@ -12,9 +12,9 @@ public interface InstrumentService extends GenericService<Instrument, Long> {
     /**
      * Count the number of instruments by instrument name.
      *
-     * @param name the instrument name
+     * @param instrument the Instrument instance
      * @return the number of found instruments
      */
-    Long countByName(String name);
+    Long countByName(Instrument instrument);
 
 }

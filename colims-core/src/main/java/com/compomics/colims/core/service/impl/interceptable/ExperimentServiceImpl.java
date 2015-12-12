@@ -56,8 +56,8 @@ public class ExperimentServiceImpl implements ExperimentService {
     }
 
     @Override
-    public Long countByProjectIdAndTitle(final Long projectId, final String title) {
-        return experimentRepository.countByProjectIdAndTitle(projectId, title);
+    public Long countByProjectIdAndTitle(final Long projectId, final Experiment experiment) {
+        return experimentRepository.countByProjectIdAndTitle(projectId, experiment);
     }
 
     @Override
