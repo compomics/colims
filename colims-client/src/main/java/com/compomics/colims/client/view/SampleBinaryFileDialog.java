@@ -40,7 +40,7 @@ public class SampleBinaryFileDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         binaryFileManagementParentPanel = new javax.swing.JPanel();
-        binaryFileManagementPanel = new com.compomics.colims.client.compoment.BinaryFileManagementPanel<SampleBinaryFile>();
+        binaryFileManagementPanel = new com.compomics.colims.client.compoment.BinaryFileManagementPanel<>();
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);

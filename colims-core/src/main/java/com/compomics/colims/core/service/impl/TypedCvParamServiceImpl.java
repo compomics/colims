@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Niels Hulstaert
@@ -48,13 +49,7 @@ public class TypedCvParamServiceImpl implements TypedCvParamService {
 
     @Override
     public <T extends TypedCvParam> List<T> findByCvParamByType(Class<T> clazz, CvParamType cvParamType) {
-        List<T> cvTerms = new ArrayList<>();
-
-        for (TypedCvParam cvTerm : cvParamRepository.findByCvParamType(cvParamType)) {
-            if (clazz.isInstance(cvTerm)) {
-                cvTerms.add((T) cvTerm);
-            }
-        }
+        List<T> cvTerms = cvParamRepository.findByCvParamType(cvParamType).stream().filter(cvTerm -> clazz.isInstance(cvTerm)).map(cvTerm -> (T) cvTerm).collect(Collectors.toList());
 
         return cvTerms;
     }

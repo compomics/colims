@@ -31,9 +31,7 @@ public class QueryResultsTableModel extends AbstractTableModel {
         if (!queryResults.isEmpty()) {
             columnNames = queryResults.get(0).keySet().stream().toArray(String[]::new);
         }
-        queryResults.stream().forEach((result) -> {
-            resultData.add(result.values().stream().toArray(Object[]::new));
-        });
+        queryResults.stream().forEach((result) -> resultData.add(result.values().stream().toArray(Object[]::new)));
     }
 
     public String[] getColumnNames() {

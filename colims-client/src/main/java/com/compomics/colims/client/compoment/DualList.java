@@ -210,9 +210,9 @@ public class DualList<T> extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         availableScrollPane = new javax.swing.JScrollPane();
-        availableItemList = new javax.swing.JList<T>();
+        availableItemList = new javax.swing.JList<>();
         addedScrollPane = new javax.swing.JScrollPane();
-        addedItemList = new javax.swing.JList<T>();
+        addedItemList = new javax.swing.JList<>();
         buttonParentPanel = new javax.swing.JPanel();
         buttonPanel = new javax.swing.JPanel();
         addItemButton = new javax.swing.JButton();

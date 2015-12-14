@@ -55,7 +55,7 @@ public class PersistServiceImpl implements PersistService {
             }
 
             //first, cascade save or update the protein groups
-            mappedData.getProteinGroups().forEach((proteinGroup) -> proteinGroupRepository.saveOrUpdate(proteinGroup));
+            mappedData.getProteinGroups().forEach(proteinGroupRepository::saveOrUpdate);
 
             //second,  cascade save or update the analytical run
             analyticalRun.setCreationDate(auditDate);

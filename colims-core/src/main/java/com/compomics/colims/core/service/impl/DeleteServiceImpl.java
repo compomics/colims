@@ -40,8 +40,8 @@ public class DeleteServiceImpl implements DeleteService {
 
     @Override
     public void delete(DeleteDbTask deleteDbTask) {
-        //get the analytical runs of the entity to delete
-        List<AnalyticalRun> analyticalRuns = getAnalyticalRuns(deleteDbTask.getDbEntityClass(), deleteDbTask.getEnitityId());
+        //fetch the analytical runs of the entity to delete
+        List<AnalyticalRun> analyticalRuns = fetchAnalyticalRuns(deleteDbTask.getDbEntityClass(), deleteDbTask.getEnitityId());
         //cascade delete the entity up onto the analytical run level
         if (!deleteDbTask.getDbEntityClass().equals(AnalyticalRun.class)) {
             deleteEntity(deleteDbTask.getDbEntityClass(), deleteDbTask.getEnitityId());
@@ -94,30 +94,38 @@ public class DeleteServiceImpl implements DeleteService {
      * @param entityId    the entity ID
      */
     private void deleteEntity(Class entityClass, Long entityId) {
-        //get the enity from the database
+        //get the entity from the database
         if (entityClass.equals(Project.class)) {
             Project projectToDelete = projectRepository.findById(entityId);
-            projectRepository.remove(projectToDelete);
+            if (projectToDelete != null) {
+                projectRepository.remove(projectToDelete);
+            }
         } else if (entityClass.equals(Experiment.class)) {
             Experiment experimentToDelete = experimentRepository.findById(entityId);
-            experimentRepository.remove(experimentToDelete);
+            if (experimentToDelete != null) {
+                experimentRepository.remove(experimentToDelete);
+            }
         } else if (entityClass.equals(Sample.class)) {
             Sample sampleToDelete = sampleRepository.findById(entityId);
-            sampleRepository.remove(sampleToDelete);
+            if (sampleToDelete != null) {
+                sampleRepository.remove(sampleToDelete);
+            }
         } else {
-            throw new IllegalArgumentException("Unsupported enity class passed to deleted: " + entityClass.getSimpleName());
+            throw new IllegalArgumentException("Unsupported entity class passed to delete: " + entityClass.getSimpleName());
         }
     }
 
     /**
+     * Fetch the analytical runs associated with the given entity. Returns an empty list of none were found.
+     *
      * @param entityClass the class of the entity to delete
      * @param entityId    the ID of the entity to delete
      * @return the list of analytical runs attached to the given entity
      */
-    private List<AnalyticalRun> getAnalyticalRuns(Class entityClass, Long entityId) {
+    private List<AnalyticalRun> fetchAnalyticalRuns(Class entityClass, Long entityId) {
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
 
-        //get the enity from the database and fetch the children up to the analytical run level
+        //get the entity from the database and fetch the children up to the analytical run level
         if (entityClass.equals(Project.class)) {
             Project projectToDelete = projectRepository.findByIdWithFetchedExperiments(entityId);
             //fetch samples and runs
@@ -141,7 +149,7 @@ public class DeleteServiceImpl implements DeleteService {
         } else if (entityClass.equals(AnalyticalRun.class)) {
             analyticalRuns.add(analyticalRunRepository.findById(entityId));
         } else {
-            throw new IllegalArgumentException("Unsupported entity class passed to deleted: " + entityClass.getSimpleName());
+            throw new IllegalArgumentException("Unsupported entity class passed to delete: " + entityClass.getSimpleName());
         }
 
         return analyticalRuns;

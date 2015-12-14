@@ -38,12 +38,12 @@ public class PeptideSequenceRenderer {
         Map<Integer, PeptideHasModification> orderedPeptideHasModifications = getOrderedPeptideHasModifications(peptideHasModifications);
 
         //check for a possible N-terminal modification
-        if (orderedPeptideHasModifications.containsKey(Integer.valueOf(0))) {
-            Modification modification = orderedPeptideHasModifications.get(Integer.valueOf(0)).getModification();
+        if (orderedPeptideHasModifications.containsKey(0)) {
+            Modification modification = orderedPeptideHasModifications.get(0).getModification();
             annotatedSequence.append(modification.getName()).append(TERMINAL_MOD_DELIMITER);
         }
         for (int i = 1; i <= peptideSequence.length(); ++i) {
-            if (orderedPeptideHasModifications.containsKey(Integer.valueOf(i))) {
+            if (orderedPeptideHasModifications.containsKey(i)) {
                 annotatedSequence.append("<b><span style=\"color:#")
                         .append(Util.color2Hex(Color.BLUE))
                         .append("\">")
@@ -54,7 +54,7 @@ public class PeptideSequenceRenderer {
             }
         }
         //check for a possible C-terminal modification
-        if (orderedPeptideHasModifications.containsKey(Integer.valueOf(peptideSequence.length() + 1))) {
+        if (orderedPeptideHasModifications.containsKey(peptideSequence.length() + 1)) {
             Modification modification = orderedPeptideHasModifications.get(peptideSequence.length() + 1).getModification();
             annotatedSequence.append(TERMINAL_MOD_DELIMITER).append(modification.getName());
         }
@@ -77,9 +77,9 @@ public class PeptideSequenceRenderer {
 
         Map<Integer, PeptideHasModification> orderedPeptideHasModifications = getOrderedPeptideHasModifications(peptideHasModifications);
         for (Map.Entry<Integer, PeptideHasModification> entry : orderedPeptideHasModifications.entrySet()) {
-            if (entry.getKey().intValue() == 0) {
+            if (entry.getKey() == 0) {
                 tooltip.append(N_TERMINAL_MOD).append(entry.getValue().getModification().getName());
-            } else if (entry.getKey().intValue() <= peptideSequence.length()) {
+            } else if (entry.getKey() <= peptideSequence.length()) {
                 tooltip.append(entry.getKey())
                         .append(": ")
                         .append(entry.getValue().getModification().getName());

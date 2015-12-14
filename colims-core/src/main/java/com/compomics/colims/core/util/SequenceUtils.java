@@ -74,9 +74,8 @@ public class SequenceUtils {
      */
     public static List<Integer> getPeptideStartIndexes(String proteinSequence, String peptideSequence) {
         AminoAcidPattern aminoAcidPattern = new AminoAcidPattern(peptideSequence);
-        ArrayList<Integer> peptideStarts = aminoAcidPattern.getIndexes(proteinSequence, sequenceMatchingPreferences);
 
-        return peptideStarts;
+        return aminoAcidPattern.getIndexes(proteinSequence, sequenceMatchingPreferences);
     }
 
     /**

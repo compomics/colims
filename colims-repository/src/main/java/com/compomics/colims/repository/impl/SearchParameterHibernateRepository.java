@@ -97,7 +97,6 @@ public class SearchParameterHibernateRepository extends GenericHibernateReposito
 
             if (!exampleInstance.getAdditionalCvParams().equals(sortedList2)) {
                 iterator.remove();
-                continue;
             }
         }
 

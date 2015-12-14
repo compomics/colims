@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Niels Hulstaert
@@ -48,13 +48,7 @@ public class AuditableTypedCvParamServiceImpl implements AuditableTypedCvParamSe
 
     @Override
     public <T extends AuditableTypedCvParam> List<T> findByCvParamByType(Class<T> clazz, CvParamType cvTermType) {
-        List<T> cvTerms = new ArrayList<>();
-
-        for (AuditableTypedCvParam cvTerm : cvParamRepository.findByCvParamType(cvTermType)) {
-            if (clazz.isInstance(cvTerm)) {
-                cvTerms.add((T) cvTerm);
-            }
-        }
+        List<T> cvTerms = cvParamRepository.findByCvParamType(cvTermType).stream().filter(cvParam -> clazz.isInstance(cvParam)).map(cvParam -> (T) cvParam).collect(Collectors.toList());
 
         return cvTerms;
     }

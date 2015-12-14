@@ -118,8 +118,6 @@ public class ProteinGroup extends DatabaseEntity {
      * @return the list of protein accession strings
      */
     public List<String> getProteinAccessions() {
-        List<String> proteinAccessions = proteinGroupHasProteins.stream().map(ProteinGroupHasProtein::getProteinAccession).collect(Collectors.toList());
-
-        return proteinAccessions;
+        return proteinGroupHasProteins.stream().map(ProteinGroupHasProtein::getProteinAccession).collect(Collectors.toList());
     }
 }

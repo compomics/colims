@@ -215,7 +215,7 @@ public class ProjectManagementController implements Controllable {
                     //fill project experiments table
                     GlazedLists.replaceAll(experiments, selectedProject.getExperiments(), false);
                 } else {
-                    GlazedLists.replaceAll(experiments, new ArrayList<Experiment>(), false);
+                    GlazedLists.replaceAll(experiments, new ArrayList<>(), false);
                 }
             }
         });

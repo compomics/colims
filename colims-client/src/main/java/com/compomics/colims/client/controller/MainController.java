@@ -304,14 +304,12 @@ public class MainController implements Controllable, ActionListener {
             //check the class of the deleted entity
             if (deleteDbTask.getDbEntityClass().equals(Project.class)) {
                 boolean removed = projects.removeIf(project -> project.getId().equals(deleteDbTask.getEnitityId()));
-                if(removed) {
+                if (removed) {
                     eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
                 }
-            }
-            else if (deleteDbTask.getDbEntityClass().equals(Experiment.class)) {
+            } else if (deleteDbTask.getDbEntityClass().equals(Experiment.class)) {
                 eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
-            }
-            else if (deleteDbTask.getDbEntityClass().equals(Sample.class)) {
+            } else if (deleteDbTask.getDbEntityClass().equals(Sample.class)) {
                 eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
             }
         }

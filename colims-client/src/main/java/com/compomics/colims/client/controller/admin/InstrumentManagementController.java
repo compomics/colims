@@ -40,6 +40,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Niels Hulstaert
@@ -134,10 +135,9 @@ public class InstrumentManagementController implements Controllable {
                     if (selectedInstrument.getDetector() != null) {
                         cvParams.add(selectedInstrument.getDetector());
                     }
-                    for (InstrumentCvParam analyzer : selectedInstrument.getAnalyzers()) {
-                        cvParams.add(analyzer);
-                    }
+                    cvParams.addAll(selectedInstrument.getAnalyzers().stream().collect(Collectors.toList()));
                     TypedCvParamTableModel typedCvParamTableModel = new TypedCvParamTableModel(cvParams);
+
                     instrumentManagementDialog.getInstrumentDetailsTable().setModel(typedCvParamTableModel);
                 } else {
                     //clear detail view

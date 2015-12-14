@@ -39,6 +39,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Niels Hulstaert
@@ -136,13 +137,10 @@ public class ProtocolManagementController implements Controllable {
                     if (selectedProtocol.getCellBased() != null) {
                         cvParams.add(selectedProtocol.getCellBased());
                     }
-                    for (ProtocolCvParam chemicalLabeling : selectedProtocol.getChemicalLabels()) {
-                        cvParams.add(chemicalLabeling);
-                    }
-                    for (ProtocolCvParam otherCvParam : selectedProtocol.getOtherCvParams()) {
-                        cvParams.add(otherCvParam);
-                    }
+                    cvParams.addAll(selectedProtocol.getChemicalLabels().stream().collect(Collectors.toList()));
+                    cvParams.addAll(selectedProtocol.getOtherCvParams().stream().collect(Collectors.toList()));
                     TypedCvParamTableModel typedCvParamTableModel = new TypedCvParamTableModel(cvParams);
+
                     protocolManagementDialog.getProtocolDetailsTable().setModel(typedCvParamTableModel);
                 } else {
                     //clear detail view

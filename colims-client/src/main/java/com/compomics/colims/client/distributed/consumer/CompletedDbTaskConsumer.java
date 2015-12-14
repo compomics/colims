@@ -12,6 +12,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
+import javax.swing.*;
 import java.io.IOException;
 
 /**
@@ -56,7 +57,8 @@ public class CompletedDbTaskConsumer implements MessageListener {
             LOGGER.info("received completed db task message");
 
             //post notification on the event bus
-            eventBus.post(new CompletedDbTaskEvent(completedDbTask));
+            //we need to invoke the EDT thread
+            SwingUtilities.invokeLater(() -> eventBus.post(new CompletedDbTaskEvent(completedDbTask)));
         } catch (JMSException | IOException e) {
             LOGGER.error(e.getMessage(), e);
         }

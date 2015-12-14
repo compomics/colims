@@ -40,7 +40,6 @@ public interface SampleRepository extends GenericRepository<Sample, Long> {
     /**
      * Find the sample by ID and fetch the associated runs.
      *
-     * @param experimentId the sample ID
      * @return the found sample
      */
     Sample findByIdWithFetchedRuns(Long sampleId);

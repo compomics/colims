@@ -14,6 +14,6 @@ public class CvParamNameComparator implements Comparator<CvParam>, Serializable 
 
     @Override
     public int compare(final CvParam cvParam1, final CvParam cvParam2) {
-        return cvParam1.getName().compareToIgnoreCase(cvParam1.getName());
+        return cvParam1.getName().compareToIgnoreCase(cvParam2.getName());
     }
 }

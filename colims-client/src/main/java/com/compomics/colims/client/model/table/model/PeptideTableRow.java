@@ -94,7 +94,7 @@ public class PeptideTableRow {
     /**
      * Get the number of protein groups linked to this peptide row.
      *
-     * @return
+     * @return the number of protein groups
      */
     public long getProteinGroupCount() {
         return peptideDTOs.get(0).getProteinGroupCount();

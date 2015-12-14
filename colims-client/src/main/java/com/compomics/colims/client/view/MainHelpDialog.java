@@ -51,15 +51,12 @@ public class MainHelpDialog extends javax.swing.JDialog {
      * Init the dialog.
      */
     private void init() {
-        uriButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                if (Desktop.isDesktopSupported()) {
-                    try {
-                        Desktop.getDesktop().browse(uri);
-                    } catch (IOException ex) {
-                        LOGGER.error(ex);
-                    }
+        uriButton.addActionListener(e -> {
+            if (Desktop.isDesktopSupported()) {
+                try {
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException ex) {
+                    LOGGER.error(ex);
                 }
             }
         });

@@ -15,7 +15,6 @@ import com.compomics.colims.model.factory.CvParamFactory;
 import com.google.common.eventbus.EventBus;
 import no.uib.olsdialog.OLSDialog;
 import no.uib.olsdialog.OLSInputable;
-import org.apache.xml.xml_soap.MapItem;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -95,12 +94,10 @@ public class CvParamManagementController implements Controllable, OLSInputable {
                     //get param definition from ols service
                     org.apache.xml.xml_soap.Map termMetadata = olsClient.getTermMetadata(selectedCvParam.getAccession(), selectedCvParam.getLabel());
                     if (termMetadata != null && !termMetadata.getItem().isEmpty()) {
-                        for (MapItem mapItem : termMetadata.getItem()) {
-                            //look for definition item
-                            if (mapItem.getKey().equals("definition") && mapItem.getValue() != null) {
-                                cvParamManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString());
-                            }
-                        }
+                        //look for definition item
+                        termMetadata.getItem().stream().filter(mapItem -> mapItem.getKey().equals("definition") && mapItem.getValue() != null).forEach(mapItem -> {
+                            cvParamManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString());
+                        });
                     }
                 } else {
                     clearCvParamDetailFields();
