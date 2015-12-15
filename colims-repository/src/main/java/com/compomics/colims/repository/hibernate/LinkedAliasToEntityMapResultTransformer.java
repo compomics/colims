@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
  */
 public class LinkedAliasToEntityMapResultTransformer extends BasicTransformerAdapter {
 
-    private static LinkedAliasToEntityMapResultTransformer instance = new LinkedAliasToEntityMapResultTransformer();
+    private static final LinkedAliasToEntityMapResultTransformer instance = new LinkedAliasToEntityMapResultTransformer();
 
     /**
      * Private constructor to prevent instantiation.

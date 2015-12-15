@@ -81,7 +81,8 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 3 modifications, none of them are present in the db.
+     * Test the mapping for a peptide with 3 modifications, none of them are
+     * present in the db.
      *
      * @throws MappingException
      */
@@ -177,7 +178,8 @@ public class UtilitiesModificationMapperTest {
     }
 
     /**
-     * Test the mapping for a peptide with 1 modification, which is present in the db.
+     * Test the mapping for a peptide with 1 modification, which is present in
+     * the db.
      *
      * @throws MappingException
      * @throws IOException
@@ -208,7 +210,7 @@ public class UtilitiesModificationMapperTest {
         Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
         Assert.assertEquals(1, targetPeptide.getPeptideHasModifications().size());
         //the modifications are not present in the db, so the IDs should be null
-        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+        targetPeptide.getPeptideHasModifications().stream().forEach(peptideHasModification -> {
             //check for null values
             Assert.assertNotNull(peptideHasModification.getModification());
             Assert.assertNotNull(peptideHasModification.getModificationType());
@@ -224,13 +226,14 @@ public class UtilitiesModificationMapperTest {
             Assert.assertEquals("UNIMOD:345", modification.getAccession());
             Modification dbModification = modificationService.findByName("Trioxidation");
             Assert.assertEquals(dbModification, modification);
-        }
+        });
 
     }
 
     /**
-     * Test the mapping for a peptide with 1 UNIMOD modification. The modification is not found in the db, the
-     * PtmToPrideMap or the ols service. It should be found in the UNIMOD modifications.
+     * Test the mapping for a peptide with 1 UNIMOD modification. The
+     * modification is not found in the db, the PtmToPrideMap or the ols
+     * service. It should be found in the UNIMOD modifications.
      *
      * @throws MappingException
      * @throws IOException
@@ -252,7 +255,7 @@ public class UtilitiesModificationMapperTest {
         Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
         Assert.assertEquals(1, targetPeptide.getPeptideHasModifications().size());
         //the modifications are not present in the db, so the IDs should be null
-        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+        targetPeptide.getPeptideHasModifications().stream().forEach(peptideHasModification -> {
             //check for null values
             Assert.assertNotNull(peptideHasModification.getModification());
             Assert.assertNotNull(peptideHasModification.getModificationType());
@@ -263,11 +266,12 @@ public class UtilitiesModificationMapperTest {
             Assert.assertNull(modification.getId());
             Assert.assertEquals("UNIMOD:1286", modification.getAccession());
             Assert.assertNull(modification.getUtilitiesName());
-        }
+        });
     }
 
     /**
-     * Test the mapping for a peptide with a N-terminal notification. The location should be 0.
+     * Test the mapping for a peptide with a N-terminal notification. The
+     * location should be 0.
      *
      * @throws MappingException
      * @throws IOException
@@ -289,7 +293,7 @@ public class UtilitiesModificationMapperTest {
         Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
         Assert.assertEquals(1, targetPeptide.getPeptideHasModifications().size());
         //the modifications are not present in the db, so the IDs should be null
-        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+        targetPeptide.getPeptideHasModifications().stream().forEach(peptideHasModification -> {
             //check for null values
             Assert.assertNotNull(peptideHasModification.getModification());
             Assert.assertNotNull(peptideHasModification.getModificationType());
@@ -300,11 +304,12 @@ public class UtilitiesModificationMapperTest {
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
-        }
+        });
     }
 
     /**
-     * Test the mapping for a peptide with a C-terminal notification. The location should be 0.
+     * Test the mapping for a peptide with a C-terminal notification. The
+     * location should be 0.
      *
      * @throws MappingException
      * @throws IOException
@@ -326,7 +331,7 @@ public class UtilitiesModificationMapperTest {
         Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
         Assert.assertEquals(1, targetPeptide.getPeptideHasModifications().size());
         //the modifications are not present in the db, so the IDs should be null
-        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+        targetPeptide.getPeptideHasModifications().stream().forEach(peptideHasModification -> {
             //check for null values
             Assert.assertNotNull(peptideHasModification.getModification());
             Assert.assertNotNull(peptideHasModification.getModificationType());
@@ -337,12 +342,13 @@ public class UtilitiesModificationMapperTest {
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
-        }
+        });
     }
 
     /**
-     * Test the mapping for a peptide with 1 nonsense modification. The modification is not found in the db, the
-     * PtmToPrideMap or the ols service.
+     * Test the mapping for a peptide with 1 nonsense modification. The
+     * modification is not found in the db, the PtmToPrideMap or the ols
+     * service.
      *
      * @throws MappingException
      * @throws IOException
@@ -364,7 +370,7 @@ public class UtilitiesModificationMapperTest {
         Assert.assertFalse(targetPeptide.getPeptideHasModifications().isEmpty());
         Assert.assertEquals(1, targetPeptide.getPeptideHasModifications().size());
         //the modifications are not present in the db, so the IDs should be null
-        for (PeptideHasModification peptideHasModification : targetPeptide.getPeptideHasModifications()) {
+        targetPeptide.getPeptideHasModifications().stream().forEach(peptideHasModification -> {
             //check for null values
             Assert.assertNotNull(peptideHasModification.getModification());
             Assert.assertNotNull(peptideHasModification.getModificationType());
@@ -373,6 +379,6 @@ public class UtilitiesModificationMapperTest {
 
             Modification modification = peptideHasModification.getModification();
             Assert.assertNull(modification.getId());
-        }
+        });
     }
 }

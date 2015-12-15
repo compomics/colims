@@ -31,11 +31,11 @@ public class ColimsSearchModificationMapper implements Mapper<List<SearchParamet
      * @param searchParametersHasModifications the list of SearchParametersHasModification instances
      * @param ptmSettings                      the PtmSettings instance
      */
+    @Override
     public void map(final List<SearchParametersHasModification> searchParametersHasModifications, PtmSettings ptmSettings) {
-        for (SearchParametersHasModification searchParametersHasModification : searchParametersHasModifications) {
+        searchParametersHasModifications.stream().forEach((searchParametersHasModification) -> {
             String theoreticPTM = searchParametersHasModification.getSearchModification().getUtilitiesName();
             PTM ptm = PTMFactory.getInstance().getPTM(theoreticPTM);
-
             if (ptm.equals(PTMFactory.unknownPTM)) {
                 boolean isVariable = searchParametersHasModification.getModificationType().equals(ModificationType.VARIABLE);
                 if (isVariable) {
@@ -44,6 +44,6 @@ public class ColimsSearchModificationMapper implements Mapper<List<SearchParamet
                     ptmSettings.addFixedModification(ptm);
                 }
             }
-        }
+        });
     }
 }

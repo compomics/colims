@@ -91,7 +91,10 @@ public class MaxQuantEvidenceParser {
      * Parse an evidence file for peptides and quantifications, also create groups for these.
      *
      * @param quantFolder Evidence text file from MQ output
-     * @throws IOException
+     * @param multiplicity
+     * @throws IOException in case of an I/O related problem
+     * @throws com.compomics.colims.distributed.io.maxquant.UnparseableException
+     * @throws com.compomics.colims.core.io.MappingException in case of a mapping problem
      */
     public void parse(File quantFolder, String multiplicity) throws IOException, UnparseableException, MappingException {
         TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, EVIDENCETXT), MANDATORY_HEADERS);
@@ -176,6 +179,7 @@ public class MaxQuantEvidenceParser {
      *
      * @param values Set of values from a line in the file
      * @return Peptide object
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     public Peptide createPeptide(Map<String, String> values) throws ModificationMappingException {
         Peptide peptide = new Peptide();

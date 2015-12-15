@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,9 +48,7 @@ public class TypedCvParamServiceImpl implements TypedCvParamService {
 
     @Override
     public <T extends TypedCvParam> List<T> findByCvParamByType(Class<T> clazz, CvParamType cvParamType) {
-        List<T> cvTerms = cvParamRepository.findByCvParamType(cvParamType).stream().filter(cvTerm -> clazz.isInstance(cvTerm)).map(cvTerm -> (T) cvTerm).collect(Collectors.toList());
-
-        return cvTerms;
+        return cvParamRepository.findByCvParamType(cvParamType).stream().filter(cvTerm -> clazz.isInstance(cvTerm)).map(cvTerm -> (T) cvTerm).collect(Collectors.toList());
     }
 
     @Override

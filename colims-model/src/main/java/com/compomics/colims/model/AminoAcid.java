@@ -41,7 +41,7 @@ public enum AminoAcid {
     Asx("Asparagine_or_Aspartic_Acid", 'B', 0D),
     Glx("Glutamic_Acid_or_Glutamine", 'Z', 0D),
     Xaa("Unknown amino acid", 'X', 0D);
-    
+
     /**
      * The amino acid name
      */
@@ -64,11 +64,11 @@ public enum AminoAcid {
     private static final HashMap<String, AminoAcid> names = new HashMap<>();
 
     static {
-        for (AminoAcid aa : EnumSet.allOf(AminoAcid.class)) {
+        EnumSet.allOf(AminoAcid.class).stream().forEach(aa -> {
             //make sure we only use upper case in the maps
             letters.put(Character.toUpperCase(aa.letter()), aa);
             names.put(aa.fullName().toUpperCase(), aa);
-        }
+        });
     }
 
     AminoAcid(String name, char letter, double mass) {
@@ -96,7 +96,7 @@ public enum AminoAcid {
 
     /**
      * Get the AA by the 1 letter code as a char.
-     * 
+     *
      * @param c the 1 letter AA code char
      * @return the AA
      */
@@ -107,7 +107,7 @@ public enum AminoAcid {
 
     /**
      * Get the AA by the 1 letter code as a string.
-     * 
+     *
      * @param letter the 1 letter AA code string
      * @return the AA
      */
@@ -117,7 +117,7 @@ public enum AminoAcid {
 
     /**
      * Check if an AA with the given code is found.
-     * 
+     *
      * @param c the AA code char
      * @return true if the AA is found
      */
@@ -128,7 +128,7 @@ public enum AminoAcid {
 
     /**
      * Check if an AA with the given code is found.
-     * 
+     *
      * @param letter the AA code String
      * @return true if the AA is found
      */
@@ -139,7 +139,7 @@ public enum AminoAcid {
 
     /**
      * Get the AA by name.
-     * 
+     *
      * @param s the AA name
      * @return the AA
      */
@@ -150,7 +150,7 @@ public enum AminoAcid {
 
     /**
      * Check if the AA is found by name.
-     * 
+     *
      * @param s the AA name
      * @return true if the AA is found
      */

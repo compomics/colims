@@ -78,7 +78,7 @@ public class ProteinGroupTableModel extends PagingTableModel {
      */
     public void reset(final AnalyticalRun analyticalRun) {
         if (analyticalRun == null) {
-            super.reset();
+            super.reset(0);
         } else {
             super.reset(proteinGroupService.getProteinGroupCountForRun(analyticalRun, filter));
         }

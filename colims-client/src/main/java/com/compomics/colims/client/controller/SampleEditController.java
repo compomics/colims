@@ -241,7 +241,7 @@ public class SampleEditController implements Controllable {
             SampleBinaryFile binaryFileToUpdate = (SampleBinaryFile) evt.getNewValue();
 
             //update binary file
-            binaryFileToUpdate = (SampleBinaryFile) binaryFileService.merge(binaryFileToUpdate);
+            binaryFileService.merge(binaryFileToUpdate);
 
             sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });

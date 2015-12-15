@@ -60,6 +60,7 @@ public class MaxQuantIT {
 
     /**
      * Test of map method, of class MaxQuantImporter.
+     * @throws java.lang.Exception in case of an exception
      */
     @Test
     public void testMap() throws Exception {

@@ -163,13 +163,9 @@ public class UserQueryController implements Controllable {
             }
         });
 
-        userQueryPanel.getClearQueryButton().addActionListener(e -> {
-            userQueryPanel.getQueryInputTextArea().setText("");
-        });
+        userQueryPanel.getClearQueryButton().addActionListener(e -> userQueryPanel.getQueryInputTextArea().setText(""));
 
-        userQueryPanel.getClearResultsButton().addActionListener(e -> {
-            clearQueryResultTable();
-        });
+        userQueryPanel.getClearResultsButton().addActionListener(e -> clearQueryResultTable());
 
         userQueryPanel.getExportResultsButton().addActionListener(e -> {
             QueryResultsTableModel model = getResultsTableModel();
@@ -276,9 +272,7 @@ public class UserQueryController implements Controllable {
                 pw.println(Arrays.stream(model.getColumnNames()).map(Functions.replaceNullWithEmptyString).collect(Collectors.joining(EXPORT_DELIMITER)));
 
                 //write result rows
-                model.getResultData().stream().forEach((row) -> {
-                    pw.println(Arrays.stream(row).map(Functions.replaceNullWithEmptyString).collect(Collectors.joining(EXPORT_DELIMITER)));
-                });
+                model.getResultData().stream().forEach((row) -> pw.println(Arrays.stream(row).map(Functions.replaceNullWithEmptyString).collect(Collectors.joining(EXPORT_DELIMITER))));
             } catch (IOException e) {
                 LOGGER.error(e.getMessage(), e);
                 eventBus.post(new MessageEvent("Query results export", "Something went wrong during the results export to file " + resultsExportFile.getName(), JOptionPane.ERROR_MESSAGE));

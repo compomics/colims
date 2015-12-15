@@ -48,7 +48,7 @@ import java.util.ArrayList;
  *
  * @author Niels Hulstaert
  */
-@Component("projectOverviewController")
+//@Component("projectOverviewController")
 public class ProjectOverviewController implements Controllable {
 
     /**
@@ -468,7 +468,7 @@ public class ProjectOverviewController implements Controllable {
             try {
                 psmPanelGenerator.addPsm(selectedPsm, projectOverviewPanel.getSpectrumJPanel(), projectOverviewPanel.getSecondarySpectrumPlotsJPanel());
             } catch (MappingException | InterruptedException | SQLException | ClassNotFoundException | IOException e) {
-                e.printStackTrace();
+                LOGGER.error(e);
             }
 
             mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));

@@ -68,12 +68,12 @@ public class PsmPanelGenerator {
     private Long analyticalRunId = Long.MIN_VALUE;
     private SearchParameters utilitiesSearchParameters;
     private AnnotationSettings annotationSettings;
-    private UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
+    private final UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     private PTMFactory ptmFactory = PTMFactory.getInstance();
 
     /**
-     * Load the search settings for the given run and map them to the corresponding Utilities objects (SearchParameters,
-     * AnnotationSettings).
+     * Load the search settings for the given run and map them to the
+     * corresponding Utilities objects (SearchParameters, AnnotationSettings).
      *
      * @param analyticalRun the AnalyticalRun instance
      */
@@ -93,9 +93,11 @@ public class PsmPanelGenerator {
     /**
      * Add the Utilities SpectrumPanel for the given PSM to the given JPanel.
      *
-     * @param peptide                           the Peptide instance
-     * @param spectrumParentPanel               the parent panel where the spectrum will be added to
-     * @param secondarySpectrumPlotsParentPanel the parent panel were the secondary spectrum plots will be added to
+     * @param peptide the Peptide instance
+     * @param spectrumParentPanel the parent panel where the spectrum will be
+     * added to
+     * @param secondarySpectrumPlotsParentPanel the parent panel were the
+     * secondary spectrum plots will be added to
      */
     public void addPsm(Peptide peptide, JPanel spectrumParentPanel, JPanel secondarySpectrumPlotsParentPanel) throws MappingException, InterruptedException, ClassNotFoundException, SQLException, IOException {
         Spectrum spectrum = peptide.getSpectrum();
@@ -196,14 +198,17 @@ public class PsmPanelGenerator {
     }
 
     /**
-     * Returns the modified sequence as an tagged string with potential modification sites color coded or with PTM tags,
-     * e.g, &lt;mox&gt;. /!\ This method will work only if the PTM found in the peptide are in the PTMFactory. /!\ This
-     * method uses the modifications as set in the modification matches of this peptide and displays all of them.
+     * Returns the modified sequence as an tagged string with potential
+     * modification sites color coded or with PTM tags, e.g, &lt;mox&gt;. /!\
+     * This method will work only if the PTM found in the peptide are in the
+     * PTMFactory. /!\ This method uses the modifications as set in the
+     * modification matches of this peptide and displays all of them.
      *
-     * @param peptide                the peptide
-     * @param useHtmlColorCoding     if true, color coded HTML is used, otherwise PTM tags, e.g, &lt;mox&gt;, are used
+     * @param peptide the peptide
+     * @param useHtmlColorCoding if true, color coded HTML is used, otherwise
+     * PTM tags, e.g, &lt;mox&gt;, are used
      * @param includeHtmlStartEndTag if true, start and end HTML tags are added
-     * @param useShortName           if true the short names are used in the tags
+     * @param useShortName if true the short names are used in the tags
      * @return the tagged sequence as a string
      */
     private String getTaggedPeptideSequence(com.compomics.util.experiment.biology.Peptide peptide, boolean useHtmlColorCoding, boolean includeHtmlStartEndTag, boolean useShortName) {
@@ -211,7 +216,7 @@ public class PsmPanelGenerator {
         HashMap<Integer, ArrayList<String>> secondaryAmbiguousLocations = new HashMap<>();
         HashMap<Integer, ArrayList<String>> fixedModifications = new HashMap<>();
 
-        for (ModificationMatch modMatch : peptide.getModificationMatches()) {
+        peptide.getModificationMatches().stream().forEach(modMatch -> {
             String modName = modMatch.getTheoreticPtm();
 
             if (ptmFactory.getPTM(modMatch.getTheoreticPtm()).getType() == PTM.MODAA) { // exclude terminal ptms
@@ -240,7 +245,7 @@ public class PsmPanelGenerator {
                     fixedModifications.get(modSite).add(modName);
                 }
             }
-        }
+        });
 
         return com.compomics.util.experiment.biology.Peptide.getTaggedModifiedSequence(
                 utilitiesSearchParameters.getPtmSettings(),

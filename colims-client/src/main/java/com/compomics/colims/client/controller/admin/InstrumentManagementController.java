@@ -214,7 +214,7 @@ public class InstrumentManagementController implements Controllable {
         //set model and renderer
         typedCvParamSummaryListModel = new TypedCvParamSummaryListModel();
         instrumentEditDialog.getCvParamSummaryList().setModel(typedCvParamSummaryListModel);
-        instrumentEditDialog.getCvParamSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<InstrumentCvParam>());
+        instrumentEditDialog.getCvParamSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<>());
 
         //add action listeners
         instrumentEditDialog.getCvParamSummaryList().getSelectionModel().addListSelectionListener(e -> {

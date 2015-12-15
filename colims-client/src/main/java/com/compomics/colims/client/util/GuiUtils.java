@@ -93,13 +93,13 @@ public class GuiUtils {
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(t);
 
         if (!constraintViolations.isEmpty()) {
-            for (ConstraintViolation<T> constraintViolation : constraintViolations) {
+            constraintViolations.stream().forEach((constraintViolation) -> {
                 if (constraintViolation.getInvalidValue() != null && !constraintViolation.getInvalidValue().toString().isEmpty()) {
                     validationMessages.add(constraintViolation.getMessage() + ": " + constraintViolation.getInvalidValue());
                 } else {
                     validationMessages.add(constraintViolation.getMessage());
                 }
-            }
+            });
         }
 
         return validationMessages;

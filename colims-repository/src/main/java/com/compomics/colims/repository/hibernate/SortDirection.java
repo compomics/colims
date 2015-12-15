@@ -12,7 +12,7 @@ public enum SortDirection {
     /**
      * The enum query value that is used for constructing the database query.
      */
-    private String queryValue;
+    private final String queryValue;
 
     SortDirection(String queryValue) {
         this.queryValue = queryValue;

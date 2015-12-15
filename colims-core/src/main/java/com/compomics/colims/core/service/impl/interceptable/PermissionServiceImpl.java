@@ -74,9 +74,9 @@ public class PermissionServiceImpl implements PermissionService {
         //merge the permission
         Permission merge = permissionRepository.merge(entity);
         //remove entity relations
-        for (Role role : merge.getRoles()) {
+        merge.getRoles().stream().forEach((role) -> {
             role.getPermissions().remove(merge);
-        }
+        });
 
         permissionRepository.remove(merge);
     }

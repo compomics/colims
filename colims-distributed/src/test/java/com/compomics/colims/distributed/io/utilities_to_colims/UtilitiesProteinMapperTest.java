@@ -109,7 +109,7 @@ public class UtilitiesProteinMapperTest {
         Assert.assertEquals(0.45, proteinGroup.getProteinProbability(), 0.001);
         Assert.assertEquals(0.77, proteinGroup.getProteinPostErrorProbability(), 0.01);
 
-        for (ProteinGroupHasProtein proteinGroupHasProtein : proteinGroup.getProteinGroupHasProteins()) {
+        proteinGroup.getProteinGroupHasProteins().stream().forEach(proteinGroupHasProtein -> {
             Assert.assertNotNull(proteinGroupHasProtein.getProtein());
             Assert.assertNotNull(proteinGroupHasProtein.getProteinAccession());
             Assert.assertTrue(proteinMatch.getTheoreticProteinsAccessions().contains(proteinGroupHasProtein.getProtein().getProteinAccessions().get(0).getAccession()));
@@ -120,6 +120,6 @@ public class UtilitiesProteinMapperTest {
                 Assert.assertTrue(proteinGroupHasProtein.getIsMainGroupProtein());
                 Assert.assertEquals("P06241", proteinGroupHasProtein.getProteinAccession());
             }
-        }
+        });
     }
 }

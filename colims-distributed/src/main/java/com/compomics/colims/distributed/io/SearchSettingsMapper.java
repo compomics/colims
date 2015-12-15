@@ -44,6 +44,7 @@ public class SearchSettingsMapper {
      * @param storeIdentificationFile   store the identification or not
      * @return the mapped SearchAndValidationSettings
      * @throws java.io.IOException thrown in case of an I/O related exception
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, FastaDb fastaDb, com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException, ModificationMappingException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();

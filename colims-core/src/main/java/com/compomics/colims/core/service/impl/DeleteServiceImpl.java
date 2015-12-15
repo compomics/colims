@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This service cascade deletes an entity (Project, Experiment, Sample, AnalyticalRun) from the database.
+ * This service cascade deletes an entity (Project, Experiment, Sample,
+ * AnalyticalRun) from the database.
  * <p/>
  * Created by Niels Hulstaert on 9/09/15.
  */
@@ -91,7 +92,7 @@ public class DeleteServiceImpl implements DeleteService {
      * Cascade delete the given entity from the database.
      *
      * @param entityClass the class of the enitity to delete
-     * @param entityId    the entity ID
+     * @param entityId the entity ID
      */
     private void deleteEntity(Class entityClass, Long entityId) {
         //get the entity from the database
@@ -116,10 +117,11 @@ public class DeleteServiceImpl implements DeleteService {
     }
 
     /**
-     * Fetch the analytical runs associated with the given entity. Returns an empty list of none were found.
+     * Fetch the analytical runs associated with the given entity. Returns an
+     * empty list of none were found.
      *
      * @param entityClass the class of the entity to delete
-     * @param entityId    the ID of the entity to delete
+     * @param entityId the ID of the entity to delete
      * @return the list of analytical runs attached to the given entity
      */
     private List<AnalyticalRun> fetchAnalyticalRuns(Class entityClass, Long entityId) {
@@ -129,20 +131,20 @@ public class DeleteServiceImpl implements DeleteService {
         if (entityClass.equals(Project.class)) {
             Project projectToDelete = projectRepository.findByIdWithFetchedExperiments(entityId);
             //fetch samples and runs
-            for (Experiment experiment : projectToDelete.getExperiments()) {
+            projectToDelete.getExperiments().stream().forEach(experiment -> {
                 experiment.getSamples().size();
-                for (Sample sample : experiment.getSamples()) {
+                experiment.getSamples().stream().forEach(sample -> {
                     sample.getAnalyticalRuns().size();
                     analyticalRuns.addAll(sample.getAnalyticalRuns());
-                }
-            }
+                });
+            });
         } else if (entityClass.equals(Experiment.class)) {
             Experiment experimentToDelete = experimentRepository.findByIdWithFetchedSamples(entityId);
             //fetch runs
-            for (Sample sample : experimentToDelete.getSamples()) {
+            experimentToDelete.getSamples().stream().forEach(sample -> {
                 sample.getAnalyticalRuns().size();
                 analyticalRuns.addAll(sample.getAnalyticalRuns());
-            }
+            });
         } else if (entityClass.equals(Sample.class)) {
             Sample sampleToDelete = sampleRepository.findByIdWithFetchedRuns(entityId);
             analyticalRuns.addAll(sampleToDelete.getAnalyticalRuns());

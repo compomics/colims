@@ -105,44 +105,44 @@ public class PeptideShakerMapperIT {
         Assert.assertNotNull(testAnalyticalRun.getSearchAndValidationSettings());
 
         //spectra
-        for (Spectrum spectrum : testAnalyticalRun.getSpectrums()) {
+        testAnalyticalRun.getSpectrums().stream().forEach(spectrum -> {
             Assert.assertNotNull(spectrum.getAnalyticalRun());
             if (!spectrum.getPeptides().isEmpty()) {
-                for (Peptide peptide : spectrum.getPeptides()) {
+                spectrum.getPeptides().stream().forEach(peptide -> {
                     Assert.assertNotNull(peptide.getSpectrum());
                     Assert.assertFalse(peptide.getSequence().isEmpty());
 
                     //a peptide without a protein (group) makes no sense
                     Assert.assertFalse(peptide.getPeptideHasProteinGroups().isEmpty());
 
-                    for (PeptideHasProteinGroup peptideHasProteinGroup : peptide.getPeptideHasProteinGroups()) {
+                    peptide.getPeptideHasProteinGroups().stream().forEach(peptideHasProteinGroup -> {
                         Assert.assertNotNull(peptideHasProteinGroup.getPeptide());
-                        for (ProteinGroupHasProtein proteinGroupHasProtein : peptideHasProteinGroup.getProteinGroup().getProteinGroupHasProteins()) {
+                        peptideHasProteinGroup.getProteinGroup().getProteinGroupHasProteins().stream().forEach(proteinGroupHasProtein -> {
                             Assert.assertNotNull(proteinGroupHasProtein.getProteinAccession());
                             Protein protein = proteinGroupHasProtein.getProtein();
                             Assert.assertNotNull(protein);
                             Assert.assertFalse(protein.getProteinAccessions().isEmpty());
                             Assert.assertFalse(protein.getProteinAccessions().get(0).getAccession().isEmpty());
                             Assert.assertFalse(protein.getSequence().isEmpty());
-                        }
-                    }
+                        });
+                    });
                     if (!peptide.getPeptideHasModifications().isEmpty()) {
-                        for (PeptideHasModification peptideHasModification : peptide.getPeptideHasModifications()) {
+                        peptide.getPeptideHasModifications().stream().forEach(peptideHasModification -> {
                             Assert.assertNotNull(peptideHasModification.getPeptide());
                             Modification modification = peptideHasModification.getModification();
                             Assert.assertNotNull(modification);
                             Assert.assertNotNull(modification.getPeptideHasModifications());
                             Assert.assertFalse(modification.getName().isEmpty());
-                        }
+                        });
                     }
-                }
+                });
             }
-        }
+        });
 
         //get sample from db
         Sample sample = sampleService.findAll().get(0);
 
-        for (AnalyticalRun analyticalRun : mappedData.getAnalyticalRuns()) {
+        mappedData.getAnalyticalRuns().stream().forEach(analyticalRun -> {
             Date auditDate = new Date();
 
             SearchAndValidationSettings searchAndValidationSettings = analyticalRun.getSearchAndValidationSettings();
@@ -158,6 +158,6 @@ public class PeptideShakerMapperIT {
             analyticalRun.setInstrument(instrumentService.findAll().get(0));
 
             analyticalRunService.merge(analyticalRun);
-        }
+        });
     }
 }

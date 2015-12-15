@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class SequenceUtilsTest {
 
-    private String proteinSequence1 = "AAAAAAAAAABLENNARTMAAAAA";
+    private final String proteinSequence1 = "AAAAAAAAAABLENNARTMAAAAA";
 
     /**
      * The the throwing of an IllegalArgumentException in case a peptide sequence can not be found in a protein
@@ -30,7 +30,7 @@ public class SequenceUtilsTest {
      *     2. the peptide is located at the beginning of the protein
      *     3. the peptide is located at the end of the protein
      *     4. the peptide occurs twice in the protein sequence
-     * <pre/>
+     * </pre>
      */
     @Test
     public void testGetPeptidePositions() {

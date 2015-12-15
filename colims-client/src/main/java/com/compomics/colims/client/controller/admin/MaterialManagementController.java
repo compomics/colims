@@ -214,7 +214,7 @@ public class MaterialManagementController implements Controllable {
         //set model and renderer
         typedCvParamSummaryListModel = new TypedCvParamSummaryListModel();
         materialEditDialog.getCvParamSummaryList().setModel(typedCvParamSummaryListModel);
-        materialEditDialog.getCvParamSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<MaterialCvParam>());
+        materialEditDialog.getCvParamSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<>());
 
         //add action listeners
         materialEditDialog.getCvParamSummaryList().getSelectionModel().addListSelectionListener(e -> {

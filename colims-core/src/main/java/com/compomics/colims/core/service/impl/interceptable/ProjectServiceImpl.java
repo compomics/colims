@@ -40,13 +40,13 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<Project> findAllWithEagerFetching() {
         List<Project> projects = projectRepository.findAllWithFetchedExperiments();
-        for (Project project : projects) {
-            for (Experiment experiment : project.getExperiments()) {
-                for (Sample sample : experiment.getSamples()) {
+        projects.stream().forEach((project) -> {
+            project.getExperiments().stream().forEach((experiment) -> {
+                experiment.getSamples().stream().forEach((sample) -> {
                     sample.getAnalyticalRuns().size();
-                }
-            }
-        }
+                });
+            });
+        });
 
         return projects;
     }

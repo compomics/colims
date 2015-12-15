@@ -73,8 +73,6 @@ public class MainController implements Controllable, ActionListener {
     @Autowired
     private ProjectManagementController projectManagementController;
     @Autowired
-    private ProjectOverviewController projectOverviewController;
-    @Autowired
     private ProteinOverviewController proteinOverviewController;
     @Autowired
     private UserQueryController userQueryController;
@@ -174,13 +172,11 @@ public class MainController implements Controllable, ActionListener {
 
         //init child controllers
         projectManagementController.init();
-        projectOverviewController.init();
         proteinOverviewController.init();
         taskManagementController.init();
 
         //add panel components
         mainFrame.getProjectsManagementParentPanel().add(projectManagementController.getProjectManagementPanel(), gridBagConstraints);
-        mainFrame.getProjectsOverviewParentPanel().add(projectOverviewController.getProjectOverviewPanel(), gridBagConstraints);
         mainFrame.getProteinsParentPanel().add(proteinOverviewController.getProteinOverviewPanel(), gridBagConstraints);
         mainFrame.getTasksManagementParentPanel().add(taskManagementController.getTaskManagementPanel(), gridBagConstraints);
 
@@ -267,8 +263,6 @@ public class MainController implements Controllable, ActionListener {
             mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
         } else if (menuItemLabel.equals(mainFrame.getProjectsManagementMenuItem().getText())) {
             mainFrame.getMainTabbedPane().setSelectedComponent(mainFrame.getProjectsManagementParentPanel());
-        } else if (menuItemLabel.equals(mainFrame.getProjectsOverviewMenuItem().getText())) {
-            mainFrame.getMainTabbedPane().setSelectedComponent(mainFrame.getProjectsOverviewParentPanel());
         } else if (menuItemLabel.equals(mainFrame.getUserManagementMenuItem().getText())) {
             userManagementParentController.showView();
         } else if (menuItemLabel.equals(mainFrame.getInstrumentManagementMenuItem().getText())) {

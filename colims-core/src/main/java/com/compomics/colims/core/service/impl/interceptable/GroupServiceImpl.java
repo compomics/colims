@@ -74,9 +74,9 @@ public class GroupServiceImpl implements GroupService {
         //merge the group
         Group merge = groupRepository.merge(entity);
         //remove entity relations
-        for (User user : merge.getUsers()) {
+        merge.getUsers().stream().forEach((user) -> {
             user.getGroups().remove(merge);
-        }
+        });
 
         groupRepository.remove(merge);
     }

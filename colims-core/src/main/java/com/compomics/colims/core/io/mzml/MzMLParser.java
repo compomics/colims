@@ -28,7 +28,10 @@ public interface MzMLParser {
      *
      * @param mzMLFileName the mzML file name
      * @return the experiment
+     * @throws uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException
+     * @throws java.io.IOException in case of an I/O related problem
+     * @throws com.compomics.colims.core.io.MappingException
      */
     Experiment parseMzMlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException, MappingException;
-        
+
 }

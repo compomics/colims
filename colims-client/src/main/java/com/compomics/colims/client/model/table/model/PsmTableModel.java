@@ -55,7 +55,7 @@ public class PsmTableModel extends PagingTableModel {
      */
     public void reset(final AnalyticalRun analyticalRun) {
         if (analyticalRun == null) {
-            super.reset();
+            super.reset(0);
         } else {
             super.reset(spectrumService.getSpectraCountForRun(analyticalRun, getColumnDbName(sortColumnIndex), filter));
         }

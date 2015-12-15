@@ -73,8 +73,9 @@ public class UtilitiesPtmSettingsMapperTest {
     }
 
     /**
-     * Test the modification profile mapping for a set of known (to PeptideShaker) PTMs. 2 Search modifications are
-     * already stored in the database, so their ID's shouldn't be null.
+     * Test the modification profile mapping for a set of known (to
+     * PeptideShaker) PTMs. 2 Search modifications are already stored in the
+     * database, so their ID's shouldn't be null.
      *
      * @throws com.compomics.colims.core.io.MappingException
      */
@@ -86,7 +87,7 @@ public class UtilitiesPtmSettingsMapperTest {
 
         Assert.assertFalse(searchParameters.getSearchParametersHasModifications().isEmpty());
         Assert.assertEquals(9, searchParameters.getSearchParametersHasModifications().size());
-        for (SearchParametersHasModification searchParametersHasModification : searchParameters.getSearchParametersHasModifications()) {
+        searchParameters.getSearchParametersHasModifications().stream().forEach(searchParametersHasModification -> {
             Assert.assertNotNull(searchParametersHasModification.getSearchModification());
             Assert.assertNotNull(searchParametersHasModification.getSearchParameters());
             Assert.assertNotNull(searchParametersHasModification.getModificationType());
@@ -96,12 +97,13 @@ public class UtilitiesPtmSettingsMapperTest {
             } else {
                 Assert.assertNull(searchParametersHasModification.getSearchModification().getId());
             }
-        }
+        });
 
     }
 
     /**
-     * Test the modification profile mapping for an unknown (to PeptideShaker) PTM but found through the OLS.
+     * Test the modification profile mapping for an unknown (to PeptideShaker)
+     * PTM but found through the OLS.
      *
      * @throws com.compomics.colims.core.io.MappingException
      */
@@ -125,18 +127,19 @@ public class UtilitiesPtmSettingsMapperTest {
 
         Assert.assertFalse(searchParameters.getSearchParametersHasModifications().isEmpty());
         Assert.assertEquals(1, searchParameters.getSearchParametersHasModifications().size());
-        for (SearchParametersHasModification searchParametersHasModification : searchParameters.getSearchParametersHasModifications()) {
+        searchParameters.getSearchParametersHasModifications().stream().forEach(searchParametersHasModification -> {
             Assert.assertEquals("K", searchParametersHasModification.getResidues());
             Assert.assertNotNull(searchParametersHasModification.getSearchModification());
             Assert.assertNotNull(searchParametersHasModification.getSearchParameters());
             Assert.assertNotNull(searchParametersHasModification.getModificationType());
             Assert.assertNull(searchParametersHasModification.getSearchModification().getId());
-        }
+        });
 
     }
 
     /**
-     * Test the modification profile mapping for an unknown (to PeptideShaker) PTM and not found through the OLS.
+     * Test the modification profile mapping for an unknown (to PeptideShaker)
+     * PTM and not found through the OLS.
      *
      * @throws com.compomics.colims.core.io.MappingException
      */
@@ -160,7 +163,7 @@ public class UtilitiesPtmSettingsMapperTest {
 
         Assert.assertFalse(searchParameters.getSearchParametersHasModifications().isEmpty());
         Assert.assertEquals(1, searchParameters.getSearchParametersHasModifications().size());
-        for (SearchParametersHasModification searchParametersHasModification : searchParameters.getSearchParametersHasModifications()) {
+        searchParameters.getSearchParametersHasModifications().stream().forEach(searchParametersHasModification -> {
             Assert.assertEquals("AKL", searchParametersHasModification.getResidues());
             Assert.assertNotNull(searchParametersHasModification.getSearchModification());
             Assert.assertNotNull(searchParametersHasModification.getSearchParameters());
@@ -169,7 +172,7 @@ public class UtilitiesPtmSettingsMapperTest {
             //check the mass
             Assert.assertNull(searchParametersHasModification.getSearchModification().getMonoIsotopicMassShift());
             Assert.assertNull(searchParametersHasModification.getSearchModification().getAverageMassShift());
-        }
+        });
     }
 
 }

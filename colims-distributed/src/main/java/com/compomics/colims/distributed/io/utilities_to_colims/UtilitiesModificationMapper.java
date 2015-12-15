@@ -23,7 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class maps the Compomics Utilities modification related classes to Colims modification related classes.
+ * This class maps the Compomics Utilities modification related classes to
+ * Colims modification related classes.
  *
  * @author Niels Hulstaert
  */
@@ -52,18 +53,20 @@ public class UtilitiesModificationMapper {
     @Autowired
     private UnimodMarshaller unimodMarshaller;
     /**
-     * The map of cached modifications (key: modification name, value: the modification).
+     * The map of cached modifications (key: modification name, value: the
+     * modification).
      */
     private final Map<String, Modification> cachedModifications = new HashMap<>();
 
     /**
-     * Map the utilities modification matches to the Colims peptide. The Utilities PTMs are matched first onto CV terms
-     * from PSI-MOD.
+     * Map the utilities modification matches to the Colims peptide. The
+     * Utilities PTMs are matched first onto CV terms from PSI-MOD.
      *
      * @param modificationMatches the list of modification matches
-     * @param ptmScores           the PeptideShaker PTM scores
-     * @param targetPeptide       the Colims target peptide
-     * @throws ModificationMappingException thrown in case of a modification mapping problem
+     * @param ptmScores the PeptideShaker PTM scores
+     * @param targetPeptide the Colims target peptide
+     * @throws ModificationMappingException thrown in case of a modification
+     * mapping problem
      */
     public void map(final ArrayList<ModificationMatch> modificationMatches, final PSPtmScores ptmScores, final Peptide targetPeptide) throws ModificationMappingException {
         //iterate over modification matches
@@ -91,19 +94,19 @@ public class UtilitiesModificationMapper {
                 int modificationIndex = modificationMatch.getModificationSite();
 
                 //check for N-terminal modification
-                if(modificationIndex == 1){
+                if (modificationIndex == 1) {
                     PTM ptm = PTMFactory.getInstance().getPTM(modificationMatch.getTheoreticPtm());
-                    if(!ptm.equals(PTMFactory.unknownPTM)){
-                        if(ptm.isNTerm()){
+                    if (!ptm.equals(PTMFactory.unknownPTM)) {
+                        if (ptm.isNTerm()) {
                             modificationIndex = 0;
                         }
                     }
                 }
                 //check for C-terminal modification
-                if(modificationIndex == targetPeptide.getLength()){
+                if (modificationIndex == targetPeptide.getLength()) {
                     PTM ptm = PTMFactory.getInstance().getPTM(modificationMatch.getTheoreticPtm());
-                    if(!ptm.equals(PTMFactory.unknownPTM)){
-                        if(ptm.isCTerm()){
+                    if (!ptm.equals(PTMFactory.unknownPTM)) {
+                        if (ptm.isCTerm()) {
                             modificationIndex = targetPeptide.getLength() + 1;
                         }
                     }
@@ -149,8 +152,8 @@ public class UtilitiesModificationMapper {
     }
 
     /**
-     * Map the given Utilities CvTerm instance to a Colims Modification instance. Return null if no mapping was
-     * possible.
+     * Map the given Utilities CvTerm instance to a Colims Modification
+     * instance. Return null if no mapping was possible.
      *
      * @param cvTerm the Utilities CvTerm instance
      * @return the Colims Modification entity
@@ -217,10 +220,13 @@ public class UtilitiesModificationMapper {
     }
 
     /**
-     * Map the given modification name to a Modification instance. Return null if no mapping was possible.
+     * Map the given modification name to a Modification instance. Return null
+     * if no mapping was possible.
      *
      * @param modificationName the modification name
      * @return the Colims Modification instance
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case
+     * of a modification mapping problem
      */
     public Modification mapByName(final String modificationName) throws ModificationMappingException {
         Modification modification;

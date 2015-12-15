@@ -6,7 +6,6 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
-import com.compomics.colims.model.Project;
 
 import java.util.List;
 

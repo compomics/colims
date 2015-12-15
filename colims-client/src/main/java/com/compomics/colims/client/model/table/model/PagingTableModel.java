@@ -54,16 +54,11 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
         super(source, tableFormat);
         this.perPage = perPage;
         this.defaultSortColumnIndex = defaultSortColumnIndex;
-        sortColumnIndex = defaultSortColumnIndex;
-        reset(0);
-    }
-
-    /**
-     * Reset the table to default values.
-     */
-    public void reset() {
-        sortColumnIndex = defaultSortColumnIndex;
-        reset(0);
+        this.sortColumnIndex = defaultSortColumnIndex;
+        this.rowCount = 0;
+        this.page = 0;
+        this.sortDirection = SortDirection.ASCENDING;
+        this.filter = "";
     }
 
     /**
@@ -73,9 +68,9 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
      */
     public void reset(long rowCount) {
         this.rowCount = rowCount;
-        page = 0;
-        sortDirection = SortDirection.ASCENDING;
-        filter = "";
+        this.page = 0;
+        this.sortDirection = SortDirection.ASCENDING;
+        this.filter = "";
     }
 
     /**

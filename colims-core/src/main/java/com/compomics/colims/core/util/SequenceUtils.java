@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This utility class provides convenience methods for retrieving sequence related information (e.g. location of
- * peptides in protein sequences). It uses the Compomics Utilities methods internally.
+ * This utility class provides convenience methods for retrieving sequence
+ * related information (e.g. location of peptides in protein sequences). It uses
+ * the Compomics Utilities methods internally.
  * <p/>
  * Created by Niels Hulstaert on 8/06/15.
  */
@@ -26,13 +27,15 @@ public class SequenceUtils {
     }
 
     /**
-     * Calculate position information wrapped in a {@link PeptidePosition} instance of a peptide sequence in a protein.
-     * All possible occurrences of the peptide in the protein sequence are considered.
+     * Calculate position information wrapped in a {@link PeptidePosition}
+     * instance of a peptide sequence in a protein. All possible occurrences of
+     * the peptide in the protein sequence are considered.
      *
      * @param proteinSequence the protein sequence
      * @param peptideSequence the peptide sequence
      * @return the list of PeptidePosition instance
-     * @throws IllegalStateException error thrown if the peptide sequence could not be found in the protein sequence
+     * @throws IllegalStateException error thrown if the peptide sequence could
+     * not be found in the protein sequence
      */
     public static List<PeptidePosition> getPeptidePositions(String proteinSequence, String peptideSequence) {
         List<PeptidePosition> peptidePositions = new ArrayList<>();
@@ -40,7 +43,7 @@ public class SequenceUtils {
         List<Integer> peptideStartIndexes = getPeptideStartIndexes(proteinSequence, peptideSequence);
 
         if (!peptideStartIndexes.isEmpty()) {
-            for (Integer peptideStart : peptideStartIndexes) {
+            peptideStartIndexes.stream().forEach(peptideStart -> {
                 PeptidePosition peptidePosition = new PeptidePosition();
 
                 //get start and end position
@@ -57,7 +60,7 @@ public class SequenceUtils {
                 }
 
                 peptidePositions.add(peptidePosition);
-            }
+            });
         } else {
             throw new IllegalStateException("The peptide sequence could not be found in the protein sequence.");
         }
@@ -79,11 +82,12 @@ public class SequenceUtils {
     }
 
     /**
-     * Returns the amino acids surrounding a peptide in the sequence of the given protein.
+     * Returns the amino acids surrounding a peptide in the sequence of the
+     * given protein.
      *
      * @param proteinSequence the protein sequence
      * @param peptideSequence the sequence of the peptide of interest
-     * @param startPosition   the peptide start position in the protein
+     * @param startPosition the peptide start position in the protein
      * @return the amino acids surrounding a peptide in the protein sequence
      */
     public static Character[] getSurroundingAAs(String proteinSequence, String peptideSequence, int startPosition) {

@@ -33,8 +33,10 @@ public class OlsServiceImpl implements OlsService {
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
 
     /**
-     * Modifications cache to prevent unnecessary webservice lookups. This map can contains instances of {@link
-     * com.compomics.colims.model.Modification} and {@link com.compomics.colims.model.SearchModification}.
+     * Modifications cache to prevent unnecessary webservice lookups. This map
+     * can contains instances of {@link
+     * com.compomics.colims.model.Modification} and
+     * {@link com.compomics.colims.model.SearchModification}.
      */
     private final java.util.Map<String, AbstractModification> modificationsCache = new HashMap<>();
     /**
@@ -68,12 +70,13 @@ public class OlsServiceImpl implements OlsService {
 
         if (modificationsTerms.getItem() != null) {
             //get the modificiations
-            for (org.apache.xml.xml_soap.MapItem mapItem : modificationsTerms.getItem()) {
-                Modification modification = findModificationByAccession(Modification.class, mapItem.getKey().toString());
-                if (modification != null) {
-                    modifications.add(modification);
-                }
-            }
+            modificationsTerms.getItem()
+                    .stream()
+                    .map((mapItem) -> findModificationByAccession(Modification.class, mapItem.getKey().toString()))
+                    .filter((modification) -> (modification != null))
+                    .forEach((modification) -> {
+                        modifications.add(modification);
+                    });
         }
         return modifications;
     }
@@ -204,11 +207,12 @@ public class OlsServiceImpl implements OlsService {
     }
 
     /**
-     * Copy (the instance fields of) the modification from one subclass of AbstractModification to another.
+     * Copy (the instance fields of) the modification from one subclass of
+     * AbstractModification to another.
      *
-     * @param clazz     the subclass of AbstractModification
+     * @param clazz the subclass of AbstractModification
      * @param modToCopy the modification to copy
-     * @param <T>       the AbstractModification subclass
+     * @param <T> the AbstractModification subclass
      * @return the copied modification
      */
     private <T extends AbstractModification> T copyModification(Class<T> clazz, AbstractModification modToCopy) {

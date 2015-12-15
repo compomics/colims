@@ -60,9 +60,9 @@ public class RoleServiceImpl implements RoleService {
         //merge the role
         Role merge = roleRepository.merge(entity);
         //remove entity relations
-        for (Group group : merge.getGroups()) {
+        merge.getGroups().stream().forEach((group) -> {
             group.getRoles().remove(merge);
-        }
+        });
 
         roleRepository.remove(merge);
     }

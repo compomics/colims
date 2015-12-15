@@ -36,7 +36,12 @@ public class MzMLParserTest {
     private MzMLParser mzMLParser;
 
     /**
-     * Tests if an IllegalArgumentException is thrown if no mapping could be found for the given MzML file name.
+     * Tests if an IllegalArgumentException is thrown if no mapping could be
+     * found for the given MzML file name.
+     *
+     * @throws java.io.IOException in case of an I/O related problem
+     * @throws uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException
+     * @throws com.compomics.colims.core.io.MappingException
      */
     @Test(expected = IllegalArgumentException.class)
     public void testIllegalArgumentException() throws IOException, MzMLUnmarshallerException, MappingException {

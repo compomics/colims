@@ -67,7 +67,7 @@ public class SpectrumRepositoryTest extends TestCase {
         Assert.assertEquals(26.0, (Double) spectraProjections[1], 0.01);
         Assert.assertEquals(555.3, (Double) spectraProjections[2], 0.01);
         Assert.assertEquals(1300.1, (Double) spectraProjections[3], 0.01);
-        Assert.assertEquals(1, spectraProjections[4]);
-        Assert.assertEquals(3, spectraProjections[5]);
+        Assert.assertEquals(1L, ((Integer) spectraProjections[4]).intValue());
+        Assert.assertEquals(3L, ((Integer) spectraProjections[5]).intValue());
     }
 }

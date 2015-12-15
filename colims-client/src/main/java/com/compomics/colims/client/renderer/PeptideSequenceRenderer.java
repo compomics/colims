@@ -26,9 +26,10 @@ public class PeptideSequenceRenderer {
     private static final String LINE_BREAK = "<br>";
 
     /**
-     * Get the annotated peptide sequence in HTML format. Amino acids that carry modifications are colored and bold.
+     * Get the annotated peptide sequence in HTML format. Amino acids that carry
+     * modifications are colored and bold.
      *
-     * @param peptideSequence         the peptide sequence
+     * @param peptideSequence the peptide sequence
      * @param peptideHasModifications the list of modifications
      * @return the annotated peptide sequence
      */
@@ -67,16 +68,16 @@ public class PeptideSequenceRenderer {
     /**
      * Get the tooltip string in HTML format.
      *
-     * @param peptideSequence         the peptide sequence
+     * @param peptideSequence the peptide sequence
      * @param peptideHasModifications the list of modifications
-     * @param showScore               show the modification score or not
+     * @param showScore show the modification score or not
      * @return the annotated peptide sequence
      */
     public static String getModificationsHtmlToolTip(String peptideSequence, List<PeptideHasModification> peptideHasModifications, boolean showScore) {
         StringBuilder tooltip = new StringBuilder(HTML_OPEN_TAG);
 
         Map<Integer, PeptideHasModification> orderedPeptideHasModifications = getOrderedPeptideHasModifications(peptideHasModifications);
-        for (Map.Entry<Integer, PeptideHasModification> entry : orderedPeptideHasModifications.entrySet()) {
+        orderedPeptideHasModifications.entrySet().stream().forEach(entry -> {
             if (entry.getKey() == 0) {
                 tooltip.append(N_TERMINAL_MOD).append(entry.getValue().getModification().getName());
             } else if (entry.getKey() <= peptideSequence.length()) {
@@ -90,16 +91,17 @@ public class PeptideSequenceRenderer {
                 tooltip.append(getModificationScore(entry.getValue()));
             }
             tooltip.append(LINE_BREAK);
-        }
+        });
 
         return tooltip.substring(0, tooltip.lastIndexOf(LINE_BREAK));
     }
 
     /**
-     * This method orders the list of PeptideHasModification instances and returns an sorted map with the modification
-     * locations as keys.
+     * This method orders the list of PeptideHasModification instances and
+     * returns an sorted map with the modification locations as keys.
      *
-     * @param peptideHasModifications the list of PeptideHasModification instances
+     * @param peptideHasModifications the list of PeptideHasModification
+     * instances
      * @return the sorted map
      */
     private static TreeMap<Integer, PeptideHasModification> getOrderedPeptideHasModifications(List<PeptideHasModification> peptideHasModifications) {
@@ -116,8 +118,8 @@ public class PeptideSequenceRenderer {
     }
 
     /**
-     * Get the modification probability score as a String. If the modification is fixed or no score is available, an
-     * appropriate value is returned.
+     * Get the modification probability score as a String. If the modification
+     * is fixed or no score is available, an appropriate value is returned.
      *
      * @param peptideHasModification the PeptideHasModification instance
      * @return the modification score String

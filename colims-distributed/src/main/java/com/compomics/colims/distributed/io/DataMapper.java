@@ -8,6 +8,7 @@ import com.compomics.colims.core.io.MappingException;
  * This interface defines the import data contract for the different import resources.
  *
  * @author Niels Hulstaert
+ * @param <T> the DataImport subclass
  */
 public interface DataMapper<T extends DataImport> {
 
@@ -22,6 +23,7 @@ public interface DataMapper<T extends DataImport> {
 
     /**
      * Clear resources used during the import.
+     * @throws java.lang.Exception in case of an exception
      */
     void clear() throws Exception;
 

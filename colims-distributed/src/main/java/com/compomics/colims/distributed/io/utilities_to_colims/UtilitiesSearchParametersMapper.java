@@ -55,6 +55,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      *
      * @param utilitiesSearchParameters the Utilities search parameters
      * @param searchParameters          the Colims search parameters
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     @Override
     public void map(com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) throws ModificationMappingException {

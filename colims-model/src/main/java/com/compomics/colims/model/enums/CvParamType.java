@@ -70,7 +70,7 @@ public enum CvParamType {
     /**
      * Get all children of this instance.
      *
-     * @return the list of child cv param types
+     * @return the list of child CV parameter types
      */
     public List<CvParamType> getChildren() {
         return children;
@@ -141,8 +141,8 @@ public enum CvParamType {
      */
     private static void addChildren(final CvParamType parent, final List<CvParamType> list) {
         list.addAll(parent.children);
-        for (CvParamType child : parent.children) {
+        parent.children.stream().forEach((child) -> {
             addChildren(child, list);
-        }
+        });
     }
 }

@@ -28,6 +28,7 @@ public class UtilitiesSearchParametersMapperTest {
 
     /**
      * Test the mapping of Utilities SearchParameters to Colims SearchParameters.
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     @Test
     public void testMapSearchParameters() throws ModificationMappingException {

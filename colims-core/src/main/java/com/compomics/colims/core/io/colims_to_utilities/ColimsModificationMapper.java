@@ -30,16 +30,16 @@ public class ColimsModificationMapper implements Mapper<List<PeptideHasModificat
      * @param peptideHasModifications the list of PeptideHasModification instances
      * @param modificationMatches     the list of ModificationMatch instances
      */
+    @Override
     public void map(final List<PeptideHasModification> peptideHasModifications, ArrayList<ModificationMatch> modificationMatches) {
-        for (PeptideHasModification peptideHasModification : peptideHasModifications) {
+        peptideHasModifications.stream().forEach((peptideHasModification) -> {
             String theoreticPTM = peptideHasModification.getModification().getAccession();
-
             if (theoreticPTM != null) {
                 boolean isVariable = peptideHasModification.getModificationType().equals(ModificationType.VARIABLE);
                 int modificationSite = peptideHasModification.getLocation();
                 ModificationMatch match = new ModificationMatch(theoreticPTM, isVariable, modificationSite);
                 modificationMatches.add(match);
             }
-        }
+        });
     }
 }

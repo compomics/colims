@@ -33,7 +33,7 @@ public class DbTaskConsumer implements MessageListener {
     /**
      * Mapper for converting JSON constructs from the queue to corresponding java objects.
      */
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     /**
      * The PersistDbTask handler.
      */

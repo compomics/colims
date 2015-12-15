@@ -283,7 +283,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
         errorPlotTypeCheckBoxMenuItem.setSelected(true);
         errorPlotTypeCheckBoxMenuItem.setText("Absolute Mass Error Plot");
         errorPlotTypeCheckBoxMenuItem.setToolTipText("Plot the mass error in Da or ppm ");
-        errorPlotTypeCheckBoxMenuItem.addActionListener(evt -> errorPlotTypeCheckBoxMenuItemActionPerformed(evt));
+        errorPlotTypeCheckBoxMenuItem.addActionListener(this::errorPlotTypeCheckBoxMenuItemActionPerformed);
         settingsMenu.add(errorPlotTypeCheckBoxMenuItem);
 
         annotationMenuBar.add(settingsMenu);

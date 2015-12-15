@@ -27,10 +27,6 @@ public class MainFrame extends javax.swing.JFrame {
         return projectsManagementParentPanel;
     }
 
-    public JPanel getProjectsOverviewParentPanel() {
-        return projectsOverviewParentPanel;
-    }
-
     public JPanel getTasksManagementParentPanel() {
         return tasksManagementParentPanel;
     }
@@ -100,7 +96,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         mainTabbedPane = new javax.swing.JTabbedPane();
         projectsManagementParentPanel = new javax.swing.JPanel();
-        projectsOverviewParentPanel = new javax.swing.JPanel();
         proteinsParentPanel = new javax.swing.JPanel();
         userQueryParentPanel = new javax.swing.JPanel();
         tasksManagementParentPanel = new javax.swing.JPanel();
@@ -130,11 +125,6 @@ public class MainFrame extends javax.swing.JFrame {
         projectsManagementParentPanel.setLayout(new java.awt.GridBagLayout());
         mainTabbedPane.addTab("Management", projectsManagementParentPanel);
         projectsManagementParentPanel.getAccessibleContext().setAccessibleName("");
-
-        projectsOverviewParentPanel.setBackground(new java.awt.Color(255, 255, 255));
-        projectsOverviewParentPanel.setLayout(new java.awt.GridBagLayout());
-        mainTabbedPane.addTab("Overview", projectsOverviewParentPanel);
-        projectsOverviewParentPanel.getAccessibleContext().setAccessibleName("");
 
         proteinsParentPanel.setLayout(new java.awt.GridBagLayout());
         mainTabbedPane.addTab("Proteins", proteinsParentPanel);
@@ -219,7 +209,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem projectsManagementMenuItem;
     private javax.swing.JPanel projectsManagementParentPanel;
     private javax.swing.JMenuItem projectsOverviewMenuItem;
-    private javax.swing.JPanel projectsOverviewParentPanel;
     private javax.swing.JPanel proteinsParentPanel;
     private javax.swing.JMenuItem protocolManagementMenuItem;
     private javax.swing.JPanel tasksManagementParentPanel;

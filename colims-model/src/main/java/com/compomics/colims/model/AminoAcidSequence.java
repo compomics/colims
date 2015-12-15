@@ -80,9 +80,9 @@ public class AminoAcidSequence {
      */
     public static String aaSequenceAsString(List<AminoAcid> aaSequence) {
         StringBuilder sb = new StringBuilder();
-        for (AminoAcid aa : aaSequence) {
+        aaSequence.stream().forEach((aa) -> {
             sb.append(aa.letter());
-        }
+        });
         return sb.toString();
     }
 

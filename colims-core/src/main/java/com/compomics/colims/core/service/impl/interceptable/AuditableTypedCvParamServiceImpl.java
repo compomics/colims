@@ -48,9 +48,7 @@ public class AuditableTypedCvParamServiceImpl implements AuditableTypedCvParamSe
 
     @Override
     public <T extends AuditableTypedCvParam> List<T> findByCvParamByType(Class<T> clazz, CvParamType cvTermType) {
-        List<T> cvTerms = cvParamRepository.findByCvParamType(cvTermType).stream().filter(cvParam -> clazz.isInstance(cvParam)).map(cvParam -> (T) cvParam).collect(Collectors.toList());
-
-        return cvTerms;
+        return cvParamRepository.findByCvParamType(cvTermType).stream().filter(clazz::isInstance).map(cvParam -> (T) cvParam).collect(Collectors.toList());
     }
 
     @Override

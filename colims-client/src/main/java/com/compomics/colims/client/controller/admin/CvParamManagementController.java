@@ -95,9 +95,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
                     org.apache.xml.xml_soap.Map termMetadata = olsClient.getTermMetadata(selectedCvParam.getAccession(), selectedCvParam.getLabel());
                     if (termMetadata != null && !termMetadata.getItem().isEmpty()) {
                         //look for definition item
-                        termMetadata.getItem().stream().filter(mapItem -> mapItem.getKey().equals("definition") && mapItem.getValue() != null).forEach(mapItem -> {
-                            cvParamManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString());
-                        });
+                        termMetadata.getItem().stream().filter(mapItem -> mapItem.getKey().equals("definition") && mapItem.getValue() != null).forEach(mapItem -> cvParamManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString()));
                     }
                 } else {
                     clearCvParamDetailFields();

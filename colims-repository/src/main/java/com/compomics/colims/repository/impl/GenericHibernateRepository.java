@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * @author Niels Hulstaert
+ * @param <T> the database entity class
+ * @param <ID> the ID class
  */
 public class GenericHibernateRepository<T, ID extends Serializable> implements GenericRepository<T, ID> {
 
@@ -99,6 +101,7 @@ public class GenericHibernateRepository<T, ID extends Serializable> implements G
      * Internal method to quickly create a {@link Criteria} for the {@link com.compomics.colims.model.DatabaseEntity}
      * with optional {@link Criterion}s.
      *
+     * @param criterions the vararg of Criterion instances
      * @return the created criteria
      */
     protected Criteria createCriteria(final Criterion... criterions) {

@@ -21,7 +21,7 @@ public class PeptideDTOTest {
     private static PeptideDTO peptideDTO1;
     private static PeptideDTO peptideDTO2;
     private static PeptideDTO peptideDTO3;
-    private static List<PeptideDTO> peptideDTOs = new ArrayList<>();
+    private static final List<PeptideDTO> peptideDTOs = new ArrayList<>();
 
     @BeforeClass
     public static void setup() {

@@ -6,12 +6,8 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Session;
 import javax.jms.TextMessage;
 
 
@@ -31,7 +27,7 @@ public class CompletedTaskProducer {
     /**
      * Mapper for converting a CompletedDbTask object to the matching JSON construct.
      */
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     /**
      * The JmsTemplate.
      */

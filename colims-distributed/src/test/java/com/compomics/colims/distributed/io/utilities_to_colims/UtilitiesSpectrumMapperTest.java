@@ -95,9 +95,9 @@ public class UtilitiesSpectrumMapperTest {
         Map<Double, Double> spectrumPeaks = spectrumService.getSpectrumPeaks(spectrum.getSpectrumFiles().get(0));
 
         //compare the spectrum peaks
-        for (Double mzRatio : peaks.keySet()) {
+        peaks.keySet().stream().forEach(mzRatio -> {
             Assert.assertTrue(spectrumPeaks.containsKey(mzRatio));
             Assert.assertEquals(peaks.get(mzRatio).intensity, spectrumPeaks.get(mzRatio), 0.001);
-        }
+        });
     }
 }

@@ -1,12 +1,9 @@
 package com.compomics.colims.repository.playground;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.internal.SessionFactoryImpl;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 /**

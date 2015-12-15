@@ -1,10 +1,6 @@
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.ProteinAccession;
-import com.compomics.colims.model.ProteinGroup;
-
-import java.util.List;
 
 /**
  * This interface provides service methods for the ProteinAccession class.

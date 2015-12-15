@@ -14,6 +14,8 @@ import javax.swing.JTextField;
  */
 public class ProtocolEditDialog extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = 6346535183155542729L;
+
     /**
      * Dialog constructor
      *

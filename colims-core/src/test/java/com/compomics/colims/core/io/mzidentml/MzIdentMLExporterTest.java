@@ -59,6 +59,6 @@ public class MzIdentMLExporterTest {
     @Test
     public void testClassItemMapping() throws IOException {
         AnalysisSoftware as = exporter.getDataItem("AnalysisSoftware.PeptideShaker", AnalysisSoftware.class);
-        Assert.assertEquals(as.getName(), "PeptideShaker");
+        Assert.assertEquals("PeptideShaker", as.getName());
     }
 }

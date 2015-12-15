@@ -11,8 +11,6 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.google.common.eventbus.EventBus;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +19,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+
 import no.uib.olsdialog.OLSDialog;
 import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_ID_SEARCH;
 import no.uib.olsdialog.OLSInputable;

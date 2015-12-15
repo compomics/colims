@@ -189,6 +189,7 @@ public class UtilitiesPtmSettingsMapper {
      *
      * @param modificationName the modification name
      * @return the Colims SearchModification instance
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     public SearchModification mapByName(final String modificationName) throws ModificationMappingException {
         SearchModification searchModification;

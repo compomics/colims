@@ -19,6 +19,8 @@ import javax.swing.JTree;
  */
 public class MzTabExportDialog extends javax.swing.JDialog {
 
+    private static final long serialVersionUID = -5194443448058463427L;
+
     /**
      * The export directory chooser.
      */
@@ -198,7 +200,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         studyVariablesAddLabel = new javax.swing.JLabel();
         assaysToSVPanel = new javax.swing.JPanel();
         assaysToSVListScrollPane = new javax.swing.JScrollPane();
-        assaysToSVList = new javax.swing.JList<String>();
+        assaysToSVList = new javax.swing.JList<>();
         assaysToSVButtonsParentPanel = new javax.swing.JPanel();
         assaysToSVButtonsPanel = new javax.swing.JPanel();
         addAssaysToSVButton = new javax.swing.JButton();
@@ -209,7 +211,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         analyticalRunTree = new javax.swing.JTree();
         assaysToRunsPanel = new javax.swing.JPanel();
         assaysToRunsListScrollPane = new javax.swing.JScrollPane();
-        assaysToRunsList = new javax.swing.JList<String>();
+        assaysToRunsList = new javax.swing.JList<>();
         assayToRunsButtonsParentPanel = new javax.swing.JPanel();
         assaysToRunsButtonsPanel = new javax.swing.JPanel();
         addAssaysToRunsButton = new javax.swing.JButton();

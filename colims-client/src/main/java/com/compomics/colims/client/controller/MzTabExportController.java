@@ -252,7 +252,7 @@ public class MzTabExportController implements Controllable {
             List<String> selectedValuesList = mzTabExportDialog.getAssaysToCVList().getSelectedValuesList();
             if (!selectedValuesList.isEmpty() && isOneNodeSelected(mzTabExportDialog.getStudyVariableTree(), 1)) {
                 DefaultMutableTreeNode studyVariable = (DefaultMutableTreeNode) mzTabExportDialog.getStudyVariableTree().getSelectionPaths()[0].getLastPathComponent();
-                for (String assay : selectedValuesList) {
+                selectedValuesList.stream().forEach(assay -> {
                     //remove from assay list
                     assaysToCVListModel.removeElement(assay);
 
@@ -261,7 +261,7 @@ public class MzTabExportController implements Controllable {
                     studyVariableTreeModel.insertNodeInto(assayTreeNode, studyVariable, studyVariableTreeModel.getChildCount(studyVariable));
 
                     mzTabExportDialog.getStudyVariableTree().expandPath(new TreePath(studyVariable.getPath()));
-                }
+                });
             } else {
                 MessageEvent messageEvent = new MessageEvent("Assay assigment", "Please select one or more assays and a study variable to assign the assay(s) to.", JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);
@@ -290,7 +290,7 @@ public class MzTabExportController implements Controllable {
             List<String> selectedValuesList = mzTabExportDialog.getAssaysToRunsList().getSelectedValuesList();
             if (!selectedValuesList.isEmpty() && isOneNodeSelected(mzTabExportDialog.getAnalyticalRunTree(), 2)) {
                 DefaultMutableTreeNode analyticalRun = (DefaultMutableTreeNode) mzTabExportDialog.getAnalyticalRunTree().getSelectionPaths()[0].getLastPathComponent();
-                for (String assay : selectedValuesList) {
+                selectedValuesList.stream().forEach(assay -> {
                     //remove from assay list
                     assaysToRunsListModel.removeElement(assay);
 
@@ -299,7 +299,7 @@ public class MzTabExportController implements Controllable {
                     analyticalRunTreeModel.insertNodeInto(assayTreeNode, analyticalRun, analyticalRunTreeModel.getChildCount(analyticalRun));
 
                     mzTabExportDialog.getAnalyticalRunTree().expandPath(new TreePath(analyticalRun.getPath()));
-                }
+                });
             } else {
                 MessageEvent messageEvent = new MessageEvent("Assay assigment", "Please select one or more assays and an analytical run to assign the assay(s) to.", JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);
@@ -362,14 +362,14 @@ public class MzTabExportController implements Controllable {
         assaysToRunsListModel.clear();
 
         //build analytical run tree
-        for (Sample sample : mzTabExport.getSamples()) {
+        mzTabExport.getSamples().stream().forEach(sample -> {
             DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample);
             analyticalRunRootNode.add(sampleNode);
-            for (AnalyticalRun analyticalRun : sample.getAnalyticalRuns()) {
+            sample.getAnalyticalRuns().stream().forEach(analyticalRun -> {
                 DefaultMutableTreeNode analyticalRunNode = new DefaultMutableTreeNode(analyticalRun);
                 sampleNode.add(analyticalRunNode);
-            }
-        }
+            });
+        });
         expandTree(mzTabExportDialog.getAnalyticalRunTree());
 
         //reset second panel text field
@@ -393,7 +393,8 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Show the correct info and disable/enable the right buttons when switching between cards.
+     * Show the correct info and disable/enable the right buttons when switching
+     * between cards.
      */
     private void onCardSwitch() {
         String currentCardName = GuiUtils.getVisibleChildComponent(mzTabExportDialog.getTopPanel());
@@ -449,7 +450,7 @@ public class MzTabExportController implements Controllable {
         MzTabType selectedMzTabType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -549,7 +550,7 @@ public class MzTabExportController implements Controllable {
         MzTabMode selectedMzTabMode = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -561,10 +562,11 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Check if one and only one one with the given level is selected in the tree. Returns false if nothing or another
-     * path level (assay, root path) is selected.
+     * Check if one and only one one with the given level is selected in the
+     * tree. Returns false if nothing or another path level (assay, root path)
+     * is selected.
      *
-     * @param tree  the JTree instance
+     * @param tree the JTree instance
      * @param level the level of the node (0 for root node)
      * @return the boolean result
      */
@@ -585,10 +587,11 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Check if one or more nodes are selected in the tree. Returns false if nothing or another path level (study
-     * variable or assay, root path) is selected.
+     * Check if one or more nodes are selected in the tree. Returns false if
+     * nothing or another path level (study variable or assay, root path) is
+     * selected.
      *
-     * @param tree  the JTree instance
+     * @param tree the JTree instance
      * @param level the level of the node(s) (0 for root node) nodes nodes
      * @return the boolean result
      */
@@ -633,8 +636,8 @@ public class MzTabExportController implements Controllable {
     /**
      * Remove all assays from the given tree.
      *
-     * @param treeModel        the JTree model instance
-     * @param rootNode         the tree root node
+     * @param treeModel the JTree model instance
+     * @param rootNode the tree root node
      * @param assayParentLevel the level of the assay parent node
      */
     private void removeAllAssaysFromTree(DefaultTreeModel treeModel, DefaultMutableTreeNode rootNode, int assayParentLevel) {
@@ -682,7 +685,8 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Update the analytical runs to export; set the list of runs and assays references in the MzTabExport instance.
+     * Update the analytical runs to export; set the list of runs and assays
+     * references in the MzTabExport instance.
      */
     private void updateAnalyticalRunsToExport() {
         List<AnalyticalRun> analyticalRuns = mzTabExport.getRuns();

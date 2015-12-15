@@ -221,7 +221,7 @@ public class ProtocolManagementController implements Controllable {
         //set model and renderer
         typedCvParamSummaryListModel = new TypedCvParamSummaryListModel();
         protocolEditDialog.getCvParamSummaryList().setModel(typedCvParamSummaryListModel);
-        protocolEditDialog.getCvParamSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<ProtocolCvParam>());
+        protocolEditDialog.getCvParamSummaryList().setCellRenderer(new TypedCvParamSummaryCellRenderer<>());
 
         //add action listeners
         protocolEditDialog.getCvParamSummaryList().getSelectionModel().addListSelectionListener(e -> {

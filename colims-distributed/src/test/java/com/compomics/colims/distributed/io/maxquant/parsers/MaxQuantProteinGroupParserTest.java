@@ -32,6 +32,7 @@ public class MaxQuantProteinGroupParserTest {
 
     /**
      * Test of parseMaxQuantProteinGroups method, of class MaxQuantProteinGroupParser.
+     * @throws java.lang.Exception in case of an exception
      */
     @Test
     public void testParse() throws Exception {

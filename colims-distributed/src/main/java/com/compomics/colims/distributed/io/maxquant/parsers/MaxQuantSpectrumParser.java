@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.zip.GZIPOutputStream;
+import org.apache.log4j.Logger;
 
 /**
  * Parser for the MaxQuant msms.txt output files that creates {@link Spectrum} instances.
@@ -26,6 +27,11 @@ import java.util.zip.GZIPOutputStream;
  */
 @Component("maxQuantSpectrumParser")
 public class MaxQuantSpectrumParser {
+
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(MaxQuantSpectrumParser.class);
 
     private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
             MaxQuantMSMSHeaders.ID,
@@ -136,9 +142,9 @@ public class MaxQuantSpectrumParser {
             results.append("SCANS=").append(scanNumber).append(newLine);
         }
 
-        for (Map.Entry<Double, Double> entry : peakList.entrySet()) {
+        peakList.entrySet().stream().forEach((entry) -> {
             results.append(entry.getKey()).append(" ").append(entry.getValue()).append(newLine);
-        }
+        });
 
         results.append("END IONS").append(newLine).append(newLine);
 
@@ -154,7 +160,7 @@ public class MaxQuantSpectrumParser {
 
             spectrumFile.setContent(outputStream.toByteArray());
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
 
         return spectrumFile;

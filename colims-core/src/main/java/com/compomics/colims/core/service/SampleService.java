@@ -32,6 +32,7 @@ public interface SampleService extends GenericService<Sample, Long> {
      * Find the sample by ID and fetch the sample runs.
      *
      * @param sampleId the sample ID
+     * @return the found sample
      */
     Sample findByIdAndFetchRuns(Long sampleId);
 

@@ -61,12 +61,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
             }
         });
 
-        cancelButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                MainHelpDialog.this.dispose();
-            }
-        });
+        cancelButton.addActionListener(e -> MainHelpDialog.this.dispose());
     }
 
     /**

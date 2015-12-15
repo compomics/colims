@@ -111,20 +111,17 @@ public class ProteinGroupRepositoryTest {
         assertThat(proteinGroupCountForRun, is(0L));
     }
 
-    @Test
-    public void testGetProteinGroupsProjections(){
-        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
-
-        Object[] proteinGroupsProjections = proteinGroupRepository.getProteinGroupsProjections(analyticalRun);
-
-        System.out.println("------");
-    }
-
+//    @Test
+//    public void testGetProteinGroupsProjections(){
+//        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
+//
+//        Object[] proteinGroupsProjections = proteinGroupRepository.getProteinGroupsProjections(analyticalRun);
+//    }
 //    @Test
 //    public void testHibernateSearchFindBySequence() {
 //        //(re)build the lucene indexes
 //        proteinGroupRepository.rebuildIndex();
-//        
+//
 //        Protein foundProtein = proteinGroupRepository.hibernateSearchFindBySequence("MGDERPHYYGKHGTPQKYDPTFKG");
 //        Assert.assertNotNull(foundProtein);
 //        Assert.assertEquals("MGDERPHYYGKHGTPQKYDPTFKG", foundProtein.getSequence());

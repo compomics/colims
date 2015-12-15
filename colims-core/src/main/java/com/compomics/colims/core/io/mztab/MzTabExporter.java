@@ -198,12 +198,8 @@ public class MzTabExporter {
      * @return the protein search engine score String value
      */
     private String getProteinSearchEngineScore() {
-        StringBuilder searchEngineScore = new StringBuilder();
 
-        searchEngineScore.append(METADATA_PREFIX).append(COLUMN_DELIMITER)
-                .append(String.format(PROTEIN_SEARCH_ENGINE_SCORE, 1)).append(COLUMN_DELIMITER);
-
-        return searchEngineScore.toString();
+        return METADATA_PREFIX + COLUMN_DELIMITER + String.format(PROTEIN_SEARCH_ENGINE_SCORE, 1) + COLUMN_DELIMITER;
     }
 
 }

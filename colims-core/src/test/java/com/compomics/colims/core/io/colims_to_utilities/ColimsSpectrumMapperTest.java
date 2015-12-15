@@ -36,6 +36,7 @@ public class ColimsSpectrumMapperTest {
 
     /**
      * Test of map method, of class ColimsSpectrumMapper.
+     * @throws java.lang.Exception in case of an exception
      */
     @Test
     public void testMap() throws Exception {

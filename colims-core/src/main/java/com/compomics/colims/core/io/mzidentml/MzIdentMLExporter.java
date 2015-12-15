@@ -24,12 +24,13 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
- * MzIdentML exporter class, populates models from the jmzidml library then uses the MzIdentMLMarshaller to marshal them
- * into valid XML.
+ * MzIdentML exporter class, populates models from the jmzidml library then uses
+ * the MzIdentMLMarshaller to marshal them into valid XML.
  *
  * @author Iain
  */
@@ -54,7 +55,7 @@ public class MzIdentMLExporter {
     @Value("${colims-core.version}")
     private final String COLIMS_VERSION = "latest";
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     private JsonNode mzIdentMLParamList;
     /**
      * The analytical run to export.
@@ -98,7 +99,8 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Assemble necessary data into an MZIdentML object and it's many properties.
+     * Assemble necessary data into an MZIdentML object and it's many
+     * properties.
      *
      * @return MZIdentML a fully furnished (hopefully) object
      */
@@ -159,7 +161,6 @@ public class MzIdentMLExporter {
         Institution institution = user.getInstitution();
 
         // TODO: if instiution does not have at least name or address then throw error (will be invalid)
-
         Organization org = new Organization(); //getContact("LAB_PLACEHOLDER", Organization.class);
         org.setId(institution.getName());
 
@@ -256,7 +257,6 @@ public class MzIdentMLExporter {
         searchDatabase.getCvParam().add(getDataItem("SearchDatabase.type", CvParam.class));
 
         // NOTE: if decoy database used then cv param should be child of MS:1001450 here
-
         UserParam databaseName = new UserParam();
         databaseName.setName(fasta.getName());
 
@@ -293,7 +293,6 @@ public class MzIdentMLExporter {
         spectrumProtocol.getThreshold().getCvParam().add(getDataItem("Threshold.no", CvParam.class));
 
         // TODO: threshold value and type as cv param
-
         if (searchParameters.getSearchParametersHasModifications().size() > 0) {
             spectrumProtocol.setModificationParams(new ModificationParams());
 
@@ -304,9 +303,7 @@ public class MzIdentMLExporter {
                 mzSearchMod.setFixedMod(searchHasMod.getModificationType() == ModificationType.FIXED);
                 mzSearchMod.setMassDelta(colimsSearchMod.getAverageMassShift().floatValue());
 
-                for (String residue : searchHasMod.getResidues().split("")) {
-                    mzSearchMod.getResidues().add(residue);
-                }
+                mzSearchMod.getResidues().addAll(Arrays.asList(searchHasMod.getResidues().split("")));
 
                 mzSearchMod.getCvParam().add(modificationToCvParam(colimsSearchMod));
 
@@ -387,14 +384,14 @@ public class MzIdentMLExporter {
         proteinProtocol.getThreshold().getCvParam().add(getDataItem("Threshold.no", CvParam.class));
 
         // TODO: threshold value and type as cv param
-
         collection.setProteinDetectionProtocol(proteinProtocol);
 
         return collection;
     }
 
     /**
-     * Iterate the spectrum data for this run and populate the necessary objects with it.
+     * Iterate the spectrum data for this run and populate the necessary objects
+     * with it.
      */
     private void assembleSpectrumData() throws IOException {
         SpectrumIdentificationList spectrumIdentificationList = new SpectrumIdentificationList();
@@ -419,7 +416,7 @@ public class MzIdentMLExporter {
             SpectrumIdentification spectrumIdentification = new SpectrumIdentification();
             spectrumIdentification.setId("SPECTRUM-" + spectrum.getId().toString());
 
-            for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
+            spectrum.getSpectrumFiles().stream().forEach(spectrumFile -> {
                 SpectraData spectraData = new SpectraData();
                 spectraData.setId("SD-" + spectrumFile.getId().toString());
                 spectraData.setLocation("data.mgf");                        // NOTE: may not be accurate
@@ -432,7 +429,7 @@ public class MzIdentMLExporter {
                 inputSpectra.setSpectraData(spectraData);
 
                 spectrumIdentification.getInputSpectra().add(inputSpectra);
-            }
+            });
 
             SpectrumIdentificationResult spectrumIdentificationResult = createSpectrumIdentificationResult(spectrum);
             SpectrumIdentificationItem spectrumIdentificationItem = createSpectrumIdentificationItem(spectrum);
@@ -459,7 +456,7 @@ public class MzIdentMLExporter {
                         //calculate peptide location values
                         //more than one position is possible
                         List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(proteinGroupHasProtein.getProtein().getSequence(), colimsPeptide.getSequence());
-                        for (PeptidePosition peptidePosition : peptidePositions) {
+                        peptidePositions.stream().forEach(peptidePosition -> {
                             PeptideEvidence evidence = new PeptideEvidence();
                             evidence.setDBSequence(dbSequence);
                             evidence.setPeptide(mzPeptide);
@@ -475,7 +472,7 @@ public class MzIdentMLExporter {
                             PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
                             evidenceRef.setPeptideEvidence(evidence);
                             spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
-                        }
+                        });
                     }
                 }
             }
@@ -587,7 +584,7 @@ public class MzIdentMLExporter {
      * Get the CV representation of a Colims modification.
      *
      * @param modification A colims modification
-     * @param <T>          Subclass of AbstractModification
+     * @param <T> Subclass of AbstractModification
      * @return Modification in CvParam form
      * @throws IOException
      */
@@ -610,7 +607,7 @@ public class MzIdentMLExporter {
      *
      * @param name Contact name
      * @param type Desired return type
-     * @param <T>  Subclass of AbstractContact
+     * @param <T> Subclass of AbstractContact
      * @return Contact as subclass of AbstractContact
      */
     private <T extends AbstractContact> T getContact(String name, Class<T> type) throws IOException {
@@ -638,8 +635,9 @@ public class MzIdentMLExporter {
      *
      * @param name Name of key or dot notation path to key
      * @param type Type of objects to return
-     * @param <T>  Subclass of MzIdentMLObject
+     * @param <T> Subclass of MzIdentMLObject
      * @return List of objects of type T
+     * @throws java.io.IOException in case of an I/O related problem
      */
     public <T extends MzIdentMLObject> List<T> getDataList(String name, Class<T> type) throws IOException {
         JsonNode listNode = getTargetNode(name);
@@ -666,8 +664,9 @@ public class MzIdentMLExporter {
      *
      * @param name Name of key or dot notation path to key
      * @param type Type of object to be returned
-     * @param <T>  Subclass of MzIdentMLObject
+     * @param <T> Subclass of MzIdentMLObject
      * @return Object of type T
+     * @throws java.io.IOException in case of an I/O related problem
      */
     public <T extends MzIdentMLObject> T getDataItem(String name, Class<T> type) throws IOException {
         JsonNode node = getTargetNode(name);

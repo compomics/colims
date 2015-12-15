@@ -27,7 +27,9 @@ import com.compomics.colims.client.view.SpectrumPopupDialog;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.Project;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.util.gui.TableProperties;
@@ -242,9 +244,9 @@ public class ProteinOverviewController implements Controllable {
                 setPsmTableCellRenderers();
 
                 proteinGroupTableModel.reset(selectedAnalyticalRun);
-                updateProteinTable();
+                updateProteinGroupTable();
 
-                // Set scrollpane to match row count (TODO: doesn't work!)
+                //Set scrollpane to match row count (TODO: doesn't work!)
                 proteinOverviewPanel.getProteinGroupTableScrollPane().setPreferredSize(new Dimension(
                         proteinOverviewPanel.getProteinGroupTable().getPreferredSize().width,
                         proteinOverviewPanel.getProteinGroupTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
@@ -371,13 +373,13 @@ public class ProteinOverviewController implements Controllable {
                 proteinGroupTableModel.updateSort(proteinOverviewPanel.getProteinGroupTable().columnAtPoint(e.getPoint()));
                 proteinGroupTableModel.setPage(0);
 
-                updateProteinTable();
+                updateProteinGroupTable();
             }
         });
 
         proteinOverviewPanel.getFirstProteinGroupPageButton().addActionListener(e -> {
             proteinGroupTableModel.setPage(0);
-            updateProteinTable();
+            updateProteinGroupTable();
 
             proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(true);
             proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(false);
@@ -387,7 +389,7 @@ public class ProteinOverviewController implements Controllable {
 
         proteinOverviewPanel.getPrevProteinGroupPageButton().addActionListener(e -> {
             proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() - 1);
-            updateProteinTable();
+            updateProteinGroupTable();
 
             proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(true);
             proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(true);
@@ -400,7 +402,7 @@ public class ProteinOverviewController implements Controllable {
 
         proteinOverviewPanel.getNextProteinGroupPageButton().addActionListener(e -> {
             proteinGroupTableModel.setPage(proteinGroupTableModel.getPage() + 1);
-            updateProteinTable();
+            updateProteinGroupTable();
 
             proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(true);
             proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(true);
@@ -413,7 +415,7 @@ public class ProteinOverviewController implements Controllable {
 
         proteinOverviewPanel.getLastProteinGroupPageButton().addActionListener(e -> {
             proteinGroupTableModel.setPage(proteinGroupTableModel.getMaxPage());
-            updateProteinTable();
+            updateProteinGroupTable();
 
             proteinOverviewPanel.getNextProteinGroupPageButton().setEnabled(false);
             proteinOverviewPanel.getPrevProteinGroupPageButton().setEnabled(true);
@@ -431,7 +433,7 @@ public class ProteinOverviewController implements Controllable {
                 if (filterText.matches("^[a-zA-Z0-9]*$")) {
                     proteinGroupTableModel.setFilter(proteinOverviewPanel.getProteinGroupFilterTextField().getText());
 
-                    updateProteinTable();
+                    updateProteinGroupTable();
                 }
             }
         });
@@ -552,34 +554,31 @@ public class ProteinOverviewController implements Controllable {
         DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project.getTitle());
 
         if (project.getExperiments().size() > 0) {
-            for (Experiment experiment : project.getExperiments()) {
+            project.getExperiments().stream().forEach(experiment -> {
                 DefaultMutableTreeNode experimentNode = new DefaultMutableTreeNode(experiment.getTitle());
-
                 if (experiment.getSamples().size() > 0) {
-                    for (Sample sample : experiment.getSamples()) {
+                    experiment.getSamples().stream().forEach(sample -> {
                         DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample.getName());
-
                         if (sample.getAnalyticalRuns().size() > 0) {
-                            for (AnalyticalRun analyticalRun : sample.getAnalyticalRuns()) {
+                            sample.getAnalyticalRuns().stream().forEach(analyticalRun -> {
                                 DefaultMutableTreeNode runNode = new DefaultMutableTreeNode(analyticalRun);
-
                                 sampleNode.add(runNode);
-                            }
+                            });
                         }
                         experimentNode.add(sampleNode);
-                    }
+                    });
                 }
                 projectNode.add(experimentNode);
-            }
+            });
         }
 
         return projectNode;
     }
 
     /**
-     * Update protein table contents and label.
+     * Update the protein group table contents and label.
      */
-    private void updateProteinTable() {
+    private void updateProteinGroupTable() {
         if (selectedAnalyticalRun != null) {
             GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(selectedAnalyticalRun), false);
             proteinOverviewPanel.getProteinGroupPageLabel().setText(proteinGroupTableModel.getPageIndicator());
@@ -683,14 +682,14 @@ public class ProteinOverviewController implements Controllable {
     private List<PeptideTableRow> mapPeptideDTOs(List<PeptideDTO> peptideDTOs) {
         Map<PeptideDTO, PeptideTableRow> peptideTableRowMap = new HashMap<>();
 
-        for (PeptideDTO peptideDTO : peptideDTOs) {
+        peptideDTOs.stream().forEach((peptideDTO) -> {
             if (peptideTableRowMap.containsKey(peptideDTO)) {
                 PeptideTableRow peptideTableRow = peptideTableRowMap.get(peptideDTO);
                 peptideTableRow.addPeptideDTO(peptideDTO);
             } else {
                 peptideTableRowMap.put(peptideDTO, new PeptideTableRow(peptideDTO, proteinGroupSelectionModel.getSelected().get(0).getMainSequence()));
             }
-        }
+        });
 
         return new ArrayList<>(peptideTableRowMap.values());
     }

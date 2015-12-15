@@ -42,10 +42,10 @@ public class MzMLParserImpl implements MzMLParser {
     public void importMzMLFiles(List<File> mzMlfiles) {
         //clear map before importing
         mzMLUnmarshallers.clear();
-        for (File mzMlFile : mzMlfiles) {
+        mzMlfiles.stream().forEach((mzMlFile) -> {
             MzMLUnmarshaller mzMlUnmarshaller = new MzMLUnmarshaller(mzMlFile);
             mzMLUnmarshallers.put(mzMlFile.getName(), mzMlUnmarshaller);
-        }
+        });
     }
 
     @Override
@@ -66,10 +66,11 @@ public class MzMLParserImpl implements MzMLParser {
     }
 
     /**
-     * Adds the samples to the experiment. If no samples are found, a default sample is added.
+     * Adds the samples to the experiment. If no samples are found, a default
+     * sample is added.
      *
      * @param mzMLFileName the mzML file name
-     * @param experiment   the experiment
+     * @param experiment the experiment
      */
     private void addSamples(String mzMLFileName, Experiment experiment) throws MzMLUnmarshallerException, IOException, MappingException {
         LOGGER.info("Start parsing samples");
@@ -79,15 +80,14 @@ public class MzMLParserImpl implements MzMLParser {
         SampleList sampleList = mzMLUnmarshallers.get(mzMLFileName).unmarshalFromXpath("/sampleList", SampleList.class);
         if (sampleList != null) {
             LOGGER.debug("Unmarshalling " + sampleList.getCount() + " sample(s) from mzML file: " + mzMLFileName);
-            for (uk.ac.ebi.jmzml.model.mzml.Sample mzMLSample : sampleList.getSample()) {
+            sampleList.getSample().stream().forEach(mzMLSample -> {
                 Sample sample = new Sample(mzMLSample.getId());
 
                 //a sample can contain mutliple materials
                 //Material material = new Material();
-
                 sample.setExperiment(experiment);
                 samples.add(sample);
-            }
+            });
         }
 
         //add default sample if list is empty
@@ -105,10 +105,11 @@ public class MzMLParserImpl implements MzMLParser {
     }
 
     /**
-     * Adds the run to the correct sample from the sample list, as there is only one run present in a mzML file.
+     * Adds the run to the correct sample from the sample list, as there is only
+     * one run present in a mzML file.
      *
      * @param mzMLFileName the mzML file name
-     * @param samples      the sample list
+     * @param samples the sample list
      */
     private void addRun(String mzMLFileName, List<Sample> samples) throws MzMLUnmarshallerException, IOException, MappingException {
         //get run
@@ -151,7 +152,7 @@ public class MzMLParserImpl implements MzMLParser {
     /**
      * Adds the instrument to the analytical run
      *
-     * @param mzMLFileName  the mzML file name
+     * @param mzMLFileName the mzML file name
      * @param analyticalRun the analytical run
      */
     private void addInstrument(String mzMLFileName, AnalyticalRun analyticalRun) {
@@ -201,7 +202,7 @@ public class MzMLParserImpl implements MzMLParser {
         //set analyzers
         if (componentList.getAnalyzer() != null && !componentList.getAnalyzer().isEmpty()) {
             List<InstrumentCvParam> analyzers = new ArrayList<>();
-            for (AnalyzerComponent analyzerComponent : componentList.getAnalyzer()) {
+            componentList.getAnalyzer().stream().forEach(analyzerComponent -> {
                 InstrumentCvParam analyzer = new InstrumentCvParam();
                 if (analyzerComponent.getCvParam() != null && !analyzerComponent.getCvParam().isEmpty()) {
                     CVParam cVParam = analyzerComponent.getCvParam().get(0);
@@ -212,7 +213,7 @@ public class MzMLParserImpl implements MzMLParser {
                 analyzer.setcvTermType(CvParamType.ANALYZER);
 
                 analyzers.add(analyzer);
-            }
+            });
             //set relations
             instrument.setAnalyzers(analyzers);
         }
@@ -226,7 +227,7 @@ public class MzMLParserImpl implements MzMLParser {
     /**
      * Adds spectra to the analytical run
      *
-     * @param mzMLFileName  the mzML file name
+     * @param mzMLFileName the mzML file name
      * @param analyticalRun the analytical run
      */
     private void addSpectra(String mzMLFileName, AnalyticalRun analyticalRun) throws MzMLUnmarshallerException, IOException, MappingException {

@@ -8,7 +8,6 @@
 /colims-distributed/derby.log
 /target/
 /derby.log
-/target/
 pom.xml~
 .gitignore~
 
@@ -41,20 +40,11 @@ pom.xml~
 # .idea/mongoSettings.xml
 
 ## File-based project format:
-*.ipr
-*.iws
-
 ## Plugin-specific files:
 
 # IntelliJ
-out/
-
 # mpeltonen/sbt-idea plugin
-.idea_modules/
-
 # JIRA plugin
-atlassian-ide-plugin.xml
-
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
 crashlytics.properties

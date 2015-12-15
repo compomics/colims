@@ -56,6 +56,7 @@ public class MaxQuantParserTest {
 
     /**
      * Test of getIdentificationForSpectrum method, of class MaxQuantParser.
+     * @throws java.lang.Exception in case of an exception
      */
     @Test
     public void testGetIdentificationForSpectrum() throws Exception {
@@ -73,6 +74,7 @@ public class MaxQuantParserTest {
 
     /**
      * Test of getSpectra method, of class MaxQuantParser.
+     * @throws java.lang.Exception in case of an exception
      */
     @Test
     public void testGetSpectra() throws Exception {
