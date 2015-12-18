@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This service cascade deletes an entity (Project, Experiment, Sample,
- * AnalyticalRun) from the database.
+ * This service cascade deletes an entity (Project, Experiment, Sample, AnalyticalRun) from the database.
  * <p/>
  * Created by Niels Hulstaert on 9/09/15.
  */
@@ -60,7 +59,9 @@ public class DeleteServiceImpl implements DeleteService {
             proteinIds = proteinRepository.getConstraintLessProteinIdsForRuns(runIds);
             modificationIds = modificationRepository.getConstraintLessModificationIdsForRuns(runIds);
             searchParametersIds = searchParametersRepository.getConstraintLessSearchParameterIdsForRuns(runIds);
-            searchModificationIds = searchModificationRepository.getConstraintLessSearchModificationIdsForRuns(runIds);
+            if (!searchParametersIds.isEmpty()) {
+                searchModificationIds = searchModificationRepository.getConstraintLessSearchModIdsForSearchParams(searchParametersIds);
+            }
         }
 
         //delete the analytical runs
@@ -92,7 +93,7 @@ public class DeleteServiceImpl implements DeleteService {
      * Cascade delete the given entity from the database.
      *
      * @param entityClass the class of the enitity to delete
-     * @param entityId the entity ID
+     * @param entityId    the entity ID
      */
     private void deleteEntity(Class entityClass, Long entityId) {
         //get the entity from the database
@@ -117,11 +118,10 @@ public class DeleteServiceImpl implements DeleteService {
     }
 
     /**
-     * Fetch the analytical runs associated with the given entity. Returns an
-     * empty list of none were found.
+     * Fetch the analytical runs associated with the given entity. Returns an empty list of none were found.
      *
      * @param entityClass the class of the entity to delete
-     * @param entityId the ID of the entity to delete
+     * @param entityId    the ID of the entity to delete
      * @return the list of analytical runs attached to the given entity
      */
     private List<AnalyticalRun> fetchAnalyticalRuns(Class entityClass, Long entityId) {

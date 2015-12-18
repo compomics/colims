@@ -38,11 +38,11 @@ public interface SearchModificationRepository extends GenericRepository<SearchMo
     SearchModification findByUtilitiesPtmName(String utilitiesPtmName);
 
     /**
-     * Get the IDs of the modifications that are only related to the given runs.
+     * Get the IDs of the search modifications that are only related to the given search parameters.
      *
-     * @param analyticalRunIds the list of analytical run IDs
-     * @return the list of protein IDs
+     * @param searchParametersIds the list of search parameters IDs
+     * @return the list of search modification IDs
      */
-    List<Long> getConstraintLessSearchModificationIdsForRuns(List<Long> analyticalRunIds);
+    List<Long> getConstraintLessSearchModIdsForSearchParams(List<Long> searchParametersIds);
 
 }

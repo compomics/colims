@@ -10,27 +10,11 @@ import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.google.common.eventbus.EventBus;
-import java.awt.Window;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
 import no.uib.olsdialog.OLSDialog;
-import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_ID_SEARCH;
 import no.uib.olsdialog.OLSInputable;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
-import org.jdesktop.beansbinding.Binding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.beansbinding.Bindings;
-import org.jdesktop.beansbinding.ELProperty;
+import org.jdesktop.beansbinding.*;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
@@ -39,6 +23,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_ID_SEARCH;
 
 /**
  * The FASTA db management view controller.
@@ -290,7 +285,6 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
     /**
      * Show the OLS dialog.
-     *
      */
     private void showOlsDialog() {
         String ontology = "NEWT UniProt Taxonomy Database [NEWT]";
@@ -328,6 +322,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog.getVersionTextField().setText("");
         fastaDbManagementDialog.getTaxonomyTextField().setText("");
         fastaDbManagementDialog.getSpeciesTextField().setText("");
+        fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
     }
 
 }

@@ -44,9 +44,9 @@ public class SearchModificationHibernateRepository extends GenericHibernateRepos
     }
 
     @Override
-    public List<Long> getConstraintLessSearchModificationIdsForRuns(List<Long> analyticalRunIds) {
+    public List<Long> getConstraintLessSearchModIdsForSearchParams(List<Long> searchParametersIds) {
         SQLQuery sqlQuery = (SQLQuery) getCurrentSession().getNamedQuery("SearchModification.getConstraintLessSearchModificationIdsForRuns");
-        sqlQuery.setParameterList("ids", analyticalRunIds);
+        sqlQuery.setParameterList("ids", searchParametersIds);
         sqlQuery.addScalar("search_modification.id", LongType.INSTANCE);
 
         return sqlQuery.list();

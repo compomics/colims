@@ -25,7 +25,12 @@ public abstract class EntityChangeEvent {
         /**
          * Updated entity event.
          */
-        UPDATED
+        UPDATED,
+
+        /**
+         * One or more runs have been added.
+         */
+        RUNS_ADDED
     }
     
     /**

@@ -56,7 +56,9 @@
         SELECT
         DISTINCT modification.id
         FROM modification
-        LEFT JOIN peptide_has_modification ON peptide_has_modification.l_modification_id = modification.id
+        LEFT JOIN peptide_has_modification ON
+        (
+        peptide_has_modification.l_modification_id = modification.id
         AND peptide_has_modification.id NOT IN
         (
         SELECT
@@ -66,6 +68,7 @@
         JOIN spectrum sp ON sp.id = pep.l_spectrum_id
         WHERE sp.l_analytical_run_id IN (:ids)
         )
+        )
         WHERE peptide_has_modification.l_modification_id IS NULL
     </sql-query>
 
@@ -73,7 +76,9 @@
         SELECT
         DISTINCT protein.id
         from protein
-        LEFT JOIN protein_group_has_protein ON protein_group_has_protein.l_protein_id = protein.id
+        LEFT JOIN protein_group_has_protein ON
+        (
+        protein_group_has_protein.l_protein_id = protein.id
         AND protein_group_has_protein.id NOT IN
         (
         SELECT
@@ -84,6 +89,7 @@
         JOIN spectrum sp ON sp.id = pep.l_spectrum_id
         WHERE sp.l_analytical_run_id IN (:ids)
         )
+        )
         WHERE protein_group_has_protein.l_protein_id IS NULL
     </sql-query>
 
@@ -91,26 +97,27 @@
         SELECT
         DISTINCT search_modification.id
         FROM search_modification
-        LEFT JOIN search_params_has_modification s_p_has_mod ON s_p_has_mod.id = search_modification.id
-        LEFT JOIN search_parameters s_p ON s_p.id = s_p_has_mod.l_search_parameters_id
-        LEFT JOIN search_and_validation_settings s_and_v_s ON s_and_v_s.l_search_parameters_id = s_p.id
-        AND s_p_has_mod.id NOT IN
+        LEFT JOIN search_params_has_modification ON
+        (
+        search_params_has_modification.l_search_modification_id = search_modification.id
+        AND search_params_has_modification.id NOT IN
         (
         SELECT
         s_p_has_mod.id
         FROM search_params_has_modification s_p_has_mod
-        JOIN search_parameters s_p ON s_p.id = s_p_has_mod.l_search_parameters_id
-        JOIN search_and_validation_settings s_and_v_s ON s_and_v_s.l_search_parameters_id = s_p.id
-        WHERE s_and_v_s.l_analytical_run_id in (:ids)
+        WHERE s_p_has_mod.l_search_parameters_id IN (:ids)
         )
-        WHERE s_p_has_mod.l_search_modification_id IS NULL;
+        )
+        WHERE search_params_has_modification.l_search_modification_id IS NULL
     </sql-query>
 
     <sql-query name="SearchParameters.getConstraintLessSearchParameterIdsForRuns">
         SELECT
         DISTINCT search_parameters.id
         FROM search_parameters
-        LEFT JOIN search_and_validation_settings ON search_and_validation_settings.l_search_parameters_id =
+        LEFT JOIN search_and_validation_settings ON
+        (
+        search_and_validation_settings.l_search_parameters_id =
         search_parameters.id
         AND search_and_validation_settings.id NOT IN
         (
@@ -118,6 +125,7 @@
         s_and_v_s.id
         FROM search_and_validation_settings s_and_v_s
         WHERE s_and_v_s.l_analytical_run_id IN (:ids)
+        )
         )
         WHERE search_and_validation_settings.l_search_parameters_id IS NULL
     </sql-query>

@@ -1,6 +1,8 @@
 package com.compomics.colims.client.event;
 
-import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.AnalyticalRun;
+
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -8,25 +10,13 @@ import com.compomics.colims.model.Sample;
 public class SampleChangeEvent extends EntityChangeEvent {
 
     /**
-     * The Sample instance.
-     */
-    private final Sample sample;
-    /**
      * The sample ID.
      */
     private final Long sampleId;
-
     /**
-     * Constructor.
-     *
-     * @param type   the change type
-     * @param sample the Sample instance
+     * The analytical runs associated with the sample.
      */
-    public SampleChangeEvent(final Type type, final Sample sample) {
-        super(type);
-        this.sample = sample;
-        this.sampleId = null;
-    }
+    private List<AnalyticalRun> analyticalRuns;
 
     /**
      * Constructor.
@@ -36,15 +26,26 @@ public class SampleChangeEvent extends EntityChangeEvent {
      */
     public SampleChangeEvent(final Type type, final Long sampleId) {
         super(type);
-        this.sample = null;
         this.sampleId = sampleId;
     }
 
-    public Sample getSample() {
-        return sample;
+    /**
+     * Constructor.
+     *
+     * @param type           the change type
+     * @param sampleId       the sample ID
+     * @param analyticalRuns the list of analytical runs
+     */
+    public SampleChangeEvent(final Type type, final Long sampleId, final List<AnalyticalRun> analyticalRuns) {
+        this(type, sampleId);
+        this.analyticalRuns = analyticalRuns;
     }
 
     public Long getSampleId() {
         return sampleId;
+    }
+
+    public List<AnalyticalRun> getAnalyticalRuns() {
+        return analyticalRuns;
     }
 }

@@ -3,6 +3,7 @@ package com.compomics.colims.client.controller;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
+import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ExperimentBinaryFileDialog;
@@ -13,6 +14,7 @@ import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -77,7 +79,7 @@ public class ExperimentEditController implements Controllable {
     @PostConstruct
     public void init() {
         //register to event bus
-        //eventBus.register(this);
+        eventBus.register(this);
 
         //init view
         experimentEditDialog = new ExperimentEditDialog(mainController.getMainFrame(), true);
@@ -223,6 +225,36 @@ public class ExperimentEditController implements Controllable {
         experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
 
         showView();
+    }
+
+    /**
+     * Listen to a ExperimentChangeEvent.
+     *
+     * @param experimentChangeEvent the ExperimentChangeEvent instance
+     */
+    @Subscribe
+    public void onExperimentChangeEvent(ExperimentChangeEvent experimentChangeEvent) {
+        if (experimentEditDialog.isVisible() && experimentToEdit.getId().equals(experimentChangeEvent.getExperimentId())) {
+            if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                JOptionPane.showMessageDialog(experimentEditDialog, "Another user removed this experiment so the experiment edit dialog will close.", "Experiment removed", JOptionPane.WARNING_MESSAGE);
+                experimentEditDialog.dispose();
+            }
+        }
+    }
+
+    /**
+     * Listen to a ProjectChangeEvent.
+     *
+     * @param projectChangeEvent the ProjectChangeEvent instance
+     */
+    @Subscribe
+    public void onProjectChangeEvent(ProjectChangeEvent projectChangeEvent) {
+        if (experimentEditDialog.isVisible() && experimentToEdit.getProject().getId().equals(projectChangeEvent.getProjectId())) {
+            if (projectChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                JOptionPane.showMessageDialog(experimentEditDialog, "Another user removed the project associated with this experiment so the experiment edit dialog will close.", "Project removed", JOptionPane.WARNING_MESSAGE);
+                experimentEditDialog.dispose();
+            }
+        }
     }
 
     /**

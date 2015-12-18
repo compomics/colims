@@ -41,6 +41,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The project management view controller.
@@ -113,7 +114,7 @@ public class ProjectManagementController implements Controllable {
     @Override
     public void init() {
         //register to event bus
-        //eventBus.register(this);
+        eventBus.register(this);
 
         //init view
         projectManagementPanel = new ProjectManagementPanel();
@@ -326,7 +327,7 @@ public class ProjectManagementController implements Controllable {
                     samples.remove(sampleToDelete);
                     samplesSelectionModel.clearSelection();
 
-                    eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete));
+                    eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete.getId()));
 
                     //remove sample from the selected experiment and update the table
                     getSelectedExperiment().getSamples().remove(sampleToDelete);
@@ -544,6 +545,13 @@ public class ProjectManagementController implements Controllable {
             //remove from overview table and clear selection
             boolean removed = samples.removeIf(sample -> sample.getId().equals(sampleChangeEvent.getSampleId()));
             if (removed) {
+                samplesSelectionModel.clearSelection();
+            }
+        } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.RUNS_ADDED)) {
+            Optional<Sample> foundSample = samples.stream().filter(sample -> sample.getId().equals(sampleChangeEvent.getSampleId())).findFirst();
+            if (foundSample.isPresent()) {
+                //update the runs
+                foundSample.get().setAnalyticalRuns(sampleChangeEvent.getAnalyticalRuns());
                 samplesSelectionModel.clearSelection();
             }
         }

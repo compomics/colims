@@ -67,12 +67,13 @@ public class SearchModificationRepositoryTest {
 
     @Test
     public void GetConstraintLessSearchModificationIdsForRuns() {
-        List<Long> runIds = new ArrayList<>();
-        runIds.add(1L);
+        List<Long> searchParametersIds = new ArrayList<>();
+        searchParametersIds.add(1L);
 
-        List<Long> searchModificationIds = searchModificationRepository.getConstraintLessSearchModificationIdsForRuns(runIds);
+        List<Long> searchModificationIds = searchModificationRepository.getConstraintLessSearchModIdsForSearchParams(searchParametersIds);
 
-        //2 search modifications linked to one search parameters entry that is linked to 2 runs, so no constraint less ones
-        Assert.assertEquals(0, searchModificationIds.size());
+        //2 search modifications linked to 3 search parameters entries, 1 search modification is linked to a single search parameters entry.
+        Assert.assertEquals(1, searchModificationIds.size());
+        Assert.assertEquals(2L, searchModificationIds.get(0).longValue());
     }
 }

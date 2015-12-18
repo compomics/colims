@@ -11,9 +11,7 @@ import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
-import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
-import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.SampleChangeEvent;
+import com.compomics.colims.client.event.*;
 import com.compomics.colims.client.event.admin.MaterialChangeEvent;
 import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -128,7 +126,7 @@ public class SampleEditController implements Controllable {
 
         materials = materialService.findAll();
 
-        //init sample analyticalruns table
+        //init sample analytical runs table
         SortedList<AnalyticalRun> sortedAnalyticalRuns = new SortedList<>(analyticalRuns, new IdComparator());
         analyticalRunsTableModel = GlazedListsSwing.eventTableModel(sortedAnalyticalRuns, new AnalyticalRunManagementTableFormat());
         sampleEditDialog.getAnalyticalRunsTable().setModel(analyticalRunsTableModel);
@@ -197,7 +195,7 @@ public class SampleEditController implements Controllable {
                     sampleEditDialog.getSaveOrUpdateButton().setText("update");
                     updateAnalyticalRunButtonsState(true);
                 }
-                SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, sampleToEdit);
+                SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, sampleToEdit.getId());
                 eventBus.post(sampleChangeEvent);
 
                 MessageEvent messageEvent = new MessageEvent("Sample store confirmation", "Sample " + sampleToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
@@ -387,6 +385,53 @@ public class SampleEditController implements Controllable {
     @Subscribe
     public void onMaterialChangeEvent(final MaterialChangeEvent materialChangeEvent) {
         materials = materialService.findAll();
+    }
+
+    /**
+     * Listen to a SampleChangeEvent.
+     *
+     * @param sampleChangeEvent the SampleChangeEvent instance
+     */
+    @Subscribe
+    public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
+        if (sampleEditDialog.isVisible() && sampleToEdit.getId().equals(sampleChangeEvent.getSampleId())) {
+            if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                JOptionPane.showMessageDialog(sampleEditDialog, "Another user removed this sample so the sample edit dialog will close.", "Experiment removed", JOptionPane.WARNING_MESSAGE);
+                sampleEditDialog.dispose();
+            } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.RUNS_ADDED)) {
+                analyticalRunsSelectionModel.clearSelection();
+            }
+        }
+    }
+
+    /**
+     * Listen to a ExperimentChangeEvent.
+     *
+     * @param experimentChangeEvent the ExperimentChangeEvent instance
+     */
+    @Subscribe
+    public void onExperimentChangeEvent(ExperimentChangeEvent experimentChangeEvent) {
+        if (sampleEditDialog.isVisible() && sampleToEdit.getExperiment().getId().equals(experimentChangeEvent.getExperimentId())) {
+            if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                JOptionPane.showMessageDialog(sampleEditDialog, "Another user removed the experiment associated with this sample so the sample edit dialog will close.", "Experiment removed", JOptionPane.WARNING_MESSAGE);
+                sampleEditDialog.dispose();
+            }
+        }
+    }
+
+    /**
+     * Listen to a ProjectChangeEvent.
+     *
+     * @param projectChangeEvent the ProjectChangeEvent instance
+     */
+    @Subscribe
+    public void onProjectChangeEvent(ProjectChangeEvent projectChangeEvent) {
+        if (sampleEditDialog.isVisible() && sampleToEdit.getExperiment().getProject().getId().equals(projectChangeEvent.getProjectId())) {
+            if (projectChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                JOptionPane.showMessageDialog(sampleEditDialog, "Another user removed the project associated with this sample so the sample edit dialog will close.", "Project removed", JOptionPane.WARNING_MESSAGE);
+                sampleEditDialog.dispose();
+            }
+        }
     }
 
     /**

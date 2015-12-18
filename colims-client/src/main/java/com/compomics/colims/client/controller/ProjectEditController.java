@@ -63,15 +63,6 @@ public class ProjectEditController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
-    /**
-     * Get the view of this controller.
-     *
-     * @return the ProjectEditDialog
-     */
-    public ProjectEditDialog getProjectEditDialog() {
-        return projectEditDialog;
-    }
-
     @Override
     @PostConstruct
     public void init() {
@@ -190,6 +181,21 @@ public class ProjectEditController implements Controllable {
     public void onUserChangeEvent(final UserChangeEvent userChangeEvent) {
         users.clear();
         users.addAll(userService.findAll());
+    }
+
+    /**
+     * Listen to a ProjectChangeEvent.
+     *
+     * @param projectChangeEvent the ProjectChangeEvent instance
+     */
+    @Subscribe
+    public void onExperimentChangeEvent(ProjectChangeEvent projectChangeEvent) {
+        if (projectEditDialog.isVisible() && projectToEdit.getId().equals(projectChangeEvent.getProjectId())) {
+            if (projectChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                JOptionPane.showMessageDialog(projectEditDialog, "Another user removed the project so the project edit dialog will close.", "Project removed", JOptionPane.WARNING_MESSAGE);
+                projectEditDialog.dispose();
+            }
+        }
     }
 
     /**

@@ -423,17 +423,17 @@ public class ProjectOverviewController implements Controllable {
      */
     @Subscribe
     public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
-        Sample sample = sampleChangeEvent.getSample();
-
-        if (sample.getExperiment().equals(getSelectedExperiment())) {
-            if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
-                samples.add(sample);
-            } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
-                samples.remove(sample);
-            } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
-                updateSample(sample);
-            }
-        }
+//        Sample sample = sampleChangeEvent.getSample();
+//
+//        if (sample.getExperiment().equals(getSelectedExperiment())) {
+//            if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
+//                samples.add(sample);
+//            } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+//                samples.remove(sample);
+//            } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
+//                updateSample(sample);
+//            }
+//        }
     }
 
     /**

@@ -24,7 +24,7 @@ public class Experiment extends AuditableDatabaseEntity {
     @Basic(optional = false)
     @NotBlank(message = "Please insert an experiment title.")
     @Length(min = 5, max = 100, message = "Title must be between {min} and {max} characters.")
-    @Column(name = "title", nullable = false, unique = true)
+    @Column(name = "title", nullable = false)
     private String title;
     /**
      * The experiment identifier number.

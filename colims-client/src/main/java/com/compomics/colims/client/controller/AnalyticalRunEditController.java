@@ -1,5 +1,9 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.ExperimentChangeEvent;
+import com.compomics.colims.client.event.ProjectChangeEvent;
+import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
@@ -55,6 +59,15 @@ public class AnalyticalRunEditController implements Controllable {
     private InstrumentService instrumentService;
     @Autowired
     private EventBus eventBus;
+
+    /**
+     * Get the view of this controller.
+     *
+     * @return the AnalyticalRunEditDialog
+     */
+    public AnalyticalRunEditDialog getAnalyticalRunEditDialog() {
+        return analyticalRunEditDialog;
+    }
 
     @Override
     @PostConstruct
@@ -140,6 +153,51 @@ public class AnalyticalRunEditController implements Controllable {
     public void onInstrumentChangeEvent(InstrumentChangeEvent instrumentChangeEvent) {
         instrumentBindingList.clear();
         instrumentBindingList.addAll(instrumentService.findAll());
+    }
+
+    /**
+     * Listen to a SampleChangeEvent.
+     *
+     * @param sampleChangeEvent the SampleChangeEvent instance
+     */
+    @Subscribe
+    public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
+        if (analyticalRunEditDialog.isVisible() && analyticalRunToEdit.getSample().getId().equals(sampleChangeEvent.getSampleId())) {
+            if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                JOptionPane.showMessageDialog(analyticalRunEditDialog, "Another user removed the sample associated with this run so the run edit dialog will close.", "Experiment removed", JOptionPane.WARNING_MESSAGE);
+                analyticalRunEditDialog.dispose();
+            }
+        }
+    }
+
+    /**
+     * Listen to a ExperimentChangeEvent.
+     *
+     * @param experimentChangeEvent the ExperimentChangeEvent instance
+     */
+    @Subscribe
+    public void onExperimentChangeEvent(ExperimentChangeEvent experimentChangeEvent) {
+        if (analyticalRunEditDialog.isVisible() && analyticalRunToEdit.getSample().getExperiment().getId().equals(experimentChangeEvent.getExperimentId())) {
+            if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                JOptionPane.showMessageDialog(analyticalRunEditDialog, "Another user removed the experiment associated with this run so the run edit dialog will close.", "Experiment removed", JOptionPane.WARNING_MESSAGE);
+                analyticalRunEditDialog.dispose();
+            }
+        }
+    }
+
+    /**
+     * Listen to a ProjectChangeEvent.
+     *
+     * @param projectChangeEvent the ProjectChangeEvent instance
+     */
+    @Subscribe
+    public void onProjectChangeEvent(ProjectChangeEvent projectChangeEvent) {
+        if (analyticalRunEditDialog.isVisible() && analyticalRunToEdit.getSample().getExperiment().getProject().getId().equals(projectChangeEvent.getProjectId())) {
+            if (projectChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                JOptionPane.showMessageDialog(analyticalRunEditDialog, "Another user removed the project associated with this run so the run edit dialog will close.", "Project removed", JOptionPane.WARNING_MESSAGE);
+                analyticalRunEditDialog.dispose();
+            }
+        }
     }
 
     /**

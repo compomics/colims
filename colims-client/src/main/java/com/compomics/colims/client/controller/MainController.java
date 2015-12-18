@@ -21,8 +21,8 @@ import com.compomics.colims.core.authorization.PermissionException;
 import com.compomics.colims.core.distributed.model.CompletedDbTask;
 import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.*;
 import com.google.common.eventbus.EventBus;
@@ -96,7 +96,7 @@ public class MainController implements Controllable, ActionListener {
     @Autowired
     private ProjectService projectService;
     @Autowired
-    private SampleService sampleService;
+    private AnalyticalRunService analyticalRunService;
     @Autowired
     private EventBus eventBus;
     @Autowired
@@ -290,9 +290,21 @@ public class MainController implements Controllable, ActionListener {
         //if the task is a persist database task, get the sample with fetched runs
         if (completedDbTask.getDbTask() instanceof PersistDbTask) {
             PersistDbTask persistDbTask = (PersistDbTask) completedDbTask.getDbTask();
-            Sample sample = sampleService.findByIdAndFetchRuns(persistDbTask.getEnitityId());
+            java.util.List<AnalyticalRun> analyticalRuns = analyticalRunService.findBySampleId(persistDbTask.getEnitityId());
 
-            eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.UPDATED, sample));
+            //find the given sample in the projects
+            outerloop:
+            for (Project project : projects) {
+                for (Experiment experiment : project.getExperiments()) {
+                    for (Sample sample : experiment.getSamples()) {
+                        if (sample.getId().equals(persistDbTask.getEnitityId())) {
+                            sample.setAnalyticalRuns(analyticalRuns);
+                            eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.RUNS_ADDED, sample.getId(), analyticalRuns));
+                            break outerloop;
+                        }
+                    }
+                }
+            }
         } else {
             DeleteDbTask deleteDbTask = (DeleteDbTask) completedDbTask.getDbTask();
             //check the class of the deleted entity
