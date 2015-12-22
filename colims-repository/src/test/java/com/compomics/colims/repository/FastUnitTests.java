@@ -25,7 +25,8 @@ import org.junit.runners.Suite;
         SpectrumRepositoryTest.class,
         TypedCvParamRepositoryTest.class,
         UserRepositoryTest.class,
-        PeptideDTOTest.class
+        PeptideDTOTest.class,
+        SampleRepositoryTest.class
 })
 public class FastUnitTests {
 }

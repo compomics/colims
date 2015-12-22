@@ -5,9 +5,7 @@
 package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.ProjectRepository;
 import org.hibernate.LazyInitializationException;
@@ -41,14 +39,22 @@ public class ProjectServiceImpl implements ProjectService {
     public List<Project> findAllWithEagerFetching() {
         List<Project> projects = projectRepository.findAllWithFetchedExperiments();
         projects.stream().forEach((project) -> {
-            project.getExperiments().stream().forEach((experiment) -> {
-                experiment.getSamples().stream().forEach((sample) -> {
-                    sample.getAnalyticalRuns().size();
-                });
-            });
+            project.getExperiments().stream().
+                    forEach((experiment) -> experiment.getSamples().stream()
+                            .forEach((sample) -> sample.getAnalyticalRuns().size()));
         });
 
         return projects;
+    }
+
+    @Override
+    public Project findByIdWithEagerFetching(Long projectId) {
+        Project project = projectRepository.findByIdWithFetchedExperiments(projectId);
+        project.getExperiments().stream().
+                forEach((experiment) -> experiment.getSamples().stream()
+                        .forEach((sample) -> sample.getAnalyticalRuns().size()));
+
+        return project;
     }
 
     @Override

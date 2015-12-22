@@ -21,9 +21,7 @@ import com.compomics.colims.core.authorization.PermissionException;
 import com.compomics.colims.core.distributed.model.CompletedDbTask;
 import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
-import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.ProjectService;
-import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.core.service.*;
 import com.compomics.colims.model.*;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -39,7 +37,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 /**
  * The swing user interface main controller.
@@ -95,6 +95,10 @@ public class MainController implements Controllable, ActionListener {
     private UserService userService;
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private ExperimentService experimentService;
+    @Autowired
+    private SampleService sampleService;
     @Autowired
     private AnalyticalRunService analyticalRunService;
     @Autowired
@@ -218,18 +222,6 @@ public class MainController implements Controllable, ActionListener {
             }
         });
 
-        //while developing, set a default user in the userBean
-//        User currentUser = userService.findByName("admin");
-//        userService.fetchAuthenticationRelations(currentUser);
-//        userBean.setCurrentUser(currentUser);
-//        if (userBean.isAdmin()) {
-//            initAdminSection();
-//        } else {
-//            //disable admin menu
-//            mainFrame.getAdminMenu().setEnabled(false);
-//        }
-//        showView();
-
         //add change listener to tabbed pane
         mainFrame.getMainTabbedPane().addChangeListener(e -> {
             if (getSelectedTabTitle().equals(MainFrame.TASKS_TAB_TITLE)) {
@@ -278,46 +270,52 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Listen to a CompletedDbTaskEvent.
+     * Listen to a CompletedDbTaskEvent and update the projects list and different views accordingly.
      *
      * @param completedDbTaskEvent the completed database task event
      */
     @Subscribe
     public void onCompletedDbTaskEvent(final CompletedDbTaskEvent completedDbTaskEvent) {
-        CompletedDbTask completedDbTask = completedDbTaskEvent.getCompletedDbTask();
+        try {
+            CompletedDbTask completedDbTask = completedDbTaskEvent.getCompletedDbTask();
+            //check task type
+            //if the task is a persist database task, get the sample with fetched runs
+            if (completedDbTask.getDbTask() instanceof PersistDbTask) {
+                PersistDbTask persistDbTask = (PersistDbTask) completedDbTask.getDbTask();
+                java.util.List<AnalyticalRun> analyticalRuns = analyticalRunService.findBySampleId(persistDbTask.getEnitityId());
 
-        //check task type
-        //if the task is a persist database task, get the sample with fetched runs
-        if (completedDbTask.getDbTask() instanceof PersistDbTask) {
-            PersistDbTask persistDbTask = (PersistDbTask) completedDbTask.getDbTask();
-            java.util.List<AnalyticalRun> analyticalRuns = analyticalRunService.findBySampleId(persistDbTask.getEnitityId());
-
-            //find the given sample in the projects
-            outerloop:
-            for (Project project : projects) {
-                for (Experiment experiment : project.getExperiments()) {
-                    for (Sample sample : experiment.getSamples()) {
-                        if (sample.getId().equals(persistDbTask.getEnitityId())) {
-                            sample.setAnalyticalRuns(analyticalRuns);
-                            eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.RUNS_ADDED, sample.getId(), analyticalRuns));
-                            break outerloop;
+                //find the sample in the projects list
+                Sample sample = findSampleById(persistDbTask.getEnitityId());
+                if (sample != null) {
+                    sample.setAnalyticalRuns(analyticalRuns);
+                    eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.RUNS_ADDED, sample.getId(), analyticalRuns));
+                } else {
+                    //the sample was not found so another user persisted the given project/experiment/sample
+                    //and this client was not updated yet
+                    Object[] parentIds = sampleService.getParentIds(persistDbTask.getEnitityId());
+                    //first check if the project is present in this client
+                    Long projectId = (Long) parentIds[0];
+                    Project project = findProjectById(projectId);
+                    if (project == null) {
+                        //get the project with eager fetching and add it to the projects
+                        projects.add(projectService.findByIdWithEagerFetching(projectId));
+                        eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.CREATED, projectId));
+                    } else {
+                        //check if the experiment is present in the project management view
+                        Long experimentId = (Long) parentIds[1];
+                        if (isExperimentPresent(experimentId)) {
+                            //add the experiment to the previously found project
+                            project.getExperiments().add(experimentService.findByIdWithEagerFetching(experimentId));
+                            eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.CREATED, experimentId));
                         }
                     }
                 }
+            } else {
+                DeleteDbTask deleteDbTask = (DeleteDbTask) completedDbTask.getDbTask();
+                removeFromProjects(deleteDbTask);
             }
-        } else {
-            DeleteDbTask deleteDbTask = (DeleteDbTask) completedDbTask.getDbTask();
-            //check the class of the deleted entity
-            if (deleteDbTask.getDbEntityClass().equals(Project.class)) {
-                boolean removed = projects.removeIf(project -> project.getId().equals(deleteDbTask.getEnitityId()));
-                if (removed) {
-                    eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
-                }
-            } else if (deleteDbTask.getDbEntityClass().equals(Experiment.class)) {
-                eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
-            } else if (deleteDbTask.getDbEntityClass().equals(Sample.class)) {
-                eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
-            }
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex.getCause());
         }
     }
 
@@ -472,6 +470,103 @@ public class MainController implements Controllable, ActionListener {
         mainFrame.getInstrumentManagementMenuItem().addActionListener(this);
         mainFrame.getMaterialManagementMenuItem().addActionListener(this);
         mainFrame.getProtocolManagementMenuItem().addActionListener(this);
+    }
+
+    /**
+     * Find the project by ID in the projects list. Returns null if nothing was found.
+     *
+     * @param projectId the project ID
+     * @return the found Project instance
+     */
+    private Project findProjectById(Long projectId) {
+        Optional<Project> foundProject = projects.stream()
+                .filter(project -> project.getId().equals(projectId))
+                .findFirst();
+        return foundProject.isPresent() ? foundProject.get() : null;
+    }
+
+    /**
+     * Check if the experiment associated with one of the projects in the projects list is present.
+     *
+     * @param experimentId the experiment ID
+     * @return the found Project instance
+     */
+    private boolean isExperimentPresent(Long experimentId) {
+        java.util.List<Project> foundProjectsWithExperiment = projects.stream()
+                .filter(project -> project.getExperiments().stream()
+                        .anyMatch(experiment -> experiment.getId().equals(experimentId)))
+                .collect(Collectors.toList());
+        return foundProjectsWithExperiment.isEmpty() ? false : true;
+    }
+
+    /**
+     * Find the sample associated with one of the projects in the projects list by ID. Returns null if nothing was
+     * found.
+     *
+     * @param sampleId the sample ID
+     * @return the found Sample instance
+     */
+    private Sample findSampleById(Long sampleId) {
+        Sample foundSample = null;
+        outerloop:
+        for (Project project : projects) {
+            for (Experiment experiment : project.getExperiments()) {
+                for (Sample sample : experiment.getSamples()) {
+                    if (sample.getId().equals(sampleId)) {
+                        foundSample = sample;
+                        break outerloop;
+                    }
+                }
+            }
+        }
+        return foundSample;
+    }
+
+    /**
+     * Remove the entity from the projects list by class (Project, Experiment, Sample and AnalyticalRun) and ID and post
+     * the appropriate event on the event bus.
+     *
+     * @param deleteDbTask the DeleteDbTask instance
+     */
+    private void removeFromProjects(DeleteDbTask deleteDbTask) {
+        if (deleteDbTask.getDbEntityClass().equals(Project.class)) {
+            boolean removed = projects.removeIf(project -> project.getId().equals(deleteDbTask.getEnitityId()));
+            if (removed) {
+                eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
+            }
+        } else if (deleteDbTask.getDbEntityClass().equals(Experiment.class)) {
+            for (Project project : projects) {
+                boolean removed = project.getExperiments().removeIf(experiment -> experiment.getId().equals(deleteDbTask.getEnitityId()));
+                if (removed) {
+                    eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
+                    break;
+                }
+            }
+        } else if (deleteDbTask.getDbEntityClass().equals(Sample.class)) {
+            outerloop:
+            for (Project project : projects) {
+                for (Experiment experiment : project.getExperiments()) {
+                    boolean removed = experiment.getSamples().removeIf(sample -> sample.getId().equals(deleteDbTask.getEnitityId()));
+                    if (removed) {
+                        eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
+                        break outerloop;
+                    }
+                }
+            }
+        } else if (deleteDbTask.getDbEntityClass().equals(AnalyticalRun.class)) {
+            outerloop:
+            for (Project project : projects) {
+                for (Experiment experiment : project.getExperiments()) {
+                    for (Sample sample : experiment.getSamples()) {
+                        boolean removed = sample.getAnalyticalRuns().removeIf(analyticalRun -> analyticalRun.getId().equals(deleteDbTask.getEnitityId()));
+                        if (removed) {
+                            eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId(), sample.getId()));
+                            break outerloop;
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

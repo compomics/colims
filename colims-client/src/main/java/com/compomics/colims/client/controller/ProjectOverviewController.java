@@ -402,18 +402,18 @@ public class ProjectOverviewController implements Controllable {
      */
     @Subscribe
     public void onExperimentChangeEvent(ExperimentChangeEvent experimentChangeEvent) {
-        Experiment experiment = experimentChangeEvent.getExperiment();
-
-        //check if the experiment belongs to the selected project
-        if (experiment.getProject().equals(getSelectedProject())) {
-            if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
-                experiments.add(experiment);
-            } else if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
-                experiments.remove(experiment);
-            } else if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
-                updateExperiment(experiment);
-            }
-        }
+//        Experiment experiment = experimentChangeEvent.getExperiment();
+//
+//        //check if the experiment belongs to the selected project
+//        if (experiment.getProject().equals(getSelectedProject())) {
+//            if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
+//                experiments.add(experiment);
+//            } else if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+//                experiments.remove(experiment);
+//            } else if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
+//                updateExperiment(experiment);
+//            }
+//        }
     }
 
     /**
@@ -443,17 +443,17 @@ public class ProjectOverviewController implements Controllable {
      */
     @Subscribe
     public void onAnalyticalRunChangeEvent(AnalyticalRunChangeEvent analyticalRunChangeEvent) {
-        AnalyticalRun analyticalRun = analyticalRunChangeEvent.getAnalyticalRun();
-
-        if (analyticalRun.getSample().equals(getSelectedSample())) {
-            if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
-                analyticalRuns.add(analyticalRun);
-            } else if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
-                analyticalRuns.remove(analyticalRun);
-            } else if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
-                updateAnalyticalRun(analyticalRun);
-            }
-        }
+//        AnalyticalRun analyticalRun = analyticalRunChangeEvent.getAnalyticalRun();
+//
+//        if (analyticalRun.getSample().equals(getSelectedSample())) {
+//            if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.CREATED)) {
+//                analyticalRuns.add(analyticalRun);
+//            } else if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+//                analyticalRuns.remove(analyticalRun);
+//            } else if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
+//                updateAnalyticalRun(analyticalRun);
+//            }
+//        }
     }
 
     /**

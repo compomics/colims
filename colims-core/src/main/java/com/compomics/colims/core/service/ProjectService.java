@@ -25,11 +25,19 @@ public interface ProjectService extends GenericService<Project, Long> {
     Long countByTitle(Project project);
 
     /**
-     * Find all projects and fetch the associated experiments and samples.
+     * Find all projects and fetch the associated experiments, samples and runs.
      *
      * @return the found projects
      */
     List<Project> findAllWithEagerFetching();
+
+    /**
+     * Find a project by ID and fetch the associated experiments, samples and runs.
+     *
+     * @param projectId the project ID
+     * @return the found project
+     */
+    Project findByIdWithEagerFetching(Long projectId);
 
     /**
      * Get the user that owns the most projects.

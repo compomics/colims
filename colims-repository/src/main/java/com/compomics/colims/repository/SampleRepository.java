@@ -45,4 +45,12 @@ public interface SampleRepository extends GenericRepository<Sample, Long> {
      */
     Sample findByIdWithFetchedRuns(Long sampleId);
 
+    /**
+     * Get the parent IDs (project, experiment ID) for the given sample ID.
+     *
+     * @param sampleId the sample ID
+     * @return the found parent IDs
+     */
+    Object[] getParentIds(Long sampleId);
+
 }

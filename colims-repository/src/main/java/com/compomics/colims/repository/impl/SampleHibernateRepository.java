@@ -67,4 +67,13 @@ public class SampleHibernateRepository extends GenericHibernateRepository<Sample
 
         return (Sample) query.uniqueResult();
     }
+
+    @Override
+    public Object[] getParentIds(Long sampleId) {
+        Query query = getCurrentSession().getNamedQuery("Sample.getParentIds");
+
+        query.setLong("sampleId", sampleId);
+
+        return (Object[]) query.uniqueResult();
+    }
 }

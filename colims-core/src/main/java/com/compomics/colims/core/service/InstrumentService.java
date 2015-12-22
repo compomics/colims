@@ -16,5 +16,4 @@ public interface InstrumentService extends GenericService<Instrument, Long> {
      * @return the number of found instruments
      */
     Long countByName(Instrument instrument);
-
 }

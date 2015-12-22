@@ -2,7 +2,10 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Instrument;
 import com.compomics.colims.repository.AnalyticalRunRepository;
+import com.compomics.colims.repository.InstrumentRepository;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +21,9 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
 
     @Autowired
     private AnalyticalRunRepository analyticalRunRepository;
+    @Autowired
+    private InstrumentRepository instrumentRepository;
+
 
     @Override
     public AnalyticalRun findById(final Long id) {
@@ -52,5 +58,17 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
     @Override
     public List<AnalyticalRun> findBySampleId(Long sampleId) {
         return analyticalRunRepository.findBySampleId(sampleId);
+    }
+
+    @Override
+    public void fetchInstrument(AnalyticalRun analyticalRun) {
+        try {
+            analyticalRun.getInstrument().getId();
+        } catch (LazyInitializationException e) {
+            Instrument instrument = instrumentRepository.findByAnalyticalRunId(analyticalRun.getId());
+            if (instrument != null) {
+                analyticalRun.setInstrument(instrument);
+            }
+        }
     }
 }

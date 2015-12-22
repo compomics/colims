@@ -71,4 +71,12 @@ public class ExperimentServiceImpl implements ExperimentService {
         }
     }
 
+    @Override
+    public Experiment findByIdWithEagerFetching(Long experimentId) {
+        Experiment experiment = experimentRepository.findByIdWithFetchedSamples(experimentId);
+        experiment.getSamples().stream()
+                .forEach(sample -> sample.getAnalyticalRuns().size());
+
+        return experiment;
+    }
 }

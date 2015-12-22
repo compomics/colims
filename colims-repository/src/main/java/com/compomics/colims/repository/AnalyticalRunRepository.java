@@ -12,7 +12,7 @@ import java.util.List;
 public interface AnalyticalRunRepository extends GenericRepository<AnalyticalRun, Long> {
 
     /**
-     * Find the runs by sample ID.
+     * Find the runs by sample ID. The sample and instrument associations are fetched eagerly.
      *
      * @param sampleId the sample ID
      * @return the list of analytical runs

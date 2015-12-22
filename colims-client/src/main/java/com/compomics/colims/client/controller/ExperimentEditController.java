@@ -127,7 +127,7 @@ public class ExperimentEditController implements Controllable {
 
                     experimentEditDialog.getSaveOrUpdateButton().setText("update");
                 }
-                ExperimentChangeEvent experimentChangeEvent = new ExperimentChangeEvent(type, experimentToEdit);
+                ExperimentChangeEvent experimentChangeEvent = new ExperimentChangeEvent(type, experimentToEdit.getId());
                 eventBus.post(experimentChangeEvent);
 
                 MessageEvent messageEvent = new MessageEvent("Experiment store confirmation", "Experiment " + experimentToEdit.getNumber() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);

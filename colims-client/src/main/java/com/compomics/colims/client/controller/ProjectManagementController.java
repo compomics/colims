@@ -10,10 +10,7 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
-import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.ExperimentChangeEvent;
-import com.compomics.colims.client.event.ProjectChangeEvent;
-import com.compomics.colims.client.event.SampleChangeEvent;
+import com.compomics.colims.client.event.*;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
@@ -289,7 +286,7 @@ public class ProjectManagementController implements Controllable {
                     experiments.remove(experimentToDelete);
                     experimentsSelectionModel.clearSelection();
 
-                    eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, experimentToDelete));
+                    eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, experimentToDelete.getId()));
 
                     //remove experiment from the selected project and update the table
                     getSelectedProject().getExperiments().remove(experimentToDelete);
@@ -469,10 +466,10 @@ public class ProjectManagementController implements Controllable {
     @Subscribe
     public void onExperimentChangeEvent(ExperimentChangeEvent experimentChangeEvent) {
         if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
-            //remove from overview table and clear selection
-            boolean removed = experiments.removeIf(experiment -> experiment.getId().equals(experimentChangeEvent.getExperimentId()));
-            if (removed) {
-                experimentsSelectionModel.clearSelection();
+            if (getSelectedExperiment() != null && getSelectedExperiment().getId().equals(experimentChangeEvent.getExperimentId())) {
+                //reset parent project selection
+                int selectedProjectIndex = getSelectedProjectIndex();
+                setSelectedProject(selectedProjectIndex);
             }
         }
     }
@@ -542,10 +539,10 @@ public class ProjectManagementController implements Controllable {
     @Subscribe
     public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
         if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
-            //remove from overview table and clear selection
-            boolean removed = samples.removeIf(sample -> sample.getId().equals(sampleChangeEvent.getSampleId()));
-            if (removed) {
-                samplesSelectionModel.clearSelection();
+            if (getSelectedSample() != null && getSelectedSample().getId().equals(sampleChangeEvent.getSampleId())) {
+                //reset parent experiment selection
+                int selectedExperimentIndex = getSelectedExperimentIndex();
+                setSelectedExperiment(selectedExperimentIndex);
             }
         } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.RUNS_ADDED)) {
             Optional<Sample> foundSample = samples.stream().filter(sample -> sample.getId().equals(sampleChangeEvent.getSampleId())).findFirst();
@@ -553,6 +550,23 @@ public class ProjectManagementController implements Controllable {
                 //update the runs
                 foundSample.get().setAnalyticalRuns(sampleChangeEvent.getAnalyticalRuns());
                 samplesSelectionModel.clearSelection();
+            }
+        }
+    }
+
+    /**
+     * Listen to a AnalyticalRunChangeEvent and update the samples table if necessary.
+     *
+     * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent instance
+     */
+    @Subscribe
+    public void onAnalyticalChangeEvent(AnalyticalRunChangeEvent analyticalRunChangeEvent) {
+        if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+            Sample selectedSample = getSelectedSample();
+            if (selectedSample != null && selectedSample.getId().equals(analyticalRunChangeEvent.getParentSampleId())) {
+                //reset parent sample selection
+                int selectedSampleIndex = getSelectedSampleIndex();
+                setSelectedSample(selectedSampleIndex);
             }
         }
     }

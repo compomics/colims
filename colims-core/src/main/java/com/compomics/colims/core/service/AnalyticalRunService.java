@@ -12,11 +12,18 @@ import java.util.List;
 public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long> {
 
     /**
-     * Find the runs by sample ID.
+     * Find the runs by sample ID. The sample and instrument associations are fetched eagerly.
      *
      * @param sampleId the sample ID
      * @return the list of analytical runs
      */
     List<AnalyticalRun> findBySampleId(Long sampleId);
+
+    /**
+     * Fetch the instrument (if necessary) of the given analytical run.
+     *
+     * @param analyticalRun the AnalyticalRun instance
+     */
+    void fetchInstrument(AnalyticalRun analyticalRun);
 
 }

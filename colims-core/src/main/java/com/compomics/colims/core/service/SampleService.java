@@ -29,11 +29,11 @@ public interface SampleService extends GenericService<Sample, Long> {
     Protocol getMostUsedProtocol();
 
     /**
-     * Find the sample by ID and fetch the sample runs.
+     * Get the parent IDs (project, experiment ID) for the given sample ID.
      *
      * @param sampleId the sample ID
-     * @return the found sample
+     * @return the found parent IDs
      */
-    Sample findByIdAndFetchRuns(Long sampleId);
+    Object[] getParentIds(Long sampleId);
 
 }

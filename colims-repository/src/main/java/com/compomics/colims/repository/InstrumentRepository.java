@@ -26,4 +26,12 @@ public interface InstrumentRepository extends GenericRepository<Instrument, Long
      */
     List<Instrument> findAllOrderedByName();
 
+    /**
+     * Find the instrument for the given analytical run. Returns null if nothing was found.
+     *
+     * @param analyticalRunId the analytical run ID
+     * @return the found instrument
+     */
+    Instrument findByAnalyticalRunId(Long analyticalRunId);
+
 }

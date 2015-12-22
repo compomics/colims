@@ -295,7 +295,7 @@ public class SampleEditController implements Controllable {
                     analyticalRuns.remove(selectedAnalyticalRun);
                     analyticalRunsSelectionModel.clearSelection();
 
-                    eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRun));
+                    eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRun.getId(), sampleToEdit.getId()));
 
                     //remove analytical run from the selected sample and update the table
                     sampleToEdit.getAnalyticalRuns().remove(selectedAnalyticalRun);
@@ -388,6 +388,21 @@ public class SampleEditController implements Controllable {
     }
 
     /**
+     * Listen to a AnalyticalRunChangeEvent and update the runs table if necessary.
+     *
+     * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent instance
+     */
+    @Subscribe
+    public void onAnalyticalChangeEvent(AnalyticalRunChangeEvent analyticalRunChangeEvent) {
+        if (sampleEditDialog.isVisible() && sampleToEdit.getId().equals(analyticalRunChangeEvent.getParentSampleId())) {
+            if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                //remove deleted analytical run
+                analyticalRuns.removeIf(analyticalRun -> analyticalRun.getId().equals(analyticalRunChangeEvent.getAnalyticalRunId()));
+            }
+        }
+    }
+
+    /**
      * Listen to a SampleChangeEvent.
      *
      * @param sampleChangeEvent the SampleChangeEvent instance
@@ -399,7 +414,10 @@ public class SampleEditController implements Controllable {
                 JOptionPane.showMessageDialog(sampleEditDialog, "Another user removed this sample so the sample edit dialog will close.", "Experiment removed", JOptionPane.WARNING_MESSAGE);
                 sampleEditDialog.dispose();
             } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.RUNS_ADDED)) {
-                analyticalRunsSelectionModel.clearSelection();
+                //add the new runs
+                sampleToEdit.getAnalyticalRuns().stream()
+                        .filter(analyticalRun -> !analyticalRuns.contains(analyticalRun))
+                        .forEach(analyticalRuns::add);
             }
         }
     }

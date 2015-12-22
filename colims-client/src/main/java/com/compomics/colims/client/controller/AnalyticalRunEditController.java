@@ -1,9 +1,6 @@
 package com.compomics.colims.client.controller;
 
-import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.ExperimentChangeEvent;
-import com.compomics.colims.client.event.ProjectChangeEvent;
-import com.compomics.colims.client.event.SampleChangeEvent;
+import com.compomics.colims.client.event.*;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
@@ -131,6 +128,9 @@ public class AnalyticalRunEditController implements Controllable {
     public void updateView(final AnalyticalRun analyticalRun) {
         analyticalRunToEdit = analyticalRun;
 
+        //fetch the instrument if necessary
+        analyticalRunService.fetchInstrument(analyticalRun);
+
         analyticalRunEditDialog.getNameTextField().setText(analyticalRunToEdit.getName());
         if (analyticalRun.getStartDate() != null) {
             analyticalRunEditDialog.getDateTimePicker().setDate(analyticalRunToEdit.getStartDate());
@@ -153,6 +153,21 @@ public class AnalyticalRunEditController implements Controllable {
     public void onInstrumentChangeEvent(InstrumentChangeEvent instrumentChangeEvent) {
         instrumentBindingList.clear();
         instrumentBindingList.addAll(instrumentService.findAll());
+    }
+
+    /**
+     * Listen to a AnalyticalRunChangeEvent and update the runs table if necessary.
+     *
+     * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent instance
+     */
+    @Subscribe
+    public void onAnalyticalChangeEvent(AnalyticalRunChangeEvent analyticalRunChangeEvent) {
+        if (analyticalRunEditDialog.isVisible() && analyticalRunToEdit.getId().equals(analyticalRunChangeEvent.getAnalyticalRunId())) {
+            if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
+                JOptionPane.showMessageDialog(analyticalRunEditDialog, "Another user removed the sample this run so the run edit dialog will close.", "Experiment removed", JOptionPane.WARNING_MESSAGE);
+                analyticalRunEditDialog.dispose();
+            }
+        }
     }
 
     /**

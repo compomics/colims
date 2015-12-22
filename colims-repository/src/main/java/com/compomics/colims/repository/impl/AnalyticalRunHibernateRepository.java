@@ -2,7 +2,7 @@ package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,7 +15,11 @@ public class AnalyticalRunHibernateRepository extends GenericHibernateRepository
 
     @Override
     public List<AnalyticalRun> findBySampleId(Long sampleId) {
-        return createCriteria(Restrictions.eq("sample.id", sampleId)).list();
+        Query query = getCurrentSession().getNamedQuery("AnalyticalRun.findBySampleId");
+
+        query.setLong("sampleId", sampleId);
+
+        return query.list();
     }
 
     @Override

@@ -77,10 +77,7 @@ public class SampleServiceImpl implements SampleService {
     }
 
     @Override
-    public Sample findByIdAndFetchRuns(Long sampleId) {
-        Sample sample = sampleRepository.findById(sampleId);
-        sample.getAnalyticalRuns().size();
-
-        return sample;
+    public Object[] getParentIds(Long sampleId) {
+        return sampleRepository.getParentIds(sampleId);
     }
 }

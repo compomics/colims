@@ -1,27 +1,37 @@
 package com.compomics.colims.client.event;
 
-import com.compomics.colims.model.AnalyticalRun;
-
 /**
  * @author Niels Hulstaert
  */
 public class AnalyticalRunChangeEvent extends EntityChangeEvent {
 
-    private final AnalyticalRun analyticalRun;
+    /**
+     * The analytical run ID.
+     */
+    private final Long analyticalRunId;
+    /**
+     * The parent sample ID;
+     */
+    private final Long parentSampleId;
 
     /**
      * Constructor.
      *
-     * @param type the change event type
-     * @param analyticalRun the AnalyticalRun instance
+     * @param type            the change event type
+     * @param analyticalRunId the analytical run ID
+     * @param parentSampleId  the parent sample ID
      */
-    public AnalyticalRunChangeEvent(final Type type, final AnalyticalRun analyticalRun) {
+    public AnalyticalRunChangeEvent(final Type type, final Long analyticalRunId, final Long parentSampleId) {
         super(type);
-        this.analyticalRun = analyticalRun;
+        this.analyticalRunId = analyticalRunId;
+        this.parentSampleId = parentSampleId;
     }
 
-    public AnalyticalRun getAnalyticalRun() {
-        return analyticalRun;
+    public Long getAnalyticalRunId() {
+        return analyticalRunId;
     }
-    
+
+    public Long getParentSampleId() {
+        return parentSampleId;
+    }
 }

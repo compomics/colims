@@ -4,6 +4,7 @@ import com.compomics.colims.model.Instrument;
 import com.compomics.colims.repository.InstrumentRepository;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -47,4 +48,17 @@ public class InstrumentHibernateRepository extends GenericHibernateRepository<In
         return criteria.list();
     }
 
+    @Override
+    public Instrument findByAnalyticalRunId(Long analyticalRunId) {
+        Query query = getCurrentSession().getNamedQuery("Instrument.findByAnalyticalRunId");
+
+        query.setLong("analyticalRunId", analyticalRunId);
+
+        List<Instrument> instruments = query.list();
+        if (!instruments.isEmpty()) {
+            return instruments.get(0);
+        } else {
+            return null;
+        }
+    }
 }

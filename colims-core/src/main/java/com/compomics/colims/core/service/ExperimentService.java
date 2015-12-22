@@ -17,7 +17,7 @@ public interface ExperimentService extends GenericService<Experiment, Long> {
     /**
      * Count the experiments by title and project ID.
      *
-     * @param projectId the project ID
+     * @param projectId  the project ID
      * @param experiment the Experiment instance
      * @return the number of found experiments
      */
@@ -29,4 +29,12 @@ public interface ExperimentService extends GenericService<Experiment, Long> {
      * @param experiment the Experiment instance
      */
     void fetchBinaryFiles(Experiment experiment);
+
+    /**
+     * Find an experiment by ID and fetch the associated samples and runs.
+     *
+     * @param experimentId the experiment ID
+     * @return the found experiment
+     */
+    Experiment findByIdWithEagerFetching(Long experimentId);
 }

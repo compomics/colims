@@ -32,6 +32,29 @@
         where sample.id = :sampleId
     </query>
 
+    <query name="Sample.getParentIds">
+        select project.id, experiment.id
+        from Sample as sample
+        join sample.experiment as experiment
+        join experiment.project as project
+        where sample.id = :sampleId
+    </query>
+
+    <query name="AnalyticalRun.findBySampleId">
+        select analyticalRun
+        from AnalyticalRun as analyticalRun
+        join analyticalRun.sample as sample
+        join analyticalRun.instrument as instrument
+        where sample.id = :sampleId
+    </query>
+
+    <query name="Instrument.findByAnalyticalRunId">
+        select distinct instrument
+        from Instrument as instrument
+        join instrument.analyticalRuns as analyticalRun
+        where analyticalRun.id = :analyticalRunId
+    </query>
+
     <query name="Peptide.getPeptideDTOByProteinGroupId">
         select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability
         from Peptide as peptide
