@@ -4,8 +4,6 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class represents a FASTA database in the database.
@@ -68,11 +66,6 @@ public class FastaDb extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "md5_checksum", nullable = true)
     private String md5CheckSum;
-    /**
-     * The list of search and validation settings that used this FASTA instance for the search.
-     */
-    @OneToMany(mappedBy = "fastaDb")
-    private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -130,14 +123,6 @@ public class FastaDb extends DatabaseEntity {
         this.md5CheckSum = md5CheckSum;
     }
 
-    public List<SearchAndValidationSettings> getSearchAndValidationSettingses() {
-        return searchAndValidationSettingses;
-    }
-
-    public void setSearchAndValidationSettingses(List<SearchAndValidationSettings> searchAndValidationSettingses) {
-        this.searchAndValidationSettingses = searchAndValidationSettingses;
-    }
-
     @Override
     public String toString() {
         return name + ", accession: " + taxonomyAccession + ", species: " + species + ", version: " + version;
@@ -145,18 +130,33 @@ public class FastaDb extends DatabaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         FastaDb fastaDb = (FastaDb) o;
 
-        if (name != null ? !name.equals(fastaDb.name) : fastaDb.name != null) return false;
-        if (fileName != null ? !fileName.equals(fastaDb.fileName) : fastaDb.fileName != null) return false;
-        if (filePath != null ? !filePath.equals(fastaDb.filePath) : fastaDb.filePath != null) return false;
-        if (taxonomyAccession != null ? !taxonomyAccession.equals(fastaDb.taxonomyAccession) : fastaDb.taxonomyAccession != null)
+        if (name != null ? !name.equals(fastaDb.name) : fastaDb.name != null) {
             return false;
-        if (species != null ? !species.equals(fastaDb.species) : fastaDb.species != null) return false;
-        if (version != null ? !version.equals(fastaDb.version) : fastaDb.version != null) return false;
+        }
+        if (fileName != null ? !fileName.equals(fastaDb.fileName) : fastaDb.fileName != null) {
+            return false;
+        }
+        if (filePath != null ? !filePath.equals(fastaDb.filePath) : fastaDb.filePath != null) {
+            return false;
+        }
+        if (taxonomyAccession != null ? !taxonomyAccession.equals(fastaDb.taxonomyAccession) : fastaDb.taxonomyAccession != null) {
+            return false;
+        }
+        if (species != null ? !species.equals(fastaDb.species) : fastaDb.species != null) {
+            return false;
+        }
+        if (version != null ? !version.equals(fastaDb.version) : fastaDb.version != null) {
+            return false;
+        }
         return !(md5CheckSum != null ? !md5CheckSum.equals(fastaDb.md5CheckSum) : fastaDb.md5CheckSum != null);
 
     }

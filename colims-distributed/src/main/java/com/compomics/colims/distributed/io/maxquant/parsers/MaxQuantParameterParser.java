@@ -12,6 +12,7 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.BinaryFileType;
 import com.compomics.colims.model.enums.CvParamType;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.model.factory.CvParamFactory;
@@ -31,6 +32,7 @@ import java.util.Map.Entry;
  */
 @Component
 public class MaxQuantParameterParser {
+
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
     @Autowired
@@ -74,22 +76,22 @@ public class MaxQuantParameterParser {
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
 
     private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
-            MaxQuantSummaryHeaders.ENZYME,
-            MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
-            MaxQuantSummaryHeaders.MULTIPLICITY,
-            MaxQuantSummaryHeaders.PROTEASE,
-            MaxQuantSummaryHeaders.RAW_FILE
+        MaxQuantSummaryHeaders.ENZYME,
+        MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
+        MaxQuantSummaryHeaders.MULTIPLICITY,
+        MaxQuantSummaryHeaders.PROTEASE,
+        MaxQuantSummaryHeaders.RAW_FILE
     };
 
     /**
      * Parse parameters for experiment.
      *
      * @param quantFolder Experiment data folder
-     * @param fastaDb     FASTA used in experiment
-     * @param storeFiles  Whether data files should be stored with experiment
+     * @param fastaDbs the FASTA databases used in experiment
+     * @param storeFiles Whether data files should be stored with experiment
      * @throws IOException
      */
-    public void parse(File quantFolder, FastaDb fastaDb, boolean storeFiles) throws IOException {
+    public void parse(File quantFolder, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
         TypedCvParam searchType = typedCvParamService.findByAccession(DEFAULT_SEARCH_TYPE_ACCESSION, CvParamType.SEARCH_TYPE);
 
         if (searchType != null) {
@@ -98,7 +100,7 @@ public class MaxQuantParameterParser {
             throw new IllegalStateException("The default search type CV term was not found in the database.");
         }
 
-        SearchAndValidationSettings searchAndValidationSettings = parseSettings(quantFolder, fastaDb, storeFiles);
+        SearchAndValidationSettings searchAndValidationSettings = parseSettings(quantFolder, fastaDbs, storeFiles);
 
         runSettings = parseRuns(quantFolder, searchAndValidationSettings);
     }
@@ -107,14 +109,19 @@ public class MaxQuantParameterParser {
      * Parse common search and validation settings for an experiment.
      *
      * @param maxQuantFolder Experiment data folder
-     * @param fastaDb        FASTA used in experiment
-     * @param storeFiles     Whether data files should be stored with experiment
+     * @param fastaDbs the FASTA databases used in experiment
+     * @param storeFiles Whether data files should be stored with experiment
      * @return A SearchAndValidationSettings object
      * @throws IOException
      */
-    public SearchAndValidationSettings parseSettings(File maxQuantFolder, FastaDb fastaDb, boolean storeFiles) throws IOException {
+    public SearchAndValidationSettings parseSettings(File maxQuantFolder, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
-        searchAndValidationSettings.setFastaDb(fastaDb);
+
+        //set FASTA database entity associations
+        fastaDbs.forEach((k, v) -> {
+            SearchSettingsHasFastaDb searchSettingsHasFastaDb = new SearchSettingsHasFastaDb(k, searchAndValidationSettings, v);
+            searchAndValidationSettings.getSearchSettingsHasFastaDbs().add(searchSettingsHasFastaDb);
+        });
 
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setSearchType(defaultSearchType);
@@ -174,8 +181,8 @@ public class MaxQuantParameterParser {
         Map<String, String> parameters = new HashMap<>();
 
         try (FileInputStream fis = new FileInputStream(parameterFile);
-             InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
-             LineNumberReader reader = new LineNumberReader(isr)) {
+                InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+                LineNumberReader reader = new LineNumberReader(isr)) {
 
             String line;
 
@@ -196,8 +203,9 @@ public class MaxQuantParameterParser {
     /**
      * Parse the search and validation settings for a given data set.
      *
-     * @param quantFolder                 Data folder for max quant run
-     * @param searchAndValidationSettings An initial SearchAndValidationSettings object to decorate per run
+     * @param quantFolder Data folder for max quant run
+     * @param searchAndValidationSettings An initial SearchAndValidationSettings
+     * object to decorate per run
      * @return Settings indexed by run file name
      * @throws IOException
      */
@@ -258,7 +266,7 @@ public class MaxQuantParameterParser {
         SearchAndValidationSettings newSettings = new SearchAndValidationSettings();
         newSettings.setSearchParameterSettings(new SearchParameters());
 
-        newSettings.setFastaDb(oldSettings.getFastaDb());
+        newSettings.setSearchSettingsHasFastaDbs(oldSettings.getSearchSettingsHasFastaDbs());
         newSettings.setSearchEngine(oldSettings.getSearchEngine());
         newSettings.getSearchParameters().setFragMassTolerance(oldSettings.getSearchParameters().getFragMassTolerance());
         newSettings.getSearchParameters().setFragMassToleranceUnit(oldSettings.getSearchParameters().getFragMassToleranceUnit());

@@ -244,25 +244,28 @@ public class MzIdentMLExporter {
 
         inputs = dataCollection.getInputs();
 
-        FastaDb fasta = analyticalRun.getSearchAndValidationSettings().getFastaDb();
+        //iterate over the different FASTA databases used for the searches
+        for (SearchSettingsHasFastaDb searchSettingsHasFastaDb : analyticalRun.getSearchAndValidationSettings().getSearchSettingsHasFastaDbs()) {
+            FastaDb fasta = searchSettingsHasFastaDb.getFastaDb();
 
-        SearchDatabase searchDatabase = new SearchDatabase();
-        searchDatabase.setId(fasta.getId().toString());
-        searchDatabase.setLocation(fasta.getFilePath());
-        searchDatabase.setName(fasta.getName());
-        searchDatabase.setVersion(fasta.getVersion());
-        searchDatabase.setFileFormat(new FileFormat());
-        searchDatabase.setDatabaseName(new Param());
-        searchDatabase.getFileFormat().setCvParam(getDataItem("FileFormat.FASTA", CvParam.class));
-        searchDatabase.getCvParam().add(getDataItem("SearchDatabase.type", CvParam.class));
+            SearchDatabase searchDatabase = new SearchDatabase();
+            searchDatabase.setId(fasta.getId().toString());
+            searchDatabase.setLocation(fasta.getFilePath());
+            searchDatabase.setName(fasta.getName());
+            searchDatabase.setVersion(fasta.getVersion());
+            searchDatabase.setFileFormat(new FileFormat());
+            searchDatabase.setDatabaseName(new Param());
+            searchDatabase.getFileFormat().setCvParam(getDataItem("FileFormat.FASTA", CvParam.class));
+            searchDatabase.getCvParam().add(getDataItem("SearchDatabase.type", CvParam.class));
 
-        // NOTE: if decoy database used then cv param should be child of MS:1001450 here
-        UserParam databaseName = new UserParam();
-        databaseName.setName(fasta.getName());
+            // NOTE: if decoy database used then cv param should be child of MS:1001450 here
+            UserParam databaseName = new UserParam();
+            databaseName.setName(fasta.getName());
 
-        searchDatabase.getDatabaseName().setParam(databaseName);
+            searchDatabase.getDatabaseName().setParam(databaseName);
 
-        inputs.getSearchDatabase().add(searchDatabase);
+            inputs.getSearchDatabase().add(searchDatabase);
+        }
 
         dataCollection.setAnalysisData(new AnalysisData());
 

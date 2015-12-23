@@ -1,6 +1,8 @@
 package com.compomics.colims.core.io;
 
+import com.compomics.colims.model.enums.FastaDbType;
 import java.io.File;
+import java.util.EnumMap;
 
 /**
  * @author Davy
@@ -18,10 +20,10 @@ public class MaxQuantImport extends DataImport {
      * Constructor.
      *
      * @param maxQuantDirectory the MaxQuant files directory
-     * @param fastaDbId         the FastaDb ID
+     * @param fastaDbIds the FASTA database IDs map
      */
-    public MaxQuantImport(final File maxQuantDirectory, final Long fastaDbId) {
-        super(fastaDbId);
+    public MaxQuantImport(final File maxQuantDirectory, final EnumMap<FastaDbType, Long> fastaDbIds) {
+        super(fastaDbIds);
         this.maxQuantDirectory = maxQuantDirectory;
     }
 
@@ -35,9 +37,15 @@ public class MaxQuantImport extends DataImport {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         MaxQuantImport that = (MaxQuantImport) o;
 

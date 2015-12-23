@@ -62,7 +62,8 @@ public class MainController implements Controllable, ActionListener {
     @Autowired
     private UserBean userBean;
     /**
-     * The project EventList that is used as table model in the project management and overview tabs.
+     * The project EventList that is used as table model in the project
+     * management and overview tabs.
      */
     private final EventList<Project> projects = new BasicEventList<>();
     //views
@@ -270,7 +271,8 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Listen to a CompletedDbTaskEvent and update the projects list and different views accordingly.
+     * Listen to a CompletedDbTaskEvent and update the projects list and
+     * different views accordingly.
      *
      * @param completedDbTaskEvent the completed database task event
      */
@@ -330,7 +332,8 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * In case of a permission error, show permission error dialog with the error message.
+     * In case of a permission error, show permission error dialog with the
+     * error message.
      *
      * @param message the error message
      */
@@ -404,8 +407,8 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Check the user credentials and init the admin section if necessary. If unsuccessful, show a message dialog and
-     * reset the input fields.
+     * Check the user credentials and init the admin section if necessary. If
+     * unsuccessful, show a message dialog and reset the input fields.
      */
     private void onLogin() {
         //check if a user with given user name and password is found in the db
@@ -439,8 +442,8 @@ public class MainController implements Controllable, ActionListener {
     /**
      * Shows a message dialog.
      *
-     * @param title       the dialog title
-     * @param message     the dialog message
+     * @param title the dialog title
+     * @param message the dialog message
      * @param messageType the dialog message type
      */
     private void showMessageDialog(final String title, final String message, final int messageType) {
@@ -462,7 +465,8 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Init the admin section. This method is only called if the user is an admin user.
+     * Init the admin section. This method is only called if the user is an
+     * admin user.
      */
     private void initAdminSection() {
         //add action listeners
@@ -473,7 +477,8 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Find the project by ID in the projects list. Returns null if nothing was found.
+     * Find the project by ID in the projects list. Returns null if nothing was
+     * found.
      *
      * @param projectId the project ID
      * @return the found Project instance
@@ -486,22 +491,23 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Check if the experiment associated with one of the projects in the projects list is present.
+     * Check if the experiment associated with one of the projects in the
+     * projects list is present.
      *
      * @param experimentId the experiment ID
      * @return the found Project instance
      */
     private boolean isExperimentPresent(Long experimentId) {
-        java.util.List<Project> foundProjectsWithExperiment = projects.stream()
-                .filter(project -> project.getExperiments().stream()
-                        .anyMatch(experiment -> experiment.getId().equals(experimentId)))
-                .collect(Collectors.toList());
-        return foundProjectsWithExperiment.isEmpty() ? false : true;
+        boolean match = projects.stream()
+                .anyMatch(project -> project.getExperiments()
+                        .stream()
+                        .anyMatch(experiment -> experiment.getId().equals(experimentId)));
+        return match;
     }
 
     /**
-     * Find the sample associated with one of the projects in the projects list by ID. Returns null if nothing was
-     * found.
+     * Find the sample associated with one of the projects in the projects list
+     * by ID. Returns null if nothing was found.
      *
      * @param sampleId the sample ID
      * @return the found Sample instance
@@ -523,8 +529,9 @@ public class MainController implements Controllable, ActionListener {
     }
 
     /**
-     * Remove the entity from the projects list by class (Project, Experiment, Sample and AnalyticalRun) and ID and post
-     * the appropriate event on the event bus.
+     * Remove the entity from the projects list by class (Project, Experiment,
+     * Sample and AnalyticalRun) and ID and post the appropriate event on the
+     * event bus.
      *
      * @param deleteDbTask the DeleteDbTask instance
      */

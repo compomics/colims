@@ -6,16 +6,19 @@ import com.compomics.colims.core.util.IOUtils;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchParametersMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.BinaryFileType;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
- * This class maps the Utilities search settings to a SearchAndValidationSettings instance.
+ * This class maps the Utilities search settings to a
+ * SearchAndValidationSettings instance.
  *
  * @author Niels Hulstaert
  */
@@ -36,17 +39,18 @@ public class SearchSettingsMapper {
     /**
      * Map the SearchAndValidationSettings.
      *
-     * @param searchEngineType          the search engine type
-     * @param version                   the search engine version
-     * @param fastaDb                   the FastaDb instance
+     * @param searchEngineType the search engine type
+     * @param version the search engine version
+     * @param fastaDbs the FastaDb instances
      * @param utilitiesSearchParameters the Utilities search parameters
-     * @param identificationFiles       the list of identification files
-     * @param storeIdentificationFile   store the identification or not
+     * @param identificationFiles the list of identification files
+     * @param storeIdentificationFile store the identification or not
      * @return the mapped SearchAndValidationSettings
      * @throws java.io.IOException thrown in case of an I/O related exception
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case
+     * of a modification mapping problem
      */
-    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, FastaDb fastaDb, com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException, ModificationMappingException {
+    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, EnumMap<FastaDbType, FastaDb> fastaDbs, com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException, ModificationMappingException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         /**
@@ -69,10 +73,13 @@ public class SearchSettingsMapper {
         searchAndValidationSettings.setSearchEngine(searchEngine);
 
         /**
-         * FastaDb
+         * FastaDbs
          */
         //set entity associations
-        searchAndValidationSettings.setFastaDb(fastaDb);
+        fastaDbs.forEach((k, v) -> {
+            SearchSettingsHasFastaDb searchSettingsHasFastaDb = new SearchSettingsHasFastaDb(k, searchAndValidationSettings, v);
+            searchAndValidationSettings.getSearchSettingsHasFastaDbs().add(searchSettingsHasFastaDb);
+        });
 
         /**
          * IdentificationFile(s)

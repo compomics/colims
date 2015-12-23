@@ -9,6 +9,7 @@ import com.compomics.colims.distributed.io.QuantificationSettingsMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParameterParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.model.*;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -67,9 +69,9 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         try {
             maxQuantParser.clear();
 
-            FastaDb fastaDb = fastaDbService.findById(maxQuantImport.getFastaDbId());
-            parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDb, false);
-            maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), fastaDb, parameterParser.getMultiplicity());
+            EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
+            parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, false);
+            maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), fastaDbs, parameterParser.getMultiplicity());
 
             proteinGroups = maxQuantParser.getProteinGroupSet();
 

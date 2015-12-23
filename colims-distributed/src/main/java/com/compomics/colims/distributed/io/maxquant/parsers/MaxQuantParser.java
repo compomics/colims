@@ -5,6 +5,7 @@ import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterato
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSummaryHeaders;
 import com.compomics.colims.model.*;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.google.common.io.LineReader;
 import org.apache.commons.io.FilenameUtils;
@@ -50,12 +51,12 @@ public class MaxQuantParser {
      * An extra constructor for fun testing times.
      *
      * @param quantFolder File pointer to MaxQuant text folder
-     * @param fastaDb the FastaDb instance
+     * @param fastaDbs the FASTA databases
      * @throws IOException thrown in case of a I/O related problem
      * @throws MappingException thrown in case of a mapping related problem
      * @throws UnparseableException
      */
-    public void parseFolder(File quantFolder, FastaDb fastaDb) throws IOException, MappingException, UnparseableException {
+    public void parseFolder(File quantFolder, EnumMap<FastaDbType, FastaDb> fastaDbs) throws IOException, MappingException, UnparseableException {
         TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, "summary.txt"));
         Map<String, String> row;
         String multiplicity = null;
@@ -69,20 +70,20 @@ public class MaxQuantParser {
             }
         }
 
-        parseFolder(quantFolder, fastaDb, multiplicity);
+        parseFolder(quantFolder, fastaDbs, multiplicity);
     }
 
     /**
      * Parse the output folder and populate the parser with various datasets.
      *
      * @param quantFolder File pointer to MaxQuant text folder
-     * @param fastaDb the FastaDb instance
+     * @param fastaDbs the FASTA databases
      * @param multiplicity the multiplicity String
      * @throws IOException thrown in case of an input/output related problem
      * @throws UnparseableException
      * @throws MappingException thrown in case of a mapping related problem
      */
-    public void parseFolder(File quantFolder, FastaDb fastaDb, String multiplicity) throws IOException, UnparseableException, MappingException {
+    public void parseFolder(File quantFolder, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity) throws IOException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
         spectrumIds = maxQuantSpectrumParser.parse(new File(quantFolder, MSMSTXT));
 
@@ -106,9 +107,9 @@ public class MaxQuantParser {
 
         LOGGER.debug("parsing evidence");
         maxQuantEvidenceParser.parse(quantFolder, multiplicity);
-
+        
         LOGGER.debug("parsing protein groups");
-        proteinGroups = maxQuantProteinGroupParser.parse(new File(quantFolder, PROTEINGROUPSTXT), parseFasta(fastaDb));
+        proteinGroups = maxQuantProteinGroupParser.parse(new File(quantFolder, PROTEINGROUPSTXT), parseFasta(fastaDbs.get(FastaDbType.PRIMARY)));
 
         if (this.spectrumIds.isEmpty() || maxQuantEvidenceParser.peptides.isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");

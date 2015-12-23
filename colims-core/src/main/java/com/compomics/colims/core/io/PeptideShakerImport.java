@@ -1,11 +1,13 @@
 package com.compomics.colims.core.io;
 
+import com.compomics.colims.model.enums.FastaDbType;
 import java.io.File;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
- * The class represents the archived PeptideShaker .cps file and all other objects necessary for importing the PS
- * experiment.
+ * The class represents the archived PeptideShaker .cps file and all other
+ * objects necessary for importing the PS experiment.
  *
  * @author Niels Hulstaert
  */
@@ -32,11 +34,11 @@ public class PeptideShakerImport extends DataImport {
      * Constructor.
      *
      * @param peptideShakerCpsArchive the PeptideShaker .cps file
-     * @param fastaDbId                 the FastabDb ID
-     * @param mgfFiles                the list of MGF files
+     * @param fastaDbIds the FASTA database IDs map
+     * @param mgfFiles the list of MGF files
      */
-    public PeptideShakerImport(final File peptideShakerCpsArchive, final Long fastaDbId, final List<File> mgfFiles) {
-        super(fastaDbId);
+    public PeptideShakerImport(final File peptideShakerCpsArchive, final EnumMap<FastaDbType, Long> fastaDbIds, final List<File> mgfFiles) {
+        super(fastaDbIds);
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
         this.mgfFiles = mgfFiles;
     }
@@ -59,14 +61,21 @@ public class PeptideShakerImport extends DataImport {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         PeptideShakerImport that = (PeptideShakerImport) o;
 
-        if (peptideShakerCpsArchive != null ? !peptideShakerCpsArchive.equals(that.peptideShakerCpsArchive) : that.peptideShakerCpsArchive != null)
+        if (peptideShakerCpsArchive != null ? !peptideShakerCpsArchive.equals(that.peptideShakerCpsArchive) : that.peptideShakerCpsArchive != null) {
             return false;
+        }
         return !(mgfFiles != null ? !mgfFiles.equals(that.mgfFiles) : that.mgfFiles != null);
 
     }
