@@ -15,7 +15,7 @@ public class SearchSettingsHasFastaDb extends DatabaseEntity {
     private static final long serialVersionUID = 659064989295992898L;
 
     /**
-     * The fasta database type.
+     * The FASTA database type.
      */
     @Basic(optional = false)
     @Column(name = "fasta_db_type", nullable = false)

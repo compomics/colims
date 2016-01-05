@@ -91,8 +91,11 @@ INSERT INTO search_params_has_modification(id, l_search_parameters_id, l_search_
 -- insert a test analytical run
 INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1), (2, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 2', '2012-11-08 16:51:13', 1, 1);
 
--- insert a search and val settings set of settings
-INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_fasta_db_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1, 1), (2, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 2, 1, 1, 1);
+-- insert test search and val settings
+INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1), (2, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 2, 1, 1);
+
+-- insert test search and val settings has fasta db
+INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 0), (2, 2, 1, 1);
 
 -- insert a test identification file
 INSERT INTO identification_file (id, file_type, content, file_name, file_path, l_search_and_val_settings_id) VALUES (1, 'TEXT', 'AAAAAA', 'test.xml', 'C:\test', 1);

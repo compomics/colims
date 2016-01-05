@@ -8,6 +8,7 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.FastaDbManagementDialog;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.google.common.eventbus.EventBus;
 import no.uib.olsdialog.OLSDialog;
@@ -78,7 +79,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         JListBinding fastaDbListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbBindingList, fastaDbManagementDialog.getFastaDbList());
         bindingGroup.addBinding(fastaDbListBinding);
 
-        //user bindings
+        //selected fasta database bindings
         Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.name"), fastaDbManagementDialog.getNameTextField(), ELProperty.create("${text}"), "nameBinding");
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.fileName"), fastaDbManagementDialog.getFileNameTextField(), ELProperty.create("${text}"), "fileNameBinding");
@@ -162,7 +163,6 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
 
                         fastaDbBindingList.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
                         fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
-                        //clearInstrumentTypeDetailFields();
                     } catch (DataIntegrityViolationException dive) {
                         //check if the instrument type can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
@@ -233,6 +233,18 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         });
 
         fastaDbManagementDialog.getCancelButton().addActionListener(e -> fastaDbManagementDialog.dispose());
+
+        fastaDbManagementDialog.getPrimaryCheckBox().addActionListener(e -> {
+
+        });
+
+        fastaDbManagementDialog.getAdditionalCheckBox().addActionListener(e -> {
+
+        });
+
+        fastaDbManagementDialog.getContaminantsCheckBox().addActionListener(e -> {
+
+        });
     }
 
     @Override
@@ -259,9 +271,9 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     }
 
     /**
-     * Return the selected fasta DB.
+     * Return the selected FASTA DB.
      *
-     * @return the FastaDb
+     * @return the selected FastaDb instance
      */
     public FastaDb getFastaDb() {
         return getSelectedFastaDb();
@@ -323,6 +335,36 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog.getTaxonomyTextField().setText("");
         fastaDbManagementDialog.getSpeciesTextField().setText("");
         fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
+    }
+
+    /**
+     * Update the FASTA db list with the appropriate type(s).
+     */
+    private void updateFastaDbList() {
+        List<FastaDbType> fastaDbTypes = new ArrayList<>();
+
+        //clear the selection
+        fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
+
+        //check which checkboxes are selected
+        if (fastaDbManagementDialog.getPrimaryCheckBox().isSelected()) {
+            fastaDbTypes.add(FastaDbType.PRIMARY);
+        }
+        if (fastaDbManagementDialog.getAdditionalCheckBox().isSelected()) {
+            fastaDbTypes.add(FastaDbType.ADDITIONAL);
+        }
+        if (fastaDbManagementDialog.getPrimaryCheckBox().isSelected()) {
+            fastaDbTypes.add(FastaDbType.CONTAMINANTS);
+        }
+
+        if (fastaDbTypes.isEmpty()) {
+            //find them all
+            fastaDbBindingList.clear();
+            fastaDbBindingList.addAll(fastaDbService.findAll());
+        } else {
+            fastaDbBindingList.clear();
+            fastaDbBindingList.addAll(fastaDbService.findByFastaDbType(fastaDbTypes));
+        }
     }
 
 }

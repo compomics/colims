@@ -54,6 +54,13 @@
         join instrument.analyticalRuns as analyticalRun
         where analyticalRun.id = :analyticalRunId
     </query>
+    
+    <query name="FastaDb.findByFastaDbType">
+        select distinct fastaDb
+        from FastaDb as fastaDb
+        join fastaDb.searchSettingsHasFastaDbs as searchSettingsHasFastaDb
+        where searchSettingsHasFastaDb.fastaDbType in (:fastaDbTypeOrdinals)
+    </query>
 
     <query name="Peptide.getPeptideDTOByProteinGroupId">
         select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability

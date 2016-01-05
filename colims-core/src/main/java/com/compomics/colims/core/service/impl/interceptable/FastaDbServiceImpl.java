@@ -2,6 +2,7 @@ package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.repository.FastaDbRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,11 @@ public class FastaDbServiceImpl implements FastaDbService {
         //get a reference to the entity
         FastaDb reference = fastaDbRepository.getReference(entity.getId());
         fastaDbRepository.remove(reference);
+    }
+
+    @Override
+    public List<FastaDb> findByFastaDbType(List<FastaDbType> fastaDbTypes) {
+        return fastaDbRepository.findByFastaDbType(fastaDbTypes);
     }
 
 }

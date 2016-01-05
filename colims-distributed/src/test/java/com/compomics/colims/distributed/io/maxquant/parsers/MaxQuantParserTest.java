@@ -6,6 +6,7 @@ import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.enums.FastaDbType;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -37,8 +39,11 @@ public class MaxQuantParserTest {
         maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
         maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
 
+        EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
+        fastaDbs.put(FastaDbType.PRIMARY, maxQuantTestFastaDb);
+
         maxQuantParser.clear();
-        maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder, maxQuantTestFastaDb);
+        maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder, fastaDbs);
     }
 
     @Test

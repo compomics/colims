@@ -10,6 +10,8 @@ import java.util.Set;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.enums.FastaDbType;
+import java.util.EnumMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +38,14 @@ public class MaxQuantParameterParserTest {
         fastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getCanonicalPath());
         fastaDb.setName("test fasta");
 
-        maxQuantParameterParser.parse(MaxQuantTestSuite.maxQuantTextFolder, fastaDb, false);
+        EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
+        fastaDbs.put(FastaDbType.PRIMARY, fastaDb);
+
+        maxQuantParameterParser.parse(MaxQuantTestSuite.maxQuantTextFolder, fastaDbs, false);
         Map<String, SearchAndValidationSettings> result = maxQuantParameterParser.getRunSettings();
 
         // insane way to get the single entry from the map
-        SearchParameters testProfile =  result.entrySet().iterator().next().getValue().getSearchParameters();
+        SearchParameters testProfile = result.entrySet().iterator().next().getValue().getSearchParameters();
         assertThat(testProfile.getEnzyme().getName(), is("Trypsin/P"));
         //assertThat(testProfile.getFixedModifications(), is(empty()));
         //assertThat(testProfile.getVariableModifications().size(), is(2));

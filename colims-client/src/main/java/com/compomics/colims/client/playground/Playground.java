@@ -8,6 +8,7 @@ import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.xmlpull.v1.XmlPullParserException;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -44,7 +46,9 @@ public class Playground {
         persistDbTask.setPersistMetadata(persistMetadata);
 
         List<File> mgfFiles = Arrays.asList(new File("test1"), new File("test2"));
-        DataImport dataImport = new PeptideShakerImport(new File("testFile"), 1L, mgfFiles);
+        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, 1L);
+        DataImport dataImport = new PeptideShakerImport(new File("testFile"), fastaDbIds, mgfFiles);
         persistDbTask.setDataImport(dataImport);
 
         DbTask dbTask = persistDbTask;

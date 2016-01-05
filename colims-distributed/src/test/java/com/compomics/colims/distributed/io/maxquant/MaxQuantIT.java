@@ -8,6 +8,7 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.UserBean;
+import com.compomics.colims.model.enums.FastaDbType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -74,13 +76,16 @@ public class MaxQuantIT {
         //as the file path might be different depending on the OS
         fastaDbService.persist(maxQuantTestFastaDb);
 
-        MaxQuantImport maxQuantImport = new MaxQuantImport(new ClassPathResource(maxQuantTextFolderPath).getFile(), maxQuantTestFastaDb.getId());
+        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, maxQuantTestFastaDb.getId());
+
+        MaxQuantImport maxQuantImport = new MaxQuantImport(new ClassPathResource(maxQuantTextFolderPath).getFile(), fastaDbIds);
         MappedData mappedData = maxQuantImporter.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 
         assertThat(analyticalRuns.size(), is(1));
         assertThat(analyticalRuns.get(0).getSpectrums().size(), greaterThan(0));
-        assertThat(analyticalRuns.get(0).getSearchAndValidationSettings().getFastaDb(), is(maxQuantTestFastaDb));
+        assertThat(analyticalRuns.get(0).getSearchAndValidationSettings().getSearchSettingsHasFastaDbs().get(0), is(maxQuantTestFastaDb));
         assertThat(analyticalRuns.get(0).getQuantificationSettings(), notNullValue());
         // TODO: more assertions
     }

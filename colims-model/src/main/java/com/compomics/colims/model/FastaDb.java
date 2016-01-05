@@ -1,5 +1,7 @@
 package com.compomics.colims.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -66,6 +68,12 @@ public class FastaDb extends DatabaseEntity {
     @Basic(optional = true)
     @Column(name = "md5_checksum", nullable = true)
     private String md5CheckSum;
+    /**
+     * The SearchSettingsHasFastaDb instances from the join table between the
+     * search and validation settings and FASTA databases.
+     */
+    @OneToMany(mappedBy = "fastaDb", cascade = CascadeType.ALL)
+    private List<SearchSettingsHasFastaDb> searchSettingsHasFastaDbs = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -121,6 +129,14 @@ public class FastaDb extends DatabaseEntity {
 
     public void setMd5CheckSum(String md5CheckSum) {
         this.md5CheckSum = md5CheckSum;
+    }
+
+    public List<SearchSettingsHasFastaDb> getSearchSettingsHasFastaDbs() {
+        return searchSettingsHasFastaDbs;
+    }
+
+    public void setSearchSettingsHasFastaDbs(List<SearchSettingsHasFastaDb> searchSettingsHasFastaDbs) {
+        this.searchSettingsHasFastaDbs = searchSettingsHasFastaDbs;
     }
 
     @Override

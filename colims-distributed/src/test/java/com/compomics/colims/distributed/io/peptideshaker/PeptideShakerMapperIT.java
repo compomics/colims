@@ -4,6 +4,7 @@ import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.*;
 import com.compomics.colims.model.*;
+import com.compomics.colims.model.enums.FastaDbType;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -86,7 +88,10 @@ public class PeptideShakerMapperIT {
         //as the file path might be different depending on the OS
         fastaDbService.persist(fastaDb);
 
-        unpackedPsDataImport.setFastaDbId(fastaDb.getId());
+        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, fastaDb.getId());
+
+        unpackedPsDataImport.setFastaDbIds(fastaDbIds);
 
         //clear resources
         peptideShakerMapper.clear();

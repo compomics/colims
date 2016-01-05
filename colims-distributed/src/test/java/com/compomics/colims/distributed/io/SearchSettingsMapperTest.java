@@ -6,6 +6,7 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.IdentificationFile;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
@@ -22,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -32,7 +34,7 @@ import java.util.List;
 public class SearchSettingsMapperTest {
 
     private SearchParameters searchParameters;
-    private FastaDb fastaDb;
+    private EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
     private List<File> identificationFiles;
     @Autowired
     private SearchSettingsMapper searchSettingsMapper;
@@ -61,7 +63,7 @@ public class SearchSettingsMapperTest {
         searchParameters.setIonSearched2("b");
 
         //look for a FastaDB instance from the db
-        fastaDb = fastaDbService.findById(1L);
+        fastaDbs.put(FastaDbType.PRIMARY, fastaDbService.findById(1L));
 
         //set stub IdentificationFile
         File identificationFile = new ClassPathResource("data/peptideshaker/colims_test_ps_file.cpsx").getFile();
@@ -73,11 +75,12 @@ public class SearchSettingsMapperTest {
      * Test the map method.
      *
      * @throws IOException thrown in case of an IO related problem.
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case
+     * of a modification mapping problem
      */
     @Test
     public void testMap() throws IOException, ModificationMappingException {
-        SearchAndValidationSettings searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDb, searchParameters, identificationFiles, false);
+        SearchAndValidationSettings searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDbs, searchParameters, identificationFiles, false);
 
         Assert.assertNotNull(searchAndValidationSettings);
 
@@ -103,6 +106,6 @@ public class SearchSettingsMapperTest {
         Assert.assertEquals("0.28.0", searchEngine.getVersion());
 
         //Fasta db
-        Assert.assertNotNull(searchAndValidationSettings.getFastaDb());
+        Assert.assertNotNull(searchAndValidationSettings.getSearchSettingsHasFastaDbs().get(0));
     }
 }

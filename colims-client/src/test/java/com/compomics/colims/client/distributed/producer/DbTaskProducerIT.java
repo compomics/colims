@@ -6,6 +6,7 @@ import com.compomics.colims.core.distributed.model.PersistMetadata;
 import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.PeptideShakerImport;
+import com.compomics.colims.model.enums.FastaDbType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -34,10 +36,11 @@ public class DbTaskProducerIT {
     private QueueManager queueManager;
 
     /**
-     * In this test a PersistDbTask message is sent to the queue. It tests if whether the message has been received and
-     * afterwards if it could be deleted.
+     * In this test a PersistDbTask message is sent to the queue. It tests if
+     * whether the message has been received and afterwards if it could be
+     * deleted.
      *
-     * @throws Exception because the queuemanager methods throw this
+     * @throws Exception because the QueueManager methods throw this
      */
     @Test
     public void testSendDbTask() throws Exception {
@@ -54,7 +57,9 @@ public class DbTaskProducerIT {
         persistDbTask.setPersistMetadata(persistMetadata);
 
         List<File> mgfFiles = Arrays.asList(new File("test1"), new File("test2"));
-        DataImport dataImport = new PeptideShakerImport(new File("testFile"), 1L, mgfFiles);
+        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, 1L);
+        DataImport dataImport = new PeptideShakerImport(new File("testFile"), fastaDbIds, mgfFiles);
         persistDbTask.setDataImport(dataImport);
 
         List<PersistDbTask> messages = queueManager.monitorQueue(dbTaskQueueName, PersistDbTask.class);

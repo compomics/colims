@@ -5,6 +5,7 @@ import com.compomics.colims.client.model.filter.CpsFileFilter;
 import com.compomics.colims.client.view.PeptideShakerDataImportPanel;
 import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.MgfFileFilter;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 
 /**
@@ -130,8 +132,8 @@ public class PeptideShakerDataImportController implements Controllable {
     }
 
     /**
-     * Validate the user input before unpacking the cps archive. Returns an empty list if no validation errors were
-     * encountered.
+     * Validate the user input before unpacking the cps archive. Returns an
+     * empty list if no validation errors were encountered.
      *
      * @return the list of validation messages
      */
@@ -162,7 +164,10 @@ public class PeptideShakerDataImportController implements Controllable {
             mgfFiles.add(mgfFileListModel.get(i));
         }
 
-        return new PeptideShakerImport(cpsArchive, fastaDb.getId(), mgfFiles);
+        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, fastaDb.getId());
+
+        return new PeptideShakerImport(cpsArchive, fastaDbIds, mgfFiles);
     }
 
 }

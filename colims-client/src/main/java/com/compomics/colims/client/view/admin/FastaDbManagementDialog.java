@@ -1,6 +1,7 @@
 package com.compomics.colims.client.view.admin;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -94,6 +95,18 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         return okButton;
     }
 
+    public JCheckBox getAdditionalCheckBox() {
+        return additionalCheckBox;
+    }
+
+    public JCheckBox getContaminantsCheckBox() {
+        return contaminantsCheckBox;
+    }
+
+    public JCheckBox getPrimaryCheckBox() {
+        return primaryCheckBox;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -114,6 +127,11 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         addButton = new javax.swing.JButton();
         deleteButton = new javax.swing.JButton();
         descriptionLabel = new javax.swing.JLabel();
+        fastaDbTypesPanel = new javax.swing.JPanel();
+        primaryCheckBox = new javax.swing.JCheckBox();
+        additionalCheckBox = new javax.swing.JCheckBox();
+        contaminantsCheckBox = new javax.swing.JCheckBox();
+        fastaDbTypesLabel = new javax.swing.JLabel();
         fastaDbDetailParentPanel = new javax.swing.JPanel();
         fastaDbDetailPanel = new javax.swing.JPanel();
         nameTextField = new javax.swing.JTextField();
@@ -170,7 +188,44 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         deleteButton.setMinimumSize(new java.awt.Dimension(80, 25));
         deleteButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        descriptionLabel.setText("<html>Please select a fasta DB from the list.<br>If necessary, add a new one.<br>You can select a file and taxonomy by clicking the<br>\"browse\" buttons.</html> ");
+        descriptionLabel.setText("<html>Please select a fasta DB from the list. If necessary,<br>add a new one. You can select a file and taxonomy by<br>clicking the \"browse\" buttons.</html> ");
+
+        fastaDbTypesPanel.setBorder(null);
+        fastaDbTypesPanel.setOpaque(false);
+
+        primaryCheckBox.setText("primary");
+
+        additionalCheckBox.setText("additional");
+
+        contaminantsCheckBox.setText("contaminants");
+
+        fastaDbTypesLabel.setText("FASTA types");
+
+        javax.swing.GroupLayout fastaDbTypesPanelLayout = new javax.swing.GroupLayout(fastaDbTypesPanel);
+        fastaDbTypesPanel.setLayout(fastaDbTypesPanelLayout);
+        fastaDbTypesPanelLayout.setHorizontalGroup(
+            fastaDbTypesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(fastaDbTypesPanelLayout.createSequentialGroup()
+                .addComponent(fastaDbTypesLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(primaryCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(additionalCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(contaminantsCheckBox)
+                .addContainerGap())
+        );
+        fastaDbTypesPanelLayout.setVerticalGroup(
+            fastaDbTypesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(fastaDbTypesPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(fastaDbTypesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(primaryCheckBox)
+                    .addComponent(additionalCheckBox)
+                    .addComponent(contaminantsCheckBox)
+                    .addComponent(fastaDbTypesLabel))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout fastaDbOverviewPanelLayout = new javax.swing.GroupLayout(fastaDbOverviewPanel);
         fastaDbOverviewPanel.setLayout(fastaDbOverviewPanelLayout);
@@ -184,10 +239,9 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(fastaDbListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
-                    .addGroup(fastaDbOverviewPanelLayout.createSequentialGroup()
-                        .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                    .addComponent(descriptionLabel)
+                    .addComponent(fastaDbTypesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fastaDbListScrollPane, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         fastaDbOverviewPanelLayout.setVerticalGroup(
@@ -196,7 +250,9 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(descriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fastaDbListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+                .addComponent(fastaDbTypesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fastaDbListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(fastaDbOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -398,9 +454,11 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
+    private javax.swing.JCheckBox additionalCheckBox;
     private javax.swing.JButton browseFastaButton;
     private javax.swing.JButton browseTaxonomyButton;
     private javax.swing.JButton cancelButton;
+    private javax.swing.JCheckBox contaminantsCheckBox;
     private javax.swing.JButton deleteButton;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JPanel fastaDbDetailPanel;
@@ -411,6 +469,8 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
     private javax.swing.JPanel fastaDbManagmentParentPanel;
     private javax.swing.JPanel fastaDbOverviewPanel;
     private javax.swing.JLabel fastaDbStateInfoLabel;
+    private javax.swing.JLabel fastaDbTypesLabel;
+    private javax.swing.JPanel fastaDbTypesPanel;
     private javax.swing.JLabel fileNameLabel;
     private javax.swing.JTextField fileNameTextField;
     private javax.swing.JLabel filePathLabel;
@@ -418,6 +478,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JButton okButton;
+    private javax.swing.JCheckBox primaryCheckBox;
     private javax.swing.JButton saveOrUpdateButton;
     private javax.swing.JLabel speciesLabel;
     private javax.swing.JTextField speciesTextField;

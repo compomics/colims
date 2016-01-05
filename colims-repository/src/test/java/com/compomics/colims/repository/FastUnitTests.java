@@ -26,7 +26,8 @@ import org.junit.runners.Suite;
         TypedCvParamRepositoryTest.class,
         UserRepositoryTest.class,
         PeptideDTOTest.class,
-        SampleRepositoryTest.class
+        SampleRepositoryTest.class,
+        FastaDbRepositoryTest.class
 })
 public class FastUnitTests {
 }
