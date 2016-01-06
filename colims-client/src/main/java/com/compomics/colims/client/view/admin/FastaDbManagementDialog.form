@@ -256,21 +256,25 @@
                     <Component class="javax.swing.JCheckBox" name="primaryCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="primary"/>
+                        <Property name="toolTipText" type="java.lang.String" value="show all primary FASTA files used in searches (e.g. UnitProt ones)"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="additionalCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="additional"/>
+                        <Property name="toolTipText" type="java.lang.String" value="show FASTA files used in searches that contain some additional sequences"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="contaminantsCheckBox">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="contaminants"/>
+                        <Property name="toolTipText" type="java.lang.String" value="show all FASTA files used in searches with contaminants sequences"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JLabel" name="fastaDbTypesLabel">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="FASTA types"/>
+                        <Property name="toolTipText" type="java.lang.String" value="Filter on FASTA file type; if nothing is selected, all FASTA files are shown"/>
                       </Properties>
                     </Component>
                   </SubComponents>

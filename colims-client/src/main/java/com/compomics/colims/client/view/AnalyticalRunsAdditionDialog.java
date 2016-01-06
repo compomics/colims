@@ -14,15 +14,15 @@ import javax.swing.JTextField;
  *
  * @author Niels Hulstaert
  */
-public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
+public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form AnalyticalRunSetupDialog
+     * Creates new form AnalyticalRunsAdditionDialog.
      *
      * @param parent the dialog parent
      * @param modal the modal boolean
      */
-    public AnalyticalRunSetupDialog(java.awt.Frame parent, boolean modal) {
+    public AnalyticalRunsAdditionDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
 
         initComponents();
@@ -128,7 +128,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
         cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Analytical run setup");
+        setTitle("Analytical runs addition");
 
         parentPanel.setOpaque(false);
 
@@ -351,7 +351,7 @@ public class AnalyticalRunSetupDialog extends javax.swing.JDialog {
             parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)
+                .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 241, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())

@@ -78,7 +78,7 @@ public class ProjectManagementController implements Controllable {
     private SampleEditController sampleEditController;
     @Autowired
     @Lazy
-    private AnalyticalRunSetupController analyticalRunSetupController;
+    private AnalyticalRunsAdditionController analyticalRunsAdditionController;
     @Autowired
     @Lazy
     private MzTabExportController mzTabExportController;
@@ -674,7 +674,7 @@ public class ProjectManagementController implements Controllable {
             EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
             if (menuItemLabel.equals(projectManagementPanel.getAddRunMenuItem().getText())) {
                 if (selectedSamples.size() == 1) {
-                    analyticalRunSetupController.showView();
+                    analyticalRunsAdditionController.showView();
                 } else {
                     eventBus.post(new MessageEvent("Analytical run addition", "Please select one and only one sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
                 }

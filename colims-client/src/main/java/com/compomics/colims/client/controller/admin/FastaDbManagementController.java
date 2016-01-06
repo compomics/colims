@@ -1,6 +1,6 @@
 package com.compomics.colims.client.controller.admin;
 
-import com.compomics.colims.client.controller.AnalyticalRunSetupController;
+import com.compomics.colims.client.controller.AnalyticalRunsAdditionController;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -57,7 +57,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     private FastaDbManagementDialog fastaDbManagementDialog;
     //parent controller
     @Autowired
-    private AnalyticalRunSetupController analyticalRunSetupController;
+    private AnalyticalRunsAdditionController analyticalRunsAdditionController;
     //services
     @Autowired
     private EventBus eventBus;
@@ -68,7 +68,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     @PostConstruct
     public void init() {
         //init view
-        fastaDbManagementDialog = new FastaDbManagementDialog(analyticalRunSetupController.getAnalyticalRunSetupDialog(), true);
+        fastaDbManagementDialog = new FastaDbManagementDialog(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), true);
 
         //register to event bus
         //eventBus.register(this);
@@ -98,10 +98,10 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         //add listeners
         fastaDbManagementDialog.getBrowseTaxonomyButton().addActionListener(e -> showOlsDialog());
 
-        //init fasta file selection
+        //init FASTA file selection
         //disable select multiple files
         fastaDbManagementDialog.getFastaFileChooser().setMultiSelectionEnabled(false);
-        //set fasta file filter
+        //set FASTA file filter
         fastaDbManagementDialog.getFastaFileChooser().setFileFilter(new FastaFileFilter());
 
         fastaDbManagementDialog.getBrowseFastaButton().addActionListener(e -> {
@@ -110,7 +110,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 File fastaFile = fastaDbManagementDialog.getFastaFileChooser().getSelectedFile();
 
-                //show fasta file name and path in textfields
+                //show FASTA file name and path in textfields
                 fastaDbManagementDialog.getFileNameTextField().setText(fastaFile.getName());
                 fastaDbManagementDialog.getFilePathTextField().setText(fastaFile.getAbsolutePath());
             }
@@ -125,7 +125,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                     fastaDbManagementDialog.getSaveOrUpdateButton().setEnabled(true);
                     fastaDbManagementDialog.getDeleteButton().setEnabled(true);
 
-                    //check if the fasta DB has an ID.
+                    //check if the FASTA DB has an ID.
                     //If so, disable the name text field and change the save button label.
                     if (fastaDb.getId() != null) {
                         fastaDbManagementDialog.getNameTextField().setEnabled(false);
@@ -155,7 +155,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
             if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
                 FastaDb fastaDbToDelete = getSelectedFastaDb();
 
-                //check if fasta DB has an id.
+                //check if FASTA DB has an id.
                 //If so, try to delete the fasta DB from the db.
                 if (fastaDbToDelete.getId() != null) {
                     try {
@@ -187,7 +187,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog.getSaveOrUpdateButton().addActionListener(e -> {
             if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
                 FastaDb selectedFastaDb = getSelectedFastaDb();
-                //validate fasta DB
+                //validate FASTA DB
                 List<String> validationMessages = GuiUtils.validateEntity(selectedFastaDb);
                 if (validationMessages.isEmpty()) {
                     if (selectedFastaDb.getId() != null) {
@@ -232,30 +232,29 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
             }
         });
 
-        fastaDbManagementDialog.getCancelButton().addActionListener(e -> fastaDbManagementDialog.dispose());
-
-        fastaDbManagementDialog.getPrimaryCheckBox().addActionListener(e -> {
-
+        fastaDbManagementDialog.getCancelButton().addActionListener(e -> {
+            //clear the selection
+            fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
+            fastaDbManagementDialog.dispose();
         });
 
-        fastaDbManagementDialog.getAdditionalCheckBox().addActionListener(e -> {
+        fastaDbManagementDialog.getPrimaryCheckBox().addActionListener(e -> updateFastaDbList());
 
-        });
+        fastaDbManagementDialog.getAdditionalCheckBox().addActionListener(e -> updateFastaDbList());
 
-        fastaDbManagementDialog.getContaminantsCheckBox().addActionListener(e -> {
-
-        });
+        fastaDbManagementDialog.getContaminantsCheckBox().addActionListener(e -> updateFastaDbList());
     }
 
     @Override
     public void showView() {
-        //renew fasta DB list
+        //refresh FASTA DB list
         fastaDbBindingList.clear();
         fastaDbBindingList.addAll(fastaDbService.findAll());
 
         fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
+        clearFastaDbDetailFields();
 
-        GuiUtils.centerDialogOnComponent(analyticalRunSetupController.getAnalyticalRunSetupDialog(), fastaDbManagementDialog);
+        GuiUtils.centerDialogOnComponent(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), fastaDbManagementDialog);
         fastaDbManagementDialog.setVisible(true);
     }
 
@@ -282,7 +281,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     /**
      * Validate the user input and return a list of validation messages.
      *
-     * @param fastaDb the FastaDb
+     * @param fastaDb the FastaDb instance
      * @return the list of validation messages
      */
     private List<String> validate(final FastaDb fastaDb) {
@@ -315,9 +314,9 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     }
 
     /**
-     * Get the selected fasta DB in the fasta DB JList.
+     * Get the selected FASTA DB in the FASTA DB JList.
      *
-     * @return the selected fasta DB
+     * @return the selected FASTA DB
      */
     private FastaDb getSelectedFastaDb() {
         int selectedIndex = fastaDbManagementDialog.getFastaDbList().getSelectedIndex();
@@ -325,9 +324,10 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     }
 
     /**
-     * Clear the fasta DB detail fields.
+     * Clear the FASTA DB detail fields.
      */
     private void clearFastaDbDetailFields() {
+        fastaDbManagementDialog.getNameTextField().setEnabled(true);
         fastaDbManagementDialog.getNameTextField().setText("");
         fastaDbManagementDialog.getFileNameTextField().setText("");
         fastaDbManagementDialog.getFilePathTextField().setText("");
@@ -338,7 +338,8 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     }
 
     /**
-     * Update the FASTA db list with the appropriate type(s).
+     * Update the FASTA DB list when the state of one of the type check boxes
+     * has been changed.
      */
     private void updateFastaDbList() {
         List<FastaDbType> fastaDbTypes = new ArrayList<>();
@@ -353,7 +354,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         if (fastaDbManagementDialog.getAdditionalCheckBox().isSelected()) {
             fastaDbTypes.add(FastaDbType.ADDITIONAL);
         }
-        if (fastaDbManagementDialog.getPrimaryCheckBox().isSelected()) {
+        if (fastaDbManagementDialog.getContaminantsCheckBox().isSelected()) {
             fastaDbTypes.add(FastaDbType.CONTAMINANTS);
         }
 

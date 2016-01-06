@@ -33,12 +33,14 @@ public class MaxQuantDataImportController implements Controllable {
 
     //model
     private File maxQuantDirectory;
-    private FastaDb fastaDb;
+    private FastaDb primaryFastaDb;
+    private FastaDb additionalFastaDb;
+    private FastaDb contaminantsFastaDb;
     //view
     private MaxQuantDataImportPanel maxQuantDataImportPanel;
     //parent controller
     @Autowired
-    private AnalyticalRunSetupController analyticalRunSetupController;
+    private AnalyticalRunsAdditionController analyticalRunsAdditionController;
     //child controller
     @Autowired
     private FastaDbManagementController fastaDbManagementController;
@@ -49,7 +51,7 @@ public class MaxQuantDataImportController implements Controllable {
     @Override
     public void init() {
         //get view from parent controller
-        maxQuantDataImportPanel = analyticalRunSetupController.getAnalyticalRunSetupDialog().getMaxQuantDataImportPanel();
+        maxQuantDataImportPanel = analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog().getMaxQuantDataImportPanel();
 
         //register to event bus
         eventBus.register(this);
@@ -71,20 +73,54 @@ public class MaxQuantDataImportController implements Controllable {
             }
         });
 
-        maxQuantDataImportPanel.getSelectFastaButton().addActionListener(e -> {
+        maxQuantDataImportPanel.getSelectPrimaryFastaDbButton().addActionListener(e -> {
             fastaDbManagementController.showView();
 
-            fastaDb = fastaDbManagementController.getFastaDb();
+            primaryFastaDb = fastaDbManagementController.getFastaDb();
 
-            maxQuantDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
+            if (primaryFastaDb != null) {
+                maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText(primaryFastaDb.getFilePath());
+            } else {
+                maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText("");
+            }
+        });
+
+        maxQuantDataImportPanel.getSelectAddtionalFastaDbButton().addActionListener(e -> {
+            fastaDbManagementController.showView();
+
+            additionalFastaDb = fastaDbManagementController.getFastaDb();
+
+            if (additionalFastaDb != null) {
+                maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText(additionalFastaDb.getFilePath());
+            } else {
+                maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
+            }
+        });
+
+        maxQuantDataImportPanel.getSelectContaminantsFastaDbButton().addActionListener(e -> {
+            fastaDbManagementController.showView();
+
+            contaminantsFastaDb = fastaDbManagementController.getFastaDb();
+
+            if (contaminantsFastaDb != null) {
+                maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText(contaminantsFastaDb.getFilePath());
+            } else {
+                maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
+            }
         });
     }
 
     @Override
     public void showView() {
+        //reset the FASTA fields
+        primaryFastaDb = null;
+        additionalFastaDb = null;
+        contaminantsFastaDb = null;
         //reset the input fields
         maxQuantDataImportPanel.getMaxQuantDirectoryTextField().setText("");
-        maxQuantDataImportPanel.getFastaDbTextField().setText("");
+        maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText("");
+        maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
+        maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
     }
 
     /**
@@ -99,8 +135,11 @@ public class MaxQuantDataImportController implements Controllable {
         if (maxQuantDirectory == null) {
             validationMessages.add("Please select a MaxQuant data files directory.");
         }
-        if (fastaDb == null) {
-            validationMessages.add("Please select a FASTA file.");
+        if (primaryFastaDb == null) {
+            validationMessages.add("Please select a primary FASTA file.");
+        }
+        if (contaminantsFastaDb == null) {
+            validationMessages.add("Please select a contaminants FASTA file.");
         }
 
         return validationMessages;
@@ -113,7 +152,11 @@ public class MaxQuantDataImportController implements Controllable {
      */
     public MaxQuantImport getDataImport() {
         EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, fastaDb.getId());
+        fastaDbIds.put(FastaDbType.PRIMARY, primaryFastaDb.getId());
+        fastaDbIds.put(FastaDbType.CONTAMINANTS, contaminantsFastaDb.getId());
+        if (additionalFastaDb != null) {
+            fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDb.getId());
+        }
 
         return new MaxQuantImport(maxQuantDirectory, fastaDbIds);
     }

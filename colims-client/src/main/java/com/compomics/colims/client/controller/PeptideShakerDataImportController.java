@@ -41,7 +41,7 @@ public class PeptideShakerDataImportController implements Controllable {
     private PeptideShakerDataImportPanel peptideShakerDataImportPanel;
     //parent controller
     @Autowired
-    private AnalyticalRunSetupController analyticalRunSetupController;
+    private AnalyticalRunsAdditionController analyticalRunsAdditionController;
     //child controller
     @Autowired
     private FastaDbManagementController fastaDbManagementController;
@@ -52,7 +52,7 @@ public class PeptideShakerDataImportController implements Controllable {
     @Override
     public void init() {
         //get view from parent controller
-        peptideShakerDataImportPanel = analyticalRunSetupController.getAnalyticalRunSetupDialog().getPeptideShakerDataImportPanel();
+        peptideShakerDataImportPanel = analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog().getPeptideShakerDataImportPanel();
 
         //register to event bus
         eventBus.register(this);
@@ -81,6 +81,8 @@ public class PeptideShakerDataImportController implements Controllable {
 
             if (fastaDb != null) {
                 peptideShakerDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
+            } else {
+                peptideShakerDataImportPanel.getFastaDbTextField().setText("");
             }
         });
 
@@ -125,6 +127,8 @@ public class PeptideShakerDataImportController implements Controllable {
 
     @Override
     public void showView() {
+        //reset the FASTA field
+        fastaDb = null;
         //reset the input fields
         peptideShakerDataImportPanel.getCpsTextField().setText("");
         peptideShakerDataImportPanel.getFastaDbTextField().setText("");

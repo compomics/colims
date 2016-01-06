@@ -194,12 +194,16 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         fastaDbTypesPanel.setOpaque(false);
 
         primaryCheckBox.setText("primary");
+        primaryCheckBox.setToolTipText("show all primary FASTA files used in searches (e.g. UnitProt ones)");
 
         additionalCheckBox.setText("additional");
+        additionalCheckBox.setToolTipText("show FASTA files used in searches that contain some additional sequences");
 
         contaminantsCheckBox.setText("contaminants");
+        contaminantsCheckBox.setToolTipText("show all FASTA files used in searches with contaminants sequences");
 
         fastaDbTypesLabel.setText("FASTA types");
+        fastaDbTypesLabel.setToolTipText("Filter on FASTA file type; if nothing is selected, all FASTA files are shown");
 
         javax.swing.GroupLayout fastaDbTypesPanelLayout = new javax.swing.GroupLayout(fastaDbTypesPanel);
         fastaDbTypesPanel.setLayout(fastaDbTypesPanelLayout);
