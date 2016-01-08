@@ -21,7 +21,7 @@ import java.util.Comparator;
  */
 public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> {
 
-    private static final String[] columnNames = {"ID", "Sequence", "Charge", "M/Z ratio", "Mass Error", "Retention Time", "Confidence"};
+    private static final String[] COLUMN_NAMES = {"ID", "Sequence", "Charge", "M/Z ratio", "Mass Error", "Retention Time", "Confidence"};
 
     public static final int SPECTRUM_ID = 0;
     public static final int SEQUENCE = 1;
@@ -32,7 +32,8 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
     public static final int PSM_CONFIDENCE = 6;
 
     /**
-     * The search parameters of the given run. They hold the mass error accuracy type.
+     * The search parameters of the given run. They hold the mass error accuracy
+     * type.
      */
     private SearchParameters searchParameters;
 
@@ -69,12 +70,12 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
     public String getColumnName(int column) {
-        return columnNames[column];
+        return COLUMN_NAMES[column];
     }
 
     @Override

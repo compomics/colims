@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class PeptideExportModel extends AbstractTableModel {
 
-    private static final String[] columnNames = {"Sequence", "Charge", "Spectra", "Fixed Modifications", "Variable Modifications"};
+    private static final String[] COLUMN_NAMES = {"Sequence", "Charge", "Spectra", "Fixed Modifications", "Variable Modifications"};
 
     private List<PeptideTableRow> peptideTableRows = new ArrayList<>();
 
@@ -29,12 +29,12 @@ public class PeptideExportModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
     public String getColumnName(int column) {
-        return columnNames[column];
+        return COLUMN_NAMES[column];
     }
 
     @Override

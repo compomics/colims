@@ -95,8 +95,9 @@ public class MaterialManagementController implements Controllable {
     }
 
     /**
-     * Listen to a CV param change event posted by the CvParamManagementController. If the MaterialManagementDialog is
-     * visible, clear the selection in the CV param summary list.
+     * Listen to a CV param change event posted by the
+     * CvParamManagementController. If the MaterialManagementDialog is visible,
+     * clear the selection in the CV param summary list.
      *
      * @param cvParamChangeEvent the CvParamChangeEvent
      */
@@ -254,42 +255,49 @@ public class MaterialManagementController implements Controllable {
             List<MaterialCvParam> addedItems = (List<MaterialCvParam>) evt.getNewValue();
 
             //check for property
-            if (selectedcvParamType.equals(CvParamType.SPECIES)) {
-                if (!addedItems.isEmpty()) {
-                    MaterialCvParam species = addedItems.get(0);
-                    materialToEdit.setSpecies(species);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SPECIES, species);
-                } else {
-                    materialToEdit.setSpecies(null);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SPECIES, null);
-                }
-            } else if (selectedcvParamType.equals(CvParamType.TISSUE)) {
-                if (!addedItems.isEmpty()) {
-                    MaterialCvParam tissue = addedItems.get(0);
-                    materialToEdit.setTissue(tissue);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TISSUE, tissue);
-                } else {
-                    materialToEdit.setTissue(null);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TISSUE, null);
-                }
-            } else if (selectedcvParamType.equals(CvParamType.CELL_TYPE)) {
-                if (!addedItems.isEmpty()) {
-                    MaterialCvParam cellType = addedItems.get(0);
-                    materialToEdit.setCellType(cellType);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_TYPE, cellType);
-                } else {
-                    materialToEdit.setCellType(null);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_TYPE, null);
-                }
-            } else if (selectedcvParamType.equals(CvParamType.COMPARTMENT)) {
-                if (!addedItems.isEmpty()) {
-                    MaterialCvParam compartment = addedItems.get(0);
-                    materialToEdit.setCompartment(compartment);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.COMPARTMENT, compartment);
-                } else {
-                    materialToEdit.setCompartment(null);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.COMPARTMENT, null);
-                }
+            switch (selectedcvParamType) {
+                case SPECIES:
+                    if (!addedItems.isEmpty()) {
+                        MaterialCvParam species = addedItems.get(0);
+                        materialToEdit.setSpecies(species);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SPECIES, species);
+                    } else {
+                        materialToEdit.setSpecies(null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SPECIES, null);
+                    }
+                    break;
+                case TISSUE:
+                    if (!addedItems.isEmpty()) {
+                        MaterialCvParam tissue = addedItems.get(0);
+                        materialToEdit.setTissue(tissue);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TISSUE, tissue);
+                    } else {
+                        materialToEdit.setTissue(null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TISSUE, null);
+                    }
+                    break;
+                case CELL_TYPE:
+                    if (!addedItems.isEmpty()) {
+                        MaterialCvParam cellType = addedItems.get(0);
+                        materialToEdit.setCellType(cellType);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_TYPE, cellType);
+                    } else {
+                        materialToEdit.setCellType(null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_TYPE, null);
+                    }
+                    break;
+                case COMPARTMENT:
+                    if (!addedItems.isEmpty()) {
+                        MaterialCvParam compartment = addedItems.get(0);
+                        materialToEdit.setCompartment(compartment);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.COMPARTMENT, compartment);
+                    } else {
+                        materialToEdit.setCompartment(null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.COMPARTMENT, null);
+                    }
+                    break;
+                default:
+                    break;
             }
 
         });

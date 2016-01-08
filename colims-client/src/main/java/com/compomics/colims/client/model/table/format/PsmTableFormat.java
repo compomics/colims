@@ -15,7 +15,8 @@ import java.util.Comparator;
  * @author Niels Hulstaert
  */
 public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
-    private static final String[] columnNames = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Peptide sequence", "Confidence", "Protein accessions"};
+
+    private static final String[] COLUMN_NAMES = {"ID", "Charge", "M/Z ratio", "Intensity", "Retention time", "Peptide sequence", "Confidence", "Protein accessions"};
     private static final String NOT_APPLICABLE = "N/A";
 
     public static final int SPECTRUM_ID = 0;
@@ -66,12 +67,12 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
     public String getColumnName(int column) {
-        return columnNames[column];
+        return COLUMN_NAMES[column];
     }
 
     @Override

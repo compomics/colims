@@ -106,19 +106,29 @@ public class OlsServiceImpl implements OlsService {
                         modification = clazz.newInstance();
                         modification.setAccession(accession);
                         modification.setName(searchModificationName);
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        LOGGER.error(e.getMessage(), e);
-                    }
 
-                    //get the modification properties
-                    for (MapItem mapItem : modificationMetaData.getItem()) {
-                        if (mapItem.getKey() != null && mapItem.getValue() != null) {
-                            if (mapItem.getKey().equals("DiffMono")) {
-                                modification.setMonoIsotopicMassShift(Double.parseDouble(mapItem.getValue().toString()));
-                            } else if (mapItem.getKey().equals("DiffAvg")) {
-                                modification.setAverageMassShift(Double.parseDouble(mapItem.getValue().toString()));
+                        //get the modification properties
+                        for (MapItem mapItem : modificationMetaData.getItem()) {
+                            if (mapItem.getKey() != null && mapItem.getValue() != null) {
+                                if (mapItem.getKey().equals("DiffMono")) {
+                                    try {
+                                        Double monoIsotopicsMassShift = Double.parseDouble(mapItem.getValue().toString());
+                                        modification.setMonoIsotopicMassShift(monoIsotopicsMassShift);
+                                    } catch (NumberFormatException nfe) {
+                                        LOGGER.error(nfe, nfe.getCause());
+                                    }
+                                } else if (mapItem.getKey().equals("DiffAvg")) {
+                                    try {
+                                        Double averageMassShift = Double.parseDouble(mapItem.getValue().toString());
+                                        modification.setAverageMassShift(averageMassShift);
+                                    } catch (NumberFormatException nfe) {
+                                        LOGGER.error(nfe.getMessage(), nfe);
+                                    }
+                                }
                             }
                         }
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        LOGGER.error(e.getMessage(), e);
                     }
 
                     //add modification to the cache

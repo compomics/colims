@@ -96,8 +96,9 @@ public class ProtocolManagementController implements Controllable {
     }
 
     /**
-     * Listen to a CV param change event posted by the CvParamManagementController. If the ProtocolManagementDialog is
-     * visible, clear the selection in the CV param summary list.
+     * Listen to a CV param change event posted by the
+     * CvParamManagementController. If the ProtocolManagementDialog is visible,
+     * clear the selection in the CV param summary list.
      *
      * @param cvParamChangeEvent the CvParamChangeEvent
      */
@@ -261,39 +262,47 @@ public class ProtocolManagementController implements Controllable {
             List<ProtocolCvParam> addedItems = (List<ProtocolCvParam>) evt.getNewValue();
 
             //check for property
-            if (selectedCvParamType.equals(CvParamType.REDUCTION)) {
-                if (!addedItems.isEmpty()) {
-                    ProtocolCvParam reduction = addedItems.get(0);
-                    protocolToEdit.setReduction(reduction);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.REDUCTION, reduction);
-                } else {
-                    protocolToEdit.setReduction(null);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.REDUCTION, null);
-                }
-            } else if (selectedCvParamType.equals(CvParamType.ENZYME)) {
-                if (!addedItems.isEmpty()) {
-                    ProtocolCvParam enzyme = addedItems.get(0);
-                    protocolToEdit.setEnzyme(enzyme);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.ENZYME, enzyme);
-                } else {
-                    protocolToEdit.setEnzyme(null);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.ENZYME, null);
-                }
-            } else if (selectedCvParamType.equals(CvParamType.CELL_BASED)) {
-                if (!addedItems.isEmpty()) {
-                    ProtocolCvParam cellBased = addedItems.get(0);
-                    protocolToEdit.setCellBased(cellBased);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_BASED, cellBased);
-                } else {
-                    protocolToEdit.setCellBased(null);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_BASED, null);
-                }
-            } else if (selectedCvParamType.equals(CvParamType.CHEMICAL_LABELING)) {
-                protocolToEdit.setChemicalLabels(addedItems);
-                typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.CHEMICAL_LABELING, addedItems);
-            } else if (selectedCvParamType.equals(CvParamType.OTHER)) {
-                protocolToEdit.setOtherCvParams(addedItems);
-                typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.CHEMICAL_LABELING, addedItems);
+            switch (selectedCvParamType) {
+                case REDUCTION:
+                    if (!addedItems.isEmpty()) {
+                        ProtocolCvParam reduction = addedItems.get(0);
+                        protocolToEdit.setReduction(reduction);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.REDUCTION, reduction);
+                    } else {
+                        protocolToEdit.setReduction(null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.REDUCTION, null);
+                    }
+                    break;
+                case ENZYME:
+                    if (!addedItems.isEmpty()) {
+                        ProtocolCvParam enzyme = addedItems.get(0);
+                        protocolToEdit.setEnzyme(enzyme);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.ENZYME, enzyme);
+                    } else {
+                        protocolToEdit.setEnzyme(null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.ENZYME, null);
+                    }
+                    break;
+                case CELL_BASED:
+                    if (!addedItems.isEmpty()) {
+                        ProtocolCvParam cellBased = addedItems.get(0);
+                        protocolToEdit.setCellBased(cellBased);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_BASED, cellBased);
+                    } else {
+                        protocolToEdit.setCellBased(null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.CELL_BASED, null);
+                    }
+                    break;
+                case CHEMICAL_LABELING:
+                    protocolToEdit.setChemicalLabels(addedItems);
+                    typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.CHEMICAL_LABELING, addedItems);
+                    break;
+                case OTHER:
+                    protocolToEdit.setOtherCvParams(addedItems);
+                    typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.CHEMICAL_LABELING, addedItems);
+                    break;
+                default:
+                    break;
             }
 
         });

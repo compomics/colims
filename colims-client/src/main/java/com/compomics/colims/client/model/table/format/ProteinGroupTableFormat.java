@@ -7,13 +7,14 @@ import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import java.util.Comparator;
 
 /**
- * This class represents the format of ProteinGroup instances shown in the protein group table.
+ * This class represents the format of ProteinGroup instances shown in the
+ * protein group table.
  * <p/>
  * Created by Iain on 23/06/2015.
  */
 public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroupDTO> {
 
-    private static final String[] columnNames = {"ID", "Accession", "Sequence", "Distinct peptide seq.", "Spectra", "Confidence"};
+    private static final String[] COLUMN_NAMES = {"ID", "Accession", "Sequence", "Distinct peptide seq.", "Spectra", "Confidence"};
     public static final int ID = 0;
     public static final int ACCESSION = 1;
     public static final int SEQUENCE = 2;
@@ -48,12 +49,12 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
     public String getColumnName(int column) {
-        return columnNames[column];
+        return COLUMN_NAMES[column];
     }
 
     @Override

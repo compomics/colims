@@ -23,7 +23,7 @@ public class ProgressController implements Controllable {
     //model
     private int progress;
     //view
-    private ProgressDialogX progressDialog;
+    private ProgressDialogX progressDialog = new ProgressDialogX(true);
     @Autowired
     private EventBus eventBus;
 

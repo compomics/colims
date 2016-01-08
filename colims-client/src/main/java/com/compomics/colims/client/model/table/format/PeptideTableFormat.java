@@ -16,7 +16,7 @@ import java.util.Comparator;
  */
 public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> {
 
-    private static final String[] columnNames = {"Sequence", "PI", "Start", "Spectra", "Confidence"};
+    private static final String[] COLUMN_NAMES = {"Sequence", "PI", "Start", "Spectra", "Confidence"};
 
     public static final int SEQUENCE = 0;
     public static final int PROTEIN_INFERENCE = 1;
@@ -49,12 +49,12 @@ public class PeptideTableFormat implements AdvancedTableFormat<PeptideTableRow> 
 
     @Override
     public int getColumnCount() {
-        return columnNames.length;
+        return COLUMN_NAMES.length;
     }
 
     @Override
     public String getColumnName(int column) {
-        return columnNames[column];
+        return COLUMN_NAMES[column];
     }
 
     @Override

@@ -18,7 +18,7 @@ public class SequenceUtils {
     /**
      * Default {@link SequenceMatchingPreferences} instance;
      */
-    private static final SequenceMatchingPreferences sequenceMatchingPreferences = new SequenceMatchingPreferences();
+    private static final SequenceMatchingPreferences SEQUENCE_MATCHING_PREFERENCES = new SequenceMatchingPreferences();
 
     /**
      * Private no-arg constructor.
@@ -78,7 +78,7 @@ public class SequenceUtils {
     public static List<Integer> getPeptideStartIndexes(String proteinSequence, String peptideSequence) {
         AminoAcidPattern aminoAcidPattern = new AminoAcidPattern(peptideSequence);
 
-        return aminoAcidPattern.getIndexes(proteinSequence, sequenceMatchingPreferences);
+        return aminoAcidPattern.getIndexes(proteinSequence, SEQUENCE_MATCHING_PREFERENCES);
     }
 
     /**

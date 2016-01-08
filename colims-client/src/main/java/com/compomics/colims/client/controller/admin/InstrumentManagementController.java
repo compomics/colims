@@ -97,7 +97,8 @@ public class InstrumentManagementController implements Controllable {
     }
 
     /**
-     * Listen to a CV param change event posted by the CvParamManagementController. If the InstrumentManagementDialog is
+     * Listen to a CV param change event posted by the
+     * CvParamManagementController. If the InstrumentManagementDialog is
      * visible, clear the selection in the CV param summary list.
      *
      * @param cvParamChangeEvent the CvParamChangeEvent instance
@@ -188,16 +189,16 @@ public class InstrumentManagementController implements Controllable {
         });
 
         instrumentManagementDialog.getEditInstrumentButton().addActionListener(e -> {
-                    if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
-                        updateInstrumentEditDialog(getSelectedInstrument());
+            if (instrumentManagementDialog.getInstrumentList().getSelectedIndex() != -1) {
+                updateInstrumentEditDialog(getSelectedInstrument());
 
-                        //show dialog
-                        GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
-                        instrumentEditDialog.setVisible(true);
-                    } else {
-                        eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to edit.", JOptionPane.INFORMATION_MESSAGE));
-                    }
-                }
+                //show dialog
+                GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
+                instrumentEditDialog.setVisible(true);
+            } else {
+                eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to edit.", JOptionPane.INFORMATION_MESSAGE));
+            }
+        }
         );
 
         instrumentManagementDialog.getCancelInstrumentManagementButton().addActionListener(e -> instrumentManagementDialog.dispose()
@@ -253,36 +254,43 @@ public class InstrumentManagementController implements Controllable {
             List<InstrumentCvParam> addedItems = (List<InstrumentCvParam>) evt.getNewValue();
 
             //check for property
-            if (selectedcvParamType.equals(CvParamType.TYPE)) {
-                if (!addedItems.isEmpty()) {
-                    InstrumentCvParam type = addedItems.get(0);
-                    instrumentToEdit.setType(type);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, type);
-                } else {
-                    instrumentToEdit.setType(null);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, null);
-                }
-            } else if (selectedcvParamType.equals(CvParamType.SOURCE)) {
-                if (!addedItems.isEmpty()) {
-                    InstrumentCvParam source = addedItems.get(0);
-                    instrumentToEdit.setSource(source);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, source);
-                } else {
-                    instrumentToEdit.setSource(null);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, null);
-                }
-            } else if (selectedcvParamType.equals(CvParamType.DETECTOR)) {
-                if (!addedItems.isEmpty()) {
-                    InstrumentCvParam detector = addedItems.get(0);
-                    instrumentToEdit.setDetector(detector);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, detector);
-                } else {
-                    instrumentToEdit.setDetector(null);
-                    typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, null);
-                }
-            } else if (selectedcvParamType.equals(CvParamType.ANALYZER)) {
-                instrumentToEdit.setAnalyzers(addedItems);
-                typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.ANALYZER, addedItems);
+            switch (selectedcvParamType) {
+                case TYPE:
+                    if (!addedItems.isEmpty()) {
+                        InstrumentCvParam type = addedItems.get(0);
+                        instrumentToEdit.setType(type);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, type);
+                    } else {
+                        instrumentToEdit.setType(null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.TYPE, null);
+                    }
+                    break;
+                case SOURCE:
+                    if (!addedItems.isEmpty()) {
+                        InstrumentCvParam source = addedItems.get(0);
+                        instrumentToEdit.setSource(source);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, source);
+                    } else {
+                        instrumentToEdit.setSource(null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.SOURCE, null);
+                    }
+                    break;
+                case DETECTOR:
+                    if (!addedItems.isEmpty()) {
+                        InstrumentCvParam detector = addedItems.get(0);
+                        instrumentToEdit.setDetector(detector);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, detector);
+                    } else {
+                        instrumentToEdit.setDetector(null);
+                        typedCvParamSummaryListModel.updateSingleCvParam(CvParamType.DETECTOR, null);
+                    }
+                    break;
+                case ANALYZER:
+                    instrumentToEdit.setAnalyzers(addedItems);
+                    typedCvParamSummaryListModel.updateMultiCvParam(CvParamType.ANALYZER, addedItems);
+                    break;
+                default:
+                    break;
             }
 
         });
@@ -360,7 +368,8 @@ public class InstrumentManagementController implements Controllable {
     }
 
     /**
-     * Check if a instrument with the given instrument name exists in the database.
+     * Check if a instrument with the given instrument name exists in the
+     * database.
      *
      * @param instrument the instrument
      * @return does the instrument name exist

@@ -4,13 +4,12 @@ import org.hibernate.transform.BasicTransformerAdapter;
 
 import java.util.LinkedHashMap;
 
-
 /**
  * Created by Davy Maddelein on 05/08/2015.
  */
 public class LinkedAliasToEntityMapResultTransformer extends BasicTransformerAdapter {
 
-    private static final LinkedAliasToEntityMapResultTransformer instance = new LinkedAliasToEntityMapResultTransformer();
+    private static final LinkedAliasToEntityMapResultTransformer INSTANCE = new LinkedAliasToEntityMapResultTransformer();
 
     /**
      * Private constructor to prevent instantiation.
@@ -19,7 +18,7 @@ public class LinkedAliasToEntityMapResultTransformer extends BasicTransformerAda
     }
 
     public static LinkedAliasToEntityMapResultTransformer INSTANCE() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override
