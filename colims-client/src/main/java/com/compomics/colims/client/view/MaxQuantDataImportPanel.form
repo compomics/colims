@@ -101,7 +101,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="maxQuantDirectorySelectionLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Select the MaxQuant text files directory*:"/>
+        <Property name="text" type="java.lang.String" value="Select the MaxQuant files directory*:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="selectMaxQuantDirectoryButton">

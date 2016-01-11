@@ -11,6 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +41,12 @@ public class MaxQuantProteinGroupParserTest {
         maxQuantTestFastaDb.setName(MaxQuantTestSuite.fastaFile.getName());
         maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
         maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
+        List<FastaDb> fastaDbs = new ArrayList<>();
+        fastaDbs.add(maxQuantTestFastaDb);
 
         List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.proteinGroupsFile.toPath());
 
-        Map<Integer, ProteinGroup> result = maxQuantProteinGroupParser.parse(MaxQuantTestSuite.proteinGroupsFile, maxQuantParser.parseFasta(maxQuantTestFastaDb));
+        Map<Integer, ProteinGroup> result = maxQuantProteinGroupParser.parse(MaxQuantTestSuite.proteinGroupsFile, maxQuantParser.parseFastas(fastaDbs));
 
         // minus headers
         assertThat(result.size(), Matchers.lessThan(rawFile.size()));

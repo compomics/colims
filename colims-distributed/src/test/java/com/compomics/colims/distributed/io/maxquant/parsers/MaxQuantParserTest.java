@@ -7,16 +7,20 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.enums.FastaDbType;
-import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -48,19 +52,22 @@ public class MaxQuantParserTest {
 
     @Test
     public void testParseFasta() throws IOException {
-        FastaDb maxQuantTestFastaDb = new FastaDb();
-        maxQuantTestFastaDb.setName(MaxQuantTestSuite.fastaFile.getName());
-        maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
-        maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
+        Resource contaminantsFasta = new ClassPathResource("config/contaminants.fasta");
+        FastaDb contaminantsFastaDb = new FastaDb();
+        contaminantsFastaDb.setName("contaminants");
+        contaminantsFastaDb.setFileName(contaminantsFasta.getFilename());
+        contaminantsFastaDb.setFilePath(contaminantsFasta.getURI().getPath());
+        List<FastaDb> fastaDbs = new ArrayList<>();
+        fastaDbs.add(contaminantsFastaDb);
 
-        Map<String, String> parsedFasta = maxQuantParser.parseFasta(maxQuantTestFastaDb);
+        Map<String, String> parsedContaminantsFasta = maxQuantParser.parseFastas(fastaDbs);
 
-        assertThat(parsedFasta.size(), Matchers.greaterThan(0));
-        // TODO: more test cases
+        Assert.assertEquals(246, parsedContaminantsFasta.size());
     }
 
     /**
      * Test of getIdentificationForSpectrum method, of class MaxQuantParser.
+     *
      * @throws java.lang.Exception in case of an exception
      */
     @Test
@@ -71,14 +78,13 @@ public class MaxQuantParserTest {
         assertThat(assumption, isA(Peptide.class));
 
         maxQuantParser.clear();
-
         assumption = maxQuantParser.getIdentificationForSpectrum(spectrum);
-
         assertThat(assumption, nullValue());
     }
 
     /**
      * Test of getSpectra method, of class MaxQuantParser.
+     *
      * @throws java.lang.Exception in case of an exception
      */
     @Test

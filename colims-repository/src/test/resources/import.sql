@@ -64,9 +64,6 @@ INSERT INTO material (id, creation_date, modification_date, user_name, name, l_c
 -- insert test modifications
 INSERT INTO modification (id, name, accession, utilities_name, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', 'test_utilities_name', '-64.1', '-63.998286'), (2, 'non-existing modification', 'MOD:00894', 'test_utilities_name_2', '-87.1', '-89.998286');
 
--- insert test proteins
--- INSERT INTO protein (id, protein_sequence) VALUES (1, 'MGDERPHYYGKHGTPQKYDPTFKG'), (2, 'MAAAAGNRASSSGFPGARAT');
-
 -- insert test search engine
 INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (1,'N/A','N/A','PeptideShaker','N/A','PEPTIDESHAKER','0.28.0');
 INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (2,'MS:1001583','MS','MaxQuant','PSI Mass Spectrometry Ontology [MS]','MAXQUANT','0.0.0');

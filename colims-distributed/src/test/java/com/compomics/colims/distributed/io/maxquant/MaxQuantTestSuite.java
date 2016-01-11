@@ -14,14 +14,13 @@ import java.io.File;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    MaxQuantEvidenceParserTest.class,
-    MaxQuantParameterParserTest.class,
-    MaxQuantParserTest.class,
-    MaxQuantProteinGroupParserTest.class,
-    MaxQuantSpectrumParserTest.class,
-    TabularFileLineValuesIteratorTest.class
+        MaxQuantEvidenceParserTest.class,
+        MaxQuantParameterParserTest.class,
+        MaxQuantParserTest.class,
+        MaxQuantProteinGroupParserTest.class,
+        MaxQuantSpectrumParserTest.class,
+        TabularFileLineValuesIteratorTest.class
 })
-
 public class MaxQuantTestSuite {
 
     private static final String maxQuantVersion = "1.5.2.8";
@@ -36,6 +35,7 @@ public class MaxQuantTestSuite {
 
     @ClassRule
     public static ExternalResource resource = new ExternalResource() {
+
         @Override
         protected void before() throws Throwable {
             System.out.println("initialising data sets");

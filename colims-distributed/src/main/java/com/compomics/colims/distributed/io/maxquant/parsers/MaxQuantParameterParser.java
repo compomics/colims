@@ -33,6 +33,23 @@ import java.util.Map.Entry;
 @Component
 public class MaxQuantParameterParser {
 
+    /**
+     * Summary data file name
+     */
+    private static final String SUMMARY = "summary.txt";
+    private static final String MS_ONTOLOGY_LABEL = "MS";
+    private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
+    private static final String NOT_APPLICABLE = "N/A";
+    private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
+
+    private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
+        MaxQuantSummaryHeaders.ENZYME,
+        MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
+        MaxQuantSummaryHeaders.MULTIPLICITY,
+        MaxQuantSummaryHeaders.PROTEASE,
+        MaxQuantSummaryHeaders.RAW_FILE
+    };
+
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
     @Autowired
@@ -43,45 +60,23 @@ public class MaxQuantParameterParser {
     /**
      * MaxQuant version
      */
-    private String version = null;
-
+    private String version = "N/A";
     /**
      * Experiment multiplicity
      */
     private String multiplicity = null;
-
     /**
      * Default search type
      */
     private SearchCvParam defaultSearchType = null;
-
     /**
      * Settings used in the experiment, indexed by run
      */
     private Map<String, SearchAndValidationSettings> runSettings = new HashMap<>();
-
     /**
      * Parameters file name
      */
     private static final String PARAMETERS = "parameters.txt";
-
-    /**
-     * Summary data file name
-     */
-    private static final String SUMMARY = "summary.txt";
-
-    private static final String MS_ONTOLOGY_LABEL = "MS";
-    private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
-    private static final String NOT_APPLICABLE = "N/A";
-    private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
-
-    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
-        MaxQuantSummaryHeaders.ENZYME,
-        MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
-        MaxQuantSummaryHeaders.MULTIPLICITY,
-        MaxQuantSummaryHeaders.PROTEASE,
-        MaxQuantSummaryHeaders.RAW_FILE
-    };
 
     /**
      * Parse parameters for experiment.
@@ -89,7 +84,7 @@ public class MaxQuantParameterParser {
      * @param quantFolder Experiment data folder
      * @param fastaDbs the FASTA databases used in experiment
      * @param storeFiles Whether data files should be stored with experiment
-     * @throws IOException
+     * @throws IOException thrown in case of of an I/O related problem
      */
     public void parse(File quantFolder, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
         TypedCvParam searchType = typedCvParamService.findByAccession(DEFAULT_SEARCH_TYPE_ACCESSION, CvParamType.SEARCH_TYPE);
@@ -106,15 +101,45 @@ public class MaxQuantParameterParser {
     }
 
     /**
+     * Parse a parameters file.
+     *
+     * @param parameterFile File to be parsed
+     * @return Key-value list of file data
+     * @throws IOException thrown in case of of an I/O related problem
+     */
+    public Map<String, String> parseParameters(File parameterFile) throws IOException {
+        Map<String, String> parameters = new HashMap<>();
+
+        try (FileInputStream fis = new FileInputStream(parameterFile);
+                InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
+                LineNumberReader reader = new LineNumberReader(isr)) {
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] split = line.split("\t");
+
+                if (split.length == 2) {
+                    parameters.put(split[0].toLowerCase(Locale.US), split[1]);
+                } else {
+                    parameters.put(split[0].toLowerCase(Locale.US), "");
+                }
+            }
+        }
+
+        return parameters;
+    }
+
+    /**
      * Parse common search and validation settings for an experiment.
      *
      * @param maxQuantFolder Experiment data folder
      * @param fastaDbs the FASTA databases used in experiment
      * @param storeFiles Whether data files should be stored with experiment
-     * @return A SearchAndValidationSettings object
-     * @throws IOException
+     * @return the SearchAndValidationSettings instance
+     * @throws IOException thrown in case of of an I/O related problem
      */
-    public SearchAndValidationSettings parseSettings(File maxQuantFolder, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
+    private SearchAndValidationSettings parseSettings(File maxQuantFolder, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         //set FASTA database entity associations
@@ -128,7 +153,6 @@ public class MaxQuantParameterParser {
 
         Iterator<Entry<String, String>> parameterIterator = parseParameters(new File(maxQuantFolder, PARAMETERS)).entrySet().iterator();
         Entry<String, String> row;
-        String version = null;
 
         while (parameterIterator.hasNext()) {
             row = parameterIterator.next();
@@ -171,47 +195,17 @@ public class MaxQuantParameterParser {
     }
 
     /**
-     * Parse a parameters file.
-     *
-     * @param parameterFile File to be parsed
-     * @return Key-value list of file data
-     * @throws IOException
-     */
-    public Map<String, String> parseParameters(File parameterFile) throws IOException {
-        Map<String, String> parameters = new HashMap<>();
-
-        try (FileInputStream fis = new FileInputStream(parameterFile);
-                InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8").newDecoder());
-                LineNumberReader reader = new LineNumberReader(isr)) {
-
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] split = line.split("\t");
-
-                if (split.length == 2) {
-                    parameters.put(split[0].toLowerCase(Locale.US), split[1]);
-                } else {
-                    parameters.put(split[0].toLowerCase(Locale.US), "");
-                }
-            }
-        }
-
-        return parameters;
-    }
-
-    /**
      * Parse the search and validation settings for a given data set.
      *
      * @param quantFolder Data folder for max quant run
      * @param searchAndValidationSettings An initial SearchAndValidationSettings
      * object to decorate per run
      * @return Settings indexed by run file name
-     * @throws IOException
+     * @throws IOException thrown in case of of an I/O related problem
      */
     private Map<String, SearchAndValidationSettings> parseRuns(File quantFolder, SearchAndValidationSettings searchAndValidationSettings) throws IOException {
         Map<String, SearchAndValidationSettings> allSettings = new HashMap<>();
-        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY), mandatoryHeaders);
+        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, SUMMARY), MANDATORY_HEADERS);
         Map<String, String> row;
 
         while (summaryIter.hasNext()) {

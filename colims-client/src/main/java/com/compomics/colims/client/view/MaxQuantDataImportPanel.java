@@ -94,7 +94,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         setOpaque(false);
 
-        maxQuantDirectorySelectionLabel.setText("Select the MaxQuant text files directory*:");
+        maxQuantDirectorySelectionLabel.setText("Select the MaxQuant files directory*:");
 
         selectMaxQuantDirectoryButton.setText("browse...");
         selectMaxQuantDirectoryButton.setMaximumSize(new java.awt.Dimension(80, 25));

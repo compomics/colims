@@ -26,7 +26,7 @@ public class MappedData {
      * Constructor.
      *
      * @param analyticalRuns the mapped analytical runs
-     * @param proteinGroups  the map of protein groups
+     * @param proteinGroups the map of protein groups
      */
     public MappedData(List<AnalyticalRun> analyticalRuns, Set<ProteinGroup> proteinGroups) {
         this.analyticalRuns = analyticalRuns;

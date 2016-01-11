@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -38,7 +37,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     private static final Logger LOGGER = Logger.getLogger(MaxQuantMapper.class);
 
     /**
-     * Quant file name.
+     * The quantification file name.
      */
     private static final String QUANT_FILE = "msms.txt";
 
@@ -48,9 +47,6 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     private MaxQuantParser maxQuantParser;
     @Autowired
     private QuantificationSettingsMapper quantificationSettingsMapper;
-    /**
-     * The fasta db entity service.
-     */
     @Autowired
     private FastaDbService fastaDbService;
 
@@ -70,11 +66,14 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             maxQuantParser.clear();
 
             EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
+            //get the FASTA db entities from the database
+            maxQuantImport.getFastaDbIds().forEach((fastaDbType, fastaDbId) -> {
+                fastaDbs.put(fastaDbType, fastaDbService.findById(fastaDbId));
+            });
             parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, false);
             maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), fastaDbs, parameterParser.getMultiplicity());
 
             proteinGroups = maxQuantParser.getProteinGroupSet();
-
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
                 analyticalRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());
 
