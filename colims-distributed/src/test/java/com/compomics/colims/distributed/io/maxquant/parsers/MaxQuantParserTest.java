@@ -12,8 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -38,13 +36,8 @@ public class MaxQuantParserTest {
 
     @Before
     public void setUp() throws MappingException, UnparseableException, IOException {
-        FastaDb maxQuantTestFastaDb = new FastaDb();
-        maxQuantTestFastaDb.setName(MaxQuantTestSuite.fastaFile.getName());
-        maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
-        maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
-
         EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
-        fastaDbs.put(FastaDbType.PRIMARY, maxQuantTestFastaDb);
+        fastaDbs.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb);
 
         maxQuantParser.clear();
         maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder, fastaDbs);
@@ -52,17 +45,17 @@ public class MaxQuantParserTest {
 
     @Test
     public void testParseFasta() throws IOException {
-        Resource contaminantsFasta = new ClassPathResource("config/contaminants.fasta");
-        FastaDb contaminantsFastaDb = new FastaDb();
-        contaminantsFastaDb.setName("contaminants");
-        contaminantsFastaDb.setFileName(contaminantsFasta.getFilename());
-        contaminantsFastaDb.setFilePath(contaminantsFasta.getURI().getPath());
         List<FastaDb> fastaDbs = new ArrayList<>();
-        fastaDbs.add(contaminantsFastaDb);
+        fastaDbs.add(MaxQuantTestSuite.testFastaDb);
+        fastaDbs.add(MaxQuantTestSuite.contaminantsFastaDb);
 
         Map<String, String> parsedContaminantsFasta = maxQuantParser.parseFastas(fastaDbs);
 
-        Assert.assertEquals(246, parsedContaminantsFasta.size());
+        Assert.assertEquals(77512, parsedContaminantsFasta.size());
+        //look for a protein
+        Assert.assertTrue(parsedContaminantsFasta.containsKey("tr|Q8CGR9|Q8CGR9_MOUSE"));
+        //look for a contaminants protein
+        Assert.assertTrue(parsedContaminantsFasta.containsKey("CON__P09870"));
     }
 
     /**

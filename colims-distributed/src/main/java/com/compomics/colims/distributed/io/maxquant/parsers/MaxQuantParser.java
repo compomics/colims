@@ -32,6 +32,13 @@ public class MaxQuantParser {
     private static final String MSMSTXT = "msms.txt";
     private static final String PROTEINGROUPSTXT = "proteinGroups.txt";
     private static final String BLOCK_SEPARATOR = ">";
+    private static final String SPLITTER = " ";
+
+    private Map<Spectrum, Integer> spectrumIds = new HashMap<>();
+    private Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
+    private final Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
+    private final Map<Integer, FragmentationType> fragmentations = new HashMap<>();
+    private boolean parsed = false;
 
     @Autowired
     private MaxQuantSpectrumParser maxQuantSpectrumParser;
@@ -39,13 +46,6 @@ public class MaxQuantParser {
     private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
     @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
-
-    private Map<Spectrum, Integer> spectrumIds = new HashMap<>();
-    private Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
-    private final Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
-    private final Map<Integer, FragmentationType> fragmentations = new HashMap<>();
-
-    private boolean parsed = false;
 
     /**
      * An extra constructor for fun testing times.
@@ -139,7 +139,7 @@ public class MaxQuantParser {
                         if (line.startsWith(BLOCK_SEPARATOR)) {
                             //add limiting check for protein store to avoid growing
                             if (sequenceBuilder.length() > 0) {
-                                parsedFasta.put(header.substring(1).split(" ")[0], sequenceBuilder.toString().trim());
+                                parsedFasta.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
                                 sequenceBuilder.setLength(0);
                             }
                             header = line;

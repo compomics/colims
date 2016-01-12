@@ -30,31 +30,31 @@ public class MaxQuantProteinGroupParser {
     private ProteinService proteinService;
 
     private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
-        MaxQuantProteinGroupHeaders.ACCESSION,
-        MaxQuantProteinGroupHeaders.EVIDENCEIDS,
-        MaxQuantProteinGroupHeaders.ID,
-        MaxQuantProteinGroupHeaders.PEP
+            MaxQuantProteinGroupHeaders.ACCESSION,
+            MaxQuantProteinGroupHeaders.EVIDENCEIDS,
+            MaxQuantProteinGroupHeaders.ID,
+            MaxQuantProteinGroupHeaders.PEP
     };
 
     /**
      * Parse a data file and return grouped proteins.
      *
      * @param proteinGroupsFile MaxQuant protein groups file
-     * @param parsedFasta FASTA parsed into header/sequence pairs
+     * @param parsedFastas      FASTA files parsed into header/sequence pairs
      * @return Protein groups indexed by id
      * @throws IOException
      */
-    public Map<Integer, ProteinGroup> parse(File proteinGroupsFile, Map<String, String> parsedFasta) throws IOException {
+    public Map<Integer, ProteinGroup> parse(File proteinGroupsFile, Map<String, String> parsedFastas) throws IOException {
         Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
         TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(proteinGroupsFile, mandatoryHeaders);
 
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
-            ProteinGroup proteinGroup = parseProteinGroup(values, parsedFasta);
+            ProteinGroup proteinGroup = parseProteinGroup(values, parsedFastas);
 
             if (proteinGroup.getMainProtein() != null) {
-                proteinGroups.put(Integer.parseInt(values.get(MaxQuantProteinGroupHeaders.ID.getDefaultColumnName())), parseProteinGroup(values, parsedFasta));
+                proteinGroups.put(Integer.parseInt(values.get(MaxQuantProteinGroupHeaders.ID.getDefaultColumnName())), parseProteinGroup(values, parsedFastas));
             }
         }
 
@@ -64,11 +64,11 @@ public class MaxQuantProteinGroupParser {
     /**
      * Construct a group of proteins.
      *
-     * @param values A row of values
-     * @param parsedFasta A parsed fasta
+     * @param values       A row of values
+     * @param parsedFastas the parsed FASTA files
      * @return A protein group
      */
-    private ProteinGroup parseProteinGroup(Map<String, String> values, Map<String, String> parsedFasta) {
+    private ProteinGroup parseProteinGroup(Map<String, String> values, Map<String, String> parsedFastas) {
         ProteinGroup proteinGroup = new ProteinGroup();
         proteinGroup.setPeptideHasProteinGroups(new ArrayList<>());
 
@@ -91,14 +91,14 @@ public class MaxQuantProteinGroupParser {
             boolean isMainGroup = true;
 
             for (String accession : filteredAccessions) {
-                proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFasta.get(accession), accession, isMainGroup));
+                proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFastas.get(accession), accession, isMainGroup));
 
                 if (isMainGroup) {
                     isMainGroup = false;
                 }
             }
         } else if (!parsedAccession.contains("REV") && !parsedAccession.contains("CON")) {
-            proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFasta.get(parsedAccession), parsedAccession, true));
+            proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFastas.get(parsedAccession), parsedAccession, true));
         }
 
         return proteinGroup;
@@ -106,7 +106,8 @@ public class MaxQuantProteinGroupParser {
 
     /**
      * Create a protein and it's relation to a protein group
-     * @param sequence The sequence of the protein
+     *
+     * @param sequence  The sequence of the protein
      * @param accession The accession of the protein
      * @param mainGroup Whether this is the main protein of the group
      * @return A ProteinGroupHasProtein object
@@ -120,15 +121,15 @@ public class MaxQuantProteinGroupParser {
 
         ProteinAccession proteinAccession = new ProteinAccession(accession);
 
-        ProteinGroupHasProtein pghProtein = new ProteinGroupHasProtein();
-        pghProtein.setIsMainGroupProtein(mainGroup);
+        ProteinGroupHasProtein proteinGroupHasProtein = new ProteinGroupHasProtein();
+        proteinGroupHasProtein.setIsMainGroupProtein(mainGroup);
 
         proteinAccession.setProtein(protein);
         protein.getProteinAccessions().add(proteinAccession);
-        //protein.getProteinGroupHasProteins().add(pghProtein);
-        pghProtein.setProtein(protein);
-        pghProtein.setProteinAccession(accession);
+        //protein.getProteinGroupHasProteins().add(proteinGroupHasProtein);
+        proteinGroupHasProtein.setProtein(protein);
+        proteinGroupHasProtein.setProteinAccession(accession);
 
-        return pghProtein;
+        return proteinGroupHasProtein;
     }
 }

@@ -33,16 +33,13 @@ public class MaxQuantProteinGroupParserTest {
 
     /**
      * Test of parseMaxQuantProteinGroups method, of class MaxQuantProteinGroupParser.
+     *
      * @throws java.lang.Exception in case of an exception
      */
     @Test
     public void testParse() throws Exception {
-        FastaDb maxQuantTestFastaDb = new FastaDb();
-        maxQuantTestFastaDb.setName(MaxQuantTestSuite.fastaFile.getName());
-        maxQuantTestFastaDb.setFileName(MaxQuantTestSuite.fastaFile.getName());
-        maxQuantTestFastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getAbsolutePath());
         List<FastaDb> fastaDbs = new ArrayList<>();
-        fastaDbs.add(maxQuantTestFastaDb);
+        fastaDbs.add(MaxQuantTestSuite.testFastaDb);
 
         List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.proteinGroupsFile.toPath());
 

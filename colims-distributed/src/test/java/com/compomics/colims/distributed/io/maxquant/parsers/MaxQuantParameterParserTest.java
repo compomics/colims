@@ -1,28 +1,26 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
-
-import java.nio.file.Files;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.FastaDbType;
-import java.util.EnumMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import java.nio.file.Files;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
- *
  * @author Davy & Iain
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,12 +32,8 @@ public class MaxQuantParameterParserTest {
 
     @Test
     public void testParse() throws Exception {
-        FastaDb fastaDb = new FastaDb();
-        fastaDb.setFilePath(MaxQuantTestSuite.fastaFile.getCanonicalPath());
-        fastaDb.setName("test fasta");
-
         EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
-        fastaDbs.put(FastaDbType.PRIMARY, fastaDb);
+        fastaDbs.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb);
 
         maxQuantParameterParser.parse(MaxQuantTestSuite.maxQuantTextFolder, fastaDbs, false);
         Map<String, SearchAndValidationSettings> result = maxQuantParameterParser.getRunSettings();
