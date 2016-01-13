@@ -12,7 +12,6 @@ import java.util.Comparator;
  */
 public class ProjectSimpleTableFormat implements AdvancedTableFormat<Project> {
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
     private static final String[] COLUMN_NAMES = {"Id", "Title", "Label", "# exp"};
     public static final int PROJECT_ID = 0;
     public static final int TITLE = 1;

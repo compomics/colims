@@ -1,4 +1,4 @@
-package com.compomics.colims.distributed.io;
+package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
@@ -17,13 +17,12 @@ import java.util.EnumMap;
 import java.util.List;
 
 /**
- * This class maps the Utilities search settings to a
- * SearchAndValidationSettings instance.
+ * This class maps the Utilities search settings to a SearchAndValidationSettings instance.
  *
  * @author Niels Hulstaert
  */
 @Component("searchSettingsMapper")
-public class SearchSettingsMapper {
+public class UtilitiesSearchSettingsMapper {
 
     /**
      * The Utilities search parameters to Colims search parameters mapper.
@@ -39,16 +38,15 @@ public class SearchSettingsMapper {
     /**
      * Map the SearchAndValidationSettings.
      *
-     * @param searchEngineType the search engine type
-     * @param version the search engine version
-     * @param fastaDbs the FastaDb instances
+     * @param searchEngineType          the search engine type
+     * @param version                   the search engine version
+     * @param fastaDbs                  the FastaDb instances
      * @param utilitiesSearchParameters the Utilities search parameters
-     * @param identificationFiles the list of identification files
-     * @param storeIdentificationFile store the identification or not
+     * @param identificationFiles       the list of identification files
+     * @param storeIdentificationFile   store the identification or not
      * @return the mapped SearchAndValidationSettings
-     * @throws java.io.IOException thrown in case of an I/O related exception
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case
-     * of a modification mapping problem
+     * @throws IOException                  thrown in case of an I/O related exception
+     * @throws ModificationMappingException in case of a modification mapping problem
      */
     public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, EnumMap<FastaDbType, FastaDb> fastaDbs, com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException, ModificationMappingException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
@@ -63,7 +61,7 @@ public class SearchSettingsMapper {
         //look for the given search parameter settings in the database
         searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
         //set entity associations
-        searchAndValidationSettings.setSearchParameterSettings(searchParameters);
+        searchAndValidationSettings.setSearchParameters(searchParameters);
 
         /**
          * SearchEngine

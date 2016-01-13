@@ -6,7 +6,7 @@ import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.QuantificationSettingsMapper;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParameterParser;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
@@ -42,7 +42,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     private static final String QUANT_FILE = "msms.txt";
 
     @Autowired
-    private MaxQuantParameterParser parameterParser;
+    private MaxQuantSearchSettingsParser parameterParser;
     @Autowired
     private MaxQuantParser maxQuantParser;
     @Autowired
@@ -71,7 +71,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                 fastaDbs.put(fastaDbType, fastaDbService.findById(fastaDbId));
             });
             parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, false);
-            maxQuantParser.parseFolder(maxQuantImport.getMaxQuantDirectory(), fastaDbs, parameterParser.getMultiplicity());
+            maxQuantParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, parameterParser.getMultiplicity());
 
             proteinGroups = maxQuantParser.getProteinGroupSet();
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {

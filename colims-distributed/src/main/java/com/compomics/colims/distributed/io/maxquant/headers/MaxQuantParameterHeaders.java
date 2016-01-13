@@ -69,7 +69,6 @@ public enum MaxQuantParameterHeaders implements HeaderEnum {
     USE_PEPTIDES_MODDED_WITH(new String[]{"Modifications included in protein quantification"}),
     VERSION(new String[]{"Version"});
 
-
     List<String> columnNames;
     int standardColumnNameIndex = 0;
 

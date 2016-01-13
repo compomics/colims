@@ -10,7 +10,7 @@ import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,12 +25,24 @@ import java.util.stream.Collectors;
  * {@link MaxQuantEvidenceParser} and {@link MaxQuantSpectrumParser} to handle specific files contained in the text
  * folder.
  */
-@Service("maxQuantParser")
+@Component("maxQuantParser")
 public class MaxQuantParser {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
-    private static final String MSMSTXT = "msms.txt";
-    private static final String PROTEINGROUPSTXT = "proteinGroups.txt";
+
+    /**
+     * The andromeda directory name.
+     */
+    private static final String ANDROMEDA_DIRECTORY = "andromeda";
+    /**
+     * The txt directory name.
+     */
+    private static final String TXT_DIRECTORY = "txt";
+    /**
+     * The msms file name.
+     */
+    private static final String MSMS_FILE = "msms.txt";
+    private static final String PROTEIN_GROUPS_TXT = "proteinGroups.txt";
     private static final String BLOCK_SEPARATOR = ">";
     private static final String SPLITTER = " ";
 
@@ -50,19 +62,19 @@ public class MaxQuantParser {
     /**
      * An extra constructor for fun testing times.
      *
-     * @param quantFolder File pointer to MaxQuant text folder
-     * @param fastaDbs    the FASTA databases
+     * @param maxQuantDirectory File pointer to MaxQuant directory
+     * @param fastaDbs          the FASTA databases
      * @throws IOException          thrown in case of a I/O related problem
      * @throws MappingException     thrown in case of a mapping related problem
      * @throws UnparseableException
      */
-    public void parseFolder(File quantFolder, EnumMap<FastaDbType, FastaDb> fastaDbs) throws IOException, MappingException, UnparseableException {
-        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(quantFolder, "summary.txt"));
+    public void parse(File maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs) throws IOException, MappingException, UnparseableException {
+        TabularFileLineValuesIterator summaryIterator = new TabularFileLineValuesIterator(new File(maxQuantDirectory, "summary.txt"));
         Map<String, String> row;
         String multiplicity = null;
 
-        while (summaryIter.hasNext()) {
-            row = summaryIter.next();
+        while (summaryIterator.hasNext()) {
+            row = summaryIterator.next();
 
             if (row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName())) {
                 multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName());
@@ -70,22 +82,22 @@ public class MaxQuantParser {
             }
         }
 
-        parseFolder(quantFolder, fastaDbs, multiplicity);
+        parse(maxQuantDirectory, fastaDbs, multiplicity);
     }
 
     /**
-     * Parse the output folder and populate the parser with various data sets.
+     * Parse the MaxQuant output folder and map the content of the different files to Colims entities.
      *
-     * @param quantFolder  File pointer to MaxQuant text folder
-     * @param fastaDbs     the FASTA databases
-     * @param multiplicity the multiplicity String
+     * @param maxQuantDirectory File pointer to MaxQuant directory
+     * @param fastaDbs          the FASTA database map (key: FastaDb type; value: FastaDb instance)
+     * @param multiplicity      the multiplicity String
      * @throws IOException          thrown in case of an input/output related problem
      * @throws UnparseableException
      * @throws MappingException     thrown in case of a mapping related problem
      */
-    public void parseFolder(File quantFolder, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity) throws IOException, UnparseableException, MappingException {
+    public void parse(File maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity) throws IOException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
-        spectrumIds = maxQuantSpectrumParser.parse(new File(quantFolder, MSMSTXT));
+//        spectrumIds = maxQuantSpectrumParser.parse(new File(txtFolder, MSMS_FILE));
 
         getSpectra().entrySet().stream().forEach((entry) -> {
             String rawFile = entry.getKey().getTitle().split("-")[0];   // this rather sucks
@@ -106,10 +118,10 @@ public class MaxQuantParser {
         }
 
         LOGGER.debug("parsing evidence");
-        maxQuantEvidenceParser.parse(quantFolder, multiplicity);
+        maxQuantEvidenceParser.parse(maxQuantDirectory, multiplicity);
 
         LOGGER.debug("parsing protein groups");
-        proteinGroups = maxQuantProteinGroupParser.parse(new File(quantFolder, PROTEINGROUPSTXT), parseFastas(fastaDbs.values()));
+        proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory, PROTEIN_GROUPS_TXT), parseFastas(fastaDbs.values()));
 
         if (this.spectrumIds.isEmpty() || maxQuantEvidenceParser.peptides.isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");

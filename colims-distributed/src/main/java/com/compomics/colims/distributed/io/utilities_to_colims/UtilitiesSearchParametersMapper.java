@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
- * This class maps the Utilities search parameters to the Colims search parameters.
+ * This class maps the Utilities search parameters onto the Colims search parameters.
  *
  * @author Kenneth Verheggen
  * @author Niels Hulstaert

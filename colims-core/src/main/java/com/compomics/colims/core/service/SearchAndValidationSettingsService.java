@@ -25,7 +25,7 @@ public interface SearchAndValidationSettingsService extends GenericService<Searc
     SearchEngine getSearchEngine(SearchEngineType searchEngineType, String version);
 
     /**
-     * Get the SearchParamater by example from the database. If nothing was found, store the given
+     * Get the SearchParameters by example from the database. If nothing was found, store the given
      * SearchParameterSettings and return them.
      *
      * @param searchParameters the SearchParameters to look for

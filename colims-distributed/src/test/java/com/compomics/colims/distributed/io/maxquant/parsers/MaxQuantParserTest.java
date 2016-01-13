@@ -40,7 +40,7 @@ public class MaxQuantParserTest {
         fastaDbs.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb);
 
         maxQuantParser.clear();
-        maxQuantParser.parseFolder(MaxQuantTestSuite.maxQuantTextFolder, fastaDbs);
+        maxQuantParser.parse(MaxQuantTestSuite.maxQuantTextFolder, fastaDbs);
     }
 
     @Test

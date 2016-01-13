@@ -15,7 +15,7 @@ import java.io.IOException;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         MaxQuantEvidenceParserTest.class,
-        MaxQuantParameterParserTest.class,
+        MaxQuantSearchSettingsParserTest.class,
         MaxQuantParserTest.class,
         MaxQuantProteinGroupParserTest.class,
         MaxQuantSpectrumParserTest.class,

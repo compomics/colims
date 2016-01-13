@@ -1,7 +1,8 @@
-package com.compomics.colims.distributed.io;
+package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.FastaDbService;
+import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchSettingsMapper;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.IdentificationFile;
 import com.compomics.colims.model.SearchAndValidationSettings;
@@ -31,13 +32,13 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
-public class SearchSettingsMapperTest {
+public class UtilitiesSearchSettingsMapperTest {
 
     private SearchParameters searchParameters;
     private EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
     private List<File> identificationFiles;
     @Autowired
-    private SearchSettingsMapper searchSettingsMapper;
+    private UtilitiesSearchSettingsMapper utilitiesSearchSettingsMapper;
     @Autowired
     private FastaDbService fastaDbService;
 
@@ -80,7 +81,7 @@ public class SearchSettingsMapperTest {
      */
     @Test
     public void testMap() throws IOException, ModificationMappingException {
-        SearchAndValidationSettings searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDbs, searchParameters, identificationFiles, false);
+        SearchAndValidationSettings searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDbs, searchParameters, identificationFiles, false);
 
         Assert.assertNotNull(searchAndValidationSettings);
 

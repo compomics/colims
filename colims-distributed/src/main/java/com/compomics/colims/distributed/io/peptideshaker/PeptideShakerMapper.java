@@ -5,7 +5,7 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
-import com.compomics.colims.distributed.io.SearchSettingsMapper;
+import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchSettingsMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSpectrumMapper;
@@ -35,11 +35,7 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The DataImporter implementation class for PeptideShaker projects.
@@ -67,7 +63,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
      * The utilities to Colims search settings mapper.
      */
     @Autowired
-    private SearchSettingsMapper searchSettingsMapper;
+    private UtilitiesSearchSettingsMapper utilitiesSearchSettingsMapper;
     /**
      * The Compomics Utilities to Colims spectrum mapper.
      */
@@ -90,10 +86,9 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
     private FastaDbService fastaDbService;
 
     /**
-     * Clear the mapping resources: reset the SpectrumFactory, SequenceFactory,
-     * ...
+     * Clear the mapping resources: reset the SpectrumFactory, SequenceFactory, ...
      *
-     * @throws IOException thrown in case of an IO related problem
+     * @throws IOException  thrown in case of an IO related problem
      * @throws SQLException thrown in case of an SQL related problem
      */
     @Override
@@ -126,16 +121,13 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
             FastaDb fastaDb = fastaDbService.findById(dataImport.getFastaDbIds().get(FastaDbType.PRIMARY));
 
             LOGGER.info("Start mapping search settings for PeptideShaker experiment " + msExperiment.getReference());
-
             SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(dataImport, analyticalRun, fastaDb);
-
             LOGGER.info("Finished mapping search settings for PeptideShaker experiment " + msExperiment.getReference());
 
             //get the Ms2Identification instance
             Ms2Identification identification = (Ms2Identification) cpsParent.getIdentification();
 
             LOGGER.info("Start mapping PeptideShaker experiment " + msExperiment.getReference());
-
             //get the fasta file
             File fastaDbFile = new File(FilenameUtils.separatorsToSystem(fastaDb.getFilePath()));
             cpsParent.loadFastaFile(fastaDbFile, null);
@@ -232,7 +224,6 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
                     }
                 }
             }
-
             analyticalRuns.add(analyticalRun);
 
             LOGGER.info("Finished mapping PeptideShaker experiment " + dataImport.getCpsParent().getExperiment().getReference());
@@ -247,11 +238,9 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
     /**
      * Map the search settings.
      *
-     * @param unpackedPeptideShakerImport the UnpackedPeptideShakerImport
-     * instance
-     * @param analyticalRun the AnalyticalRun instance onto the search settings
-     * will be mapped
-     * @param fastaDb the FastaDb instance retrieved from the database
+     * @param unpackedPeptideShakerImport the UnpackedPeptideShakerImport instance
+     * @param analyticalRun               the AnalyticalRun instance onto the search settings will be mapped
+     * @param fastaDb                     the FastaDb instance retrieved from the database
      * @return the mapped search and validation settings
      * @throws IOException thrown in case of an I/O related problem
      */
@@ -266,7 +255,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
         EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
         fastaDbs.put(FastaDbType.PRIMARY, fastaDb);
 
-        searchAndValidationSettings = searchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, fastaDbs, cpsParent.getIdentificationParameters().getSearchParameters(), identificationFiles, false);
+        searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, fastaDbs, cpsParent.getIdentificationParameters().getSearchParameters(), identificationFiles, false);
 
         //set entity associations
         analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);

@@ -20,18 +20,15 @@ import java.util.TreeMap;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Parser for the MaxQuant msms.txt output files that creates {@link Spectrum} instances.
- * <p/>
- * This class uses the {@link TabularFileLineValuesIterator} to actually parse the files into Map<String,String>
- * records.
+ * MaxQuant 
  */
-@Component("maxQuantSpectrumParser")
-public class MaxQuantSpectrumParser {
+@Component("maxQuantSpectrumFileParser")
+public class MaxQuantSpectrumFileParser {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantSpectrumParser.class);
+    private static final Logger LOGGER = Logger.getLogger(MaxQuantSpectrumFileParser.class);
 
     private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
             MaxQuantMSMSHeaders.ID,
@@ -41,31 +38,15 @@ public class MaxQuantSpectrumParser {
             MaxQuantMSMSHeaders.MASSES
     };
 
-    public Map<Long, Spectrum> parse(File msmsFile) throws IOException {
-        Map<Long, Spectrum> spectra = new HashMap<>();
-
-        //first, parse the msms.txt file and return a map of spectra (key: scan index; value: Spectrum instance)
-
-
-        return spectra;
-    }
-
-    /**
-     * Parse the msms.txt file. This method returns a map with the String concatenation of RAW file name and scan
-     * sequence number as key and the partially mapped Spectrum instance as value for each row.
-     *
-     * @param msmsFile the MaxQuant msms.txt file
-     * @return the mapped spectra
-     */
-    private Map<String, Spectrum> parseMsmsFile(File msmsFile) throws IOException {
-        Map<String, Spectrum> spectra = new HashMap<>();
+    public Map<Spectrum, Integer> parse(File msmsFile) throws IOException {
+        Map<Spectrum, Integer> spectra = new HashMap<>();
 
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);
+
         for (Map<String, String> values : valuesIterator) {
-            //concatenate the RAW file name and scan index
             Integer id = Integer.parseInt(values.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName()));
 
-//            spectra.put(parseSpectrum(values), id);
+            spectra.put(parseSpectrum(values), id);
         }
 
         return spectra;
@@ -81,7 +62,7 @@ public class MaxQuantSpectrumParser {
             intensity = "-1";
         }
 
-        Spectrum spectrum = new com.compomics.colims.model.Spectrum();
+        Spectrum spectrum = new Spectrum();
 
         // is null checking required here? check other parsers
 
@@ -96,8 +77,8 @@ public class MaxQuantSpectrumParser {
         spectrum.setTitle(spectrumTitle);
 
         Map<Double, Double> peakList = parsePeakList(values.get(MaxQuantMSMSHeaders.MATCHES.getDefaultColumnName()),
-                values.get(MaxQuantMSMSHeaders.INTENSITIES.getDefaultColumnName()),
-                values.get(MaxQuantMSMSHeaders.MASSES.getDefaultColumnName())
+            values.get(MaxQuantMSMSHeaders.INTENSITIES.getDefaultColumnName()),
+            values.get(MaxQuantMSMSHeaders.MASSES.getDefaultColumnName())
         );
 
         spectrum.setSpectrumFiles(new ArrayList<>());
@@ -142,8 +123,8 @@ public class MaxQuantSpectrumParser {
         String newLine = System.getProperty("line.separator");
 
         results.append("BEGIN IONS").append(newLine)
-                .append("TITLE=").append(spectrum.getTitle()).append(newLine)
-                .append("PEPMASS=").append(spectrum.getMzRatio()).append("\t").append(spectrum.getIntensity()).append(newLine);
+            .append("TITLE=").append(spectrum.getTitle()).append(newLine)
+            .append("PEPMASS=").append(spectrum.getMzRatio()).append("\t").append(spectrum.getIntensity()).append(newLine);
 
         if (spectrum.getRetentionTime() != -1) {
             results.append("RTINSECONDS=").append(spectrum.getRetentionTime()).append(newLine);
