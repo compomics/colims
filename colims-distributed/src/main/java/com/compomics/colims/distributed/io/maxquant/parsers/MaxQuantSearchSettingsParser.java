@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -46,11 +47,7 @@ public class MaxQuantSearchSettingsParser {
      * The MaxQuant Parameters file name.
      */
     private static final String PARAMETERS_FILE = "parameters.txt";
-    /**
-     * The apl summary file name. This file contains the names of the different apl files (spectrum files) and the
-     * matching parameter files.
-     */
-    private static final String APL_SUMMARY_FILE = "aplfiles";
+
     private static final String MS_ONTOLOGY_LABEL = "MS";
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
     private static final String NOT_APPLICABLE = "N/A";
@@ -98,7 +95,7 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Clear data stored in parser
+     * Clear data stored in parser.
      */
     public void clear() {
         runSettings.clear();
@@ -108,20 +105,18 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Parse parameters for experiment.
      *
-     * @param txtFolder  the MaxQuant txt folder
+     * @param maxQuantFolder  the MaxQuant folder
      * @param fastaDbs   the FASTA databases used in the experiment
      * @param storeFiles whether data files should be stored with experiment
      * @throws IOException thrown in case of of an I/O related problem
      */
-    public void parse(File txtFolder, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
-        //parse the aplfiles file
+    public void parse(File maxQuantFolder, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
 
+        //first, get the
 
+        SearchAndValidationSettings searchAndValidationSettings = parseSearchSettings(maxQuantFolder, fastaDbs, storeFiles);
 
-
-        SearchAndValidationSettings searchAndValidationSettings = parseSearchSettings(txtFolder, fastaDbs, storeFiles);
-
-        runSettings = parseRuns(txtFolder, searchAndValidationSettings);
+        runSettings = parseRuns(maxQuantFolder, searchAndValidationSettings);
     }
 
     /**
@@ -147,7 +142,7 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setSearchType(defaultSearchType);
 
         //parse the parameters file and iterate over the parameters
-        Map<String, String> parameters = parseParametersFile(new File(txtFolder, PARAMETERS_FILE));
+        Map<String, String> parameters = ParseUtils.parseParameters(new File(txtFolder, PARAMETERS_FILE), true);
         //get the MaxQuant version
         String versionParameter = parameters.get(MaxQuantParameterHeaders.VERSION.getDefaultColumnName().toLowerCase());
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
@@ -197,31 +192,7 @@ public class MaxQuantSearchSettingsParser {
         return searchAndValidationSettings;
     }
 
-    /**
-     * Parse the given parameters file.
-     *
-     * @param parametersFile the MaxQuant parameters file
-     * @return the map of parsed parameters (key: the parameter name; value: the parameter value)
-     * @throws IOException thrown in case of of an I/O related problem
-     */
-    private Map<String, String> parseParametersFile(File parametersFile) throws IOException {
-        Map<String, String> parameters = new HashMap<>();
 
-        try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(parametersFile.toURI()), StandardCharsets.UTF_8)) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] split = line.split(PARAMETER_DELIMITER);
-
-                if (split.length == 2) {
-                    parameters.put(split[0].toLowerCase(Locale.US), split[1]);
-                } else {
-                    parameters.put(split[0].toLowerCase(Locale.US), "");
-                }
-            }
-        }
-
-        return parameters;
-    }
 
     /**
      * Parse the search and validation settings for a given data set.

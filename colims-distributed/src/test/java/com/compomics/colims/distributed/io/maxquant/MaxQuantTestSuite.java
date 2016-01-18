@@ -25,7 +25,8 @@ public class MaxQuantTestSuite {
 
     private static final String maxQuantVersion = "1.5.2.8";
 
-    public static File maxQuantTextFolder;
+    public static File maxQuantTextDirectory;
+    public static File maxQuantAndromedaDirectory;
     public static File msmsFile;
     public static File proteinGroupsFile;
     public static File evidenceFile;
@@ -36,21 +37,23 @@ public class MaxQuantTestSuite {
 
     static {
         try {
-            String path = "data/maxquant_" + maxQuantVersion;
-            maxQuantTextFolder = new ClassPathResource(path).getFile();
-            msmsFile = new ClassPathResource(path + "/msms.txt").getFile();
-            proteinGroupsFile = new ClassPathResource(path + "/proteinGroups.txt").getFile();
-            evidenceFile = new ClassPathResource(path + "/evidence.txt").getFile();
-            parameterFile = new ClassPathResource(path + "/parameters.txt").getFile();
-            peptidesFile = new ClassPathResource(path + "/peptides.txt").getFile();
+            maxQuantAndromedaDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "andromeda").getFile();
+            String txtDirectoryPath = "data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "txt";
+            maxQuantTextDirectory = new ClassPathResource(txtDirectoryPath).getFile();
+            txtDirectoryPath += File.separator;
+            msmsFile = new ClassPathResource(txtDirectoryPath + "msms.txt").getFile();
+            proteinGroupsFile = new ClassPathResource(txtDirectoryPath + "proteinGroups.txt").getFile();
+            evidenceFile = new ClassPathResource(txtDirectoryPath + "evidence.txt").getFile();
+            parameterFile = new ClassPathResource(txtDirectoryPath + "parameters.txt").getFile();
+            peptidesFile = new ClassPathResource(txtDirectoryPath + "peptides.txt").getFile();
             testFastaDb = new FastaDb();
             testFastaDb.setName("test fasta");
             testFastaDb.setFileName("uniprot-taxonomy%3A10090.fasta");
-            testFastaDb.setFilePath(new ClassPathResource(path + "/uniprot-taxonomy%3A10090.fasta").getFile().getAbsolutePath());
+            testFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "uniprot-taxonomy%3A10090.fasta").getFile().getAbsolutePath());
             contaminantsFastaDb = new FastaDb();
             contaminantsFastaDb.setName("test contaminants fasta");
             contaminantsFastaDb.setFileName("contaminants.fasta");
-            contaminantsFastaDb.setFilePath(new ClassPathResource(path + "/contaminants.fasta").getFile().getAbsolutePath());
+            contaminantsFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "contaminants.fasta").getFile().getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }

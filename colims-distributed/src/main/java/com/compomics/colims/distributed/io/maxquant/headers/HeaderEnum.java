@@ -3,15 +3,12 @@ package com.compomics.colims.distributed.io.maxquant.headers;
 import java.util.List;
 
 /**
- *
  * @author Davy
  */
 public interface HeaderEnum {
 
-
     /**
-     * 
-     * @return returns the defined possible headers for a given enum value 
+     * @return returns the defined possible headers for a given enum value
      */
     List<String> allPossibleColumnNames();
 

@@ -1,6 +1,7 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSummaryHeaders;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -30,19 +32,6 @@ public class MaxQuantParser {
 
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
 
-    /**
-     * The andromeda directory name.
-     */
-    private static final String ANDROMEDA_DIRECTORY = "andromeda";
-    /**
-     * The txt directory name.
-     */
-    private static final String TXT_DIRECTORY = "txt";
-    /**
-     * The msms file name.
-     */
-    private static final String MSMS_FILE = "msms.txt";
-    private static final String PROTEIN_GROUPS_TXT = "proteinGroups.txt";
     private static final String BLOCK_SEPARATOR = ">";
     private static final String SPLITTER = " ";
 
@@ -99,6 +88,12 @@ public class MaxQuantParser {
         LOGGER.debug("parsing MSMS");
 //        spectrumIds = maxQuantSpectrumParser.parse(new File(txtFolder, MSMS_FILE));
 
+        //look for the MaxQuant txt directory
+        File txtDirectory = new File(maxQuantDirectory, MaxQuantConstants.TXT_DIRECTORY.value());
+        if (!txtDirectory.exists()) {
+            throw new FileNotFoundException("The MaxQuant txt directory was not found.");
+        }
+
         getSpectra().entrySet().stream().forEach((entry) -> {
             String rawFile = entry.getKey().getTitle().split("-")[0];   // this rather sucks
 
@@ -118,10 +113,10 @@ public class MaxQuantParser {
         }
 
         LOGGER.debug("parsing evidence");
-        maxQuantEvidenceParser.parse(maxQuantDirectory, multiplicity);
+        maxQuantEvidenceParser.parse(txtDirectory, multiplicity);
 
         LOGGER.debug("parsing protein groups");
-        proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory, PROTEIN_GROUPS_TXT), parseFastas(fastaDbs.values()));
+        proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()));
 
         if (this.spectrumIds.isEmpty() || maxQuantEvidenceParser.peptides.isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");

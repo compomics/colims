@@ -7,6 +7,29 @@ package com.compomics.colims.model.enums;
  */
 public enum FragmentationType {
 
-    CID, EDT, HCD
+    /**
+     * Collision-induced dissociation.
+     */
+    CID,
+    /**
+     * Electron-transfer dissociation.
+     */
+    EDT,
+    /**
+     * Higher-energy C-trap dissociation.
+     */
+    HCD,
+    /**
+     * Electron-transfer/Higher-energy C-trap hybrid dissociation.
+     */
+    ETHCD,
+    /**
+     * Electron-transfer/collision-induced dissociation.
+     */
+    ETCID,
+    /**
+     * Unknown fragmentation type.
+     */
+    UNKNOWN
 
 }

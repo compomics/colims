@@ -7,6 +7,7 @@ import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -41,7 +42,10 @@ public class MaxQuantSpectrumParser {
             MaxQuantMSMSHeaders.MASSES
     };
 
-    public Map<Long, Spectrum> parse(File msmsFile) throws IOException {
+    @Autowired
+    private MaxQuantAplParser maxQuantAplParser;
+
+    public Map<Long, Spectrum> parse(File msmsFile, File aplFiles, boolean storeUnidentifiedSpectra) throws IOException {
         Map<Long, Spectrum> spectra = new HashMap<>();
 
         //first, parse the msms.txt file and return a map of spectra (key: scan index; value: Spectrum instance)
