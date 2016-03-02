@@ -1,7 +1,12 @@
 package com.compomics.colims.core.playground;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -12,8 +17,19 @@ import java.sql.SQLException;
 public class Playground {
 
     public static void main(final String[] args) throws IOException, ClassNotFoundException, SQLException {
-        ApplicationContextProvider.getInstance().setDefaultApplicationContext();
-        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
+//        ApplicationContextProvider.getInstance().setDefaultApplicationContext();
+//        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
+
+        RestTemplate restTemplate = new RestTemplate();
+        String fooResourceUrl = "http://www.ebi.ac.uk/ols/beta";
+        ResponseEntity<String> response =
+                restTemplate.getForEntity(fooResourceUrl + "/api/ontologies?page=1&size=1", String.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response.getBody());
+        JsonNode name = root.path("name");
+
+        System.out.println("test");
 
         //
         //        SchemaExport schemaExport = new SchemaExport(sessionFactoryBean.getConfiguration());

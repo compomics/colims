@@ -10,7 +10,7 @@ import com.compomics.colims.model.AnalyticalRun;
 import java.util.List;
 
 /**
- * Table model to implement search and sort method
+ * Table model to implement search and sort method.
  *
  * @author Iain
  */

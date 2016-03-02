@@ -290,6 +290,12 @@
                 <version>${org.springframework.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${org.springframework.version}</version>
+            </dependency>
+
             <!-- hibernate dependencies -->
             <dependency>
                 <groupId>org.hibernate</groupId>

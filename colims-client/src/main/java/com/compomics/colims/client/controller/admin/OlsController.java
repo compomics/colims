@@ -32,9 +32,9 @@ import java.util.Map;
 /**
  * @author Niels Hulstaert
  */
-@Component("cvParamManagementController")
+@Component("olsController")
 @Lazy
-public class CvParamManagementController implements Controllable, OLSInputable {
+public class OlsController implements Controllable, OLSInputable {
 
     private static final String ADD_CV_PARAM = "add";
     private static final String UPDATE_CV_PARAM = "update";

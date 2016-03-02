@@ -18,7 +18,7 @@ import java.io.IOException;
         MaxQuantSearchSettingsParserTest.class,
         MaxQuantParserTest.class,
         MaxQuantProteinGroupParserTest.class,
-        MaxQuantSpectrumParserTest.class,
+        MaxQuantSpectraParserTest.class,
         TabularFileLineValuesIteratorTest.class
 })
 public class MaxQuantTestSuite {

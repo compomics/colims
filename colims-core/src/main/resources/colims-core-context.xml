@@ -4,7 +4,7 @@
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:jaxrs="http://cxf.apache.org/jaxrs-client"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd       
@@ -13,7 +13,7 @@
        http://www.springframework.org/schema/aop 
        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
        http://cxf.apache.org/jaxws 
-       http://cxf.apache.org/schemas/jaxws.xsd">
+       http://cxf.apache.org/schemas/jaxws.xsd   http://cxf.apache.org/jaxrs-client http://cxf.apache.org/schemas/jaxrs-client.xsd">
 
     <!-- import spring config file from colims-repository -->
     <import resource="classpath:colims-repository-context.xml"/>
@@ -58,5 +58,8 @@
             <bean class="org.apache.cxf.feature.LoggingFeature"/>
         </jaxws:features>-->
     </jaxws:client>
+
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+    </bean>
 
 </beans>

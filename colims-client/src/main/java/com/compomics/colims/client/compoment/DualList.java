@@ -1,5 +1,7 @@
 package com.compomics.colims.client.compoment;
 
+import java.awt.Component;
+import java.awt.Container;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
@@ -51,7 +53,7 @@ public class DualList<T> extends javax.swing.JPanel {
 
     /**
      * Populate the available and added items lists. This method removes the
-     * added items from the availabe items.
+     * added items from the available items.
      *
      * @param availableItems the available items
      * @param addedItems the added items
@@ -62,7 +64,7 @@ public class DualList<T> extends javax.swing.JPanel {
 
     /**
      * Populate the available and added items lists. This method removes the
-     * added items from the availabe items list.
+     * added items from the available items list.
      *
      * @param availableItems the available items
      * @param addedItems the added items
@@ -175,6 +177,17 @@ public class DualList<T> extends javax.swing.JPanel {
         });
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        boolean oldEnabled = isEnabled();
+        if (enabled != oldEnabled) {
+            setEnabled(this, enabled);
+            if (enabled) {
+                checkButtonStates();
+            }
+        }
+    }
+
     /**
      * Change the addItemButton and removeItemButton enabled states. If there
      * are no more available items or the maximum number of items has been
@@ -202,6 +215,14 @@ public class DualList<T> extends javax.swing.JPanel {
      */
     private void sort(ObservableList<T> listToSort) {
         Collections.sort(listToSort, comparator);
+    }
+
+    private void setEnabled(Component component, boolean enabled) {
+        super.setEnabled(enabled);
+        for (Component childComponent : ((Container) component).getComponents()) {
+            childComponent.setEnabled(enabled);
+            setEnabled(childComponent, enabled);
+        }
     }
 
     /**

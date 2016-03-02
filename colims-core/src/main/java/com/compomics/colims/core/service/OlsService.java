@@ -1,11 +1,14 @@
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.core.model.ols.Ontology;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.cv.TypedCvParam;
+import java.io.IOException;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * This interface provides methods for accessing the Ontoloy lookup service.
@@ -14,6 +17,10 @@ import java.util.Map;
  */
 public interface OlsService {
 
+    List<Ontology> getAllOntologies() throws HttpClientErrorException, IOException;
+
+    List<Ontology> getOntologiesByNamespace(List<String> namespaces) throws HttpClientErrorException, IOException;
+    
     /**
      * Find a modification by exact name in the PSI-MOD ontology.
      *

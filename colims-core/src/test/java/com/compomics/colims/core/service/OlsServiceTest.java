@@ -26,6 +26,8 @@ public class OlsServiceTest {
 
     @Autowired
     private OlsService olsService;
+    @Autowired
+    private OlsService newOlsService;
 
     /**
      * Clear the modifications cache.
@@ -40,13 +42,13 @@ public class OlsServiceTest {
      */
     @Test
     public void testFindModificationByAccession() {
-        //try to find a non existing modification
-        Modification modification = olsService.findModificationByAccession(Modification.class, "MOD:00935999");
-
-        Assert.assertNull(modification);
+//        //try to find a non existing modification
+//        Modification modification = newOlsService.findModificationByAccession(Modification.class, "MOD:00935999");
+//
+//        Assert.assertNull(modification);
 
         //try to find an existing modification
-        modification = olsService.findModificationByAccession(Modification.class, "MOD:00935");
+        Modification modification = newOlsService.findModificationByAccession(Modification.class, "MOD:00935");
 
         Assert.assertNotNull(modification);
         Assert.assertEquals("MOD:00935", modification.getAccession());
@@ -86,6 +88,20 @@ public class OlsServiceTest {
 
         //try to find an existing modification, the ols web service should return 3 mods
         modifications = olsService.findModificationByName("oxidation of m");
+        Assert.assertEquals(3, modifications.size());
+    }
+
+    /**
+     * Test the find modification by name method from the OlsService.
+     */
+    @Test
+    public void testNewFindModificationByName() {
+//        //try to find a non existing modification
+//        List<Modification> modifications = newOlsService.findModificationByName("non existing modification");
+//        Assert.assertTrue(modifications.isEmpty());
+
+        //try to find an existing modification, the ols web service should return 3 mods
+        List<Modification> modifications = newOlsService.findModificationByName("oxidation of m");
         Assert.assertEquals(3, modifications.size());
     }
 

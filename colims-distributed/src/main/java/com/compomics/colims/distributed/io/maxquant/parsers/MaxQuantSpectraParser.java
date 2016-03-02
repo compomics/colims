@@ -1,11 +1,11 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantMSMSHeaders;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
-import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -26,30 +25,49 @@ import java.util.zip.GZIPOutputStream;
  * This class uses the {@link TabularFileLineValuesIterator} to actually parse the files into Map<String,String>
  * records.
  */
-@Component("maxQuantSpectrumParser")
-public class MaxQuantSpectrumParser {
+@Component("maxQuantSpectraParser")
+public class MaxQuantSpectraParser {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantSpectrumParser.class);
+    private static final Logger LOGGER = Logger.getLogger(MaxQuantSpectraParser.class);
+
+    /**
+     * The start of the spectrum header in the apl file.
+     */
+    private static final String KEY_START = "header=RawFile: ";
+    private static final String KEY_MIDDLE = " Index: ";
+    private static final String TITLE_DELIMITER = "-";
+    private static final String NOT_A_NUMBER = "nan";
+    private static final String NO_INTENSITY = "-1";
 
     private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
             MaxQuantMSMSHeaders.ID,
-            MaxQuantMSMSHeaders.FRAGMENTATION,
             MaxQuantMSMSHeaders.MATCHES,
             MaxQuantMSMSHeaders.INTENSITIES,
-            MaxQuantMSMSHeaders.MASSES
+            MaxQuantMSMSHeaders.MASSES,
+            MaxQuantMSMSHeaders.SCAN_EVENT_NUMBER,
+            MaxQuantMSMSHeaders.SCAN_INDEX
     };
 
+    /**
+     * The MaxQuantAplParser for parsing the actual spectra.
+     */
     @Autowired
     private MaxQuantAplParser maxQuantAplParser;
 
-    public Map<Long, Spectrum> parse(File msmsFile, File aplFiles, boolean storeUnidentifiedSpectra) throws IOException {
-        Map<Long, Spectrum> spectra = new HashMap<>();
+    public Map<SpectrumKey, Spectrum> parse(File msmsFile, File aplFiles, boolean includeUnidentifiedSpectra) throws IOException {
+        Map<SpectrumKey, Spectrum> spectra;
 
-        //first, parse the msms.txt file and return a map of spectra (key: scan index; value: Spectrum instance)
+        //parse the aplFiles summary file
+        maxQuantAplParser.init(new File(MaxQuantConstants.ANDROMEDA_DIRECTORY.value()));
 
+        //parse the msms.txt file
+        spectra = parseMsmsFile(msmsFile);
+
+        //parse the apl files containing the spectrum peak lists
+        maxQuantAplParser.parse(spectra, includeUnidentifiedSpectra);
 
         return spectra;
     }
@@ -61,51 +79,53 @@ public class MaxQuantSpectrumParser {
      * @param msmsFile the MaxQuant msms.txt file
      * @return the mapped spectra
      */
-    private Map<String, Spectrum> parseMsmsFile(File msmsFile) throws IOException {
-        Map<String, Spectrum> spectra = new HashMap<>();
+    private Map<SpectrumKey, Spectrum> parseMsmsFile(File msmsFile) throws IOException {
+        Map<SpectrumKey, Spectrum> spectra = new HashMap<>();
 
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);
-        for (Map<String, String> values : valuesIterator) {
+        for (Map<String, String> spectrumValues : valuesIterator) {
+            String idString = spectrumValues.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName());
+            Long id = Long.parseLong(idString);
             //concatenate the RAW file name and scan index
-            Integer id = Integer.parseInt(values.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName()));
+            String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName())
+                    + KEY_MIDDLE
+                    + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_INDEX.getDefaultColumnName());
 
-//            spectra.put(parseSpectrum(values), id);
+            Spectrum spectrum = mapMsmsSpectrum(spectrumValues);
+            spectra.put(new SpectrumKey(id, aplKey), spectrum);
         }
 
         return spectra;
     }
 
-    private Spectrum parseSpectrum(Map<String, String> values) {
-        String fileName = values.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName());
-        String scanNumber = values.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getDefaultColumnName());
-        String spectrumTitle = String.format("%s-%s", fileName, scanNumber);
-        String intensity = values.get(MaxQuantMSMSHeaders.PRECURSOR_INTENSITY.getDefaultColumnName());
-
-        if (intensity.equalsIgnoreCase("nan")) {
-            intensity = "-1";
+    /**
+     * Map the spectrum values from a parsed msms.txt row entry onto a Colims {@link Spectrum}.
+     *
+     * @param aplKey         the apl key to use as spectrum accession
+     * @param spectrumValues the map of spectrum values (key: column header; value: column value)
+     * @return the mapped Spectrum instance
+     */
+    private Spectrum mapMsmsSpectrum(String aplKey, Map<String, String> spectrumValues) {
+        String spectrumTitle = spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName())
+                + TITLE_DELIMITER
+                + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getDefaultColumnName());
+        String intensity = spectrumValues.get(MaxQuantMSMSHeaders.PRECURSOR_INTENSITY.getDefaultColumnName());
+        if (intensity.equalsIgnoreCase(NOT_A_NUMBER)) {
+            intensity = NO_INTENSITY;
         }
 
+        //create Colims Spectrum instance and map the fields
         Spectrum spectrum = new com.compomics.colims.model.Spectrum();
-
-        // is null checking required here? check other parsers
-
-        spectrum.setAccession(values.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName()) + "_cus_" + spectrumTitle);   // TODO: why
-        spectrum.setCharge(Integer.valueOf(values.get(MaxQuantMSMSHeaders.CHARGE.getDefaultColumnName())));
-        spectrum.setFragmentationType(FragmentationType.valueOf(values.get(MaxQuantMSMSHeaders.FRAGMENTATION.getDefaultColumnName())));
+        spectrum.setAccession(aplKey);
+        spectrum.setCharge(Integer.valueOf(spectrumValues.get(MaxQuantMSMSHeaders.CHARGE.getDefaultColumnName())));
+        spectrum.setFragmentationType(maxQuantAplParser.getFragmentationType());
         spectrum.setIntensity(Double.parseDouble(intensity));
-        spectrum.setMzRatio(Double.valueOf(values.get(MaxQuantMSMSHeaders.M_Z.getDefaultColumnName())));
-        spectrum.setRetentionTime(Double.valueOf(values.get(MaxQuantMSMSHeaders.RETENTION_TIME.getDefaultColumnName())));
-        spectrum.setScanNumber(values.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getDefaultColumnName()));
-//        spectrum.setScanTime(); TODO: missing in original method but used in mapper
+        spectrum.setMzRatio(Double.valueOf(spectrumValues.get(MaxQuantMSMSHeaders.M_Z.getDefaultColumnName())));
+        spectrum.setRetentionTime(Double.valueOf(spectrumValues.get(MaxQuantMSMSHeaders.RETENTION_TIME.getDefaultColumnName())));
+        spectrum.setScanNumber(spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getDefaultColumnName()));
+        //use the scan event number for the scan time field
+        spectrum.setScanTime(Double.valueOf(spectrumValues.get(MaxQuantMSMSHeaders.SCAN_EVENT_NUMBER.getDefaultColumnName())));
         spectrum.setTitle(spectrumTitle);
-
-        Map<Double, Double> peakList = parsePeakList(values.get(MaxQuantMSMSHeaders.MATCHES.getDefaultColumnName()),
-                values.get(MaxQuantMSMSHeaders.INTENSITIES.getDefaultColumnName()),
-                values.get(MaxQuantMSMSHeaders.MASSES.getDefaultColumnName())
-        );
-
-        spectrum.setSpectrumFiles(new ArrayList<>());
-        spectrum.getSpectrumFiles().add(spectrumToMGF(spectrum, scanNumber, peakList));
 
         return spectrum;
     }
@@ -185,4 +205,5 @@ public class MaxQuantSpectrumParser {
 
         return spectrumFile;
     }
+
 }

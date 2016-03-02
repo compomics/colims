@@ -1,13 +1,17 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
+import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,7 +32,17 @@ public class MaxQuantAplParser {
     private static final String ALL_SPECTRA = "allSpectra.";
     private static final String ISO = ".iso";
     private static final String ANALYZER_TYPE_DELIMITER = "\\.";
+    private static final String APL_SPECTUM_START = "peaklist start";
+    private static final String APL_SPECTUM_END = "peaklist end";
 
+    /**
+     * The MaxQuant andromeda directory.
+     */
+    private File andromedaDirectory;
+    /**
+     * The apl spectrum files map (key: apl file name; value: apl param file name);
+     */
+    private Map<String, String> aplFiles;
     /**
      * The fragmentation type used.
      */
@@ -38,21 +52,54 @@ public class MaxQuantAplParser {
      */
     private MaxQuantConstants.Analyzer massAnalyzerType;
 
-    public void parse(final File andromedaDirectory) throws IOException {
-        //parse the apl summary file 'aplfiles'
+    public FragmentationType getFragmentationType() {
+        return fragmentationType;
+    }
+
+    /**
+     * Initialize the parser. This method parses the apl summary file.
+     *
+     * @param andromedaDirectory the MaxQuant andromeda directory
+     * @throws IOException thrown in case of an I/O related problem
+     */
+    public void init(final File andromedaDirectory) throws IOException {
+        /**
+         * Parse the apl summary file 'aplfiles.txt' to extract the location of the apl spectrum files
+         * and the mass analyzer and fragmentation type.
+         */
+        if (!andromedaDirectory.exists()) {
+            throw new FileNotFoundException("The andromeda directory " + andromedaDirectory.getPath() + " could not be found.");
+        }
+        this.andromedaDirectory = andromedaDirectory;
         File aplSummaryFile = new File(andromedaDirectory, MaxQuantConstants.APL_SUMMARY_FILE.value());
         if (!aplSummaryFile.exists()) {
             throw new FileNotFoundException("The apl summary file " + MaxQuantConstants.APL_SUMMARY_FILE + " could not be found.");
         }
 
-        final Map<String, String> aplFiles = ParseUtils.parseParameters(aplSummaryFile, false);
+        aplFiles = ParseUtils.parseParameters(aplSummaryFile, false);
         //get the mass analyzer and type
         Optional<String> first = aplFiles.keySet().stream().findFirst();
         if (first.isPresent()) {
             parseMassAnalyzerAndFragmentationType(first.get());
         }
+    }
 
+    /**
+     * Parse the spectrum files and map them onto {@link com.compomics.colims.model.SpectrumFile} instances. Parse also
+     * unidentified spectra if specified.
+     *
+     * @param spectra                    the map of spectra (key: SpectrumKey object for linking purposes; value: the
+     *                                   Colims Spectrum instance)
+     * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
+     */
+    public void parse(Map<SpectrumKey, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws FileNotFoundException {
+        for (String aplFilePath : aplFiles.keySet()) {
+            File apfile = new File(andromedaDirectory, aplFilePath);
+            if (!apfile.exists()) {
+                throw new FileNotFoundException("The apl spectrum file " + aplFilePath + " could not be found.");
+            }
 
+        }
     }
 
     /**
@@ -74,6 +121,27 @@ public class MaxQuantAplParser {
             } catch (IllegalArgumentException e) {
                 //do nothing
             }
+        }
+    }
+
+    private void parseAplFile(File aplFile, Map<SpectrumKey, Spectrum> spectra, boolean includeUnidentifiedSpectra) {
+        try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(aplFile.toURI()))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.equals(APL_SPECTUM_START)){
+                    //
+                    String mzValue = bufferedReader.readLine();
+
+                    String charge;
+                    //store m/z value and charge in case it's an unidentified spectrum
+                    //and these need to be stored as well
+                    if(includeUnidentifiedSpectra){
+
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
         }
     }
 

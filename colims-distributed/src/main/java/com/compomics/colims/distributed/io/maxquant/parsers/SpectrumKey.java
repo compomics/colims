@@ -16,6 +16,23 @@ public class SpectrumKey {
      */
     private String aplKey;
 
+    /**
+     * No-arg constructor.
+     */
+    public SpectrumKey() {
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param msmsId the id from the msms.txt file
+     * @param aplKey the key to identify the spectrum peaks in the apl spectrum file
+     */
+    public SpectrumKey(Long msmsId, String aplKey) {
+        this.msmsId = msmsId;
+        this.aplKey = aplKey;
+    }
+
     public Long getMsmsId() {
         return msmsId;
     }

@@ -57,6 +57,7 @@ public enum MaxQuantMSMSHeaders implements HeaderEnum {
     RETENTION_TIME(new String[]{"Retention Time"}),
     REVERSE(new String[]{"Reverse"}),
     SCAN_EVENT_NUMBER(new String[]{"Scan event number"}),
+    SCAN_INDEX(new String[]{"Scan Index"}),
     SCAN_TYPE(new String[]{"Scan Type"}),
     SCAN_NUMBER(new String[]{"Scan Number"}),
     SCORE(new String[]{"Score"}),
@@ -71,12 +72,11 @@ public enum MaxQuantMSMSHeaders implements HeaderEnum {
     /**
      * Private constructor.
      *
-     * @param fieldnames the array of field names
+     * @param fieldNames the array of field names
      */
-    MaxQuantMSMSHeaders(final String[] fieldnames) {
-
-        columnNames = new ArrayList<>(fieldnames.length);
-        Arrays.stream(fieldnames).forEach(e -> columnNames.add(e.toLowerCase(Locale.US)));
+    MaxQuantMSMSHeaders(final String[] fieldNames) {
+        columnNames = new ArrayList<>(fieldNames.length);
+        Arrays.stream(fieldNames).forEach(e -> columnNames.add(e.toLowerCase(Locale.US)));
     }
 
     @Override
@@ -91,7 +91,7 @@ public enum MaxQuantMSMSHeaders implements HeaderEnum {
 
     @Override
     public String getColumnName(int columnNameNumber) {
-        if(columnNameNumber < 0  || columnNameNumber > columnNames.size()){
+        if (columnNameNumber < 0 || columnNameNumber > columnNames.size()) {
             return columnNames.get(0);
         }
         return columnNames.get(columnNameNumber);

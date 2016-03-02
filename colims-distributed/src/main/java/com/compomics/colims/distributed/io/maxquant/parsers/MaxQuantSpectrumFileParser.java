@@ -20,7 +20,7 @@ import java.util.TreeMap;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * MaxQuant 
+ * MaxQuant
  */
 @Component("maxQuantSpectrumFileParser")
 public class MaxQuantSpectrumFileParser {
@@ -29,6 +29,8 @@ public class MaxQuantSpectrumFileParser {
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantSpectrumFileParser.class);
+
+    private static final String TITLE_DELIMITER = "-";
 
     private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
             MaxQuantMSMSHeaders.ID,
@@ -53,21 +55,18 @@ public class MaxQuantSpectrumFileParser {
     }
 
     private Spectrum parseSpectrum(Map<String, String> values) {
-        String fileName = values.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName());
-        String scanNumber = values.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getDefaultColumnName());
-        String spectrumTitle = String.format("%s-%s", fileName, scanNumber);
+        String spectrumTitle = values.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName()) + TITLE_DELIMITER + values.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getDefaultColumnName());
         String intensity = values.get(MaxQuantMSMSHeaders.PRECURSOR_INTENSITY.getDefaultColumnName());
-
         if (intensity.equalsIgnoreCase("nan")) {
             intensity = "-1";
         }
 
+        //create a Colims Spectrum instance
         Spectrum spectrum = new Spectrum();
-
         // is null checking required here? check other parsers
-
-        spectrum.setAccession(values.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName()) + "_cus_" + spectrumTitle);   // TODO: why
+        spectrum.setAccession(values.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName()));
         spectrum.setCharge(Integer.valueOf(values.get(MaxQuantMSMSHeaders.CHARGE.getDefaultColumnName())));
+        //TODO: 19/01/16 get fragmentationtype from aplFiles file?
         spectrum.setFragmentationType(FragmentationType.valueOf(values.get(MaxQuantMSMSHeaders.FRAGMENTATION.getDefaultColumnName())));
         spectrum.setIntensity(Double.parseDouble(intensity));
         spectrum.setMzRatio(Double.valueOf(values.get(MaxQuantMSMSHeaders.M_Z.getDefaultColumnName())));
@@ -77,8 +76,8 @@ public class MaxQuantSpectrumFileParser {
         spectrum.setTitle(spectrumTitle);
 
         Map<Double, Double> peakList = parsePeakList(values.get(MaxQuantMSMSHeaders.MATCHES.getDefaultColumnName()),
-            values.get(MaxQuantMSMSHeaders.INTENSITIES.getDefaultColumnName()),
-            values.get(MaxQuantMSMSHeaders.MASSES.getDefaultColumnName())
+                values.get(MaxQuantMSMSHeaders.INTENSITIES.getDefaultColumnName()),
+                values.get(MaxQuantMSMSHeaders.MASSES.getDefaultColumnName())
         );
 
         spectrum.setSpectrumFiles(new ArrayList<>());
@@ -123,8 +122,8 @@ public class MaxQuantSpectrumFileParser {
         String newLine = System.getProperty("line.separator");
 
         results.append("BEGIN IONS").append(newLine)
-            .append("TITLE=").append(spectrum.getTitle()).append(newLine)
-            .append("PEPMASS=").append(spectrum.getMzRatio()).append("\t").append(spectrum.getIntensity()).append(newLine);
+                .append("TITLE=").append(spectrum.getTitle()).append(newLine)
+                .append("PEPMASS=").append(spectrum.getMzRatio()).append("\t").append(spectrum.getIntensity()).append(newLine);
 
         if (spectrum.getRetentionTime() != -1) {
             results.append("RTINSECONDS=").append(spectrum.getRetentionTime()).append(newLine);

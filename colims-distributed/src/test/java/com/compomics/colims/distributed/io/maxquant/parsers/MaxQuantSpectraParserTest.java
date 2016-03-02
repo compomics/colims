@@ -1,15 +1,11 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
-import com.compomics.colims.model.Spectrum;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.nio.file.Files;
-import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -18,10 +14,10 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
-public class MaxQuantSpectrumParserTest {
+public class MaxQuantSpectraParserTest {
 
     @Autowired
-    private MaxQuantSpectrumParser maxQuantSpectrumParser;
+    private MaxQuantSpectraParser maxQuantSpectraParser;
 
     @Test
     public void testParse() throws Exception {
@@ -46,7 +42,7 @@ public class MaxQuantSpectrumParserTest {
         String intensities = "100.0;200.2;300.3";
         String masses = "500.5;600.6;700.7";
 
-        Map<Double, Double> peakMap = maxQuantSpectrumParser.parsePeakList(peaks, intensities, masses);
+        Map<Double, Double> peakMap = maxQuantSpectraParser.parsePeakList(peaks, intensities, masses);
 
         assertThat(peakMap.size(), is(3));
         assertTrue(peakMap.keySet().contains(500.5));
