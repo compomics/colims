@@ -5,13 +5,17 @@
  */
 package com.compomics.colims.client.view.admin;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import com.compomics.colims.client.compoment.DualList;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JRadioButton;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 /**
- *
+ * This dialog is used for searching ontology terms with the Ontology Lookup
+ * Service (OLS).
  *
  * @author Niels Hulstaert
  */
@@ -26,6 +30,80 @@ public class OlsDialog extends javax.swing.JDialog {
     public OlsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+
+        searchResultsScrollPane.getViewport().setOpaque(false);
+    }
+
+    public JRadioButton getAllOntologiesRadioButton() {
+        return allOntologiesRadioButton;
+    }
+
+    public JCheckBox getAnnotationPropertiesCheckBox() {
+        return annotationPropertiesCheckBox;
+    }
+
+    public JButton getCancelButton() {
+        return cancelButton;
+    }
+
+    public JCheckBox getDescriptionsCheckBox() {
+        return descriptionsCheckBox;
+    }
+
+    public JButton getGetAllOntologiesButton() {
+        return getAllOntologiesButton;
+    }
+
+    public JCheckBox getIdentifiersCheckBox() {
+        return identifiersCheckBox;
+    }
+
+    public JCheckBox getLabelsCheckBox() {
+        return labelsCheckBox;
+    }
+
+    public DualList getOntologiesDualList() {
+        return ontologiesDualList;
+    }
+
+    public JRadioButton getPreselectedOntologiesRadioButton() {
+        return preselectedOntologiesRadioButton;
+    }
+
+    public JButton getSearchButton() {
+        return searchButton;
+    }
+
+    public JTextField getSearchInputTextField() {
+        return searchInputTextField;
+    }
+
+    public JButton getSelectButton() {
+        return selectButton;
+    }
+
+    public JCheckBox getSynonymsCheckBox() {
+        return synonymsCheckBox;
+    }
+
+    public JRadioButton getCustomFieldsRadioButton() {
+        return customFieldsRadioButton;
+    }
+
+    public JRadioButton getDefaultFieldsRadioButton() {
+        return defaultFieldsRadioButton;
+    }
+
+    public JTable getSearchResultTable() {
+        return searchResultTable;
+    }
+
+    public ButtonGroup getOntologiesSelectionButtonGroup() {
+        return ontologiesSelectionButtonGroup;
+    }
+
+    public ButtonGroup getSearchFieldsSelectionButtonGroup() {
+        return searchFieldsSelectionButtonGroup;
     }
 
     /**
@@ -38,28 +116,38 @@ public class OlsDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         ontologiesSelectionButtonGroup = new javax.swing.ButtonGroup();
+        searchFieldsSelectionButtonGroup = new javax.swing.ButtonGroup();
         olsParentPanel = new javax.swing.JPanel();
         olsTabbedPane = new javax.swing.JTabbedPane();
         searchPanel = new javax.swing.JPanel();
-        ontologyComboBox = new javax.swing.JComboBox<>();
         searchInputLabel = new javax.swing.JLabel();
         searchInputTextField = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
         searchResultsPanel = new javax.swing.JPanel();
         searchResultsScrollPane = new javax.swing.JScrollPane();
-        searchResultsTable = new javax.swing.JTable();
+        searchResultTable = new javax.swing.JTable();
         termDetailPanel = new javax.swing.JPanel();
+        cancelButton = new javax.swing.JButton();
         selectButton = new javax.swing.JButton();
-        ontologiesLabel = new javax.swing.JLabel();
         searchSettingsPanel = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        searchOntologiesPanel = new javax.swing.JPanel();
         searchOntologiesLabel = new javax.swing.JLabel();
         allOntologiesRadioButton = new javax.swing.JRadioButton();
         preselectedOntologiesRadioButton = new javax.swing.JRadioButton();
         ontologiesDualList = new com.compomics.colims.client.compoment.DualList();
         getAllOntologiesButton = new javax.swing.JButton();
+        searchFieldsPanel = new javax.swing.JPanel();
+        labelsCheckBox = new javax.swing.JCheckBox();
+        synonymsCheckBox = new javax.swing.JCheckBox();
+        descriptionsCheckBox = new javax.swing.JCheckBox();
+        identifiersCheckBox = new javax.swing.JCheckBox();
+        annotationPropertiesCheckBox = new javax.swing.JCheckBox();
+        searchFieldsLabel = new javax.swing.JLabel();
+        defaultFieldsRadioButton = new javax.swing.JRadioButton();
+        customFieldsRadioButton = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Ontology Lookup Service (OLS) dialog");
 
         olsParentPanel.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -77,7 +165,7 @@ public class OlsDialog extends javax.swing.JDialog {
         searchResultsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search results"));
         searchResultsPanel.setOpaque(false);
 
-        searchResultsTable.setModel(new javax.swing.table.DefaultTableModel(
+        searchResultTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -88,7 +176,8 @@ public class OlsDialog extends javax.swing.JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        searchResultsScrollPane.setViewportView(searchResultsTable);
+        searchResultTable.setOpaque(false);
+        searchResultsScrollPane.setViewportView(searchResultTable);
 
         javax.swing.GroupLayout searchResultsPanelLayout = new javax.swing.GroupLayout(searchResultsPanel);
         searchResultsPanel.setLayout(searchResultsPanelLayout);
@@ -101,9 +190,7 @@ public class OlsDialog extends javax.swing.JDialog {
         );
         searchResultsPanelLayout.setVerticalGroup(
             searchResultsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchResultsPanelLayout.createSequentialGroup()
-                .addComponent(searchResultsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+            .addComponent(searchResultsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         termDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Term detail"));
@@ -117,15 +204,18 @@ public class OlsDialog extends javax.swing.JDialog {
         );
         termDetailPanelLayout.setVerticalGroup(
             termDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 219, Short.MAX_VALUE)
+            .addGap(0, 328, Short.MAX_VALUE)
         );
+
+        cancelButton.setText("cancel");
+        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         selectButton.setText("select");
         selectButton.setMaximumSize(new java.awt.Dimension(80, 25));
         selectButton.setMinimumSize(new java.awt.Dimension(80, 25));
         selectButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        ontologiesLabel.setText("Ontologies:");
 
         javax.swing.GroupLayout searchPanelLayout = new javax.swing.GroupLayout(searchPanel);
         searchPanel.setLayout(searchPanelLayout);
@@ -133,30 +223,23 @@ public class OlsDialog extends javax.swing.JDialog {
             searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(searchResultsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(termDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(searchPanelLayout.createSequentialGroup()
+                .addComponent(searchInputLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(searchInputTextField)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(selectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(searchPanelLayout.createSequentialGroup()
-                .addGroup(searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(searchInputLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ontologiesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ontologyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(searchPanelLayout.createSequentialGroup()
-                        .addComponent(searchInputTextField)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         searchPanelLayout.setVerticalGroup(
             searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ontologyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ontologiesLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchInputLabel)
                     .addComponent(searchInputTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -166,15 +249,17 @@ public class OlsDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(termDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(selectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(selectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         olsTabbedPane.addTab("Search", searchPanel);
 
         searchSettingsPanel.setOpaque(false);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Ontologies"));
-        jPanel1.setOpaque(false);
+        searchOntologiesPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Ontologies"));
+        searchOntologiesPanel.setOpaque(false);
 
         searchOntologiesLabel.setText("Search for terms in:");
 
@@ -190,55 +275,113 @@ public class OlsDialog extends javax.swing.JDialog {
         getAllOntologiesButton.setMinimumSize(new java.awt.Dimension(80, 25));
         getAllOntologiesButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout searchOntologiesPanelLayout = new javax.swing.GroupLayout(searchOntologiesPanel);
+        searchOntologiesPanel.setLayout(searchOntologiesPanelLayout);
+        searchOntologiesPanelLayout.setHorizontalGroup(
+            searchOntologiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchOntologiesPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ontologiesDualList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(searchOntologiesLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(allOntologiesRadioButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(preselectedOntologiesRadioButton))
-                            .addComponent(getAllOntologiesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 215, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addGroup(searchOntologiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(searchOntologiesPanelLayout.createSequentialGroup()
+                        .addComponent(searchOntologiesLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(allOntologiesRadioButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(preselectedOntologiesRadioButton))
+                    .addComponent(getAllOntologiesButton, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(233, Short.MAX_VALUE))
+            .addComponent(ontologiesDualList, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        searchOntologiesPanelLayout.setVerticalGroup(
+            searchOntologiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchOntologiesPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(searchOntologiesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchOntologiesLabel)
                     .addComponent(allOntologiesRadioButton)
                     .addComponent(preselectedOntologiesRadioButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ontologiesDualList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(ontologiesDualList, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(getAllOntologiesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        searchFieldsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search fields"));
+        searchFieldsPanel.setOpaque(false);
+
+        labelsCheckBox.setText("labels");
+
+        synonymsCheckBox.setText("synonyms");
+
+        descriptionsCheckBox.setText("descriptions");
+
+        identifiersCheckBox.setText("identifiers");
+
+        annotationPropertiesCheckBox.setText("annotation properties");
+
+        searchFieldsLabel.setText("Search for terms using;");
+
+        searchFieldsSelectionButtonGroup.add(defaultFieldsRadioButton);
+        defaultFieldsRadioButton.setText("default fields");
+        defaultFieldsRadioButton.setToolTipText("the default search fields are labels, synonyms, descriptions, identifiers and annotation properties");
+
+        searchFieldsSelectionButtonGroup.add(customFieldsRadioButton);
+        customFieldsRadioButton.setText("custom fields");
+        customFieldsRadioButton.setToolTipText("if no search fields are selected, the default ones are used");
+
+        javax.swing.GroupLayout searchFieldsPanelLayout = new javax.swing.GroupLayout(searchFieldsPanel);
+        searchFieldsPanel.setLayout(searchFieldsPanelLayout);
+        searchFieldsPanelLayout.setHorizontalGroup(
+            searchFieldsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchFieldsPanelLayout.createSequentialGroup()
+                .addGroup(searchFieldsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labelsCheckBox)
+                    .addComponent(synonymsCheckBox)
+                    .addComponent(descriptionsCheckBox)
+                    .addComponent(identifiersCheckBox)
+                    .addComponent(annotationPropertiesCheckBox)
+                    .addGroup(searchFieldsPanelLayout.createSequentialGroup()
+                        .addComponent(searchFieldsLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(defaultFieldsRadioButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(customFieldsRadioButton)))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        searchFieldsPanelLayout.setVerticalGroup(
+            searchFieldsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchFieldsPanelLayout.createSequentialGroup()
+                .addGroup(searchFieldsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(searchFieldsLabel)
+                    .addComponent(defaultFieldsRadioButton)
+                    .addComponent(customFieldsRadioButton))
+                .addGap(18, 18, 18)
+                .addComponent(labelsCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(synonymsCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(descriptionsCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(identifiersCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(annotationPropertiesCheckBox)
+                .addContainerGap(77, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout searchSettingsPanelLayout = new javax.swing.GroupLayout(searchSettingsPanel);
         searchSettingsPanel.setLayout(searchSettingsPanelLayout);
         searchSettingsPanelLayout.setHorizontalGroup(
             searchSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchSettingsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(searchOntologiesPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(searchFieldsPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         searchSettingsPanelLayout.setVerticalGroup(
             searchSettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchSettingsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(268, Short.MAX_VALUE))
+                .addComponent(searchOntologiesPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(searchFieldsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         olsTabbedPane.addTab("Search settings", searchSettingsPanel);
@@ -276,25 +419,34 @@ public class OlsDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton allOntologiesRadioButton;
+    private javax.swing.JCheckBox annotationPropertiesCheckBox;
+    private javax.swing.JButton cancelButton;
+    private javax.swing.JRadioButton customFieldsRadioButton;
+    private javax.swing.JRadioButton defaultFieldsRadioButton;
+    private javax.swing.JCheckBox descriptionsCheckBox;
     private javax.swing.JButton getAllOntologiesButton;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JCheckBox identifiersCheckBox;
+    private javax.swing.JCheckBox labelsCheckBox;
     private javax.swing.JPanel olsParentPanel;
     private javax.swing.JTabbedPane olsTabbedPane;
     private com.compomics.colims.client.compoment.DualList ontologiesDualList;
-    private javax.swing.JLabel ontologiesLabel;
     private javax.swing.ButtonGroup ontologiesSelectionButtonGroup;
-    private javax.swing.JComboBox<String> ontologyComboBox;
     private javax.swing.JRadioButton preselectedOntologiesRadioButton;
     private javax.swing.JButton searchButton;
+    private javax.swing.JLabel searchFieldsLabel;
+    private javax.swing.JPanel searchFieldsPanel;
+    private javax.swing.ButtonGroup searchFieldsSelectionButtonGroup;
     private javax.swing.JLabel searchInputLabel;
     private javax.swing.JTextField searchInputTextField;
     private javax.swing.JLabel searchOntologiesLabel;
+    private javax.swing.JPanel searchOntologiesPanel;
     private javax.swing.JPanel searchPanel;
+    private javax.swing.JTable searchResultTable;
     private javax.swing.JPanel searchResultsPanel;
     private javax.swing.JScrollPane searchResultsScrollPane;
-    private javax.swing.JTable searchResultsTable;
     private javax.swing.JPanel searchSettingsPanel;
     private javax.swing.JButton selectButton;
+    private javax.swing.JCheckBox synonymsCheckBox;
     private javax.swing.JPanel termDetailPanel;
     // End of variables declaration//GEN-END:variables
 }

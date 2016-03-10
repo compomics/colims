@@ -2,6 +2,7 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.model.ols.Ontology;
 import com.compomics.colims.core.model.ols.OntologyTerm;
+import com.compomics.colims.core.model.ols.SearchResult;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
@@ -24,9 +25,12 @@ import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 /**
@@ -39,6 +43,7 @@ public class NewOlsServiceImpl implements OlsService {
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(NewOlsServiceImpl.class);
+
     private static final String MOD_ONTOLOGY_LABEL = "MOD";
     private static final String MOD_ONTOLOGY_QUERY_LABEL = "mod";
     private static final String MOD_ONTOLOGY_IRI = "http://purl.obolibrary.org/obo/";
@@ -46,7 +51,7 @@ public class NewOlsServiceImpl implements OlsService {
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
     private static final String URL_ENCODING = "UTF-8";
     private static final String OLS_BASE_URL = "http://www.ebi.ac.uk/ols/beta/api/ontologies/";
-    private static final String OLS_BASE_SEARCH_URL = "http://www.ebi.ac.uk/ols/beta/api/search?q={query}";
+    private static final String OLS_BASE_SEARCH_URL = "http://www.ebi.ac.uk/ols/beta/api/search?q=%s";
     private static final String PAGE_AND_SIZE = "?page=%1$d&page=%2$d";
     private static final String EMBEDDED = "_embedded";
     private static final String PAGE = "page";
@@ -59,7 +64,7 @@ public class NewOlsServiceImpl implements OlsService {
     private static final String TERMS_CHILDREN_QUERY = "%s/terms/%s/children";
     private static final String TERMS_OBO_ID_QUERY = "{ontology_namespace}/terms?obo_id={obo_id}";
     private static final String TERMS_ROOTS_QUERY = "%s/terms/roots";
-    private static final String SEARCH_ONTOLOGY_LABEL = "&ontology={ontology_namespace}&queryFields=label&exact=false";
+    private static final String SEARCH_ONTOLOGY_LABEL = "&ontology={ontology_namespace}&queryFields={}&exact=false&rows=20";
     private static final String HIGHLIGHTING = "highlighting";
     private static final String LABEL = "label";
     private static final int PAGE_SIZE = 20;
@@ -126,18 +131,69 @@ public class NewOlsServiceImpl implements OlsService {
         List<Ontology> ontologies = new ArrayList<>();
 
         for (String namespace : namespaces) {
-            //get the response
-            ResponseEntity<String> response = restTemplate.getForEntity(OLS_BASE_URL + "{ontology_namespace}", String.class, namespace.toLowerCase());
+            try {
+                //get the response
+                ResponseEntity<String> response = restTemplate.getForEntity(OLS_BASE_URL + "{ontology_namespace}", String.class, namespace.toLowerCase());
 
-            ObjectReader objectReader = objectMapper.readerFor(OntologyTerm.class);
-            JsonNode responseBody = objectReader.readTree(response.getBody());
+                ObjectReader objectReader = objectMapper.readerFor(OntologyTerm.class);
+                JsonNode responseBody = objectReader.readTree(response.getBody());
 
-            JsonNode ontologyConfigNode = responseBody.get(CONFIG);
-            Ontology ontology = objectReader.treeToValue(ontologyConfigNode, Ontology.class);
-            ontologies.add(ontology);
+                JsonNode ontologyConfigNode = responseBody.get(CONFIG);
+                Ontology ontology = objectReader.treeToValue(ontologyConfigNode, Ontology.class);
+                ontologies.add(ontology);
+            } catch (HttpClientErrorException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+                //ignore the exception if the namespace doesn't correspond to an ontology
+                if (!ex.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                    throw ex;
+                }
+            }
         }
 
         return ontologies;
+    }
+
+    @Override
+    public List<SearchResult> search(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException {
+        List<SearchResult> searchResults = new ArrayList<>();
+
+        //get the response
+        StringBuilder url = new StringBuilder(String.format(OLS_BASE_SEARCH_URL, query));
+        if (!searchFields.isEmpty() && !searchFields.equals(SearchResult.DEFAULT_SEARCH_FIELDS)) {
+            url.append("&queryFields=");
+            url.append(searchFields.stream().map(s -> s.getQueryValue()).collect(Collectors.joining(",")));
+        }
+        if (!ontologyNamespaces.isEmpty()) {
+            url.append("&ontology=");
+            url.append(ontologyNamespaces.stream().collect(Collectors.joining(",")));
+        }
+        ResponseEntity<String> response = restTemplate.getForEntity(url.toString(), String.class);
+
+        ObjectReader objectReader = objectMapper.reader();
+        JsonNode responseBody = objectReader.readTree(response.getBody());
+
+        //iterate over the highlighing node
+        JsonNode highlighting = responseBody.get(HIGHLIGHTING);
+        //iterate over the fields because we need the key as well
+        Iterator<java.util.Map.Entry<String, JsonNode>> highlightingIterator = highlighting.fields();
+        while (highlightingIterator.hasNext()) {
+            java.util.Map.Entry<String, JsonNode> highLightEntry = highlightingIterator.next();
+            SearchResult searchResult = new SearchResult();
+            //split the key into the ontology namespace and the term IRI
+            String[] split = highLightEntry.getKey().split(":", 2);
+            searchResult.setOntologyNamespace(split[0]);
+            searchResult.setIri(split[1]);
+            //iterate over the field because we need the key as well
+            Iterator<java.util.Map.Entry<String, JsonNode>> highLightEntryIterator = highLightEntry.getValue().fields();
+            if (highLightEntryIterator.hasNext()) {
+                java.util.Map.Entry<String, JsonNode> searchHighlight = highLightEntryIterator.next();
+                searchResult.setField(SearchResult.SearchField.findByQueryValue(searchHighlight.getKey()));
+                searchResult.setHighlight(searchHighlight.getValue().get(0).asText());
+            }
+            searchResults.add(searchResult);
+        }
+
+        return searchResults;
     }
 
     @Override

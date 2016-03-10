@@ -1,8 +1,13 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.core.model.ols.Ontology;
+import com.compomics.colims.core.model.ols.OntologyTerm;
+import com.compomics.colims.core.model.ols.SearchResult;
 import com.compomics.colims.model.Modification;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
@@ -14,7 +19,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
-
 
 /**
  * @author Niels Hulstaert
@@ -41,28 +45,71 @@ public class NewOlsServiceTest {
     @Test
     public void testGetAllOntologies() throws HttpClientErrorException, IOException {
         List<Ontology> allOntologies = newOlsService.getAllOntologies();
+
+        Assert.assertFalse(allOntologies.isEmpty());
+        Assert.assertEquals(145, allOntologies.size());
     }
 
-    /**
-     * Test the find modification by accession method from the OlsService.
-     */
     @Test
-    public void testFindModificationByAccession() {
-//        //try to find a non existing modification
-//        Modification modification = newOlsService.findModificationByAccession(Modification.class, "MOD:00935999");
-//
-//        Assert.assertNull(modification);
+    public void testGetOntologiesByNamespace() throws HttpClientErrorException, IOException {
+        List<String> namespaces = new ArrayList<>();
+        namespaces.add("ms");
+        //add one nonsense namespace
+        namespaces.add("nonsense");
+        List<Ontology> foundOntologies = newOlsService.getOntologiesByNamespace(namespaces);
 
-        //try to find an existing modification
-        Modification modification = newOlsService.findModificationByAccession(Modification.class, "MOD:00935");
-
-        Assert.assertNotNull(modification);
-        Assert.assertEquals("MOD:00935", modification.getAccession());
-        Assert.assertEquals("methionine oxidation with neutral loss of 64 Da", modification.getName());
-        Assert.assertEquals(-63.998286, modification.getMonoIsotopicMassShift(), 0.001);
-        Assert.assertEquals(-64.1, modification.getAverageMassShift(), 0.001);
+        Assert.assertFalse(foundOntologies.isEmpty());
+        //only one ontology is expected to be found
+        Assert.assertEquals(1, foundOntologies.size());
     }
 
+    @Test
+    public void testSearch() throws HttpClientErrorException, IOException {
+        String query = "MS/MS in Time";
+
+        //test with one ontology namespace and one search field
+        List<String> namespaces = new ArrayList<>();
+        namespaces.add("ms");
+
+        List<SearchResult> searchResults = newOlsService.search(query, namespaces, EnumSet.of(SearchResult.SearchField.LABEL));
+
+        Assert.assertFalse(searchResults.isEmpty());
+        //only label fields should be returned
+        Assert.assertTrue(searchResults.stream().allMatch(s -> s.getField().equals(SearchResult.SearchField.LABEL)));
+
+        //test with all ontologies and 2 search fields
+        searchResults = newOlsService.search(query, new ArrayList<>(), EnumSet.of(SearchResult.SearchField.LABEL, SearchResult.SearchField.SYNONYM));
+
+        Assert.assertFalse(searchResults.isEmpty());
+        //only label fields should be returned
+        Assert.assertTrue(searchResults.stream().allMatch(s -> s.getField().equals(SearchResult.SearchField.LABEL) || s.getField().equals(SearchResult.SearchField.SYNONYM)));
+
+        //test with all ontologies and the default search fields
+        searchResults = newOlsService.search(query, new ArrayList<>(), SearchResult.DEFAULT_SEARCH_FIELDS);
+
+        Assert.assertFalse(searchResults.isEmpty());
+    }
+
+//    /**
+//     * Test the find modification by accession method from the OlsService.
+//     */
+//    @Test
+//    public void testFindModificationByAccession() {
+////        //try to find a non existing modification
+////        Modification modification = newOlsService.findModificationByAccession(Modification.class, "MOD:00935999");
+////
+////        Assert.assertNull(modification);
+//
+//        //try to find an existing modification
+//        Modification modification = newOlsService.findModificationByAccession(Modification.class, "MOD:00935");
+//
+//        Assert.assertNotNull(modification);
+//        Assert.assertEquals("MOD:00935", modification.getAccession());
+//        Assert.assertEquals("methionine oxidation with neutral loss of 64 Da", modification.getName());
+//        Assert.assertEquals(-63.998286, modification.getMonoIsotopicMassShift(), 0.001);
+//        Assert.assertEquals(-64.1, modification.getAverageMassShift(), 0.001);
+//    }
+//
 //    /**
 //     * Test the find modification by exact name method from the OlsService.
 //     */
@@ -170,5 +217,4 @@ public class NewOlsServiceTest {
 //        Assert.assertEquals("MS:1001251", enzyme.getAccession());
 //        Assert.assertEquals("Trypsin", enzyme.getName());
 //    }
-
 }

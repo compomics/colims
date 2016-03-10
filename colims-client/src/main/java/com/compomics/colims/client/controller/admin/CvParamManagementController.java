@@ -49,6 +49,9 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     //parent controller
     @Autowired
     private MainController mainController;
+    //child controller
+    @Autowired
+    private OlsController olsController;
     @Autowired
     private EventBus eventBus;
     //services
@@ -284,31 +287,33 @@ public class CvParamManagementController implements Controllable, OLSInputable {
      * @param isNewCvParam is the CV param new or already existing in the DB
      */
     private void showOlsDialog(final boolean isNewCvParam) {
-        String ontology = "PSI Mass Spectrometry Ontology [MS]";
+//        String ontology = "PSI Mass Spectrometry Ontology [MS]";
+//
+//        Map<String, List<String>> preselectedOntologies = new HashMap<>();
+//
+//        List<String> testing = new ArrayList<>();
+//        testing.add("MS:1000458");
+//
+//        preselectedOntologies.put("MS", testing);
+//
+//        String field;
+//        String param = null;
+//
+//        if (isNewCvParam) {
+//            field = ADD_CV_PARAM;
+//        } else {
+//            field = UPDATE_CV_PARAM;
+//            param = getSelectedCvParam().getName();
+//        }
+//
+//        cvParamManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+//
+//        //show new OLS dialog
+//        new OLSDialog(cvParamManagementDialog, this, true, field, ontology, param, preselectedOntologies);
+//
+//        cvParamManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        Map<String, List<String>> preselectedOntologies = new HashMap<>();
-
-        List<String> testing = new ArrayList<>();
-        testing.add("MS:1000458");
-
-        preselectedOntologies.put("MS", testing);
-
-        String field;
-        String param = null;
-
-        if (isNewCvParam) {
-            field = ADD_CV_PARAM;
-        } else {
-            field = UPDATE_CV_PARAM;
-            param = getSelectedCvParam().getName();
-        }
-
-        cvParamManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-
-        //show new OLS dialog
-        new OLSDialog(cvParamManagementDialog, this, true, field, ontology, param, preselectedOntologies);
-
-        cvParamManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+          olsController.showView();
     }
 
     /**

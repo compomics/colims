@@ -7,6 +7,7 @@ package com.compomics.colims.core.model.ols;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,6 +18,18 @@ import java.util.Objects;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Ontology {
+
+    /**
+     * Stub ontology for searching terms in all available ontologies.
+     */
+    public static final Ontology ALL_ONTOLOGIES = new Ontology();
+
+    static {
+        ALL_ONTOLOGIES.setBaseUris(new ArrayList<>());
+        ALL_ONTOLOGIES.setNameSpace("");
+        ALL_ONTOLOGIES.setPrefix("");
+        ALL_ONTOLOGIES.setTitle("Search all ontologies");
+    }
 
     @JsonProperty(value = "namespace")
     private String nameSpace;
@@ -96,7 +109,11 @@ public class Ontology {
 
     @Override
     public String toString() {
-        return title + " / " + nameSpace;
+        if (!nameSpace.isEmpty()) {
+            return title + " (" + nameSpace + ")";
+        } else {
+            return title;
+        }
     }
 
 }

@@ -1,11 +1,15 @@
 package com.compomics.colims.core.service.impl;
 
+import com.compomics.colims.core.model.ols.Ontology;
+import com.compomics.colims.core.model.ols.OntologyTerm;
+import com.compomics.colims.core.model.ols.SearchResult;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.factory.CvParamFactory;
+import java.io.IOException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.xml.xml_soap.Map;
@@ -15,8 +19,10 @@ import org.springframework.stereotype.Service;
 import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * @author Niels Hulstaert
@@ -243,6 +249,21 @@ public class OlsServiceImpl implements OlsService {
         }
 
         return modification;
+    }
+
+    @Override
+    public List<Ontology> getAllOntologies() throws HttpClientErrorException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<Ontology> getOntologiesByNamespace(List<String> namespaces) throws HttpClientErrorException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<SearchResult> search(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

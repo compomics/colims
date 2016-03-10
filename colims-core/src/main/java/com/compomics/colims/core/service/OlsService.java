@@ -1,26 +1,48 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.core.model.ols.Ontology;
+import com.compomics.colims.core.model.ols.SearchResult;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.cv.TypedCvParam;
 import java.io.IOException;
+import java.util.EnumSet;
 
 import java.util.List;
 import java.util.Map;
 import org.springframework.web.client.HttpClientErrorException;
 
 /**
- * This interface provides methods for accessing the Ontoloy lookup service.
+ * This interface provides methods for accessing the Ontology lookup service
+ * (OLS).
  *
  * @author Niels Hulstaert
  */
 public interface OlsService {
 
+    /**
+     * Retrieve all available ontologies.
+     *
+     * @return the available ontologies
+     * @throws HttpClientErrorException in case of a HTTP 4xx error was received
+     * @throws IOException in case of an I/O related problem
+     */
     List<Ontology> getAllOntologies() throws HttpClientErrorException, IOException;
 
+    /**
+     * Retrieve ontologies by namespace. The namespaces are converted to
+     * lowercase before querying the OLS service. Returns an empty list when
+     * nothing was found.
+     *
+     * @param namespaces the list of ontology namespaces.
+     * @return the list of found ontologies
+     * @throws HttpClientErrorException in case of a HTTP 4xx error was received
+     * @throws IOException in case of an I/O related problem
+     */
     List<Ontology> getOntologiesByNamespace(List<String> namespaces) throws HttpClientErrorException, IOException;
-    
+
+    List<SearchResult> search(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException;
+
     /**
      * Find a modification by exact name in the PSI-MOD ontology.
      *
