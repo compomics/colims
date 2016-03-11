@@ -1,10 +1,7 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.core.model.ols.Ontology;
-import com.compomics.colims.core.model.ols.OntologyTerm;
 import com.compomics.colims.core.model.ols.SearchResult;
-import com.compomics.colims.model.Modification;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -75,17 +72,17 @@ public class NewOlsServiceTest {
 
         Assert.assertFalse(searchResults.isEmpty());
         //only label fields should be returned
-        Assert.assertTrue(searchResults.stream().allMatch(s -> s.getField().equals(SearchResult.SearchField.LABEL)));
+        Assert.assertTrue(searchResults.stream().allMatch(s -> s.getMatchedFields().containsKey(SearchResult.SearchField.LABEL)));
 
         //test with all ontologies and 2 search fields
         searchResults = newOlsService.search(query, new ArrayList<>(), EnumSet.of(SearchResult.SearchField.LABEL, SearchResult.SearchField.SYNONYM));
 
         Assert.assertFalse(searchResults.isEmpty());
         //only label fields should be returned
-        Assert.assertTrue(searchResults.stream().allMatch(s -> s.getField().equals(SearchResult.SearchField.LABEL) || s.getField().equals(SearchResult.SearchField.SYNONYM)));
+        Assert.assertTrue(searchResults.stream().allMatch(s -> s.getMatchedFields().containsKey(SearchResult.SearchField.LABEL) || s.getMatchedFields().containsKey(SearchResult.SearchField.SYNONYM)));
 
         //test with all ontologies and the default search fields
-        searchResults = newOlsService.search(query, new ArrayList<>(), SearchResult.DEFAULT_SEARCH_FIELDS);
+        searchResults = newOlsService.search("time", new ArrayList<>(), SearchResult.DEFAULT_SEARCH_FIELDS);
 
         Assert.assertFalse(searchResults.isEmpty());
     }

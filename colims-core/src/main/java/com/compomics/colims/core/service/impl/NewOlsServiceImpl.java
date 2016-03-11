@@ -25,6 +25,7 @@ import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,7 +46,6 @@ public class NewOlsServiceImpl implements OlsService {
     private static final Logger LOGGER = Logger.getLogger(NewOlsServiceImpl.class);
 
     private static final String MOD_ONTOLOGY_LABEL = "MOD";
-    private static final String MOD_ONTOLOGY_QUERY_LABEL = "mod";
     private static final String MOD_ONTOLOGY_IRI = "http://purl.obolibrary.org/obo/";
     private static final String MS_ONTOLOGY_LABEL = "MS";
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
@@ -60,13 +60,7 @@ public class NewOlsServiceImpl implements OlsService {
     private static final String TERMS = "terms";
     private static final String ONTOLOGIES = "ontologies";
     private static final String CONFIG = "config";
-    private static final String TERMS_IRI_QUERY = "{ontology_namespace}/terms/{iri}";
-    private static final String TERMS_CHILDREN_QUERY = "%s/terms/%s/children";
-    private static final String TERMS_OBO_ID_QUERY = "{ontology_namespace}/terms?obo_id={obo_id}";
-    private static final String TERMS_ROOTS_QUERY = "%s/terms/roots";
-    private static final String SEARCH_ONTOLOGY_LABEL = "&ontology={ontology_namespace}&queryFields={}&exact=false&rows=20";
     private static final String HIGHLIGHTING = "highlighting";
-    private static final String LABEL = "label";
     private static final int PAGE_SIZE = 20;
 
     /**
@@ -185,11 +179,12 @@ public class NewOlsServiceImpl implements OlsService {
             searchResult.setIri(split[1]);
             //iterate over the field because we need the key as well
             Iterator<java.util.Map.Entry<String, JsonNode>> highLightEntryIterator = highLightEntry.getValue().fields();
-            if (highLightEntryIterator.hasNext()) {
+            EnumMap<SearchResult.SearchField, String> matchedSearchFields = new EnumMap(SearchResult.SearchField.class);
+            while (highLightEntryIterator.hasNext()) {
                 java.util.Map.Entry<String, JsonNode> searchHighlight = highLightEntryIterator.next();
-                searchResult.setField(SearchResult.SearchField.findByQueryValue(searchHighlight.getKey()));
-                searchResult.setHighlight(searchHighlight.getValue().get(0).asText());
+                matchedSearchFields.put(SearchResult.SearchField.findByQueryValue(searchHighlight.getKey()), searchHighlight.getValue().get(0).asText());
             }
+            searchResult.setMatchedFields(matchedSearchFields);
             searchResults.add(searchResult);
         }
 

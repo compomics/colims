@@ -51,11 +51,11 @@ public class OlsController implements Controllable {
     /**
      * The default ontology namespaces.
      */
-    @Value("#{'${ontology.default_namespaces}'.split(',')}")
-    private List<String> defaultOntologyNamespaces = new ArrayList<>();
-    private List<Ontology> ontologies = new ArrayList<>();
-    private OntologySearchResultTableModel ontologySearchResultTableModel;
-    private SearchResultTableMouseAdapter searchResultTableMouseAdapter = new SearchResultTableMouseAdapter();
+    @Value("#{'${ontology.preselected_namespaces}'.split(',')}")
+    private final List<String> preselectedOntologyNamespaces = new ArrayList<>();
+    private final List<Ontology> preselectedOntologies = new ArrayList<>();
+    private final OntologySearchResultTableModel ontologySearchResultTableModel = new OntologySearchResultTableModel();
+    private final SearchResultTableMouseAdapter searchResultTableMouseAdapter = new SearchResultTableMouseAdapter();
     //view
     private OlsDialog olsDialog;
     //parent controller
@@ -73,45 +73,30 @@ public class OlsController implements Controllable {
         //init view
         olsDialog = new OlsDialog(mainController.getMainFrame(), true);
 
-        if (defaultOntologyNamespaces.isEmpty()) {
-            //add the "search all ontologies" stub ontology
-            ontologies.add(Ontology.ALL_ONTOLOGIES);
-        } else {
-            try {
-                ontologies.addAll(newOlsService.getOntologiesByNamespace(defaultOntologyNamespaces));
-            } catch (IOException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-                eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.PARSE_ERROR));
-            } catch (HttpClientErrorException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-                eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.CONNECTION_ERROR));
-            }
-        }
-
         //init the dual list
         olsDialog.getOntologiesDualList().init(new OntologyTitleComparator());
-        olsDialog.getOntologiesDualList().populateLists(new ArrayList(), ontologies);
+
+        getOntologies();
 
         //init the search results table
-        ontologySearchResultTableModel = new OntologySearchResultTableModel();
         olsDialog.getSearchResultTable().setModel(ontologySearchResultTableModel);
 
         //set the default radio button values
-        if (defaultOntologyNamespaces.isEmpty()) {
+        if (preselectedOntologyNamespaces.isEmpty()) {
             olsDialog.getAllOntologiesRadioButton().setSelected(true);
             olsDialog.getOntologiesDualList().setEnabled(false);
         } else {
             olsDialog.getPreselectedOntologiesRadioButton().setSelected(true);
         }
 
+        //init the search fields settings
         olsDialog.getDefaultFieldsRadioButton().setSelected(true);
         enableSearchFieldCheckBoxes(false);
 
         //set column widths
         olsDialog.getSearchResultTable().getColumnModel().getColumn(OntologySearchResultTableModel.ONTOLOGY_NAMESPACE).setPreferredWidth(100);
         olsDialog.getSearchResultTable().getColumnModel().getColumn(OntologySearchResultTableModel.TERM_ACCESSION).setPreferredWidth(200);
-        olsDialog.getSearchResultTable().getColumnModel().getColumn(OntologySearchResultTableModel.MATCH_FIELD).setPreferredWidth(150);
-        olsDialog.getSearchResultTable().getColumnModel().getColumn(OntologySearchResultTableModel.MATCH_HIGHLIGHT).setPreferredWidth(500);
+        olsDialog.getSearchResultTable().getColumnModel().getColumn(OntologySearchResultTableModel.MATCHES).setPreferredWidth(500);
 
         //add listeners
         olsDialog.getSearchResultTable().addMouseListener(searchResultTableMouseAdapter);
@@ -130,18 +115,16 @@ public class OlsController implements Controllable {
         });
 
         olsDialog.getSearchButton().addActionListener(e -> {
-            //basic validation
-            String searchInput = olsDialog.getSearchInputTextField().getText();
-            if (searchInput.length() >= 2 && searchInput.length() < 30) {
-                EnumSet<SearchResult.SearchField> searchFields;
-                //get the selected search fields when not using the default ones
-                if (!olsDialog.getDefaultFieldsRadioButton().isSelected()) {
-                    searchFields = getSearchFields();
-                } else {
-                    searchFields = EnumSet.noneOf(SearchResult.SearchField.class);
-                }
+            //validate the user input
+            List<String> validationMessages = validate();
+            if (validationMessages.isEmpty()) {
                 try {
-                    List<SearchResult> searchResults = newOlsService.search(searchInput, ontologies.stream().map(o -> o.getNameSpace()).collect(Collectors.toList()), searchFields);
+                    String searchInput = olsDialog.getSearchInputTextField().getText();
+                    List<Ontology> ontologiesToSearch = new ArrayList<>();
+                    if (olsDialog.getPreselectedOntologiesRadioButton().isSelected()) {
+                        ontologiesToSearch = olsDialog.getOntologiesDualList().getAddedItems();
+                    }
+                    List<SearchResult> searchResults = newOlsService.search(searchInput, ontologiesToSearch.stream().map(o -> o.getNameSpace()).collect(Collectors.toList()), getSearchFields());
                     ontologySearchResultTableModel.setSearchResults(searchResults);
                 } catch (HttpClientErrorException ex) {
                     LOGGER.error(ex.getMessage(), ex);
@@ -151,7 +134,7 @@ public class OlsController implements Controllable {
                     eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.PARSE_ERROR));
                 }
             } else {
-                eventBus.post(new MessageEvent("Search input", "Please provide a valid search term.", JOptionPane.WARNING_MESSAGE));
+                eventBus.post(new MessageEvent("Search input validation", validationMessages, JOptionPane.ERROR_MESSAGE));
             }
         });
 
@@ -168,20 +151,17 @@ public class OlsController implements Controllable {
             }
         });
 
-        olsDialog.getOntologiesDualList().addPropertyChangeListener(DualList.CHANGED, evt -> {
-            ontologies.clear();
-            ontologies.addAll(olsDialog.getOntologiesDualList().getAddedItems());
-        });
-
         olsDialog.getAllOntologiesRadioButton().addActionListener(e -> {
             if (olsDialog.getAllOntologiesRadioButton().isSelected()) {
                 olsDialog.getOntologiesDualList().setEnabled(false);
+                olsDialog.getGetAllOntologiesButton().setEnabled(false);
             }
         });
 
         olsDialog.getPreselectedOntologiesRadioButton().addActionListener(e -> {
             if (olsDialog.getPreselectedOntologiesRadioButton().isSelected()) {
                 olsDialog.getOntologiesDualList().setEnabled(true);
+                olsDialog.getGetAllOntologiesButton().setEnabled(true);
             }
         });
 
@@ -208,6 +188,16 @@ public class OlsController implements Controllable {
         //clear search results
         ontologySearchResultTableModel.setSearchResults(new ArrayList<>());
 
+        //reset the ontologies
+        getOntologies();
+
+        //reset the search fields settings if necessary
+        if (olsDialog.getCustomFieldsRadioButton().isSelected()) {
+            olsDialog.getDefaultFieldsRadioButton().setSelected(true);
+            enableSearchFieldCheckBoxes(false);
+        }
+
+        //load the preselected ontologies
         GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), olsDialog);
         olsDialog.setVisible(true);
     }
@@ -252,6 +242,56 @@ public class OlsController implements Controllable {
         return searchFields;
     }
 
+    /**
+     * Validate the user input before performing an OLS search.
+     *
+     * @return the list of validation messages
+     */
+    private List<String> validate() {
+        List<String> validationMessages = new ArrayList<>();
+
+        String searchInput = olsDialog.getSearchInputTextField().getText();
+        if (searchInput.length() < 2 || searchInput.length() > 30) {
+            validationMessages.add("The search term length should be between 2 and 30");
+        }
+        if (olsDialog.getPreselectedOntologiesRadioButton().isSelected() && olsDialog.getOntologiesDualList().getAddedItems().isEmpty()) {
+            validationMessages.add("Please select at least one ontology when searching preselected ontologies.");
+        }
+        if (olsDialog.getCustomFieldsRadioButton().isSelected() && getSearchFields().isEmpty()) {
+            validationMessages.add("Please select at least one search field when using custom search fields.");
+        }
+
+        return validationMessages;
+    }
+
+    /**
+     * Get the (preselected) ontologies and add them to the dual list if
+     * necessary.
+     */
+    private void getOntologies() {
+        if (!preselectedOntologyNamespaces.isEmpty()) {
+            try {
+                if (preselectedOntologies.isEmpty()) {
+                    preselectedOntologies.addAll(newOlsService.getOntologiesByNamespace(preselectedOntologyNamespaces));
+                }
+                olsDialog.getOntologiesDualList().populateLists(olsDialog.getOntologiesDualList().getAvailableItems(), preselectedOntologies);
+                olsDialog.getPreselectedOntologiesRadioButton().setSelected(true);
+            } catch (IOException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+                eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.PARSE_ERROR));
+            } catch (HttpClientErrorException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+                eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.CONNECTION_ERROR));
+            }
+        } else {
+            olsDialog.getAllOntologiesRadioButton().setSelected(true);
+            olsDialog.getOntologiesDualList().setEnabled(false);
+        }
+    }
+
+    /**
+     * MouseAdapter implementation for the search result table.
+     */
     class SearchResultTableMouseAdapter extends MouseAdapter {
 
         @Override
@@ -270,21 +310,6 @@ public class OlsController implements Controllable {
             }
         }
 
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//                int columnIndex = olsDialog.getSearchResultTable().columnAtPoint(new Point(e.getX(), e.getY()));
-//                if (columnIndex == OntologySearchResultTableModel.TERM_ACCESSION) {
-//                    olsDialog.getSearchResultTable().setCursor(new Cursor(Cursor.HAND_CURSOR));
-//                }
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//                int columnIndex = olsDialog.getSearchResultTable().columnAtPoint(new Point(e.getX(), e.getY()));
-//                if (columnIndex != OntologySearchResultTableModel.TERM_ACCESSION) {
-//                    olsDialog.getSearchResultTable().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-//                }
-//            }
         @Override
         public void mouseMoved(MouseEvent e) {
             int columnIndex = olsDialog.getSearchResultTable().columnAtPoint(new Point(e.getX(), e.getY()));

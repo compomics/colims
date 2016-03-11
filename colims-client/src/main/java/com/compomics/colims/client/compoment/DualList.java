@@ -97,6 +97,15 @@ public class DualList<T> extends javax.swing.JPanel {
     }
 
     /**
+     * Get the available items as a list
+     *
+     * @return the available items list
+     */
+    public List<T> getAvailableItems() {
+        return availableItemBindingList.stream().collect(Collectors.toList());
+    }
+
+    /**
      * Clear the dual list; clear the available and added items.
      */
     public void clear() {

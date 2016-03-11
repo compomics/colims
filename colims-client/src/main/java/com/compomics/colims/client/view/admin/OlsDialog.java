@@ -270,7 +270,7 @@ public class OlsDialog extends javax.swing.JDialog {
         preselectedOntologiesRadioButton.setText("preselected ontologies");
 
         getAllOntologiesButton.setText("retrieve all");
-        getAllOntologiesButton.setToolTipText("retrieve all available ontologies");
+        getAllOntologiesButton.setToolTipText("retrieve all available ontologies to make a selection");
         getAllOntologiesButton.setMaximumSize(new java.awt.Dimension(80, 25));
         getAllOntologiesButton.setMinimumSize(new java.awt.Dimension(80, 25));
         getAllOntologiesButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -327,7 +327,7 @@ public class OlsDialog extends javax.swing.JDialog {
 
         searchFieldsSelectionButtonGroup.add(customFieldsRadioButton);
         customFieldsRadioButton.setText("custom fields");
-        customFieldsRadioButton.setToolTipText("if no search fields are selected, the default ones are used");
+        customFieldsRadioButton.setToolTipText("");
 
         javax.swing.GroupLayout searchFieldsPanelLayout = new javax.swing.GroupLayout(searchFieldsPanel);
         searchFieldsPanel.setLayout(searchFieldsPanelLayout);

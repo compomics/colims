@@ -5,20 +5,20 @@ import com.compomics.colims.core.model.ols.SearchResult;
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Niels Hulstaert
  */
 public class OntologySearchResultTableModel extends AbstractTableModel {
 
-    private final String[] columnNames = {"ontology", "accession", "match field", "match highlight"};
+    private final String[] columnNames = {"ontology", "accession", "match(es)"};
     private static final String HTML_OPEN = "<html>";
     private static final String HTML_CLOSE = "</html>";
 
     public static final int ONTOLOGY_NAMESPACE = 0;
     public static final int TERM_ACCESSION = 1;
-    public static final int MATCH_FIELD = 2;
-    public static final int MATCH_HIGHLIGHT = 3;
+    public static final int MATCHES = 2;
 
     private List<SearchResult> searchResults = new ArrayList<>();
 
@@ -73,10 +73,10 @@ public class OntologySearchResultTableModel extends AbstractTableModel {
                 return searchResult.getOntologyNamespace();
             case TERM_ACCESSION:
                 return searchResult.getAccession();
-            case MATCH_FIELD:
-                return searchResult.getField().getQueryValue();
-            case MATCH_HIGHLIGHT:
-                return HTML_OPEN + searchResult.getHighlight() + HTML_CLOSE;
+            case MATCHES:
+                return HTML_OPEN + searchResult.getMatchedFields().entrySet().stream().map(e -> {
+                    return e.getKey().getQueryValue() + ": " + e.getValue();
+                }).collect(Collectors.joining(", ")) + HTML_CLOSE;
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
         }

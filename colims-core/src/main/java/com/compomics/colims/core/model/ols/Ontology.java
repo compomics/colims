@@ -19,18 +19,6 @@ import java.util.Objects;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Ontology {
 
-    /**
-     * Stub ontology for searching terms in all available ontologies.
-     */
-    public static final Ontology ALL_ONTOLOGIES = new Ontology();
-
-    static {
-        ALL_ONTOLOGIES.setBaseUris(new ArrayList<>());
-        ALL_ONTOLOGIES.setNameSpace("");
-        ALL_ONTOLOGIES.setPrefix("");
-        ALL_ONTOLOGIES.setTitle("Search all ontologies");
-    }
-
     @JsonProperty(value = "namespace")
     private String nameSpace;
     @JsonProperty(value = "preferredPrefix")

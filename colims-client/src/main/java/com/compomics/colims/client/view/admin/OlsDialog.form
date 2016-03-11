@@ -363,7 +363,7 @@
                     <Component class="javax.swing.JButton" name="getAllOntologiesButton">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="retrieve all"/>
-                        <Property name="toolTipText" type="java.lang.String" value="retrieve all available ontologies"/>
+                        <Property name="toolTipText" type="java.lang.String" value="retrieve all available ontologies to make a selection"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[80, 25]"/>
                         </Property>
@@ -478,7 +478,7 @@
                           <ComponentRef name="searchFieldsSelectionButtonGroup"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="custom fields"/>
-                        <Property name="toolTipText" type="java.lang.String" value="if no search fields are selected, the default ones are used"/>
+                        <Property name="toolTipText" type="java.lang.String" value=""/>
                       </Properties>
                     </Component>
                   </SubComponents>

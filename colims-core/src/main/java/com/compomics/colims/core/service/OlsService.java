@@ -41,6 +41,18 @@ public interface OlsService {
      */
     List<Ontology> getOntologiesByNamespace(List<String> namespaces) throws HttpClientErrorException, IOException;
 
+    /**
+     * Search for the given query. If the ontology namespaces/the search fields
+     * are empty, the search is performed against all ontologies/with the
+     * default search fields.
+     *
+     * @param query the search query
+     * @param ontologyNamespaces the list of ontology namespaces
+     * @param searchFields the set of fields to search
+     * @return the list of search results
+     * @throws HttpClientErrorException in case of a HTTP 4xx error was received
+     * @throws IOException in case of an I/O related problem
+     */
     List<SearchResult> search(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException;
 
     /**

@@ -1,5 +1,6 @@
 package com.compomics.colims.core.model.ols;
 
+import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,13 +68,10 @@ public class SearchResult {
      */
     private String iri;
     /**
-     * The field of the ontology term that matched the search query.
+     * The map with the matched ontology term fields (key: the search field;
+     * value: the search query matched highlighted text).
      */
-    private SearchField field;
-    /**
-     * The ontology term field with the matched search query in HTML bold tags.
-     */
-    private String highlight;
+    private EnumMap<SearchField, String> matchedFields = new EnumMap<>(SearchField.class);
 
     /**
      * No-arg constructor.
@@ -97,20 +95,12 @@ public class SearchResult {
         this.iri = iri;
     }
 
-    public SearchField getField() {
-        return field;
+    public EnumMap<SearchField, String> getMatchedFields() {
+        return matchedFields;
     }
 
-    public void setField(SearchField field) {
-        this.field = field;
-    }
-
-    public String getHighlight() {
-        return highlight;
-    }
-
-    public void setHighlight(String highlight) {
-        this.highlight = highlight;
+    public void setMatchedFields(EnumMap<SearchField, String> matchedFields) {
+        this.matchedFields = matchedFields;
     }
 
     /**
