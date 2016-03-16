@@ -2,6 +2,7 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.core.model.ols.Ontology;
 import com.compomics.colims.core.model.ols.SearchResult;
+import com.compomics.colims.core.model.ols.SearchResultMetadata;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.cv.TypedCvParam;
@@ -42,18 +43,31 @@ public interface OlsService {
     List<Ontology> getOntologiesByNamespace(List<String> namespaces) throws HttpClientErrorException, IOException;
 
     /**
-     * Search for the given query. If the ontology namespaces/the search fields
-     * are empty, the search is performed against all ontologies/with the
-     * default search fields.
+     * Get the metadata before doing a paged search. If the ontology
+     * namespaces/the search fields are empty, the search is performed against
+     * all ontologies/with the default search fields. This method is intended to
+     * be used in combination with {@link #pagedSearch(java.lang.String, int, int)
+     * }
      *
      * @param query the search query
      * @param ontologyNamespaces the list of ontology namespaces
      * @param searchFields the set of fields to search
+     * @return the search result metadata
+     * @throws HttpClientErrorException in case of a HTTP 4xx error was received
+     * @throws IOException in case of an I/O related problem
+     */
+    SearchResultMetadata getPagedSearchMetadata(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException;
+
+    /**
+     * Do a paged search. The {@code searchUrl} comes from the {@link #getPagedSearchMetadata(java.lang.String, java.util.List, java.util.EnumSet)
+     * }.
+     *
+     * @param searchUrl the REST search URL
      * @return the list of search results
      * @throws HttpClientErrorException in case of a HTTP 4xx error was received
      * @throws IOException in case of an I/O related problem
      */
-    List<SearchResult> search(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException;
+    List<SearchResult> pagedSearch(String searchUrl, int page, int pageSize) throws HttpClientErrorException, IOException;
 
     /**
      * Find a modification by exact name in the PSI-MOD ontology.

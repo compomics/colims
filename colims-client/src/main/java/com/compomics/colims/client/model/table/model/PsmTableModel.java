@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Iain
  */
-public class PsmTableModel extends PagingTableModel {
+public class PsmTableModel extends AdvancedPagingTableModel {
 
     /**
      * The SpectrumService instance.

@@ -21,7 +21,7 @@ public class OntologyTerm {
     private String label;
     private List<String> description;
     @JsonProperty(value = "ontology_name")
-    private String ontologyName;
+    private String ontologyNamespace;
     @JsonProperty(value = "ontology_iri")
     private String ontologyIri;
     @JsonProperty(value = "short_form")
@@ -60,12 +60,12 @@ public class OntologyTerm {
         this.description = description;
     }
 
-    public String getOntologyName() {
-        return ontologyName;
+    public String getOntologyNamespace() {
+        return ontologyNamespace;
     }
 
-    public void setOntologyName(String ontologyName) {
-        this.ontologyName = ontologyName;
+    public void setOntologyNamespace(String ontologyNamespace) {
+        this.ontologyNamespace = ontologyNamespace;
     }
 
     public String getOntologyIri() {

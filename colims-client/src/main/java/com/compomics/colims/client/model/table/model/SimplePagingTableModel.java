@@ -1,17 +1,15 @@
 package com.compomics.colims.client.model.table.model;
 
-
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.DefaultEventTableModel;
-import com.compomics.colims.repository.hibernate.SortDirection;
 
 /**
- * This class represents a paged table model with sort and filter capabilities.
+ * This class represents a paged table model.
  * <p/>
- * Created by Iain on 19/06/2015.
+ * Created by Niels Hulstaert.
  */
-public abstract class PagingTableModel extends DefaultEventTableModel {
+public abstract class SimplePagingTableModel extends DefaultEventTableModel {
 
     /**
      * The current page.
@@ -25,40 +23,19 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
      * The total number of rows to populate the table with.
      */
     protected long rowCount;
-    /**
-     * The index of the default sorting column.
-     */
-    protected int defaultSortColumnIndex;
-    /**
-     * The index of the column that will be sorted on.
-     */
-    protected int sortColumnIndex;
-    /**
-     * The direction in which the sort column has to be sorted.
-     */
-    protected SortDirection sortDirection;
-    /**
-     * The filter value.
-     */
-    protected String filter;
 
     /**
      * Constructor.
      *
-     * @param source                 the source event list
-     * @param tableFormat            the table format
-     * @param perPage                the number of rows per page
-     * @param defaultSortColumnIndex the default sort column
+     * @param source the source event list
+     * @param tableFormat the table format
+     * @param perPage the number of rows per page
      */
-    public PagingTableModel(EventList source, TableFormat tableFormat, int perPage, int defaultSortColumnIndex) {
+    public SimplePagingTableModel(EventList source, TableFormat tableFormat, int perPage) {
         super(source, tableFormat);
         this.perPage = perPage;
-        this.defaultSortColumnIndex = defaultSortColumnIndex;
-        this.sortColumnIndex = defaultSortColumnIndex;
         this.rowCount = 0;
         this.page = 0;
-        this.sortDirection = SortDirection.ASCENDING;
-        this.filter = "";
     }
 
     /**
@@ -69,30 +46,6 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
     public void reset(long rowCount) {
         this.rowCount = rowCount;
         this.page = 0;
-        this.sortDirection = SortDirection.ASCENDING;
-        this.filter = "";
-    }
-
-    /**
-     * Get the database column name from the table column.
-     *
-     * @param column Column index
-     * @return database column name
-     */
-    public abstract String getColumnDbName(final int column);
-
-    /**
-     * Update the sort column or reverse direction if same column specified.
-     *
-     * @param sortColumnIndex the sort column index
-     */
-    public void updateSort(int sortColumnIndex) {
-        if (this.sortColumnIndex == sortColumnIndex) {
-            sortDirection = sortDirection == SortDirection.ASCENDING ? SortDirection.DESCENDING : SortDirection.ASCENDING;
-        } else {
-            this.sortColumnIndex = sortColumnIndex;
-            sortDirection = SortDirection.ASCENDING;
-        }
     }
 
     /**
@@ -149,15 +102,6 @@ public abstract class PagingTableModel extends DefaultEventTableModel {
      */
     public void setPerPage(int perPage) {
         this.perPage = perPage;
-    }
-
-    /**
-     * Update filter text.
-     *
-     * @param filter the filter string
-     */
-    public void setFilter(final String filter) {
-        this.filter = filter;
     }
 
     /**

@@ -3,6 +3,7 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.model.ols.Ontology;
 import com.compomics.colims.core.model.ols.OntologyTerm;
 import com.compomics.colims.core.model.ols.SearchResult;
+import com.compomics.colims.core.model.ols.SearchResultMetadata;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
@@ -262,7 +263,12 @@ public class OlsServiceImpl implements OlsService {
     }
 
     @Override
-    public List<SearchResult> search(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException {
+    public SearchResultMetadata getPagedSearchMetadata(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<SearchResult> pagedSearch(String searchUrl, int page, int pageSize) throws HttpClientErrorException, IOException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -15,7 +15,7 @@ public class OntologyTitleComparator implements Comparator<Ontology> {
 
     @Override
     public int compare(Ontology o1, Ontology o2) {
-        return o1.getTitle().compareTo(o2.getTitle());
+        return o1.getTitle().compareToIgnoreCase(o2.getTitle());
     }
 
 }

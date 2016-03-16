@@ -2,6 +2,7 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.core.model.ols.Ontology;
 import com.compomics.colims.core.model.ols.SearchResult;
+import com.compomics.colims.core.model.ols.SearchResultMetadata;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -61,30 +62,63 @@ public class NewOlsServiceTest {
     }
 
     @Test
-    public void testSearch() throws HttpClientErrorException, IOException {
+    public void testDoPagedSearch() throws HttpClientErrorException, IOException {
         String query = "MS/MS in Time";
 
-        //test with one ontology namespace and one search field
+        /**
+         * Test with one ontology namespace and one search field.
+         */
         List<String> namespaces = new ArrayList<>();
         namespaces.add("ms");
 
-        List<SearchResult> searchResults = newOlsService.search(query, namespaces, EnumSet.of(SearchResult.SearchField.LABEL));
+        //first fetch the metadata
+        SearchResultMetadata pagedSearchMetadata = newOlsService.getPagedSearchMetadata(query, namespaces, EnumSet.of(SearchResult.SearchField.LABEL));
+        int numberOfResultPages = pagedSearchMetadata.getNumberOfResultPages();
+
+        Assert.assertFalse(pagedSearchMetadata.getRequestUrl().isEmpty());
+
+        //then fetch the first page of the results
+        List<SearchResult> searchResults = newOlsService.pagedSearch(pagedSearchMetadata.getRequestUrl(), 0, 10);
 
         Assert.assertFalse(searchResults.isEmpty());
+        Assert.assertTrue(searchResults.size() == 10);
+
         //only label fields should be returned
         Assert.assertTrue(searchResults.stream().allMatch(s -> s.getMatchedFields().containsKey(SearchResult.SearchField.LABEL)));
 
-        //test with all ontologies and 2 search fields
-        searchResults = newOlsService.search(query, new ArrayList<>(), EnumSet.of(SearchResult.SearchField.LABEL, SearchResult.SearchField.SYNONYM));
+        //fetch the last page
+        searchResults = newOlsService.pagedSearch(pagedSearchMetadata.getRequestUrl(), numberOfResultPages - 1, 10);
 
         Assert.assertFalse(searchResults.isEmpty());
-        //only label fields should be returned
+
+        /**
+         * Test with all ontologies and 2 search fields.
+         */
+        pagedSearchMetadata = newOlsService.getPagedSearchMetadata(query, namespaces, EnumSet.of(SearchResult.SearchField.LABEL, SearchResult.SearchField.SYNONYM));
+
+        Assert.assertFalse(pagedSearchMetadata.getRequestUrl().isEmpty());
+
+        //then fetch the first page of the results
+        searchResults = newOlsService.pagedSearch(pagedSearchMetadata.getRequestUrl(), 0, 10);
+
+        Assert.assertFalse(searchResults.isEmpty());
+        Assert.assertTrue(searchResults.size() == 10);
+
+        //only label and synonym fields should be returned
         Assert.assertTrue(searchResults.stream().allMatch(s -> s.getMatchedFields().containsKey(SearchResult.SearchField.LABEL) || s.getMatchedFields().containsKey(SearchResult.SearchField.SYNONYM)));
 
-        //test with all ontologies and the default search fields
-        searchResults = newOlsService.search("time", new ArrayList<>(), SearchResult.DEFAULT_SEARCH_FIELDS);
+        /**
+         * Test with all ontologies and the default search fields.
+         */
+        pagedSearchMetadata = newOlsService.getPagedSearchMetadata(query, namespaces, EnumSet.of(SearchResult.SearchField.LABEL, SearchResult.SearchField.SYNONYM));
+
+        Assert.assertFalse(pagedSearchMetadata.getRequestUrl().isEmpty());
+
+        //then fetch the first page of the results
+        searchResults = newOlsService.pagedSearch(pagedSearchMetadata.getRequestUrl(), 0, 10);
 
         Assert.assertFalse(searchResults.isEmpty());
+        Assert.assertTrue(searchResults.size() == 10);
     }
 
 //    /**

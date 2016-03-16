@@ -9,6 +9,7 @@ import com.compomics.colims.client.compoment.DualList;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -46,8 +47,8 @@ public class OlsDialog extends javax.swing.JDialog {
         return cancelButton;
     }
 
-    public JCheckBox getDescriptionsCheckBox() {
-        return descriptionsCheckBox;
+    public JCheckBox getDescriptionCheckBox() {
+        return descriptionCheckBox;
     }
 
     public JButton getGetAllOntologiesButton() {
@@ -55,11 +56,11 @@ public class OlsDialog extends javax.swing.JDialog {
     }
 
     public JCheckBox getIdentifiersCheckBox() {
-        return identifiersCheckBox;
+        return identifierCheckBox;
     }
 
-    public JCheckBox getLabelsCheckBox() {
-        return labelsCheckBox;
+    public JCheckBox getLabelCheckBox() {
+        return labelCheckBox;
     }
 
     public DualList getOntologiesDualList() {
@@ -82,8 +83,8 @@ public class OlsDialog extends javax.swing.JDialog {
         return selectButton;
     }
 
-    public JCheckBox getSynonymsCheckBox() {
-        return synonymsCheckBox;
+    public JCheckBox getSynonymCheckBox() {
+        return synonymCheckBox;
     }
 
     public JRadioButton getCustomFieldsRadioButton() {
@@ -106,6 +107,26 @@ public class OlsDialog extends javax.swing.JDialog {
         return searchFieldsSelectionButtonGroup;
     }
 
+    public JButton getFirstResultPageButton() {
+        return firstResultPageButton;
+    }
+
+    public JButton getLastResultPageButton() {
+        return lastResultPageButton;
+    }
+
+    public JButton getNextResultPageButton() {
+        return nextResultPageButton;
+    }
+
+    public JButton getPreviousResultPageButton() {
+        return previousResultPageButton;
+    }
+
+    public JLabel getSearchResultPageLabel() {
+        return searchResultPageLabel;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -126,6 +147,11 @@ public class OlsDialog extends javax.swing.JDialog {
         searchResultsPanel = new javax.swing.JPanel();
         searchResultsScrollPane = new javax.swing.JScrollPane();
         searchResultTable = new javax.swing.JTable();
+        lastResultPageButton = new javax.swing.JButton();
+        nextResultPageButton = new javax.swing.JButton();
+        previousResultPageButton = new javax.swing.JButton();
+        firstResultPageButton = new javax.swing.JButton();
+        searchResultPageLabel = new javax.swing.JLabel();
         termDetailPanel = new javax.swing.JPanel();
         cancelButton = new javax.swing.JButton();
         selectButton = new javax.swing.JButton();
@@ -137,10 +163,10 @@ public class OlsDialog extends javax.swing.JDialog {
         ontologiesDualList = new com.compomics.colims.client.compoment.DualList();
         getAllOntologiesButton = new javax.swing.JButton();
         searchFieldsPanel = new javax.swing.JPanel();
-        labelsCheckBox = new javax.swing.JCheckBox();
-        synonymsCheckBox = new javax.swing.JCheckBox();
-        descriptionsCheckBox = new javax.swing.JCheckBox();
-        identifiersCheckBox = new javax.swing.JCheckBox();
+        labelCheckBox = new javax.swing.JCheckBox();
+        synonymCheckBox = new javax.swing.JCheckBox();
+        descriptionCheckBox = new javax.swing.JCheckBox();
+        identifierCheckBox = new javax.swing.JCheckBox();
         annotationPropertiesCheckBox = new javax.swing.JCheckBox();
         searchFieldsLabel = new javax.swing.JLabel();
         defaultFieldsRadioButton = new javax.swing.JRadioButton();
@@ -179,18 +205,62 @@ public class OlsDialog extends javax.swing.JDialog {
         searchResultTable.setOpaque(false);
         searchResultsScrollPane.setViewportView(searchResultTable);
 
+        lastResultPageButton.setText(">>");
+        lastResultPageButton.setMaximumSize(new java.awt.Dimension(48, 25));
+        lastResultPageButton.setMinimumSize(new java.awt.Dimension(48, 25));
+        lastResultPageButton.setPreferredSize(new java.awt.Dimension(48, 25));
+
+        nextResultPageButton.setText(">");
+        nextResultPageButton.setMaximumSize(new java.awt.Dimension(38, 25));
+        nextResultPageButton.setMinimumSize(new java.awt.Dimension(38, 25));
+        nextResultPageButton.setPreferredSize(new java.awt.Dimension(38, 25));
+
+        previousResultPageButton.setText("<");
+        previousResultPageButton.setMaximumSize(new java.awt.Dimension(38, 25));
+        previousResultPageButton.setMinimumSize(new java.awt.Dimension(38, 25));
+        previousResultPageButton.setPreferredSize(new java.awt.Dimension(38, 25));
+
+        firstResultPageButton.setText("<<");
+        firstResultPageButton.setMaximumSize(new java.awt.Dimension(48, 25));
+        firstResultPageButton.setMinimumSize(new java.awt.Dimension(48, 25));
+        firstResultPageButton.setPreferredSize(new java.awt.Dimension(48, 25));
+
+        searchResultPageLabel.setMaximumSize(new java.awt.Dimension(60, 27));
+        searchResultPageLabel.setMinimumSize(new java.awt.Dimension(60, 27));
+        searchResultPageLabel.setPreferredSize(new java.awt.Dimension(60, 27));
+
         javax.swing.GroupLayout searchResultsPanelLayout = new javax.swing.GroupLayout(searchResultsPanel);
         searchResultsPanel.setLayout(searchResultsPanelLayout);
         searchResultsPanelLayout.setHorizontalGroup(
             searchResultsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchResultsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(searchResultsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                .addGroup(searchResultsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(searchResultsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchResultsPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(searchResultPageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(firstResultPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(previousResultPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nextResultPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lastResultPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         searchResultsPanelLayout.setVerticalGroup(
             searchResultsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(searchResultsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(searchResultsPanelLayout.createSequentialGroup()
+                .addComponent(searchResultsScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(searchResultsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lastResultPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nextResultPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(previousResultPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(firstResultPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchResultPageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         termDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Term detail"));
@@ -204,7 +274,7 @@ public class OlsDialog extends javax.swing.JDialog {
         );
         termDetailPanelLayout.setVerticalGroup(
             termDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 328, Short.MAX_VALUE)
+            .addGap(0, 208, Short.MAX_VALUE)
         );
 
         cancelButton.setText("cancel");
@@ -246,12 +316,13 @@ public class OlsDialog extends javax.swing.JDialog {
                     .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(searchResultsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(termDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(termDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(selectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 10, Short.MAX_VALUE))
         );
 
         olsTabbedPane.addTab("Search", searchPanel);
@@ -309,13 +380,13 @@ public class OlsDialog extends javax.swing.JDialog {
         searchFieldsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Search fields"));
         searchFieldsPanel.setOpaque(false);
 
-        labelsCheckBox.setText("labels");
+        labelCheckBox.setText("label");
 
-        synonymsCheckBox.setText("synonyms");
+        synonymCheckBox.setText("synonym");
 
-        descriptionsCheckBox.setText("descriptions");
+        descriptionCheckBox.setText("description");
 
-        identifiersCheckBox.setText("identifiers");
+        identifierCheckBox.setText("identifier");
 
         annotationPropertiesCheckBox.setText("annotation properties");
 
@@ -335,10 +406,10 @@ public class OlsDialog extends javax.swing.JDialog {
             searchFieldsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchFieldsPanelLayout.createSequentialGroup()
                 .addGroup(searchFieldsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelsCheckBox)
-                    .addComponent(synonymsCheckBox)
-                    .addComponent(descriptionsCheckBox)
-                    .addComponent(identifiersCheckBox)
+                    .addComponent(labelCheckBox)
+                    .addComponent(synonymCheckBox)
+                    .addComponent(descriptionCheckBox)
+                    .addComponent(identifierCheckBox)
                     .addComponent(annotationPropertiesCheckBox)
                     .addGroup(searchFieldsPanelLayout.createSequentialGroup()
                         .addComponent(searchFieldsLabel)
@@ -356,16 +427,16 @@ public class OlsDialog extends javax.swing.JDialog {
                     .addComponent(defaultFieldsRadioButton)
                     .addComponent(customFieldsRadioButton))
                 .addGap(18, 18, 18)
-                .addComponent(labelsCheckBox)
+                .addComponent(labelCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(synonymsCheckBox)
+                .addComponent(synonymCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(descriptionsCheckBox)
+                .addComponent(descriptionCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(identifiersCheckBox)
+                .addComponent(identifierCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(annotationPropertiesCheckBox)
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout searchSettingsPanelLayout = new javax.swing.GroupLayout(searchSettingsPanel);
@@ -423,15 +494,19 @@ public class OlsDialog extends javax.swing.JDialog {
     private javax.swing.JButton cancelButton;
     private javax.swing.JRadioButton customFieldsRadioButton;
     private javax.swing.JRadioButton defaultFieldsRadioButton;
-    private javax.swing.JCheckBox descriptionsCheckBox;
+    private javax.swing.JCheckBox descriptionCheckBox;
+    private javax.swing.JButton firstResultPageButton;
     private javax.swing.JButton getAllOntologiesButton;
-    private javax.swing.JCheckBox identifiersCheckBox;
-    private javax.swing.JCheckBox labelsCheckBox;
+    private javax.swing.JCheckBox identifierCheckBox;
+    private javax.swing.JCheckBox labelCheckBox;
+    private javax.swing.JButton lastResultPageButton;
+    private javax.swing.JButton nextResultPageButton;
     private javax.swing.JPanel olsParentPanel;
     private javax.swing.JTabbedPane olsTabbedPane;
     private com.compomics.colims.client.compoment.DualList ontologiesDualList;
     private javax.swing.ButtonGroup ontologiesSelectionButtonGroup;
     private javax.swing.JRadioButton preselectedOntologiesRadioButton;
+    private javax.swing.JButton previousResultPageButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JLabel searchFieldsLabel;
     private javax.swing.JPanel searchFieldsPanel;
@@ -441,12 +516,13 @@ public class OlsDialog extends javax.swing.JDialog {
     private javax.swing.JLabel searchOntologiesLabel;
     private javax.swing.JPanel searchOntologiesPanel;
     private javax.swing.JPanel searchPanel;
+    private javax.swing.JLabel searchResultPageLabel;
     private javax.swing.JTable searchResultTable;
     private javax.swing.JPanel searchResultsPanel;
     private javax.swing.JScrollPane searchResultsScrollPane;
     private javax.swing.JPanel searchSettingsPanel;
     private javax.swing.JButton selectButton;
-    private javax.swing.JCheckBox synonymsCheckBox;
+    private javax.swing.JCheckBox synonymCheckBox;
     private javax.swing.JPanel termDetailPanel;
     // End of variables declaration//GEN-END:variables
 }

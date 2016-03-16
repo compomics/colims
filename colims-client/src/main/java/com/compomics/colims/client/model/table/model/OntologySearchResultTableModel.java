@@ -70,16 +70,16 @@ public class OntologySearchResultTableModel extends AbstractTableModel {
 
         switch (columnIndex) {
             case ONTOLOGY_NAMESPACE:
-                return searchResult.getOntologyNamespace();
+                return searchResult.getOntologyTerm().getOntologyNamespace();
             case TERM_ACCESSION:
-                return searchResult.getAccession();
+                return searchResult.getOntologyTerm().getShortForm();
             case MATCHES:
-                return HTML_OPEN + searchResult.getMatchedFields().entrySet().stream().map(e -> {
+                String matches = HTML_OPEN + searchResult.getMatchedFields().entrySet().stream().map(e -> {
                     return e.getKey().getQueryValue() + ": " + e.getValue();
-                }).collect(Collectors.joining(", ")) + HTML_CLOSE;
+                    }).collect(Collectors.joining(", ")) + HTML_CLOSE;
+                return matches.isEmpty() ? "not available" : matches;
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
         }
-
     }
 }

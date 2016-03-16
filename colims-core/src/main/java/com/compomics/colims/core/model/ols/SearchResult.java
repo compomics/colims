@@ -60,13 +60,9 @@ public class SearchResult {
     }
 
     /**
-     * The ontology namespace.
+     * The search result ontology term.
      */
-    private String ontologyNamespace;
-    /**
-     * The ontology term iri.
-     */
-    private String iri;
+    private OntologyTerm ontologyTerm;
     /**
      * The map with the matched ontology term fields (key: the search field;
      * value: the search query matched highlighted text).
@@ -79,20 +75,12 @@ public class SearchResult {
     public SearchResult() {
     }
 
-    public String getOntologyNamespace() {
-        return ontologyNamespace;
+    public OntologyTerm getOntologyTerm() {
+        return ontologyTerm;
     }
 
-    public void setOntologyNamespace(String ontologyNamespace) {
-        this.ontologyNamespace = ontologyNamespace;
-    }
-
-    public String getIri() {
-        return iri;
-    }
-
-    public void setIri(String iri) {
-        this.iri = iri;
+    public void setOntologyTerm(OntologyTerm ontologyTerm) {
+        this.ontologyTerm = ontologyTerm;
     }
 
     public EnumMap<SearchField, String> getMatchedFields() {
@@ -101,15 +89,6 @@ public class SearchResult {
 
     public void setMatchedFields(EnumMap<SearchField, String> matchedFields) {
         this.matchedFields = matchedFields;
-    }
-
-    /**
-     * Get the ontology term accession from the IRI.
-     *
-     * @return the term accession
-     */
-    public String getAccession() {
-        return iri.substring(iri.lastIndexOf('/') + 1);
     }
 
 }

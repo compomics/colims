@@ -15,7 +15,7 @@ import java.util.List;
  * <p/>
  * Created by Iain on 19/06/2015.
  */
-public class ProteinGroupTableModel extends PagingTableModel {
+public class ProteinGroupTableModel extends AdvancedPagingTableModel {
 
     /**
      * The ProteinGroupService instance.

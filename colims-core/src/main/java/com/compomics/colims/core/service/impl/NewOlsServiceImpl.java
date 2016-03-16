@@ -3,6 +3,7 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.model.ols.Ontology;
 import com.compomics.colims.core.model.ols.OntologyTerm;
 import com.compomics.colims.core.model.ols.SearchResult;
+import com.compomics.colims.core.model.ols.SearchResultMetadata;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
@@ -53,6 +54,7 @@ public class NewOlsServiceImpl implements OlsService {
     private static final String OLS_BASE_URL = "http://www.ebi.ac.uk/ols/beta/api/ontologies/";
     private static final String OLS_BASE_SEARCH_URL = "http://www.ebi.ac.uk/ols/beta/api/search?q=%s";
     private static final String PAGE_AND_SIZE = "?page=%1$d&page=%2$d";
+    private static final String START_AND_ROWS = "&start={page}&rows={pageSize}";
     private static final String EMBEDDED = "_embedded";
     private static final String PAGE = "page";
     private static final String PAGE_NUMBER = "number";
@@ -61,6 +63,9 @@ public class NewOlsServiceImpl implements OlsService {
     private static final String ONTOLOGIES = "ontologies";
     private static final String CONFIG = "config";
     private static final String HIGHLIGHTING = "highlighting";
+    private static final String RESPONSE = "response";
+    private static final String NUMBERS_FOUND = "numFound";
+    private static final String DOCS = "docs";
     private static final int PAGE_SIZE = 20;
 
     /**
@@ -148,10 +153,8 @@ public class NewOlsServiceImpl implements OlsService {
     }
 
     @Override
-    public List<SearchResult> search(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException {
-        List<SearchResult> searchResults = new ArrayList<>();
-
-        //get the response
+    public SearchResultMetadata getPagedSearchMetadata(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException {
+        //build the request
         StringBuilder url = new StringBuilder(String.format(OLS_BASE_SEARCH_URL, query));
         if (!searchFields.isEmpty() && !searchFields.equals(SearchResult.DEFAULT_SEARCH_FIELDS)) {
             url.append("&queryFields=");
@@ -161,23 +164,41 @@ public class NewOlsServiceImpl implements OlsService {
             url.append("&ontology=");
             url.append(ontologyNamespaces.stream().collect(Collectors.joining(",")));
         }
+
+        //get the response
         ResponseEntity<String> response = restTemplate.getForEntity(url.toString(), String.class);
 
         ObjectReader objectReader = objectMapper.reader();
         JsonNode responseBody = objectReader.readTree(response.getBody());
 
-        //iterate over the highlighing node
-        JsonNode highlighting = responseBody.get(HIGHLIGHTING);
-        //iterate over the fields because we need the key as well
-        Iterator<java.util.Map.Entry<String, JsonNode>> highlightingIterator = highlighting.fields();
-        while (highlightingIterator.hasNext()) {
-            java.util.Map.Entry<String, JsonNode> highLightEntry = highlightingIterator.next();
+        return new SearchResultMetadata(responseBody.get(RESPONSE).get(NUMBERS_FOUND).asInt(), url.append(START_AND_ROWS).toString());
+    }
+
+    @Override
+    public List<SearchResult> pagedSearch(String searchUrl, int page, int pageSize) throws HttpClientErrorException, IOException {
+        List<SearchResult> searchResults = new ArrayList<>();
+
+        //get the response
+        ResponseEntity<String> response = restTemplate.getForEntity(searchUrl, String.class, page, pageSize);
+
+        ObjectReader objectReader = objectMapper.reader();
+        JsonNode responseBody = objectReader.readTree(response.getBody());
+
+        //get the docs and highlighting nodes
+        JsonNode docsNode = responseBody.get(RESPONSE).get(DOCS);
+        JsonNode highlightingNode = responseBody.get(HIGHLIGHTING);
+
+        Iterator<JsonNode> docsIterator = docsNode.elements();
+        Iterator<java.util.Map.Entry<String, JsonNode>> highlightingIterator = highlightingNode.fields();
+        while (docsIterator.hasNext()) {
             SearchResult searchResult = new SearchResult();
-            //split the key into the ontology namespace and the term IRI
-            String[] split = highLightEntry.getKey().split(":", 2);
-            searchResult.setOntologyNamespace(split[0]);
-            searchResult.setIri(split[1]);
-            //iterate over the field because we need the key as well
+
+            JsonNode ontologyTermNode = docsIterator.next();
+            OntologyTerm ontologyTerm = objectReader.treeToValue(ontologyTermNode, OntologyTerm.class);
+            searchResult.setOntologyTerm(ontologyTerm);
+
+            java.util.Map.Entry<String, JsonNode> highLightEntry = highlightingIterator.next();
+            //iterate over the fields because we need the key as well
             Iterator<java.util.Map.Entry<String, JsonNode>> highLightEntryIterator = highLightEntry.getValue().fields();
             EnumMap<SearchResult.SearchField, String> matchedSearchFields = new EnumMap(SearchResult.SearchField.class);
             while (highLightEntryIterator.hasNext()) {
@@ -185,6 +206,7 @@ public class NewOlsServiceImpl implements OlsService {
                 matchedSearchFields.put(SearchResult.SearchField.findByQueryValue(searchHighlight.getKey()), searchHighlight.getValue().get(0).asText());
             }
             searchResult.setMatchedFields(matchedSearchFields);
+
             searchResults.add(searchResult);
         }
 

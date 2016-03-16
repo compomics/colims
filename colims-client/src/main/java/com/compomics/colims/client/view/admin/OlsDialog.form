@@ -121,13 +121,14 @@
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="searchResultsPanel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="termDetailPanel" max="32767" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="termDetailPanel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="selectButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="selectButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <EmptySpace min="0" pref="10" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -167,16 +168,40 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="searchResultsScrollPane" pref="636" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="searchResultsScrollPane" alignment="0" pref="636" max="32767" attributes="0"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <Component id="searchResultPageLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="firstResultPageButton" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="previousResultPageButton" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="nextResultPageButton" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="lastResultPageButton" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="searchResultsScrollPane" min="-2" pref="190" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="searchResultsScrollPane" min="-2" pref="190" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="lastResultPageButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="nextResultPageButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="previousResultPageButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="firstResultPageButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="searchResultPageLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -203,6 +228,75 @@
                         </Component>
                       </SubComponents>
                     </Container>
+                    <Component class="javax.swing.JButton" name="lastResultPageButton">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&gt;&gt;"/>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[48, 25]"/>
+                        </Property>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[48, 25]"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[48, 25]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="nextResultPageButton">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&gt;"/>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[38, 25]"/>
+                        </Property>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[38, 25]"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[38, 25]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="previousResultPageButton">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&lt;"/>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[38, 25]"/>
+                        </Property>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[38, 25]"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[38, 25]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="firstResultPageButton">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="&lt;&lt;"/>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[48, 25]"/>
+                        </Property>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[48, 25]"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[48, 25]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="searchResultPageLabel">
+                      <Properties>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[60, 27]"/>
+                        </Property>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[60, 27]"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[60, 27]"/>
+                        </Property>
+                      </Properties>
+                    </Component>
                   </SubComponents>
                 </Container>
                 <Container class="javax.swing.JPanel" name="termDetailPanel">
@@ -223,7 +317,7 @@
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <EmptySpace min="0" pref="328" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="208" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -392,10 +486,10 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="labelsCheckBox" min="-2" max="-2" attributes="0"/>
-                                  <Component id="synonymsCheckBox" min="-2" max="-2" attributes="0"/>
-                                  <Component id="descriptionsCheckBox" min="-2" max="-2" attributes="0"/>
-                                  <Component id="identifiersCheckBox" min="-2" max="-2" attributes="0"/>
+                                  <Component id="labelCheckBox" min="-2" max="-2" attributes="0"/>
+                                  <Component id="synonymCheckBox" min="-2" max="-2" attributes="0"/>
+                                  <Component id="descriptionCheckBox" min="-2" max="-2" attributes="0"/>
+                                  <Component id="identifierCheckBox" min="-2" max="-2" attributes="0"/>
                                   <Component id="annotationPropertiesCheckBox" min="-2" max="-2" attributes="0"/>
                                   <Group type="102" attributes="0">
                                       <Component id="searchFieldsLabel" min="-2" max="-2" attributes="0"/>
@@ -418,39 +512,39 @@
                                   <Component id="customFieldsRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="labelsCheckBox" min="-2" max="-2" attributes="0"/>
+                              <Component id="labelCheckBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="synonymsCheckBox" min="-2" max="-2" attributes="0"/>
+                              <Component id="synonymCheckBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="descriptionsCheckBox" min="-2" max="-2" attributes="0"/>
+                              <Component id="descriptionCheckBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="identifiersCheckBox" min="-2" max="-2" attributes="0"/>
+                              <Component id="identifierCheckBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="annotationPropertiesCheckBox" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="77" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JCheckBox" name="labelsCheckBox">
+                    <Component class="javax.swing.JCheckBox" name="labelCheckBox">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="labels"/>
+                        <Property name="text" type="java.lang.String" value="label"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JCheckBox" name="synonymsCheckBox">
+                    <Component class="javax.swing.JCheckBox" name="synonymCheckBox">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="synonyms"/>
+                        <Property name="text" type="java.lang.String" value="synonym"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JCheckBox" name="descriptionsCheckBox">
+                    <Component class="javax.swing.JCheckBox" name="descriptionCheckBox">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="descriptions"/>
+                        <Property name="text" type="java.lang.String" value="description"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JCheckBox" name="identifiersCheckBox">
+                    <Component class="javax.swing.JCheckBox" name="identifierCheckBox">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="identifiers"/>
+                        <Property name="text" type="java.lang.String" value="identifier"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JCheckBox" name="annotationPropertiesCheckBox">

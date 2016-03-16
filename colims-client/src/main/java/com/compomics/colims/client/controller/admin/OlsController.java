@@ -1,16 +1,22 @@
 package com.compomics.colims.client.controller.admin;
 
+import ca.odell.glazedlists.BasicEventList;
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.GlazedLists;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.OlsErrorMessageEvent;
+import com.compomics.colims.client.model.table.format.OlsSearchResultTableFormat;
+import com.compomics.colims.client.model.table.model.OlsSearchResultTableModel;
 import com.compomics.colims.client.model.table.model.OntologySearchResultTableModel;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.OlsDialog;
 import com.compomics.colims.core.model.ols.Ontology;
 import com.compomics.colims.core.model.ols.OntologyTitleComparator;
 import com.compomics.colims.core.model.ols.SearchResult;
+import com.compomics.colims.core.model.ols.SearchResultMetadata;
 import com.compomics.colims.core.service.OlsService;
 import com.google.common.eventbus.EventBus;
 import java.awt.Cursor;
@@ -46,6 +52,7 @@ public class OlsController implements Controllable {
     private static final Logger LOGGER = Logger.getLogger(OlsController.class);
 
     private static final String OLS_BASE = "http://www.ebi.ac.uk/ols/beta/ontologies/%s/terms?iri=%s";
+    private static final int PAGE_SIZE = 10;
 
     //model
     /**
@@ -54,8 +61,10 @@ public class OlsController implements Controllable {
     @Value("#{'${ontology.preselected_namespaces}'.split(',')}")
     private final List<String> preselectedOntologyNamespaces = new ArrayList<>();
     private final List<Ontology> preselectedOntologies = new ArrayList<>();
-    private final OntologySearchResultTableModel ontologySearchResultTableModel = new OntologySearchResultTableModel();
+    private OlsSearchResultTableModel olsSearchResultTableModel;
+    private final EventList<SearchResult> searchResults = new BasicEventList<>();
     private final SearchResultTableMouseAdapter searchResultTableMouseAdapter = new SearchResultTableMouseAdapter();
+    private SearchResultMetadata searchResultMetadata;
     //view
     private OlsDialog olsDialog;
     //parent controller
@@ -73,13 +82,20 @@ public class OlsController implements Controllable {
         //init view
         olsDialog = new OlsDialog(mainController.getMainFrame(), true);
 
+        //init the search result table
+        olsSearchResultTableModel = new OlsSearchResultTableModel(searchResults, new OlsSearchResultTableFormat(), PAGE_SIZE);
+        olsDialog.getSearchResultTable().setModel(olsSearchResultTableModel);
+
         //init the dual list
         olsDialog.getOntologiesDualList().init(new OntologyTitleComparator());
 
         getOntologies();
 
-        //init the search results table
-        olsDialog.getSearchResultTable().setModel(ontologySearchResultTableModel);
+        //disable paged result table buttons
+        olsDialog.getFirstResultPageButton().setEnabled(false);
+        olsDialog.getPreviousResultPageButton().setEnabled(false);
+        olsDialog.getNextResultPageButton().setEnabled(false);
+        olsDialog.getLastResultPageButton().setEnabled(false);
 
         //set the default radio button values
         if (preselectedOntologyNamespaces.isEmpty()) {
@@ -105,8 +121,8 @@ public class OlsController implements Controllable {
         olsDialog.getSearchResultTable().getSelectionModel().addListSelectionListener(lse -> {
             if (!lse.getValueIsAdjusting()) {
                 int selectedRow = olsDialog.getSearchResultTable().getSelectedRow();
-                if (selectedRow != -1 && !ontologySearchResultTableModel.getSearchResults().isEmpty()) {
-                    SearchResult selectedSearchResult = ontologySearchResultTableModel.getSearchResults().get(selectedRow);
+                if (selectedRow != -1 && !searchResults.isEmpty()) {
+                    SearchResult selectedSearchResult = searchResults.get(selectedRow);
                     System.out.println("------------------------");
                 } else {
 //                    clear
@@ -124,8 +140,15 @@ public class OlsController implements Controllable {
                     if (olsDialog.getPreselectedOntologiesRadioButton().isSelected()) {
                         ontologiesToSearch = olsDialog.getOntologiesDualList().getAddedItems();
                     }
-                    List<SearchResult> searchResults = newOlsService.search(searchInput, ontologiesToSearch.stream().map(o -> o.getNameSpace()).collect(Collectors.toList()), getSearchFields());
-                    ontologySearchResultTableModel.setSearchResults(searchResults);
+                    //get the search metadata
+                    searchResultMetadata = newOlsService.getPagedSearchMetadata(searchInput, ontologiesToSearch.stream().map(o -> o.getNameSpace()).collect(Collectors.toList()), getSearchFields());
+                    doPagedSearch(0);
+                    olsSearchResultTableModel.reset(searchResultMetadata.getNumberOfResultPages() * PAGE_SIZE);
+
+                    olsDialog.getFirstResultPageButton().setEnabled(false);
+                    olsDialog.getPreviousResultPageButton().setEnabled(false);
+                    olsDialog.getNextResultPageButton().setEnabled(true);
+                    olsDialog.getLastResultPageButton().setEnabled(true);
                 } catch (HttpClientErrorException ex) {
                     LOGGER.error(ex.getMessage(), ex);
                     eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.CONNECTION_ERROR));
@@ -177,6 +200,50 @@ public class OlsController implements Controllable {
             }
         });
 
+        olsDialog.getFirstResultPageButton().addActionListener(e -> {
+            doPagedSearch(0);
+
+            olsDialog.getFirstResultPageButton().setEnabled(false);
+            olsDialog.getPreviousResultPageButton().setEnabled(false);
+            olsDialog.getNextResultPageButton().setEnabled(true);
+            olsDialog.getLastResultPageButton().setEnabled(true);
+        });
+
+        olsDialog.getPreviousResultPageButton().addActionListener(e -> {
+            doPagedSearch(olsSearchResultTableModel.getPage() - 1);
+
+            olsSearchResultTableModel.setPage(olsSearchResultTableModel.getPage() - 1);
+
+            if (olsSearchResultTableModel.getPage() == 0) {
+                olsDialog.getFirstResultPageButton().setEnabled(false);
+                olsDialog.getPreviousResultPageButton().setEnabled(false);
+            }
+            olsDialog.getNextResultPageButton().setEnabled(true);
+            olsDialog.getLastResultPageButton().setEnabled(true);
+        });
+
+        olsDialog.getNextResultPageButton().addActionListener(e -> {
+            doPagedSearch(olsSearchResultTableModel.getPage() + 1);
+
+            olsSearchResultTableModel.setPage(olsSearchResultTableModel.getPage() + 1);
+
+            olsDialog.getFirstResultPageButton().setEnabled(true);
+            olsDialog.getPreviousResultPageButton().setEnabled(true);
+            if (olsSearchResultTableModel.getPage() == searchResultMetadata.getNumberOfResultPages()) {
+                olsDialog.getNextResultPageButton().setEnabled(false);
+                olsDialog.getLastResultPageButton().setEnabled(false);
+            }
+        });
+
+        olsDialog.getLastResultPageButton().addActionListener(e -> {
+            doPagedSearch(searchResultMetadata.getNumberOfResultPages() - 1);
+
+            olsDialog.getFirstResultPageButton().setEnabled(true);
+            olsDialog.getPreviousResultPageButton().setEnabled(true);
+            olsDialog.getNextResultPageButton().setEnabled(false);
+            olsDialog.getLastResultPageButton().setEnabled(false);
+        });
+
         olsDialog.getCancelButton().addActionListener(e -> {
             olsDialog.dispose();
         });
@@ -186,7 +253,7 @@ public class OlsController implements Controllable {
     @Override
     public void showView() {
         //clear search results
-        ontologySearchResultTableModel.setSearchResults(new ArrayList<>());
+        searchResults.clear();
 
         //reset the ontologies
         getOntologies();
@@ -208,9 +275,9 @@ public class OlsController implements Controllable {
      * @param enable whether to enable or disable the checkboxes
      */
     private void enableSearchFieldCheckBoxes(boolean enable) {
-        olsDialog.getLabelsCheckBox().setEnabled(enable);
-        olsDialog.getSynonymsCheckBox().setEnabled(enable);
-        olsDialog.getDescriptionsCheckBox().setEnabled(enable);
+        olsDialog.getLabelCheckBox().setEnabled(enable);
+        olsDialog.getSynonymCheckBox().setEnabled(enable);
+        olsDialog.getDescriptionCheckBox().setEnabled(enable);
         olsDialog.getIdentifiersCheckBox().setEnabled(enable);
         olsDialog.getAnnotationPropertiesCheckBox().setEnabled(enable);
     }
@@ -223,13 +290,13 @@ public class OlsController implements Controllable {
     private EnumSet<SearchResult.SearchField> getSearchFields() {
         EnumSet<SearchResult.SearchField> searchFields = EnumSet.noneOf(SearchResult.SearchField.class);
 
-        if (olsDialog.getLabelsCheckBox().isSelected()) {
+        if (olsDialog.getLabelCheckBox().isSelected()) {
             searchFields.add(SearchResult.SearchField.LABEL);
         }
-        if (olsDialog.getSynonymsCheckBox().isSelected()) {
+        if (olsDialog.getSynonymCheckBox().isSelected()) {
             searchFields.add(SearchResult.SearchField.SYNONYM);
         }
-        if (olsDialog.getDescriptionsCheckBox().isSelected()) {
+        if (olsDialog.getDescriptionCheckBox().isSelected()) {
             searchFields.add(SearchResult.SearchField.DESCRIPTION);
         }
         if (olsDialog.getIdentifiersCheckBox().isSelected()) {
@@ -290,6 +357,24 @@ public class OlsController implements Controllable {
     }
 
     /**
+     * Do a paged search request to the Ontology Lookup Service. Convenience
+     * method to avoid duplicate error catching.
+     *
+     * @param page the page number of the search request
+     */
+    private void doPagedSearch(int page) {
+        try {
+            GlazedLists.replaceAll(searchResults, newOlsService.pagedSearch(searchResultMetadata.getRequestUrl(), page, PAGE_SIZE), true);
+        } catch (HttpClientErrorException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.CONNECTION_ERROR));
+        } catch (IOException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.PARSE_ERROR));
+        }
+    }
+
+    /**
      * MouseAdapter implementation for the search result table.
      */
     class SearchResultTableMouseAdapter extends MouseAdapter {
@@ -299,10 +384,10 @@ public class OlsController implements Controllable {
             int columnIndex = olsDialog.getSearchResultTable().columnAtPoint(new Point(e.getX(), e.getY()));
             if (columnIndex == OntologySearchResultTableModel.TERM_ACCESSION) {
                 int rowIndex = olsDialog.getSearchResultTable().rowAtPoint(new Point(e.getX(), e.getY()));
-                SearchResult selectedSearchResult = ontologySearchResultTableModel.getSearchResults().get(rowIndex);
+                SearchResult selectedSearchResult = searchResults.get(rowIndex);
                 if (Desktop.isDesktopSupported()) {
                     try {
-                        Desktop.getDesktop().browse(new URI(String.format(OLS_BASE, selectedSearchResult.getOntologyNamespace(), URLEncoder.encode(selectedSearchResult.getIri(), "UTF-8"))));
+                        Desktop.getDesktop().browse(new URI(String.format(OLS_BASE, selectedSearchResult.getOntologyTerm().getOntologyNamespace(), URLEncoder.encode(selectedSearchResult.getOntologyTerm().getIri(), "UTF-8"))));
                     } catch (IOException | URISyntaxException ex) {
                         LOGGER.error(ex.getMessage(), ex);
                     }
