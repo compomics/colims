@@ -91,8 +91,8 @@ public class MaxQuantSpectraParser {
                     + KEY_MIDDLE
                     + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_INDEX.getDefaultColumnName());
 
-            Spectrum spectrum = mapMsmsSpectrum(spectrumValues);
-            spectra.put(new SpectrumKey(id, aplKey), spectrum);
+//            Spectrum spectrum = mapMsmsSpectrum(spectrumValues);
+//            spectra.put(new SpectrumKey(id, aplKey), spectrum);
         }
 
         return spectra;

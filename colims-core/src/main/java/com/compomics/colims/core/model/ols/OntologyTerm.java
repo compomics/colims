@@ -22,8 +22,7 @@ public class OntologyTerm {
     private List<String> description;
     @JsonProperty(value = "ontology_name")
     private String ontologyNamespace;
-    @JsonProperty(value = "ontology_iri")
-    private String ontologyIri;
+    private String ontologyTitle;
     @JsonProperty(value = "short_form")
     private String shortForm;
     @JsonProperty(value = "obo_id")
@@ -33,7 +32,6 @@ public class OntologyTerm {
      * No-arg constructor.
      */
     public OntologyTerm() {
-
     }
 
     public String getIri() {
@@ -68,12 +66,12 @@ public class OntologyTerm {
         this.ontologyNamespace = ontologyNamespace;
     }
 
-    public String getOntologyIri() {
-        return ontologyIri;
+    public String getOntologyTitle() {
+        return ontologyTitle;
     }
 
-    public void setOntologyIri(String ontologyIri) {
-        this.ontologyIri = ontologyIri;
+    public void setOntologyTitle(String ontologyTitle) {
+        this.ontologyTitle = ontologyTitle;
     }
 
     public String getShortForm() {
@@ -95,6 +93,20 @@ public class OntologyTerm {
     @Override
     public String toString() {
         return label;
+    }
+
+    /**
+     * Copy the fields of the given ontology term to this instance.
+     *
+     * @param ontologyTermToCopy
+     */
+    public void copy(OntologyTerm ontologyTermToCopy) {
+        this.iri = ontologyTermToCopy.getIri();
+        this.label = ontologyTermToCopy.getLabel();
+        this.description = ontologyTermToCopy.getDescription();
+        this.ontologyNamespace = ontologyTermToCopy.getOntologyNamespace();
+        this.oboId = ontologyTermToCopy.getOboId();
+        this.shortForm = ontologyTermToCopy.shortForm;
     }
 
 }

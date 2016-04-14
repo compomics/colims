@@ -83,13 +83,13 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
 
         //select only files
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        //select multiple file
-        fileChooser.setMultiSelectionEnabled(Boolean.FALSE);
+        //disable multiple file selection
+        fileChooser.setMultiSelectionEnabled(false);
 
         //select only directories
         exportDirectoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        //select multiple file
-        exportDirectoryChooser.setMultiSelectionEnabled(Boolean.FALSE);
+        //disable multiple file selection
+        exportDirectoryChooser.setMultiSelectionEnabled(false);
 
         //init bindings
         bindingGroup = new BindingGroup();

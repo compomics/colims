@@ -2,7 +2,7 @@ package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.core.model.ols.SearchResult;
+import com.compomics.colims.core.model.ols.OlsSearchResult;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * <p/>
  * Created by Niels Hulstaert.
  */
-public class OlsSearchResultTableFormat implements AdvancedTableFormat<SearchResult> {
+public class OlsSearchResultTableFormat implements AdvancedTableFormat<OlsSearchResult> {
 
     public final static String[] COLUMN_NAMES = {"ontology", "accession", "match(es)"};
     private static final String HTML_OPEN = "<html>";
@@ -52,16 +52,21 @@ public class OlsSearchResultTableFormat implements AdvancedTableFormat<SearchRes
     }
 
     @Override
-    public Object getColumnValue(SearchResult searchResult, int column) {
+    public Object getColumnValue(OlsSearchResult searchResult, int column) {
         switch (column) {
             case ONTOLOGY_NAMESPACE:
                 return searchResult.getOntologyTerm().getOntologyNamespace();
             case TERM_ACCESSION:
                 return searchResult.getOntologyTerm().getShortForm();
             case MATCHES:
-                String matches = HTML_OPEN + searchResult.getMatchedFields().entrySet().stream().map(e -> {
-                    return e.getKey().getQueryValue() + ": " + e.getValue();
-                }).collect(Collectors.joining(", ")) + HTML_CLOSE;
+                String matches = "";
+                if (searchResult.getMatchedFields().size() == 1) {
+                    matches = HTML_OPEN + searchResult.getMatchedFields().values().stream().collect(Collectors.toList()).get(0) + HTML_CLOSE;
+                } else if (searchResult.getMatchedFields().size() > 1) {
+                    matches = HTML_OPEN + searchResult.getMatchedFields().entrySet().stream().map(e -> {
+                        return e.getKey().getQueryValue() + ": " + e.getValue();
+                    }).collect(Collectors.joining(", ")) + HTML_CLOSE;
+                }
                 return matches.isEmpty() ? "not available" : matches;
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);

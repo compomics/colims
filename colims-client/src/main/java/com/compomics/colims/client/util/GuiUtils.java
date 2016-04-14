@@ -61,7 +61,8 @@ public class GuiUtils {
 
     /**
      * Get the name of the visible child component. Returns null if no
-     * components are visible.
+     * components are visible or the name is null. Use this method only when the
+     * child components names are set.
      *
      * @param parentContainer the parent container
      * @return the visible component name
@@ -72,6 +73,7 @@ public class GuiUtils {
         for (Component component : parentContainer.getComponents()) {
             if (component.isVisible()) {
                 visibleComponentName = component.getName();
+                break;
             }
         }
 

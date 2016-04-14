@@ -5,6 +5,11 @@
  */
 package com.compomics.colims.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -14,6 +19,7 @@ import javax.persistence.MappedSuperclass;
  *
  * @author Niels Hulstaert
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @MappedSuperclass
 public abstract class AbstractModification extends DatabaseEntity {
 
@@ -23,12 +29,14 @@ public abstract class AbstractModification extends DatabaseEntity {
     /**
      * The accession (UNIMOD, PSI-MOD).
      */
+    @JsonProperty(value = "obo_id")
     @Basic(optional = true)
     @Column(name = "accession", nullable = true)
     protected String accession;
     /**
      * The modification name.
      */
+    @JsonProperty(value = "label")
     @Basic(optional = false)
     @Column(name = "name", nullable = false)
     protected String name;

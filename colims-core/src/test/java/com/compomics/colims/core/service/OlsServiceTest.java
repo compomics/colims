@@ -3,6 +3,7 @@ package com.compomics.colims.core.service;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.cv.TypedCvParam;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class OlsServiceTest {
      * Test the find modification by exact name method from the OlsService.
      */
     @Test
-    public void testFindModificationByExactName() {
+    public void testFindModificationByExactName() throws IOException {
         //try to find a non existing modification
         Modification modification = olsService.findModificationByExactName(Modification.class, "non existing modification");
 

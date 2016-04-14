@@ -88,7 +88,7 @@ public class MzTabExporter {
     private MzTabExport mzTabExport;
 
     /**
-     * Inits the exporter; parses the mzTab json file into java objects.
+     * Inits the exporter; parses the mzTab JSON file into java objects.
      *
      * @throws IOException IOException thrown in case of an I/O related problem
      */
@@ -97,7 +97,7 @@ public class MzTabExporter {
         Resource mzTabJson = new ClassPathResource("config/mztab.json");
         JsonNode mzTabParamsNode = mapper.readTree(mzTabJson.getInputStream());
 
-        //parse Json node to a list of MzTabParam instances
+        //parse JSON node to a list of MzTabParam instances
         mzTabParams = parseJsonNode(mzTabParamsNode);
     }
 
@@ -162,7 +162,7 @@ public class MzTabExporter {
     }
 
     /**
-     * This method parses the json root node and returns a list of MzTabParam instances.
+     * This method parses the JSON root node and returns a list of MzTabParam instances.
      *
      * @param jsonNode the root JsonNode
      * @return the list of MzTabParam instances

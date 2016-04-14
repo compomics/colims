@@ -12,78 +12,112 @@ import ca.odell.glazedlists.swing.DefaultEventTableModel;
 public abstract class SimplePagingTableModel extends DefaultEventTableModel {
 
     /**
-     * The current page.
+     * The current page index, zero-based.
      */
     protected int page;
     /**
-     * The number of rows per page (page length).
+     * The index of the last page, zero-based.
      */
-    protected int perPage;
+    protected int lastPage;
     /**
-     * The total number of rows to populate the table with.
+     * The number of rows per page.
      */
-    protected long rowCount;
+    protected int pageSize;
+    /**
+     * The total number of rows.
+     */
+    protected int rowCount;
 
     /**
      * Constructor.
      *
      * @param source the source event list
      * @param tableFormat the table format
-     * @param perPage the number of rows per page
+     * @param pageSize the number of rows per page
      */
-    public SimplePagingTableModel(EventList source, TableFormat tableFormat, int perPage) {
+    public SimplePagingTableModel(EventList source, TableFormat tableFormat, int pageSize) {
         super(source, tableFormat);
-        this.perPage = perPage;
+        this.pageSize = pageSize;
         this.rowCount = 0;
         this.page = 0;
     }
 
     /**
-     * Reset the table to default values, for the given row count.
+     * Initialize the table with a new row count.
      *
-     * @param rowCount number of rows to populate the table with
+     * @param rowCount the total number of rows
      */
-    public void reset(long rowCount) {
+    public void init(int rowCount) {
         this.rowCount = rowCount;
         this.page = 0;
+        this.lastPage = (int) Math.floor(rowCount / pageSize);
     }
 
     /**
-     * Whether the current page is the last page.
+     * Get the current page index, zero-based.
      *
-     * @return yay or nay
-     */
-    public boolean isMaxPage() {
-        return page == getMaxPage();
-    }
-
-    /**
-     * Calculate the highest page in the current data set.
-     *
-     * @return highest page number
-     */
-    public int getMaxPage() {
-        return (int) Math.floor(rowCount / perPage);
-    }
-
-    /**
-     * Get current page.
-     *
-     * @return current page
+     * @return current page index
      */
     public int getPage() {
         return page;
     }
 
     /**
-     * Set the current page (within acceptable range).
+     * Set the current page (within acceptable range), zero-based.
      *
      * @param page the page number
      */
     public void setPage(int page) {
-        if (page <= getMaxPage() && page >= 0) {
+        if (page <= getLastPage() && page >= 0) {
             this.page = page;
+        } else {
+            throw new IllegalArgumentException("Invalid page index: " + page);
         }
+    }
+
+    /**
+     * Get the index of the first row of the current page, zero-based.
+     *
+     * @return the index of the first row on the current page
+     */
+    public int getPageFirstRow() {
+        return page * pageSize;
+    }
+
+    /**
+     * Get the index of the first row of the previous page, zero-based.
+     *
+     * @return the index of the first row on the previous page
+     */
+    public int getPreviousPageFirstRow() {
+        return (page - 1) * pageSize;
+    }
+
+    /**
+     * Get the index of the first row of the next page, zero-based.
+     *
+     * @return the index of the first row on the next page
+     */
+    public int getNextPageFirstRow() {
+        return (page + 1) * pageSize;
+    }
+
+    /**
+     * Get the index of the last page, zero-based.
+     *
+     * @return the index of the last page
+     */
+    public int getLastPage() {
+        return lastPage;
+    }
+
+    /**
+     * Get the index of the first row of the last page, zero-based.
+     *
+     * @return the index of the last page
+     */
+    public int getLastPageFirstRow() {
+        return lastPage * pageSize;
     }
 
     /**
@@ -91,17 +125,17 @@ public abstract class SimplePagingTableModel extends DefaultEventTableModel {
      *
      * @return the number of rows displayed per page
      */
-    public int getPerPage() {
-        return perPage;
+    public int getPageSize() {
+        return pageSize;
     }
 
     /**
      * Set the number of rows displayed per page.
      *
-     * @param perPage the page length
+     * @param pageSize the page length
      */
-    public void setPerPage(int perPage) {
-        this.perPage = perPage;
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 
     /**
@@ -110,6 +144,6 @@ public abstract class SimplePagingTableModel extends DefaultEventTableModel {
      * @return Page x of y
      */
     public String getPageIndicator() {
-        return String.format("Page %d of %d", page + 1, getMaxPage() + 1);
+        return String.format("Page %d of %d", page + 1, getLastPage() + 1);
     }
 }

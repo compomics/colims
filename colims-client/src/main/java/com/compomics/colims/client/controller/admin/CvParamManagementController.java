@@ -8,12 +8,13 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.table.model.TypedCvParamTableModel2;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvParamManagementDialog;
+import com.compomics.colims.core.model.ols.OlsSearchResult;
+import com.compomics.colims.core.model.ols.OntologyTerm;
 import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.google.common.eventbus.EventBus;
-import no.uib.olsdialog.OLSDialog;
 import no.uib.olsdialog.OLSInputable;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,16 +33,20 @@ import java.util.Map;
  */
 @Component("cvParamManagementController")
 @Lazy
-public class CvParamManagementController implements Controllable, OLSInputable {
+public class CvParamManagementController implements Controllable {
 
-    private static final String ADD_CV_PARAM = "add";
-    private static final String UPDATE_CV_PARAM = "update";
     //model
     private TypedCvParamTableModel2 typeCvParamTableModel2;
     /**
      * The cvParamType of the CV params in the table model.
      */
     private CvParamType cvParamType;
+    /**
+     * Boolean that keeps track of the CV param state that is passed to the OLS
+     * dialog. It can be a new CV param (true) or one that needs to be updated
+     * (false).
+     */
+    private boolean newCvParam;
     //view
     private CvParamManagementDialog cvParamManagementDialog;
     //parent controller
@@ -57,8 +60,6 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     //services
     @Autowired
     private AuditableTypedCvParamService cvParamService;
-    @Autowired
-    private uk.ac.ebi.ontology_lookup.ontologyquery.Query olsClient;
 
     @Override
     @PostConstruct
@@ -95,19 +96,23 @@ public class CvParamManagementController implements Controllable, OLSInputable {
 
                     //reset definition text area
                     cvParamManagementDialog.getDefinitionTextArea().setText("");
-                    //get param definition from ols service
-                    org.apache.xml.xml_soap.Map termMetadata = olsClient.getTermMetadata(selectedCvParam.getAccession(), selectedCvParam.getLabel());
-                    if (termMetadata != null && !termMetadata.getItem().isEmpty()) {
-                        //look for definition item
-                        termMetadata.getItem().stream().filter(mapItem -> mapItem.getKey().equals("definition") && mapItem.getValue() != null).forEach(mapItem -> cvParamManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString()));
-                    }
+                    //@// TODO: 23/03/16
+//                    //get param definition from ols service
+//                    org.apache.xml.xml_soap.Map termMetadata = olsClient.getTermMetadata(selectedCvParam.getAccession(), selectedCvParam.getLabel());
+//                    if (termMetadata != null && !termMetadata.getItem().isEmpty()) {
+//                        //look for definition item
+//                        termMetadata.getItem().stream().filter(mapItem -> mapItem.getKey().equals("definition") && mapItem.getValue() != null).forEach(mapItem -> cvParamManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString()));
+//                    }
                 } else {
                     clearCvParamDetailFields();
                 }
             }
         });
 
-        cvParamManagementDialog.getAddCvParamButton().addActionListener(e -> showOlsDialog(true));
+        cvParamManagementDialog.getAddCvParamButton().addActionListener(e -> {
+            newCvParam = true;
+            showOlsDialog();
+        });
 
         cvParamManagementDialog.getSaveOrUpdateButton().addActionListener(e -> {
             if (cvParamManagementDialog.getCvParamTable().getSelectedRow() != -1) {
@@ -177,7 +182,8 @@ public class CvParamManagementController implements Controllable, OLSInputable {
 
         cvParamManagementDialog.getEditUsingOlsCvParamButton().addActionListener(e -> {
             if (cvParamManagementDialog.getCvParamTable().getSelectedRow() != -1) {
-                showOlsDialog(false);
+                newCvParam = false;
+                showOlsDialog();
             } else {
                 eventBus.post(new MessageEvent("CV param selection", "Please select a CV param to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
@@ -199,7 +205,7 @@ public class CvParamManagementController implements Controllable, OLSInputable {
      * Update the CV param list and set the current cvParamType.
      *
      * @param cvParamType the cvParamType of the CV params in the list
-     * @param cvParams    the list of CV params
+     * @param cvParams the list of CV params
      */
     public void updateDialog(final CvParamType cvParamType, final List<AuditableTypedCvParam> cvParams) {
         this.cvParamType = cvParamType;
@@ -208,37 +214,6 @@ public class CvParamManagementController implements Controllable, OLSInputable {
 
         //clear selection
         cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
-    }
-
-    @Override
-    public void insertOLSResult(final String field, final String selectedValue, final String accession, final String ontologyShort, final String ontologyLong, int modifiedRow, final String mappedTerm, final Map<String, String> metadata) {
-        //check whether a CV param has to be added or updated
-        if (field.equals(ADD_CV_PARAM)) {
-            AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyLong, ontologyShort, accession, selectedValue);
-
-            //add CV param to the table model
-            typeCvParamTableModel2.addCvParam(cvParam);
-
-            //set selected index to newly added CV param
-            cvParamManagementDialog.getCvParamTable().getSelectionModel().setSelectionInterval(typeCvParamTableModel2.getRowCount() - 1, typeCvParamTableModel2.getRowCount() - 1);
-        } else {
-            //update selected CV param
-            AuditableTypedCvParam selectedCvParam = getSelectedCvParam();
-            updateCvParam(selectedCvParam, ontologyLong, ontologyShort, accession, selectedValue);
-
-            //update CV param in table model
-            int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();
-            typeCvParamTableModel2.updateCvParam(selectedCvParam, selectedIndex);
-
-            //clear selection and set selected index again
-            cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
-            cvParamManagementDialog.getCvParamTable().getSelectionModel().setSelectionInterval(selectedIndex, selectedIndex);
-        }
-    }
-
-    @Override
-    public Window getWindow() {
-        return cvParamManagementDialog;
     }
 
     /**
@@ -260,11 +235,11 @@ public class CvParamManagementController implements Controllable, OLSInputable {
     /**
      * Update the given CV param. Only the modified fields are set.
      *
-     * @param cvParam   the TypedCvParam
-     * @param ontology  the ontology
-     * @param label     the label
+     * @param cvParam the TypedCvParam
+     * @param ontology the ontology
+     * @param label the label
      * @param accession the accession
-     * @param name      the name
+     * @param name the name
      */
     private void updateCvParam(final AuditableTypedCvParam cvParam, final String ontology, final String label, final String accession, final String name) {
         if (!cvParam.getOntology().equalsIgnoreCase(ontology)) {
@@ -286,38 +261,41 @@ public class CvParamManagementController implements Controllable, OLSInputable {
      *
      * @param isNewCvParam is the CV param new or already existing in the DB
      */
-    private void showOlsDialog(final boolean isNewCvParam) {
-//        String ontology = "PSI Mass Spectrometry Ontology [MS]";
-//
-//        Map<String, List<String>> preselectedOntologies = new HashMap<>();
-//
-//        List<String> testing = new ArrayList<>();
-//        testing.add("MS:1000458");
-//
-//        preselectedOntologies.put("MS", testing);
-//
-//        String field;
-//        String param = null;
-//
-//        if (isNewCvParam) {
-//            field = ADD_CV_PARAM;
-//        } else {
-//            field = UPDATE_CV_PARAM;
-//            param = getSelectedCvParam().getName();
-//        }
-//
-//        cvParamManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-//
-//        //show new OLS dialog
-//        new OLSDialog(cvParamManagementDialog, this, true, field, ontology, param, preselectedOntologies);
-//
-//        cvParamManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+    private void showOlsDialog() {
+        /**
+         * The ontology term instance that is passed to the OLS controller for
+         * storing the result of the OLS search.
+         */
+        OntologyTerm ontologyTerm = new OntologyTerm();
+        olsController.showView(ontologyTerm);
 
-          olsController.showView();
+        //check whether a CV param has to be added or updated
+        if (newCvParam) {
+            AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, "long", ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+
+            //add CV param to the table model
+            typeCvParamTableModel2.addCvParam(cvParam);
+
+            //set selected index to newly added CV param
+            cvParamManagementDialog.getCvParamTable().getSelectionModel().setSelectionInterval(typeCvParamTableModel2.getRowCount() - 1, typeCvParamTableModel2.getRowCount() - 1);
+        } else {
+            //update selected CV param
+            AuditableTypedCvParam selectedCvParam = getSelectedCvParam();
+            updateCvParam(selectedCvParam, "long", "short", "accession", "selectedValue");
+
+            //update CV param in table model
+            int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();
+            typeCvParamTableModel2.updateCvParam(selectedCvParam, selectedIndex);
+
+            //clear selection and set selected index again
+            cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
+            cvParamManagementDialog.getCvParamTable().getSelectionModel().setSelectionInterval(selectedIndex, selectedIndex);
+        }
     }
 
     /**
-     * Get the selected CV param in the CV param table. Returns null if none was selected.
+     * Get the selected CV param in the CV param table. Returns null if none was
+     * selected.
      *
      * @return the selected CV param
      */

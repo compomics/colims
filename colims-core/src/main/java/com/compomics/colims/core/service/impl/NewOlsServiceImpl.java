@@ -2,38 +2,27 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.model.ols.Ontology;
 import com.compomics.colims.core.model.ols.OntologyTerm;
-import com.compomics.colims.core.model.ols.SearchResult;
+import com.compomics.colims.core.model.ols.OlsSearchResult;
 import com.compomics.colims.core.model.ols.SearchResultMetadata;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.cv.TypedCvParam;
-import com.compomics.colims.model.enums.CvParamType;
-import com.compomics.colims.model.factory.CvParamFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.xml.xml_soap.Map;
-import org.apache.xml.xml_soap.MapItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import uk.ac.ebi.ontology_lookup.ontologyquery.Query;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * @author Niels Hulstaert
@@ -46,50 +35,51 @@ public class NewOlsServiceImpl implements OlsService {
      */
     private static final Logger LOGGER = Logger.getLogger(NewOlsServiceImpl.class);
 
-    private static final String MOD_ONTOLOGY_LABEL = "MOD";
-    private static final String MOD_ONTOLOGY_IRI = "http://purl.obolibrary.org/obo/";
-    private static final String MS_ONTOLOGY_LABEL = "MS";
-    private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
-    private static final String URL_ENCODING = "UTF-8";
-    private static final String OLS_BASE_URL = "http://www.ebi.ac.uk/ols/beta/api/ontologies/";
-    private static final String OLS_BASE_SEARCH_URL = "http://www.ebi.ac.uk/ols/beta/api/search?q=%s";
-    private static final String PAGE_AND_SIZE = "?page=%1$d&page=%2$d";
+    private static final String OLS_BASE_URL = "http://www.ebi.ac.uk/ols/beta/api/ontologies";
+    private static final String OLS_BASE_SEARCH_URL = "http://www.ebi.ac.uk/ols/beta/api/search?q=";
+    private static final String PAGE_AND_SIZE = "?page=%1$d&size=%2$d";
     private static final String START_AND_ROWS = "&start={page}&rows={pageSize}";
     private static final String EMBEDDED = "_embedded";
     private static final String PAGE = "page";
     private static final String PAGE_NUMBER = "number";
     private static final String TOTAL_PAGES = "totalPages";
-    private static final String TERMS = "terms";
     private static final String ONTOLOGIES = "ontologies";
     private static final String CONFIG = "config";
     private static final String HIGHLIGHTING = "highlighting";
     private static final String RESPONSE = "response";
     private static final String NUMBERS_FOUND = "numFound";
     private static final String DOCS = "docs";
+    private static final String MOD_ONTOLOGY_NAMESPACE = "mod";
+    private static final String MOD_SEARCH_NAME_URL = OLS_BASE_SEARCH_URL + "{name}&ontology=mod&exact=true&queryFields=label";
+    private static final String MOD_OBO_ID_QUERY = "/" + MOD_ONTOLOGY_NAMESPACE + "/terms?obo_id={obo_id}";
+    private static final String TERMS = "terms";
+    private static final String OBO_ID = "obo_id";
     private static final int PAGE_SIZE = 20;
 
     /**
      * The Spring RestTemplate instance for accessing the OLS rest API.
      */
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Autowired
+    private RestTemplate restTemplate;
     /**
-     * The json mapper.
+     * The JSON mapper.
      */
     private final ObjectMapper objectMapper = new ObjectMapper();
+    /**
+     * Ontologies cache to prevent unnecessary lookups. This map can contains
+     * instances of {@link
+     * Ontology} with the ontology namespace as key.
+     */
+    private final Map<String, Ontology> ontologiesCache = new HashMap<>();
     /**
      * Modifications cache to prevent unnecessary webservice lookups. This map
      * can contains instances of {@link
      * Modification} and {@link com.compomics.colims.model.SearchModification}.
      */
     private final java.util.Map<String, AbstractModification> modificationsCache = new HashMap<>();
-    /**
-     * This interface provides access to the ontology lookup service.
-     */
-    @Autowired
-    private Query olsClient;
 
     @Override
-    public List<Ontology> getAllOntologies() throws HttpClientErrorException, IOException {
+    public List<Ontology> getAllOntologies() throws RestClientException, IOException {
         List<Ontology> ontologies = new ArrayList<>();
 
         int pageIndex = 0;
@@ -107,6 +97,10 @@ public class NewOlsServiceImpl implements OlsService {
                 JsonNode ontologyConfigNode = ontologyIterator.next().get(CONFIG);
                 Ontology ontology = objectReader.treeToValue(ontologyConfigNode, Ontology.class);
                 ontologies.add(ontology);
+                //add to cache if not already present
+                if (!ontologiesCache.containsKey(ontology.getNameSpace())) {
+                    ontologiesCache.put(ontology.getNameSpace(), ontology);
+                }
             }
 
             //get the current page and the last page
@@ -126,25 +120,32 @@ public class NewOlsServiceImpl implements OlsService {
     }
 
     @Override
-    public List<Ontology> getOntologiesByNamespace(List<String> namespaces) throws HttpClientErrorException, IOException {
+    public List<Ontology> getOntologiesByNamespace(List<String> namespaces) throws RestClientException, IOException {
         List<Ontology> ontologies = new ArrayList<>();
 
         for (String namespace : namespaces) {
-            try {
-                //get the response
-                ResponseEntity<String> response = restTemplate.getForEntity(OLS_BASE_URL + "{ontology_namespace}", String.class, namespace.toLowerCase());
+            if (ontologiesCache.containsKey(namespace)) {
+                ontologies.add(ontologiesCache.get(namespace));
+            } else {
+                try {
+                    //get the response
+                    ResponseEntity<String> response = restTemplate.getForEntity(OLS_BASE_URL + "/{ontology_namespace}", String.class, namespace.toLowerCase());
 
-                ObjectReader objectReader = objectMapper.readerFor(OntologyTerm.class);
-                JsonNode responseBody = objectReader.readTree(response.getBody());
+                    ObjectReader objectReader = objectMapper.readerFor(OntologyTerm.class);
+                    JsonNode responseBody = objectReader.readTree(response.getBody());
 
-                JsonNode ontologyConfigNode = responseBody.get(CONFIG);
-                Ontology ontology = objectReader.treeToValue(ontologyConfigNode, Ontology.class);
-                ontologies.add(ontology);
-            } catch (HttpClientErrorException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-                //ignore the exception if the namespace doesn't correspond to an ontology
-                if (!ex.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-                    throw ex;
+                    JsonNode ontologyConfigNode = responseBody.get(CONFIG);
+                    Ontology ontology = objectReader.treeToValue(ontologyConfigNode, Ontology.class);
+                    ontologies.add(ontology);
+
+                    //add to cache
+                    ontologiesCache.put(ontology.getNameSpace(), ontology);
+                } catch (HttpClientErrorException ex) {
+                    LOGGER.error(ex.getMessage(), ex);
+                    //ignore the exception if the namespace doesn't correspond to an ontology
+                    if (!ex.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                        throw ex;
+                    }
                 }
             }
         }
@@ -153,10 +154,11 @@ public class NewOlsServiceImpl implements OlsService {
     }
 
     @Override
-    public SearchResultMetadata getPagedSearchMetadata(String query, List<String> ontologyNamespaces, EnumSet<SearchResult.SearchField> searchFields) throws HttpClientErrorException, IOException {
+    public SearchResultMetadata getPagedSearchMetadata(String query, List<String> ontologyNamespaces, EnumSet<OlsSearchResult.SearchField> searchFields) throws RestClientException, IOException {
         //build the request
-        StringBuilder url = new StringBuilder(String.format(OLS_BASE_SEARCH_URL, query));
-        if (!searchFields.isEmpty() && !searchFields.equals(SearchResult.DEFAULT_SEARCH_FIELDS)) {
+        StringBuilder url = new StringBuilder(OLS_BASE_SEARCH_URL);
+        url.append(query);
+        if (!searchFields.isEmpty() && !searchFields.equals(OlsSearchResult.DEFAULT_SEARCH_FIELDS)) {
             url.append("&queryFields=");
             url.append(searchFields.stream().map(s -> s.getQueryValue()).collect(Collectors.joining(",")));
         }
@@ -175,11 +177,11 @@ public class NewOlsServiceImpl implements OlsService {
     }
 
     @Override
-    public List<SearchResult> pagedSearch(String searchUrl, int page, int pageSize) throws HttpClientErrorException, IOException {
-        List<SearchResult> searchResults = new ArrayList<>();
+    public List<OlsSearchResult> pagedSearch(String searchUrl, int startIndex, int pageSize) throws RestClientException, IOException {
+        List<OlsSearchResult> searchResults = new ArrayList<>();
 
         //get the response
-        ResponseEntity<String> response = restTemplate.getForEntity(searchUrl, String.class, page, pageSize);
+        ResponseEntity<String> response = restTemplate.getForEntity(searchUrl, String.class, startIndex, pageSize);
 
         ObjectReader objectReader = objectMapper.reader();
         JsonNode responseBody = objectReader.readTree(response.getBody());
@@ -191,19 +193,30 @@ public class NewOlsServiceImpl implements OlsService {
         Iterator<JsonNode> docsIterator = docsNode.elements();
         Iterator<java.util.Map.Entry<String, JsonNode>> highlightingIterator = highlightingNode.fields();
         while (docsIterator.hasNext()) {
-            SearchResult searchResult = new SearchResult();
+            OlsSearchResult searchResult = new OlsSearchResult();
 
             JsonNode ontologyTermNode = docsIterator.next();
             OntologyTerm ontologyTerm = objectReader.treeToValue(ontologyTermNode, OntologyTerm.class);
+            //get the ontology title as well
+            if (ontologiesCache.containsKey(ontologyTerm.getOntologyNamespace())) {
+                ontologyTerm.setOntologyTitle(ontologiesCache.get(ontologyTerm.getOntologyNamespace()).getTitle());
+            } else {
+                List<String> namespaces = new ArrayList<>();
+                namespaces.add(ontologyTerm.getOntologyNamespace());
+                List<Ontology> ontologies = getOntologiesByNamespace(namespaces);
+                if (!ontologies.isEmpty()) {
+                    ontologyTerm.setOntologyTitle(ontologies.get(0).getTitle());
+                }
+            }
             searchResult.setOntologyTerm(ontologyTerm);
 
             java.util.Map.Entry<String, JsonNode> highLightEntry = highlightingIterator.next();
             //iterate over the fields because we need the key as well
             Iterator<java.util.Map.Entry<String, JsonNode>> highLightEntryIterator = highLightEntry.getValue().fields();
-            EnumMap<SearchResult.SearchField, String> matchedSearchFields = new EnumMap(SearchResult.SearchField.class);
+            EnumMap<OlsSearchResult.SearchField, String> matchedSearchFields = new EnumMap(OlsSearchResult.SearchField.class);
             while (highLightEntryIterator.hasNext()) {
                 java.util.Map.Entry<String, JsonNode> searchHighlight = highLightEntryIterator.next();
-                matchedSearchFields.put(SearchResult.SearchField.findByQueryValue(searchHighlight.getKey()), searchHighlight.getValue().get(0).asText());
+                matchedSearchFields.put(OlsSearchResult.SearchField.findByQueryValue(searchHighlight.getKey()), searchHighlight.getValue().get(0).asText());
             }
             searchResult.setMatchedFields(matchedSearchFields);
 
@@ -214,17 +227,33 @@ public class NewOlsServiceImpl implements OlsService {
     }
 
     @Override
-    public <T extends AbstractModification> T findModificationByExactName(Class<T> clazz, final String name) {
+    public <T extends AbstractModification> T findModificationByExactName(Class<T> clazz, final String name) throws RestClientException, IOException {
         T modification = null;
 
-        //find the modification by exact name
-        Map modificationTerms = olsClient.getTermsByExactName(name, MOD_ONTOLOGY_LABEL);
-        if (modificationTerms.getItem() != null) {
-            //get the modification accession
-            for (MapItem mapItem : modificationTerms.getItem()) {
-                modification = findModificationByAccession(clazz, mapItem.getKey().toString());
-            }
+        //get the response
+        ResponseEntity<String> response = restTemplate.getForEntity(MOD_SEARCH_NAME_URL, String.class, name);
+
+        ObjectReader objectReader = objectMapper.reader();
+        JsonNode responseNode = objectReader.readTree(response.getBody()).get(RESPONSE);
+
+        //check if anything was found
+        int numFound = responseNode.get(NUMBERS_FOUND).asInt();
+        if (numFound > 0) {
+            //get the docs node
+            JsonNode docsNode = responseNode.get(DOCS);
+            JsonNode modificationNode = docsNode.get(0);
+            modification = findModificationByAccession(clazz, modificationNode.get(OBO_ID).textValue());
         }
+
+        System.out.println("-------------");
+//        //find the modification by exact name
+//        Map modificationTerms = olsClient.getTermsByExactName(name, MOD_ONTOLOGY_LABEL);
+//        if (modificationTerms.getItem() != null) {
+//            //get the modification accession
+//            for (MapItem mapItem : modificationTerms.getItem()) {
+//                modification = findModificationByAccession(clazz, mapItem.getKey().toString());
+//            }
+//        }
 
         return modification;
     }
@@ -233,7 +262,7 @@ public class NewOlsServiceImpl implements OlsService {
     public List<Modification> findModificationByName(final String name) {
         List<Modification> modifications = new ArrayList<>();
 
-        ResponseEntity<String> response = restTemplate.getForEntity("http://www.ebi.ac.uk/ols/beta/api/search?q={name}&ontology={ontology_label}&exact={exact}&queryFields=label", String.class, name, "mod", "false");
+        ResponseEntity<String> response = restTemplate.getForEntity("http://www.ebi.ac.uk/ols/beta/api/search?q={name}&ontology=mod&exact=true&queryFields=label", String.class, name, "mod", "false");
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode root = mapper.readTree(response.getBody());
@@ -271,60 +300,17 @@ public class NewOlsServiceImpl implements OlsService {
                 modification = copyModification(clazz, foundModification);
             }
         } else {
-            //get the modification name
-            String searchModificationName = olsClient.getTermById(accession, MOD_ONTOLOGY_LABEL);
-
-//            ResponseEntity<String> response = restTemplate.getForEntity("http://www.ebi.ac.uk/ols/beta/api/search?q={accession}&ontology={ontology_label}&exact={exact}&queryFields=obo_id", String.class, accession, "mod", "true");
+            /**
+             * Get the modification from the REST service, catch the error in
+             * case nothing was found or some other problem.
+             */
             try {
-                String iriAccession = accession.replace(':', '_');
-                String test = "http://www.ebi.ac.uk/ols/beta/api/ontologies/mod/terms/" + URLEncoder.encode(MOD_ONTOLOGY_IRI + iriAccession, URL_ENCODING);
-                ResponseEntity<String> response = restTemplate.getForEntity("http://www.ebi.ac.uk/ols/beta/api/ontologies/mod/terms/" + URLEncoder.encode(MOD_ONTOLOGY_IRI + iriAccession, URL_ENCODING), String.class);
-                ObjectMapper mapper = new ObjectMapper();
+                modification = getByPsiModAccession(clazz, accession);
 
-                JsonNode responseBody = mapper.readTree(response.getBody());
-
-                System.out.println("---------------");
-            } catch (IOException e) {
+                //add modification to the cache
+                modificationsCache.put(accession, modification);
+            } catch (IOException | RestClientException e) {
                 LOGGER.error(e.getMessage(), e);
-            }
-
-            //check if a term was found
-            if (!accession.equals(searchModificationName)) {
-                //get the term metadata by accession
-                Map modificationMetaData = olsClient.getTermMetadata(accession, MOD_ONTOLOGY_LABEL);
-                if (modificationMetaData.getItem() != null) {
-                    try {
-                        modification = clazz.newInstance();
-                        modification.setAccession(accession);
-                        modification.setName(searchModificationName);
-
-                        //get the modification properties
-                        for (MapItem mapItem : modificationMetaData.getItem()) {
-                            if (mapItem.getKey() != null && mapItem.getValue() != null) {
-                                if (mapItem.getKey().equals("DiffMono")) {
-                                    try {
-                                        Double monoIsotopicsMassShift = Double.parseDouble(mapItem.getValue().toString());
-                                        modification.setMonoIsotopicMassShift(monoIsotopicsMassShift);
-                                    } catch (NumberFormatException nfe) {
-                                        LOGGER.error(nfe, nfe.getCause());
-                                    }
-                                } else if (mapItem.getKey().equals("DiffAvg")) {
-                                    try {
-                                        Double averageMassShift = Double.parseDouble(mapItem.getValue().toString());
-                                        modification.setAverageMassShift(averageMassShift);
-                                    } catch (NumberFormatException nfe) {
-                                        LOGGER.error(nfe.getMessage(), nfe);
-                                    }
-                                }
-                            }
-                        }
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        LOGGER.error(e.getMessage(), e);
-                    }
-
-                    //add modification to the cache
-                    modificationsCache.put(accession, modification);
-                }
             }
         }
 
@@ -333,73 +319,55 @@ public class NewOlsServiceImpl implements OlsService {
 
     @Override
     public <T extends AbstractModification> T findModificationByNameAndUnimodAccession(final Class<T> clazz, final String name, final String unimodAccession) {
-        T modification = null;
-
-        //look for the modification in the cache
-        if (modificationsCache.containsKey(unimodAccession)) {
-            AbstractModification foundModification = modificationsCache.get(unimodAccession);
-            if (clazz.isInstance(foundModification)) {
-                modification = (T) foundModification;
-            } else {
-                modification = copyModification(clazz, foundModification);
-            }
-        } else {
-            //first, find the modifications by name
-            Map modificationsTerms = olsClient.getTermsByName(name, MOD_ONTOLOGY_LABEL, false);
-            if (modificationsTerms.getItem() != null) {
-                String tempAccession = null;
-                //iterate over the modifications
-                outerloop:
-                for (MapItem mapItem : modificationsTerms.getItem()) {
-                    String accession = mapItem.getKey().toString();
-                    //get the Xrefs
-                    Map termXrefs = olsClient.getTermXrefs(accession, MOD_ONTOLOGY_LABEL);
-                    for (MapItem xref : termXrefs.getItem()) {
-                        if (StringUtils.containsIgnoreCase(xref.getValue().toString(), unimodAccession)) {
-                            if (xref.getValue().toString().equalsIgnoreCase(unimodAccession)) {
-                                T foundModification = findModificationByAccession(clazz, accession);
-                                if (foundModification != null) {
-                                    modification = foundModification;
-                                    break outerloop;
-                                }
-                            } else {
-                                //keep track of the next best thing
-                                tempAccession = accession;
-                            }
-                        }
-                    }
-                }
-                if (modification == null && tempAccession != null) {
-                    T foundModification = findModificationByAccession(clazz, tempAccession);
-                    if (foundModification != null) {
-                        modification = foundModification;
-
-                        //add modification to the cache
-                        modificationsCache.put(unimodAccession, modification);
-                    }
-                }
-            }
-        }
-
-        return modification;
+        //@// TODO: 29/03/16 implement this as soon as this is available in the new OLS service
+        return null;
     }
 
     @Override
     public TypedCvParam findEnzymeByName(String name) {
         TypedCvParam enzyme = null;
 
-        //find the enzyme by name
-        Map enzymeTerms = olsClient.getTermsByName(name, MS_ONTOLOGY_LABEL, false);
-        if (enzymeTerms.getItem() != null) {
-            for (MapItem mapItem : enzymeTerms.getItem()) {
-                String enzymeName = mapItem.getValue().toString();
-                if (enzymeName.equalsIgnoreCase(name)) {
-                    enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, mapItem.getKey().toString(), enzymeName);
-                    break;
-                }
-            }
+//        //find the enzyme by name
+//        Map enzymeTerms = olsClient.getTermsByName(name, MS_ONTOLOGY_LABEL, false);
+//        if (enzymeTerms.getItem() != null) {
+//            for (MapItem mapItem : enzymeTerms.getItem()) {
+//                String enzymeName = mapItem.getValue().toString();
+//                if (enzymeName.equalsIgnoreCase(name)) {
+//                    enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY_TITLE, MS_ONTOLOGY_LABEL, mapItem.getKey().toString(), enzymeName);
+//                    break;
+//                }
+//            }
+//        }
+//        return enzyme;
+        return null;
+    }
+
+    /**
+     * Get the modification by it's PSI MOD accession.
+     *
+     * @param clazz the AbstractModification subclass (Modification or
+     * SearchModification)
+     * @param psiModAccession the PSI MOD accession of the modification
+     * @param <T> the AbstractModification subclass instance
+     * @return
+     * @throws IOException in case of an I/O related problem
+     * @throws HttpClientErrorException in case of a HTTP 4xx error was received
+     */
+    private <T extends AbstractModification> T getByPsiModAccession(final Class<T> clazz, final String psiModAccession) throws IOException, HttpClientErrorException {
+        T modification = null;
+
+        //get the response
+        ResponseEntity<String> response = restTemplate.getForEntity(OLS_BASE_URL + MOD_OBO_ID_QUERY, String.class, psiModAccession);
+
+        ObjectReader objectReader = objectMapper.reader();
+        JsonNode responseBody = objectReader.readTree(response.getBody());
+
+        Iterator<JsonNode> termIterator = responseBody.get(EMBEDDED).get(TERMS).iterator();
+        if (termIterator.hasNext()) {
+            modification = objectReader.treeToValue(termIterator.next(), clazz);
         }
-        return enzyme;
+
+        return modification;
     }
 
     @Override

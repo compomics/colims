@@ -1,6 +1,6 @@
 package com.compomics.colims.client.model.table.model;
 
-import com.compomics.colims.core.model.ols.SearchResult;
+import com.compomics.colims.core.model.ols.OlsSearchResult;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -20,13 +20,13 @@ public class OntologySearchResultTableModel extends AbstractTableModel {
     public static final int TERM_ACCESSION = 1;
     public static final int MATCHES = 2;
 
-    private List<SearchResult> searchResults = new ArrayList<>();
+    private List<OlsSearchResult> searchResults = new ArrayList<>();
 
-    public List<SearchResult> getSearchResults() {
+    public List<OlsSearchResult> getSearchResults() {
         return searchResults;
     }
 
-    public void setSearchResults(List<SearchResult> searchResults) {
+    public void setSearchResults(List<OlsSearchResult> searchResults) {
         this.searchResults = searchResults;
         this.fireTableDataChanged();
     }
@@ -66,7 +66,7 @@ public class OntologySearchResultTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        SearchResult searchResult = searchResults.get(rowIndex);
+        OlsSearchResult searchResult = searchResults.get(rowIndex);
 
         switch (columnIndex) {
             case ONTOLOGY_NAMESPACE:

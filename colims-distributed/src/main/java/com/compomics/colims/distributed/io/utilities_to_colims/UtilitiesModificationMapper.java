@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -247,7 +248,12 @@ public class UtilitiesModificationMapper {
                 if (modification == null) {
                     //the modification was not found in the UNIMOD ontology
                     //look for the modification in the PSI-MOD ontology by exact name
-                    modification = olsService.findModificationByExactName(Modification.class, modificationName);
+                    try {
+                        modification = olsService.findModificationByExactName(Modification.class, modificationName);
+                    } catch (IOException e) {
+                        //@// TODO: 23/03/16 handle this 
+                        e.printStackTrace();
+                    }
 
                     if (modification == null) {
                         //the modification was not found in the PSI-MOD ontology

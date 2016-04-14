@@ -1,12 +1,9 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.core.model.ols.Ontology;
-import com.compomics.colims.core.model.ols.SearchResult;
+import com.compomics.colims.core.model.ols.OlsSearchResult;
 import com.compomics.colims.core.model.ols.SearchResultMetadata;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
+import com.compomics.colims.model.Modification;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,6 +15,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
 /**
  * @author Niels Hulstaert
  */
@@ -28,8 +30,6 @@ import org.springframework.web.client.HttpClientErrorException;
 public class NewOlsServiceTest {
 
     @Autowired
-    private OlsService olsService;
-    @Autowired
     private OlsService newOlsService;
 
     /**
@@ -37,7 +37,7 @@ public class NewOlsServiceTest {
      */
     @After
     public void clearCache() {
-        olsService.getModificationsCache().clear();
+        newOlsService.getModificationsCache().clear();
     }
 
     @Test
@@ -45,7 +45,7 @@ public class NewOlsServiceTest {
         List<Ontology> allOntologies = newOlsService.getAllOntologies();
 
         Assert.assertFalse(allOntologies.isEmpty());
-        Assert.assertEquals(145, allOntologies.size());
+        Assert.assertEquals(147, allOntologies.size());
     }
 
     @Test
@@ -72,19 +72,19 @@ public class NewOlsServiceTest {
         namespaces.add("ms");
 
         //first fetch the metadata
-        SearchResultMetadata pagedSearchMetadata = newOlsService.getPagedSearchMetadata(query, namespaces, EnumSet.of(SearchResult.SearchField.LABEL));
+        SearchResultMetadata pagedSearchMetadata = newOlsService.getPagedSearchMetadata(query, namespaces, EnumSet.of(OlsSearchResult.SearchField.LABEL));
         int numberOfResultPages = pagedSearchMetadata.getNumberOfResultPages();
 
         Assert.assertFalse(pagedSearchMetadata.getRequestUrl().isEmpty());
 
         //then fetch the first page of the results
-        List<SearchResult> searchResults = newOlsService.pagedSearch(pagedSearchMetadata.getRequestUrl(), 0, 10);
+        List<OlsSearchResult> searchResults = newOlsService.pagedSearch(pagedSearchMetadata.getRequestUrl(), 0, 10);
 
         Assert.assertFalse(searchResults.isEmpty());
         Assert.assertTrue(searchResults.size() == 10);
 
         //only label fields should be returned
-        Assert.assertTrue(searchResults.stream().allMatch(s -> s.getMatchedFields().containsKey(SearchResult.SearchField.LABEL)));
+        Assert.assertTrue(searchResults.stream().allMatch(s -> s.getMatchedFields().containsKey(OlsSearchResult.SearchField.LABEL)));
 
         //fetch the last page
         searchResults = newOlsService.pagedSearch(pagedSearchMetadata.getRequestUrl(), numberOfResultPages - 1, 10);
@@ -94,7 +94,7 @@ public class NewOlsServiceTest {
         /**
          * Test with all ontologies and 2 search fields.
          */
-        pagedSearchMetadata = newOlsService.getPagedSearchMetadata(query, namespaces, EnumSet.of(SearchResult.SearchField.LABEL, SearchResult.SearchField.SYNONYM));
+        pagedSearchMetadata = newOlsService.getPagedSearchMetadata(query, namespaces, EnumSet.of(OlsSearchResult.SearchField.LABEL, OlsSearchResult.SearchField.SYNONYM));
 
         Assert.assertFalse(pagedSearchMetadata.getRequestUrl().isEmpty());
 
@@ -105,12 +105,12 @@ public class NewOlsServiceTest {
         Assert.assertTrue(searchResults.size() == 10);
 
         //only label and synonym fields should be returned
-        Assert.assertTrue(searchResults.stream().allMatch(s -> s.getMatchedFields().containsKey(SearchResult.SearchField.LABEL) || s.getMatchedFields().containsKey(SearchResult.SearchField.SYNONYM)));
+        Assert.assertTrue(searchResults.stream().allMatch(s -> s.getMatchedFields().containsKey(OlsSearchResult.SearchField.LABEL) || s.getMatchedFields().containsKey(OlsSearchResult.SearchField.SYNONYM)));
 
         /**
          * Test with all ontologies and the default search fields.
          */
-        pagedSearchMetadata = newOlsService.getPagedSearchMetadata(query, namespaces, EnumSet.of(SearchResult.SearchField.LABEL, SearchResult.SearchField.SYNONYM));
+        pagedSearchMetadata = newOlsService.getPagedSearchMetadata(query, namespaces, EnumSet.of(OlsSearchResult.SearchField.LABEL, OlsSearchResult.SearchField.SYNONYM));
 
         Assert.assertFalse(pagedSearchMetadata.getRequestUrl().isEmpty());
 
@@ -141,25 +141,26 @@ public class NewOlsServiceTest {
 //        Assert.assertEquals(-64.1, modification.getAverageMassShift(), 0.001);
 //    }
 //
-//    /**
-//     * Test the find modification by exact name method from the OlsService.
-//     */
-//    @Test
-//    public void testFindModificationByExactName() {
-//        //try to find a non existing modification
-//        Modification modification = olsService.findModificationByExactName(Modification.class, "non existing modification");
-//
+
+    /**
+     * Test the find modification by exact name method from the OlsService.
+     */
+    @Test
+    public void testFindModificationByExactName() throws IOException {
+        //try to find a non existing modification
+//        Modification modification = newOlsService.findModificationByExactName(Modification.class, "non existing modification");
+
 //        Assert.assertNull(modification);
-//
-//        //try to find an existing modification
-//        modification = olsService.findModificationByExactName(Modification.class, "methionine oxidation with neutral loss of 64 Da");
-//
-//        Assert.assertNotNull(modification);
-//        Assert.assertEquals("MOD:00935", modification.getAccession());
-//        Assert.assertEquals("methionine oxidation with neutral loss of 64 Da", modification.getName());
-//        Assert.assertEquals(-63.998286, modification.getMonoIsotopicMassShift(), 0.001);
-//        Assert.assertEquals(-64.1, modification.getAverageMassShift(), 0.001);
-//    }
+
+        //try to find an existing modification
+        Modification modification = newOlsService.findModificationByExactName(Modification.class, "methionine oxidation with neutral loss of 64 Da");
+
+        Assert.assertNotNull(modification);
+        Assert.assertEquals("MOD:00935", modification.getAccession());
+        Assert.assertEquals("methionine oxidation with neutral loss of 64 Da", modification.getName());
+        Assert.assertEquals(-63.998286, modification.getMonoIsotopicMassShift(), 0.001);
+        Assert.assertEquals(-64.1, modification.getAverageMassShift(), 0.001);
+    }
 //
 //    /**
 //     * Test the find modification by name method from the OlsService.

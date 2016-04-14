@@ -45,7 +45,7 @@ public class MzIdentMLExporter {
     private static final String PSI_MOD_PREFIX = "MOD";
     private static final String UNIMOD_PREFIX = "UNIMOD";
     /**
-     * The json file that contains the MzIdentML controlled vocabulary terms.
+     * The JSON file that contains the MzIdentML controlled vocabulary terms.
      */
     private static final String DATA_FILE = "config/mzidentml.json";   // TODO: a better name
 
@@ -74,7 +74,7 @@ public class MzIdentMLExporter {
     private UserRepository userRepository;
 
     /**
-     * Read in the json file that contains controlled vocabulary terms.
+     * Read in the JSON file that contains controlled vocabulary terms.
      *
      * @throws IOException error thrown in case of a I/O related problem
      */

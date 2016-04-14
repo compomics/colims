@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Niels Hulstaert
  */
-public class SearchResult {
+public class OlsSearchResult {
 
     /**
      * The default search fields when querying the OLS.
@@ -72,7 +72,7 @@ public class SearchResult {
     /**
      * No-arg constructor.
      */
-    public SearchResult() {
+    public OlsSearchResult() {
     }
 
     public OntologyTerm getOntologyTerm() {

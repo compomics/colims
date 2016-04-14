@@ -3,7 +3,6 @@ package com.compomics.colims.client.controller.admin;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.GlazedLists;
-import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -14,8 +13,9 @@ import com.compomics.colims.client.model.table.model.OntologySearchResultTableMo
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.OlsDialog;
 import com.compomics.colims.core.model.ols.Ontology;
+import com.compomics.colims.core.model.ols.OntologyTerm;
 import com.compomics.colims.core.model.ols.OntologyTitleComparator;
-import com.compomics.colims.core.model.ols.SearchResult;
+import com.compomics.colims.core.model.ols.OlsSearchResult;
 import com.compomics.colims.core.model.ols.SearchResultMetadata;
 import com.compomics.colims.core.service.OlsService;
 import com.google.common.eventbus.EventBus;
@@ -49,9 +49,18 @@ import org.springframework.web.client.HttpClientErrorException;
 @Lazy
 public class OlsController implements Controllable {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(OlsController.class);
 
-    private static final String OLS_BASE = "http://www.ebi.ac.uk/ols/beta/ontologies/%s/terms?iri=%s";
+    /**
+     * The URL used for opening the ontology term in the browser.
+     */
+    private static final String OLS_TERM_URL = "http://www.ebi.ac.uk/ols/beta/ontologies/%s/terms?iri=%s";
+    /**
+     * The Ontology Lookup Service page retrieval size.
+     */
     private static final int PAGE_SIZE = 10;
 
     //model
@@ -62,9 +71,14 @@ public class OlsController implements Controllable {
     private final List<String> preselectedOntologyNamespaces = new ArrayList<>();
     private final List<Ontology> preselectedOntologies = new ArrayList<>();
     private OlsSearchResultTableModel olsSearchResultTableModel;
-    private final EventList<SearchResult> searchResults = new BasicEventList<>();
+    private final EventList<OlsSearchResult> searchResults = new BasicEventList<>();
     private final SearchResultTableMouseAdapter searchResultTableMouseAdapter = new SearchResultTableMouseAdapter();
     private SearchResultMetadata searchResultMetadata;
+    /**
+     * The selected ontology term that will passed to the appropriate
+     * controller.
+     */
+    private OntologyTerm ontologyTerm;
     //view
     private OlsDialog olsDialog;
     //parent controller
@@ -122,10 +136,15 @@ public class OlsController implements Controllable {
             if (!lse.getValueIsAdjusting()) {
                 int selectedRow = olsDialog.getSearchResultTable().getSelectedRow();
                 if (selectedRow != -1 && !searchResults.isEmpty()) {
-                    SearchResult selectedSearchResult = searchResults.get(selectedRow);
-                    System.out.println("------------------------");
+                    OlsSearchResult selectedSearchResult = searchResults.get(selectedRow);
+
+                    //set details fields
+                    olsDialog.getOntologyNamespaceTextField().setText(selectedSearchResult.getOntologyTerm().getOntologyNamespace());
+                    olsDialog.getTermAccessionTextField().setText(selectedSearchResult.getOntologyTerm().getOboId());
+                    olsDialog.getTermLabelTextField().setText(selectedSearchResult.getOntologyTerm().getLabel());
+                    olsDialog.getTermDescriptionTextArea().setText(selectedSearchResult.getOntologyTerm().getDescription().stream().collect(Collectors.joining(System.lineSeparator())));
                 } else {
-//                    clear
+                    resetTermDetailFields();
                 }
             }
         });
@@ -142,8 +161,9 @@ public class OlsController implements Controllable {
                     }
                     //get the search metadata
                     searchResultMetadata = newOlsService.getPagedSearchMetadata(searchInput, ontologiesToSearch.stream().map(o -> o.getNameSpace()).collect(Collectors.toList()), getSearchFields());
-                    doPagedSearch(0);
-                    olsSearchResultTableModel.reset(searchResultMetadata.getNumberOfResultPages() * PAGE_SIZE);
+                    olsSearchResultTableModel.init(searchResultMetadata.getNumberOfResultPages());
+                    //get the search results for the first page
+                    doPagedSearch(0, 0);
 
                     olsDialog.getFirstResultPageButton().setEnabled(false);
                     olsDialog.getPreviousResultPageButton().setEnabled(false);
@@ -201,7 +221,7 @@ public class OlsController implements Controllable {
         });
 
         olsDialog.getFirstResultPageButton().addActionListener(e -> {
-            doPagedSearch(0);
+            doPagedSearch(0, 0);
 
             olsDialog.getFirstResultPageButton().setEnabled(false);
             olsDialog.getPreviousResultPageButton().setEnabled(false);
@@ -210,9 +230,7 @@ public class OlsController implements Controllable {
         });
 
         olsDialog.getPreviousResultPageButton().addActionListener(e -> {
-            doPagedSearch(olsSearchResultTableModel.getPage() - 1);
-
-            olsSearchResultTableModel.setPage(olsSearchResultTableModel.getPage() - 1);
+            doPagedSearch(olsSearchResultTableModel.getPreviousPageFirstRow(), olsSearchResultTableModel.getPage() - 1);
 
             if (olsSearchResultTableModel.getPage() == 0) {
                 olsDialog.getFirstResultPageButton().setEnabled(false);
@@ -223,9 +241,7 @@ public class OlsController implements Controllable {
         });
 
         olsDialog.getNextResultPageButton().addActionListener(e -> {
-            doPagedSearch(olsSearchResultTableModel.getPage() + 1);
-
-            olsSearchResultTableModel.setPage(olsSearchResultTableModel.getPage() + 1);
+            doPagedSearch(olsSearchResultTableModel.getNextPageFirstRow(), olsSearchResultTableModel.getPage() + 1);
 
             olsDialog.getFirstResultPageButton().setEnabled(true);
             olsDialog.getPreviousResultPageButton().setEnabled(true);
@@ -236,7 +252,7 @@ public class OlsController implements Controllable {
         });
 
         olsDialog.getLastResultPageButton().addActionListener(e -> {
-            doPagedSearch(searchResultMetadata.getNumberOfResultPages() - 1);
+            doPagedSearch(olsSearchResultTableModel.getLastPageFirstRow(), olsSearchResultTableModel.getLastPage());
 
             olsDialog.getFirstResultPageButton().setEnabled(true);
             olsDialog.getPreviousResultPageButton().setEnabled(true);
@@ -244,7 +260,20 @@ public class OlsController implements Controllable {
             olsDialog.getLastResultPageButton().setEnabled(false);
         });
 
+        olsDialog.getSelectButton().addActionListener(e -> {
+            int selectedRow = olsDialog.getSearchResultTable().getSelectedRow();
+            if (selectedRow != -1 && !searchResults.isEmpty()) {
+                OntologyTerm selectedOntologyTerm = searchResults.get(selectedRow).getOntologyTerm();
+                //copy the fields
+                ontologyTerm.copy(selectedOntologyTerm);
+
+                clear();
+                olsDialog.dispose();
+            }
+        });
+
         olsDialog.getCancelButton().addActionListener(e -> {
+            clear();
             olsDialog.dispose();
         });
 
@@ -252,21 +281,46 @@ public class OlsController implements Controllable {
 
     @Override
     public void showView() {
+        //load the preselected ontologies
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), olsDialog);
+        olsDialog.setVisible(true);
+    }
+
+    public void showView(OntologyTerm ontologyTerm) {
+        //keep a callback reference for the result of the search
+        this.ontologyTerm = ontologyTerm;
+
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), olsDialog);
+        olsDialog.setVisible(true);
+    }
+
+    /**
+     * Clear the dialog content and reset button states if necessary.
+     */
+    private void clear() {
         //clear search results
         searchResults.clear();
+        olsDialog.getSearchResultPageLabel().setText("");
+        ontologyTerm = null;
+
+        //disable paged result table buttons
+        olsDialog.getFirstResultPageButton().setEnabled(false);
+        olsDialog.getPreviousResultPageButton().setEnabled(false);
+        olsDialog.getNextResultPageButton().setEnabled(false);
+        olsDialog.getLastResultPageButton().setEnabled(false);
 
         //reset the ontologies
         getOntologies();
+
+        //reset search text field and term detail fields
+        olsDialog.getSearchInputTextField().setText("");
+        resetTermDetailFields();
 
         //reset the search fields settings if necessary
         if (olsDialog.getCustomFieldsRadioButton().isSelected()) {
             olsDialog.getDefaultFieldsRadioButton().setSelected(true);
             enableSearchFieldCheckBoxes(false);
         }
-
-        //load the preselected ontologies
-        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), olsDialog);
-        olsDialog.setVisible(true);
     }
 
     /**
@@ -278,7 +332,7 @@ public class OlsController implements Controllable {
         olsDialog.getLabelCheckBox().setEnabled(enable);
         olsDialog.getSynonymCheckBox().setEnabled(enable);
         olsDialog.getDescriptionCheckBox().setEnabled(enable);
-        olsDialog.getIdentifiersCheckBox().setEnabled(enable);
+        olsDialog.getIdentifierCheckBox().setEnabled(enable);
         olsDialog.getAnnotationPropertiesCheckBox().setEnabled(enable);
     }
 
@@ -287,23 +341,23 @@ public class OlsController implements Controllable {
      *
      * @return the set of selected search fields
      */
-    private EnumSet<SearchResult.SearchField> getSearchFields() {
-        EnumSet<SearchResult.SearchField> searchFields = EnumSet.noneOf(SearchResult.SearchField.class);
+    private EnumSet<OlsSearchResult.SearchField> getSearchFields() {
+        EnumSet<OlsSearchResult.SearchField> searchFields = EnumSet.noneOf(OlsSearchResult.SearchField.class);
 
         if (olsDialog.getLabelCheckBox().isSelected()) {
-            searchFields.add(SearchResult.SearchField.LABEL);
+            searchFields.add(OlsSearchResult.SearchField.LABEL);
         }
         if (olsDialog.getSynonymCheckBox().isSelected()) {
-            searchFields.add(SearchResult.SearchField.SYNONYM);
+            searchFields.add(OlsSearchResult.SearchField.SYNONYM);
         }
         if (olsDialog.getDescriptionCheckBox().isSelected()) {
-            searchFields.add(SearchResult.SearchField.DESCRIPTION);
+            searchFields.add(OlsSearchResult.SearchField.DESCRIPTION);
         }
-        if (olsDialog.getIdentifiersCheckBox().isSelected()) {
-            searchFields.add(SearchResult.SearchField.IDENTIFIER);
+        if (olsDialog.getIdentifierCheckBox().isSelected()) {
+            searchFields.add(OlsSearchResult.SearchField.IDENTIFIER);
         }
         if (olsDialog.getAnnotationPropertiesCheckBox().isSelected()) {
-            searchFields.add(SearchResult.SearchField.ANNOTATION_PROPERTY);
+            searchFields.add(OlsSearchResult.SearchField.ANNOTATION_PROPERTY);
         }
 
         return searchFields;
@@ -360,11 +414,14 @@ public class OlsController implements Controllable {
      * Do a paged search request to the Ontology Lookup Service. Convenience
      * method to avoid duplicate error catching.
      *
-     * @param page the page number of the search request
+     * @param startIndex the result start index
+     * @param newPageIndex the index of the new page
      */
-    private void doPagedSearch(int page) {
+    private void doPagedSearch(int startIndex, int newPageIndex) {
         try {
-            GlazedLists.replaceAll(searchResults, newOlsService.pagedSearch(searchResultMetadata.getRequestUrl(), page, PAGE_SIZE), true);
+            GlazedLists.replaceAll(searchResults, newOlsService.pagedSearch(searchResultMetadata.getRequestUrl(), startIndex, PAGE_SIZE), true);
+            olsSearchResultTableModel.setPage(newPageIndex);
+            olsDialog.getSearchResultPageLabel().setText(olsSearchResultTableModel.getPageIndicator());
         } catch (HttpClientErrorException ex) {
             LOGGER.error(ex.getMessage(), ex);
             eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.CONNECTION_ERROR));
@@ -372,6 +429,16 @@ public class OlsController implements Controllable {
             LOGGER.error(ex.getMessage(), ex);
             eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.PARSE_ERROR));
         }
+    }
+
+    /**
+     * Clear the ontology term details fields.
+     */
+    private void resetTermDetailFields() {
+        olsDialog.getOntologyNamespaceTextField().setText("");
+        olsDialog.getTermAccessionTextField().setText("");
+        olsDialog.getTermLabelTextField().setText("");
+        olsDialog.getTermDescriptionTextArea().setText("");
     }
 
     /**
@@ -384,10 +451,10 @@ public class OlsController implements Controllable {
             int columnIndex = olsDialog.getSearchResultTable().columnAtPoint(new Point(e.getX(), e.getY()));
             if (columnIndex == OntologySearchResultTableModel.TERM_ACCESSION) {
                 int rowIndex = olsDialog.getSearchResultTable().rowAtPoint(new Point(e.getX(), e.getY()));
-                SearchResult selectedSearchResult = searchResults.get(rowIndex);
+                OlsSearchResult selectedSearchResult = searchResults.get(rowIndex);
                 if (Desktop.isDesktopSupported()) {
                     try {
-                        Desktop.getDesktop().browse(new URI(String.format(OLS_BASE, selectedSearchResult.getOntologyTerm().getOntologyNamespace(), URLEncoder.encode(selectedSearchResult.getOntologyTerm().getIri(), "UTF-8"))));
+                        Desktop.getDesktop().browse(new URI(String.format(OLS_TERM_URL, selectedSearchResult.getOntologyTerm().getOntologyNamespace(), URLEncoder.encode(selectedSearchResult.getOntologyTerm().getIri(), "UTF-8"))));
                     } catch (IOException | URISyntaxException ex) {
                         LOGGER.error(ex.getMessage(), ex);
                     }

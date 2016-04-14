@@ -81,7 +81,7 @@ public class MaxQuantSpectrumFileParser {
         );
 
         spectrum.setSpectrumFiles(new ArrayList<>());
-        spectrum.getSpectrumFiles().add(spectrumToMGF(spectrum, scanNumber, peakList));
+//        spectrum.getSpectrumFiles().add(spectrumToMGF(spectrum, scanNumber, peakList));
 
         return spectrum;
     }
