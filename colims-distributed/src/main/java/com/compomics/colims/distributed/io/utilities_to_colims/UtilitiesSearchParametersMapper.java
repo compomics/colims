@@ -11,19 +11,28 @@ import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.compomics.util.experiment.biology.Enzyme;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import org.apache.log4j.Logger;
+import org.springframework.web.client.RestClientException;
 
 /**
- * This class maps the Utilities search parameters onto the Colims search parameters.
+ * This class maps the Utilities search parameters onto the Colims search
+ * parameters.
  *
  * @author Kenneth Verheggen
  * @author Niels Hulstaert
  */
 @Component("utilitiesSearchParametersMapper")
 public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.util.experiment.identification.identification_parameters.SearchParameters, SearchParameters> {
+
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);
 
     private static final String MS_ONTOLOGY_LABEL = "MS";
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
@@ -48,14 +57,15 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      * The Ontology Lookup Service service.
      */
     @Autowired
-    private OlsService olsService;
+    private OlsService newOlsService;
 
     /**
      * Map the Utilities SearchParameters to the Colims SearchParameters.
      *
      * @param utilitiesSearchParameters the Utilities search parameters
-     * @param searchParameters          the Colims search parameters
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
+     * @param searchParameters the Colims search parameters
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case
+     * of a modification mapping problem
      */
     @Override
     public void map(com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) throws ModificationMappingException {
@@ -93,7 +103,8 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     }
 
     /**
-     * Map the given Utilities Enzyme instance to a TypedCvParam instance. Return null if no mapping was possible.
+     * Map the given Utilities Enzyme instance to a TypedCvParam instance.
+     * Return null if no mapping was possible.
      *
      * @param utilitiesEnzyme the Utilities Enzyme instance
      * @return the TypedCvParam instance
@@ -105,9 +116,15 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
         enzyme = typedCvParamService.findByName(utilitiesEnzyme.getName(), CvParamType.SEARCH_PARAM_ENZYME, true);
 
         if (enzyme == null) {
-            //the enzyme was not found by name in the database
-            //look for the enzyme in the MS ontology by name
-            enzyme = olsService.findEnzymeByName(utilitiesEnzyme.getName());
+            try {
+                //the enzyme was not found by name in the database
+                //look for the enzyme in the MS ontology by name
+                enzyme = newOlsService.findEnzymeByName(utilitiesEnzyme.getName());
+            } catch (RestClientException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+            } catch (IOException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+            }
 
             if (enzyme == null) {
                 //the enzyme was not found by name in the MS ontology
@@ -122,7 +139,8 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     }
 
     /**
-     * Get the default search type from the database and assign it to the class field.
+     * Get the default search type from the database and assign it to the class
+     * field.
      */
     @PostConstruct
     private void getDefaultSearchType() {

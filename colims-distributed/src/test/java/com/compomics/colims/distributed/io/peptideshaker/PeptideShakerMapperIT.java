@@ -56,6 +56,7 @@ public class PeptideShakerMapperIT {
     public void setup() throws IOException, XmlPullParserException {
         //set admin user in authentication bean
         User adminUser = userService.findByName("admin");
+        userService.fetchAuthenticationRelations(adminUser);
         userBean.setCurrentUser(adminUser);
     }
 

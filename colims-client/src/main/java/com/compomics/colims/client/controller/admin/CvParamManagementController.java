@@ -8,14 +8,14 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.table.model.TypedCvParamTableModel2;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvParamManagementDialog;
-import com.compomics.colims.core.model.ols.OlsSearchResult;
 import com.compomics.colims.core.model.ols.OntologyTerm;
 import com.compomics.colims.core.service.AuditableTypedCvParamService;
+import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.google.common.eventbus.EventBus;
-import no.uib.olsdialog.OLSInputable;
+import java.io.IOException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -24,9 +24,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import java.awt.*;
 import java.util.List;
-import java.util.Map;
+import org.apache.log4j.Logger;
+import org.springframework.web.client.RestClientException;
 
 /**
  * @author Niels Hulstaert
@@ -34,6 +34,11 @@ import java.util.Map;
 @Component("cvParamManagementController")
 @Lazy
 public class CvParamManagementController implements Controllable {
+
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(CvParamManagementController.class);
 
     //model
     private TypedCvParamTableModel2 typeCvParamTableModel2;
@@ -60,6 +65,8 @@ public class CvParamManagementController implements Controllable {
     //services
     @Autowired
     private AuditableTypedCvParamService cvParamService;
+    @Autowired
+    private OlsService newOlsService;
 
     @Override
     @PostConstruct
@@ -96,13 +103,17 @@ public class CvParamManagementController implements Controllable {
 
                     //reset definition text area
                     cvParamManagementDialog.getDefinitionTextArea().setText("");
-                    //@// TODO: 23/03/16
-//                    //get param definition from ols service
-//                    org.apache.xml.xml_soap.Map termMetadata = olsClient.getTermMetadata(selectedCvParam.getAccession(), selectedCvParam.getLabel());
-//                    if (termMetadata != null && !termMetadata.getItem().isEmpty()) {
-//                        //look for definition item
-//                        termMetadata.getItem().stream().filter(mapItem -> mapItem.getKey().equals("definition") && mapItem.getValue() != null).forEach(mapItem -> cvParamManagementDialog.getDefinitionTextArea().setText(mapItem.getValue().toString()));
-//                    }
+                    try {
+                        //get the descripton from the OLS service
+                        cvParamManagementDialog.getDefinitionTextArea().setText(
+                                newOlsService.getTermDescriptionByOboId(selectedCvParam.getLabel(), selectedCvParam.getAccession()));
+                    } catch (RestClientException ex) {
+                        LOGGER.error(ex.getMessage(), ex);
+                        cvParamManagementDialog.getDefinitionTextArea().setText("");
+                    } catch (IOException ex) {
+                        LOGGER.error(ex.getMessage(), ex);
+                        cvParamManagementDialog.getDefinitionTextArea().setText("");
+                    }
                 } else {
                     clearCvParamDetailFields();
                 }
@@ -262,6 +273,7 @@ public class CvParamManagementController implements Controllable {
      * @param isNewCvParam is the CV param new or already existing in the DB
      */
     private void showOlsDialog() {
+
         /**
          * The ontology term instance that is passed to the OLS controller for
          * storing the result of the OLS search.
@@ -271,7 +283,7 @@ public class CvParamManagementController implements Controllable {
 
         //check whether a CV param has to be added or updated
         if (newCvParam) {
-            AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, "long", ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+            AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
             //add CV param to the table model
             typeCvParamTableModel2.addCvParam(cvParam);
@@ -281,7 +293,7 @@ public class CvParamManagementController implements Controllable {
         } else {
             //update selected CV param
             AuditableTypedCvParam selectedCvParam = getSelectedCvParam();
-            updateCvParam(selectedCvParam, "long", "short", "accession", "selectedValue");
+            updateCvParam(selectedCvParam, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
             //update CV param in table model
             int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();

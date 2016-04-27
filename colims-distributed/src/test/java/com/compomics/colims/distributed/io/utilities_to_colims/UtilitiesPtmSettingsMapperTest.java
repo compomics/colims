@@ -2,7 +2,6 @@ package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.OlsService;
-import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.util.experiment.biology.*;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import org.junit.After;
@@ -25,7 +24,7 @@ import java.io.IOException;
 public class UtilitiesPtmSettingsMapperTest {
 
     @Autowired
-    private OlsService olsService;
+    private OlsService newOlsService;
     @Autowired
     private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
     private PtmSettings ptmSettings;
@@ -69,7 +68,7 @@ public class UtilitiesPtmSettingsMapperTest {
      */
     @After
     public void clearCache() {
-        olsService.getModificationsCache().clear();
+        newOlsService.getModificationsCache().clear();
     }
 
     /**

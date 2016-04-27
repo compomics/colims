@@ -2,7 +2,10 @@ package com.compomics.colims.distributed.io.peptideshaker;
 
 import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.core.service.FastaDbService;
+import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.User;
+import com.compomics.colims.model.UserBean;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.experiment.MsExperiment;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -21,6 +24,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import org.junit.Before;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * @author Niels Hulstaert
@@ -33,6 +38,18 @@ public class PeptideShakerIOIT {
     private FastaDbService fastaDbService;
     @Autowired
     private PeptideShakerIO peptideShakerIO;
+    @Autowired
+    private UserBean userBean;
+    @Autowired
+    private UserService userService;
+
+    @Before
+    public void setup() throws IOException, XmlPullParserException {
+        //set admin user in authentication bean
+        User adminUser = userService.findByName("admin");
+        userService.fetchAuthenticationRelations(adminUser);
+        userBean.setCurrentUser(adminUser);
+    }
 
     /**
      * Test the unpacking of a PS .cps file.

@@ -44,6 +44,10 @@ public class UnimodMarshallerTest {
 
         Modification modification = unimodMarshaller.getModificationByName(Modification.class, MOD_NAME);
         Assert.assertNotNull(modification);
+        Assert.assertEquals("UNIMOD:736", modification.getAccession());
+        Assert.assertEquals("DTT_C", modification.getName());
+        Assert.assertEquals(120.0245, modification.getMonoIsotopicMassShift(), 0.0001);
+        Assert.assertEquals(120.1701, modification.getAverageMassShift(), 0.0001);
     }
 
 }

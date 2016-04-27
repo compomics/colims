@@ -83,7 +83,7 @@ public class MaxQuantSearchSettingsParser {
     @Autowired
     private TypedCvParamService typedCvParamService;
     @Autowired
-    private OlsService olsService;
+    private OlsService newOlsService;
 
     /**
      * Get the version of MaxQuant used.
@@ -226,7 +226,7 @@ public class MaxQuantSearchSettingsParser {
                     TypedCvParam enzyme = typedCvParamService.findByName(enzymeName, CvParamType.SEARCH_PARAM_ENZYME, true);
 
                     if (enzyme == null) {
-                        enzyme = olsService.findEnzymeByName(enzymeName);
+                        enzyme = newOlsService.findEnzymeByName(enzymeName);
 
                         if (enzyme == null) {
                             enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, enzymeName);

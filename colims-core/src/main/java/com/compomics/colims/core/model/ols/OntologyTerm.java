@@ -105,6 +105,7 @@ public class OntologyTerm {
         this.label = ontologyTermToCopy.getLabel();
         this.description = ontologyTermToCopy.getDescription();
         this.ontologyNamespace = ontologyTermToCopy.getOntologyNamespace();
+        this.ontologyTitle = ontologyTermToCopy.getOntologyTitle();
         this.oboId = ontologyTermToCopy.getOboId();
         this.shortForm = ontologyTermToCopy.shortForm;
     }

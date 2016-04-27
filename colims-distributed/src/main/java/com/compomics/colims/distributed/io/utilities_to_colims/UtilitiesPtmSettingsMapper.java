@@ -20,9 +20,12 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import org.springframework.web.client.RestClientException;
 
 /**
- * This class maps the Compomics Utilities modification related classes to Colims modification related classes.
+ * This class maps the Compomics Utilities modification related classes to
+ * Colims modification related classes.
  *
  * @author Niels Hulstaert
  */
@@ -45,24 +48,27 @@ public class UtilitiesPtmSettingsMapper {
      * The Ontology Lookup Service service.
      */
     @Autowired
-    private OlsService olsService;
+    private OlsService newOlsService;
     /**
      * Contains the UNIMOD modifications.
      */
     @Autowired
     private UnimodMarshaller unimodMarshaller;
     /**
-     * The map of cached modifications (key: modification name, value: the search modification).
+     * The map of cached modifications (key: modification name, value: the
+     * search modification).
      */
     private final Map<String, SearchModification> cachedSearchModifications = new HashMap<>();
 
     /**
-     * Map the utilities modification profile to the Colims search parameters. The Utilities PTMs are matched first onto
-     * CV terms from PSI-MOD.
+     * Map the utilities modification profile to the Colims search parameters.
+     * The Utilities PTMs are matched first onto CV terms from PSI-MOD.
      *
-     * @param ptmSettings      the Utilities modification profile with the modifications used for the searches.
+     * @param ptmSettings the Utilities modification profile with the
+     * modifications used for the searches.
      * @param searchParameters the Colims search parameters
-     * @throws ModificationMappingException thrown in case of a modification mapping problem
+     * @throws ModificationMappingException thrown in case of a modification
+     * mapping problem
      */
     public void map(final PtmSettings ptmSettings, final SearchParameters searchParameters) throws ModificationMappingException {
         //iterate over all modifications
@@ -116,11 +122,12 @@ public class UtilitiesPtmSettingsMapper {
     public void clear() {
         cachedSearchModifications.clear();
         //clear the cache from the OlsService as well
-        olsService.getModificationsCache().clear();
+        newOlsService.getModificationsCache().clear();
     }
 
     /**
-     * Map the given CvTerm utilities object to a SearchModification instance. Return null if no mapping was possible.
+     * Map the given CvTerm utilities object to a SearchModification instance.
+     * Return null if no mapping was possible.
      *
      * @param cvTerm the utilities CvTerm
      * @return the Colims SearchModification entity
@@ -142,23 +149,29 @@ public class UtilitiesPtmSettingsMapper {
                     case "UNIMOD":
                         //look for the search modification in the UNIMOD modifications
                         searchModification = unimodMarshaller.getModificationByName(SearchModification.class, cvTerm.getName());
-                        if (searchModification == null) {
-                            //look for the search modification in the PSI-MOD ontology by name and UNIMOD accession
-                            searchModification = olsService.findModificationByNameAndUnimodAccession(SearchModification.class, cvTerm.getName(), cvTerm.getAccession());
-                        }
+                        //@todo uncomment this as soon the new OLS service support this again
+//                        if (searchModification == null) {
+//                            //look for the search modification in the PSI-MOD ontology by name and UNIMOD accession
+//                            searchModification = olsService.findModificationByNameAndUnimodAccession(SearchModification.class, cvTerm.getName(), cvTerm.getAccession());
+//                        }
                         if (searchModification != null) {
                             //add to cached modifications with the UNIMOD accession as key
                             cachedSearchModifications.put(cvTerm.getAccession(), searchModification);
                         }
                         break;
-                    case "PSI-MOD":
-                        //look for the search modification in the PSI-MOD ontology by accession
-                        searchModification = olsService.findModificationByAccession(SearchModification.class, cvTerm.getAccession());
-                        if (searchModification != null) {
-                            //add to cached search modifications with the PSI-MOD accession as key
-                            cachedSearchModifications.put(searchModification.getAccession(), searchModification);
+                    case "PSI-MOD": {
+                        try {
+                            //look for the search modification in the PSI-MOD ontology by accession
+                            searchModification = newOlsService.findModificationByAccession(SearchModification.class, cvTerm.getAccession());
+                        } catch (RestClientException | IOException ex) {
+                            LOGGER.error(ex.getMessage(), ex);
                         }
-                        break;
+                    }
+                    if (searchModification != null) {
+                        //add to cached search modifications with the PSI-MOD accession as key
+                        cachedSearchModifications.put(searchModification.getAccession(), searchModification);
+                    }
+                    break;
                     default:
                         throw new IllegalStateException("Should not be able to get here.");
                 }
@@ -186,11 +199,13 @@ public class UtilitiesPtmSettingsMapper {
     }
 
     /**
-     * Map the given modification name to a SearchModification instance. Return null if no mapping was possible.
+     * Map the given modification name to a SearchModification instance. Return
+     * null if no mapping was possible.
      *
      * @param modificationName the modification name
      * @return the Colims SearchModification instance
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case
+     * of a modification mapping problem
      */
     public SearchModification mapByName(final String modificationName) throws ModificationMappingException {
         SearchModification searchModification;
@@ -212,9 +227,9 @@ public class UtilitiesPtmSettingsMapper {
                     //the search modification was not found in the UNIMOD ontology
                     //look for the search modification in the PSI-MOD ontology by exact name
                     try {
-                        searchModification = olsService.findModificationByExactName(SearchModification.class, modificationName);
+                        searchModification = newOlsService.findModificationByExactName(SearchModification.class, modificationName);
                     } catch (IOException e) {
-                        //@// TODO: 23/03/16 handle this 
+                        //@// TODO: 23/03/16 handle this
                         e.printStackTrace();
                     }
 

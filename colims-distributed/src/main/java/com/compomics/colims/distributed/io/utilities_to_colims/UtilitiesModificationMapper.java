@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.web.client.RestClientException;
 
 /**
  * This class maps the Compomics Utilities modification related classes to
@@ -47,7 +48,7 @@ public class UtilitiesModificationMapper {
      * The Ontology Lookup Service service.
      */
     @Autowired
-    private OlsService olsService;
+    private OlsService newOlsService;
     /**
      * Contains the UNIMOD modifications.
      */
@@ -149,7 +150,7 @@ public class UtilitiesModificationMapper {
     public void clear() {
         cachedModifications.clear();
         //clear the cached modifications of the OlsService as well
-        olsService.getModificationsCache().clear();
+        newOlsService.getModificationsCache().clear();
     }
 
     /**
@@ -176,23 +177,29 @@ public class UtilitiesModificationMapper {
                     case "UNIMOD":
                         //look for the modification in the UNIMOD modifications
                         modification = unimodMarshaller.getModificationByName(Modification.class, cvTerm.getName());
-                        if (modification == null) {
-                            //look for the modification in the PSI-MOD ontology by name and UNIMOD accession
-                            modification = olsService.findModificationByNameAndUnimodAccession(Modification.class, cvTerm.getName(), cvTerm.getAccession());
-                        }
+                        //@todo uncomment this as soon the new OLS service support this again
+//                        if (modification == null) {
+//                            //look for the modification in the PSI-MOD ontology by name and UNIMOD accession
+//                            modification = olsService.findModificationByNameAndUnimodAccession(Modification.class, cvTerm.getName(), cvTerm.getAccession());
+//                        }
                         if (modification != null) {
                             //add to cached modifications with the UNIMOD accession as key
                             cachedModifications.put(cvTerm.getAccession(), modification);
                         }
                         break;
-                    case "PSI-MOD":
-                        //look for the modification in the PSI-MOD ontology by accession
-                        modification = olsService.findModificationByAccession(Modification.class, cvTerm.getAccession());
-                        if (modification != null) {
-                            //add to cached modifications with the PSI-MOD accession as key
-                            cachedModifications.put(modification.getAccession(), modification);
+                    case "PSI-MOD": {
+                        try {
+                            //look for the modification in the PSI-MOD ontology by accession
+                            modification = newOlsService.findModificationByAccession(Modification.class, cvTerm.getAccession());
+                        } catch (RestClientException | IOException ex) {
+                            LOGGER.error(ex.getMessage(), ex);
                         }
-                        break;
+                    }
+                    if (modification != null) {
+                        //add to cached modifications with the PSI-MOD accession as key
+                        cachedModifications.put(modification.getAccession(), modification);
+                    }
+                    break;
                     default:
                         throw new IllegalStateException("Should not be able to get here.");
                 }
@@ -249,9 +256,9 @@ public class UtilitiesModificationMapper {
                     //the modification was not found in the UNIMOD ontology
                     //look for the modification in the PSI-MOD ontology by exact name
                     try {
-                        modification = olsService.findModificationByExactName(Modification.class, modificationName);
+                        modification = newOlsService.findModificationByExactName(Modification.class, modificationName);
                     } catch (IOException e) {
-                        //@// TODO: 23/03/16 handle this 
+                        //@// TODO: 23/03/16 handle this
                         e.printStackTrace();
                     }
 

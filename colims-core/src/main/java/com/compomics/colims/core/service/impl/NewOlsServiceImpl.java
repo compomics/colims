@@ -8,6 +8,8 @@ import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.cv.TypedCvParam;
+import com.compomics.colims.model.enums.CvParamType;
+import com.compomics.colims.model.factory.CvParamFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -25,6 +27,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * Implementation of the OlsService interface.
+ *
  * @author Niels Hulstaert
  */
 @Service("newOlsService")
@@ -50,10 +54,13 @@ public class NewOlsServiceImpl implements OlsService {
     private static final String NUMBERS_FOUND = "numFound";
     private static final String DOCS = "docs";
     private static final String MOD_ONTOLOGY_NAMESPACE = "mod";
-    private static final String MOD_SEARCH_NAME_URL = OLS_BASE_SEARCH_URL + "{name}&ontology=mod&exact=true&queryFields=label";
-    private static final String MOD_OBO_ID_QUERY = "/" + MOD_ONTOLOGY_NAMESPACE + "/terms?obo_id={obo_id}";
     private static final String TERMS = "terms";
     private static final String OBO_ID = "obo_id";
+    private static final String LABEL = "label";
+    private static final String MOD_EXACT_NAME_QUERY = OLS_BASE_SEARCH_URL + "{name}&ontology=mod&exact=true&queryFields=label";
+    private static final String MOD_OBO_ID_QUERY = "/" + MOD_ONTOLOGY_NAMESPACE + "/terms?obo_id={obo_id}";
+    private static final String TERMS_OBO_ID_QUERY = OLS_BASE_URL + "/" + "{ontology_namespace}/terms?obo_id={obo_id}";
+    private static final String MS_LABEL_QUERY = OLS_BASE_SEARCH_URL + "{name}&ontology=ms&queryFields=label";
     private static final int PAGE_SIZE = 20;
 
     /**
@@ -177,7 +184,7 @@ public class NewOlsServiceImpl implements OlsService {
     }
 
     @Override
-    public List<OlsSearchResult> pagedSearch(String searchUrl, int startIndex, int pageSize) throws RestClientException, IOException {
+    public List<OlsSearchResult> doPagedSearch(String searchUrl, int startIndex, int pageSize) throws RestClientException, IOException {
         List<OlsSearchResult> searchResults = new ArrayList<>();
 
         //get the response
@@ -227,11 +234,29 @@ public class NewOlsServiceImpl implements OlsService {
     }
 
     @Override
+    public String getTermDescriptionByOboId(String ontologyNamespace, String oboId) throws RestClientException, IOException {
+        String description = "";
+
+        //get the response
+        ResponseEntity<String> response = restTemplate.getForEntity(TERMS_OBO_ID_QUERY, String.class, ontologyNamespace, oboId);
+
+        ObjectReader objectReader = objectMapper.reader();
+        JsonNode responseBody = objectReader.readTree(response.getBody());
+
+        Iterator<JsonNode> termIterator = responseBody.get(EMBEDDED).get(TERMS).iterator();
+        if (termIterator.hasNext()) {
+            description = termIterator.next().get("description").get(0).asText();
+        }
+
+        return description;
+    }
+
+    @Override
     public <T extends AbstractModification> T findModificationByExactName(Class<T> clazz, final String name) throws RestClientException, IOException {
         T modification = null;
 
         //get the response
-        ResponseEntity<String> response = restTemplate.getForEntity(MOD_SEARCH_NAME_URL, String.class, name);
+        ResponseEntity<String> response = restTemplate.getForEntity(MOD_EXACT_NAME_QUERY, String.class, name);
 
         ObjectReader objectReader = objectMapper.reader();
         JsonNode responseNode = objectReader.readTree(response.getBody()).get(RESPONSE);
@@ -245,50 +270,11 @@ public class NewOlsServiceImpl implements OlsService {
             modification = findModificationByAccession(clazz, modificationNode.get(OBO_ID).textValue());
         }
 
-        System.out.println("-------------");
-//        //find the modification by exact name
-//        Map modificationTerms = olsClient.getTermsByExactName(name, MOD_ONTOLOGY_LABEL);
-//        if (modificationTerms.getItem() != null) {
-//            //get the modification accession
-//            for (MapItem mapItem : modificationTerms.getItem()) {
-//                modification = findModificationByAccession(clazz, mapItem.getKey().toString());
-//            }
-//        }
-
         return modification;
     }
 
     @Override
-    public List<Modification> findModificationByName(final String name) {
-        List<Modification> modifications = new ArrayList<>();
-
-        ResponseEntity<String> response = restTemplate.getForEntity("http://www.ebi.ac.uk/ols/beta/api/search?q={name}&ontology=mod&exact=true&queryFields=label", String.class, name, "mod", "false");
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            JsonNode root = mapper.readTree(response.getBody());
-            System.out.println("---------------");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-//        //find the modifications by name
-//        Map modificationsTerms = olsClient.getTermsByName(name, MOD_ONTOLOGY_LABEL, false);
-//
-//        if (modificationsTerms.getItem() != null) {
-//            //get the modifications
-//            modificationsTerms.getItem()
-//                    .stream()
-//                    .map((mapItem) -> findModificationByAccession(Modification.class, mapItem.getKey().toString()))
-//                    .filter((modification) -> (modification != null))
-//                    .forEach((modification) -> {
-//                        modifications.add(modification);
-//                    });
-//        }
-        return modifications;
-    }
-
-    @Override
-    public <T extends AbstractModification> T findModificationByAccession(Class<T> clazz, String accession) {
+    public <T extends AbstractModification> T findModificationByAccession(Class<T> clazz, String accession) throws RestClientException, IOException {
         T modification = null;
 
         //look for the modification in the cache
@@ -304,14 +290,10 @@ public class NewOlsServiceImpl implements OlsService {
              * Get the modification from the REST service, catch the error in
              * case nothing was found or some other problem.
              */
-            try {
-                modification = getByPsiModAccession(clazz, accession);
+            modification = getByPsiModAccession(clazz, accession);
 
-                //add modification to the cache
-                modificationsCache.put(accession, modification);
-            } catch (IOException | RestClientException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
+            //add modification to the cache
+            modificationsCache.put(accession, modification);
         }
 
         return modification;
@@ -324,22 +306,41 @@ public class NewOlsServiceImpl implements OlsService {
     }
 
     @Override
-    public TypedCvParam findEnzymeByName(String name) {
+    public TypedCvParam findEnzymeByName(String name) throws RestClientException, IOException {
         TypedCvParam enzyme = null;
 
-//        //find the enzyme by name
-//        Map enzymeTerms = olsClient.getTermsByName(name, MS_ONTOLOGY_LABEL, false);
-//        if (enzymeTerms.getItem() != null) {
-//            for (MapItem mapItem : enzymeTerms.getItem()) {
-//                String enzymeName = mapItem.getValue().toString();
-//                if (enzymeName.equalsIgnoreCase(name)) {
-//                    enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY_TITLE, MS_ONTOLOGY_LABEL, mapItem.getKey().toString(), enzymeName);
-//                    break;
-//                }
-//            }
-//        }
-//        return enzyme;
-        return null;
+        //get the response
+        ResponseEntity<String> response = restTemplate.getForEntity(MS_LABEL_QUERY, String.class, name);
+
+        ObjectReader objectReader = objectMapper.reader();
+        JsonNode responseNode = objectReader.readTree(response.getBody()).get(RESPONSE);
+
+        //check if anything was found
+        int numFound = responseNode.get(NUMBERS_FOUND).asInt();
+        if (numFound > 0) {
+            //get the docs node
+            JsonNode docsNode = responseNode.get(DOCS);
+
+            Iterator<JsonNode> children = docsNode.elements();
+            while (children.hasNext()) {
+                JsonNode child = children.next();
+                if (child.has(LABEL)) {
+                    String label = child.get(LABEL).asText();
+                    if (label.equalsIgnoreCase(name)) {
+                        OntologyTerm ontologyTerm = objectReader.treeToValue(child, OntologyTerm.class);
+                        //get the ontology title
+                        List<String> namespaces = new ArrayList<>();
+                        namespaces.add(ontologyTerm.getOntologyNamespace());
+                        List<Ontology> ontologies = getOntologiesByNamespace(namespaces);
+                        ontologyTerm.setOntologyTitle(ontologies.get(0).getTitle());
+                        enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, ontologies.get(0).getTitle(), ontologyTerm.getLabel(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                        break;
+                    }
+                }
+            }
+        }
+
+        return enzyme;
     }
 
     /**

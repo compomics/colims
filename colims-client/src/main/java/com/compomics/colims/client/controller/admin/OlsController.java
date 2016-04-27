@@ -286,6 +286,11 @@ public class OlsController implements Controllable {
         olsDialog.setVisible(true);
     }
 
+    /**
+     * Show the OLS dialog with an OntologyTerm passed as callback.
+     *
+     * @param ontologyTerm the OntologyTerm callback instance
+     */
     public void showView(OntologyTerm ontologyTerm) {
         //keep a callback reference for the result of the search
         this.ontologyTerm = ontologyTerm;
@@ -419,7 +424,7 @@ public class OlsController implements Controllable {
      */
     private void doPagedSearch(int startIndex, int newPageIndex) {
         try {
-            GlazedLists.replaceAll(searchResults, newOlsService.pagedSearch(searchResultMetadata.getRequestUrl(), startIndex, PAGE_SIZE), true);
+            GlazedLists.replaceAll(searchResults, newOlsService.doPagedSearch(searchResultMetadata.getRequestUrl(), startIndex, PAGE_SIZE), true);
             olsSearchResultTableModel.setPage(newPageIndex);
             olsDialog.getSearchResultPageLabel().setText(olsSearchResultTableModel.getPageIndicator());
         } catch (HttpClientErrorException ex) {

@@ -5,21 +5,25 @@ import com.compomics.colims.core.model.ols.OlsSearchResult;
 import com.compomics.colims.core.model.ols.SearchResultMetadata;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.AbstractModification;
-import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.cv.TypedCvParam;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import org.springframework.web.client.RestClientException;
 
 /**
+ * Implementation of the OlsService interface.
+ *
  * @author Niels Hulstaert
+ * @deprecated this implementation is based on the soon to be deprecated version
+ * of the Ontology Lookup Service (OLS).
  */
-@Service("olsService")
+//@Service("olsService")
+@Deprecated
 public class OlsServiceImpl implements OlsService {
 
     /**
@@ -31,8 +35,10 @@ public class OlsServiceImpl implements OlsService {
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
 
     /**
-     * Modifications cache to prevent unnecessary webservice lookups. This map can contains instances of {@link
-     * com.compomics.colims.model.Modification} and {@link com.compomics.colims.model.SearchModification}.
+     * Modifications cache to prevent unnecessary webservice lookups. This map
+     * can contains instances of {@link
+     * com.compomics.colims.model.Modification} and
+     * {@link com.compomics.colims.model.SearchModification}.
      */
     private final java.util.Map<String, AbstractModification> modificationsCache = new HashMap<>();
 
@@ -50,27 +56,6 @@ public class OlsServiceImpl implements OlsService {
 //        }
 //
 //        return modification;
-        return null;
-    }
-
-    @Override
-    public List<Modification> findModificationByName(final String name) {
-//        List<Modification> modifications = new ArrayList<>();
-//
-//        //find the modifications by name
-//        Map modificationsTerms = olsClient.getTermsByName(name, MOD_ONTOLOGY_LABEL, false);
-//
-//        if (modificationsTerms.getItem() != null) {
-//            //get the modificiations
-//            modificationsTerms.getItem()
-//                    .stream()
-//                    .map((mapItem) -> findModificationByAccession(Modification.class, mapItem.getKey().toString()))
-//                    .filter((modification) -> (modification != null))
-//                    .forEach((modification) -> {
-//                        modifications.add(modification);
-//                    });
-//        }
-//        return modifications;
         return null;
     }
 
@@ -214,11 +199,12 @@ public class OlsServiceImpl implements OlsService {
     }
 
     /**
-     * Copy (the instance fields of) the modification from one subclass of AbstractModification to another.
+     * Copy (the instance fields of) the modification from one subclass of
+     * AbstractModification to another.
      *
-     * @param clazz     the subclass of AbstractModification
+     * @param clazz the subclass of AbstractModification
      * @param modToCopy the modification to copy
-     * @param <T>       the AbstractModification subclass
+     * @param <T> the AbstractModification subclass
      * @return the copied modification
      */
     private <T extends AbstractModification> T copyModification(Class<T> clazz, AbstractModification modToCopy) {
@@ -257,7 +243,12 @@ public class OlsServiceImpl implements OlsService {
     }
 
     @Override
-    public List<OlsSearchResult> pagedSearch(String searchUrl, int page, int pageSize) throws HttpClientErrorException, IOException {
+    public List<OlsSearchResult> doPagedSearch(String searchUrl, int page, int pageSize) throws HttpClientErrorException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String getTermDescriptionByOboId(String ontologyNamespace, String oboId) throws RestClientException, IOException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

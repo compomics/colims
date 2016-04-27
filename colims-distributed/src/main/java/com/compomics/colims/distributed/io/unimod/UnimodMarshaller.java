@@ -22,6 +22,9 @@ import java.util.Map;
 @Component("unimodMarshaller")
 public class UnimodMarshaller {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(UnimodMarshaller.class);
 
     private static final Namespace NAMESPACE = Namespace.getNamespace("http://www.unimod.org/xmlns/schema/unimod_2");
