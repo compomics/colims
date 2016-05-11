@@ -29,7 +29,7 @@ public class ParseUtils {
      * Parse the given parameters file and put the parameters in a map.
      *
      * @param parametersFile the given parameters file
-     * @param toLowerCase    whether or not to convert the parameter namses to lowercase
+     * @param toLowerCase    whether or not to convert the parameter names to lowercase
      * @return the map of parsed parameters (key: the parameter name; value: the parameter value)
      * @throws IOException thrown in case of of an I/O related problem
      */

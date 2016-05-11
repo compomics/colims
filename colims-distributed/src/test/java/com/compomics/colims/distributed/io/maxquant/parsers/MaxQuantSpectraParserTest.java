@@ -21,6 +21,9 @@ public class MaxQuantSpectraParserTest {
 
     @Test
     public void testParse() throws Exception {
+        maxQuantSpectraParser.
+
+
         // excluding peaklist as is tested separately
 //        Map<Spectrum, Integer> result = maxQuantSpectrumParser.parse(MaxQuantTestSuite.msmsFile);
 //        List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.msmsFile.toPath());

@@ -30,6 +30,9 @@ import java.util.stream.Collectors;
 @Component("maxQuantParser")
 public class MaxQuantParser {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
 
     private static final String BLOCK_SEPARATOR = ">";

@@ -48,7 +48,7 @@ public class MaxQuantAplParser {
      */
     private FragmentationType fragmentationType;
     /**
-     * The mass analyzer type;
+     * The mass analyzer type.
      */
     private MaxQuantConstants.Analyzer massAnalyzerType;
 
@@ -63,6 +63,7 @@ public class MaxQuantAplParser {
      * @throws IOException thrown in case of an I/O related problem
      */
     public void init(final File andromedaDirectory) throws IOException {
+
         /**
          * Parse the apl summary file 'aplfiles.txt' to extract the location of the apl spectrum files
          * and the mass analyzer and fragmentation type.
@@ -71,6 +72,7 @@ public class MaxQuantAplParser {
             throw new FileNotFoundException("The andromeda directory " + andromedaDirectory.getPath() + " could not be found.");
         }
         this.andromedaDirectory = andromedaDirectory;
+
         File aplSummaryFile = new File(andromedaDirectory, MaxQuantConstants.APL_SUMMARY_FILE.value());
         if (!aplSummaryFile.exists()) {
             throw new FileNotFoundException("The apl summary file " + MaxQuantConstants.APL_SUMMARY_FILE + " could not be found.");
@@ -82,6 +84,7 @@ public class MaxQuantAplParser {
         if (first.isPresent()) {
             parseMassAnalyzerAndFragmentationType(first.get());
         }
+        System.out.println("");
     }
 
     /**
@@ -94,10 +97,11 @@ public class MaxQuantAplParser {
      */
     public void parse(Map<SpectrumKey, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws FileNotFoundException {
         for (String aplFilePath : aplFiles.keySet()) {
-            File apfile = new File(andromedaDirectory, aplFilePath);
-            if (!apfile.exists()) {
+            File aplfile = new File(andromedaDirectory, aplFilePath);
+            if (!aplfile.exists()) {
                 throw new FileNotFoundException("The apl spectrum file " + aplFilePath + " could not be found.");
             }
+            parseAplFile(aplfile, spectra, false);
 
         }
     }
@@ -119,7 +123,7 @@ public class MaxQuantAplParser {
                 fragmentationType = FragmentationType.valueOf(split[0].toUpperCase());
                 massAnalyzerType = MaxQuantConstants.Analyzer.valueOf(split[1].toUpperCase());
             } catch (IllegalArgumentException e) {
-                //do nothing
+                LOGGER.error(e.getMessage(), e);
             }
         }
     }
@@ -128,14 +132,14 @@ public class MaxQuantAplParser {
         try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(aplFile.toURI()))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                if (line.equals(APL_SPECTUM_START)){
+                if (line.equals(APL_SPECTUM_START)) {
                     //
                     String mzValue = bufferedReader.readLine();
 
                     String charge;
                     //store m/z value and charge in case it's an unidentified spectrum
                     //and these need to be stored as well
-                    if(includeUnidentifiedSpectra){
+                    if (includeUnidentifiedSpectra) {
 
                     }
                 }

@@ -52,7 +52,7 @@ public class MaxQuantSpectraParser {
     };
 
     /**
-     * The MaxQuantAplParser for parsing the actual spectra.
+     * The MaxQuantAplParser for parsing the .apl spectra files.
      */
     @Autowired
     private MaxQuantAplParser maxQuantAplParser;
@@ -64,7 +64,7 @@ public class MaxQuantSpectraParser {
         maxQuantAplParser.init(new File(MaxQuantConstants.ANDROMEDA_DIRECTORY.value()));
 
         //parse the msms.txt file
-        spectra = parseMsmsFile(msmsFile);
+        spectra = parse(msmsFile);
 
         //parse the apl files containing the spectrum peak lists
         maxQuantAplParser.parse(spectra, includeUnidentifiedSpectra);
@@ -79,20 +79,21 @@ public class MaxQuantSpectraParser {
      * @param msmsFile the MaxQuant msms.txt file
      * @return the mapped spectra
      */
-    private Map<SpectrumKey, Spectrum> parseMsmsFile(File msmsFile) throws IOException {
+    private Map<SpectrumKey, Spectrum> parse(File msmsFile) throws IOException {
         Map<SpectrumKey, Spectrum> spectra = new HashMap<>();
 
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);
         for (Map<String, String> spectrumValues : valuesIterator) {
             String idString = spectrumValues.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName());
             Long id = Long.parseLong(idString);
+
             //concatenate the RAW file name and scan index
             String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName())
                     + KEY_MIDDLE
                     + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_INDEX.getDefaultColumnName());
 
-//            Spectrum spectrum = mapMsmsSpectrum(spectrumValues);
-//            spectra.put(new SpectrumKey(id, aplKey), spectrum);
+            Spectrum spectrum = mapMsmsSpectrum(aplKey, spectrumValues);
+            spectra.put(new SpectrumKey(id, aplKey), spectrum);
         }
 
         return spectra;
