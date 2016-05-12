@@ -44,7 +44,7 @@ public class TaskManagementController implements Controllable {
     //model
     @Value("${distributed.queue.dbtask}")
     private String storageQueueName;
-    @Value("${distributed.queue.completed}")
+    @Value("${distributed.topic.completed}")
     private String storedQueueName;
     @Value("${distributed.queue.error}")
     private String errorQueueName;
