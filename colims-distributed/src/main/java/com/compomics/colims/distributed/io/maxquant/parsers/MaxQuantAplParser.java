@@ -3,6 +3,7 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.enums.FragmentationType;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,6 +36,9 @@ public class MaxQuantAplParser {
     private static final String ANALYZER_TYPE_DELIMITER = "\\.";
     private static final String APL_SPECTUM_START = "peaklist start";
     private static final String APL_SPECTUM_END = "peaklist end";
+    private static final String APL_HEADER_DELIMITER = "=";
+    private static final String APL_MZ = "mz";
+    private static final String APL_HEADER_PREFIX = "header=";
 
     /**
      * The MaxQuant andromeda directory.
@@ -54,6 +59,14 @@ public class MaxQuantAplParser {
 
     public FragmentationType getFragmentationType() {
         return fragmentationType;
+    }
+
+    public Map<String, String> getAplFiles() {
+        return aplFiles;
+    }
+
+    public MaxQuantConstants.Analyzer getMassAnalyzerType() {
+        return massAnalyzerType;
     }
 
     /**
@@ -78,13 +91,15 @@ public class MaxQuantAplParser {
             throw new FileNotFoundException("The apl summary file " + MaxQuantConstants.APL_SUMMARY_FILE + " could not be found.");
         }
 
-        aplFiles = ParseUtils.parseParameters(aplSummaryFile, false);
+        aplFiles = ParseUtils.parseParameters(aplSummaryFile, MaxQuantConstants.PARAM_DELIMITER.value());
         //get the mass analyzer and type
         Optional<String> first = aplFiles.keySet().stream().findFirst();
         if (first.isPresent()) {
             parseMassAnalyzerAndFragmentationType(first.get());
+        } else {
+            fragmentationType = FragmentationType.UNKNOWN;
+            massAnalyzerType = MaxQuantConstants.Analyzer.UNKNOWN;
         }
-        System.out.println("");
     }
 
     /**
@@ -97,12 +112,12 @@ public class MaxQuantAplParser {
      */
     public void parse(Map<SpectrumKey, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws FileNotFoundException {
         for (String aplFilePath : aplFiles.keySet()) {
-            File aplfile = new File(andromedaDirectory, aplFilePath);
+            //get the apl file by the parent directory
+            File aplfile = new File(andromedaDirectory, FilenameUtils.getName(aplFilePath));
             if (!aplfile.exists()) {
                 throw new FileNotFoundException("The apl spectrum file " + aplFilePath + " could not be found.");
             }
-            parseAplFile(aplfile, spectra, false);
-
+            parseAplFile(aplfile, spectra, includeUnidentifiedSpectra);
         }
     }
 
@@ -128,20 +143,39 @@ public class MaxQuantAplParser {
         }
     }
 
+    /**
+     * Parse the give MaqQuant .apl spectrum file and update the spectra map.
+     *
+     * @param aplFile                    the MaqQuant .apl spectrum file
+     * @param spectra                    the spectra map
+     * @param includeUnidentifiedSpectra whether or not to include unidentified spectra
+     */
     private void parseAplFile(File aplFile, Map<SpectrumKey, Spectrum> spectra, boolean includeUnidentifiedSpectra) {
         try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(aplFile.toURI()))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                if (line.equals(APL_SPECTUM_START)) {
-                    //
-                    String mzValue = bufferedReader.readLine();
-
-                    String charge;
-                    //store m/z value and charge in case it's an unidentified spectrum
-                    //and these need to be stored as well
-                    if (includeUnidentifiedSpectra) {
-
+                if (line.startsWith(APL_SPECTUM_START)) {
+                    //parse spectrum header part
+                    Map<String, String> headers = new HashMap<>();
+                    while (!Character.isDigit(line.charAt(0))) {
+                        line = bufferedReader.readLine();
+                        String[] split = line.split(APL_HEADER_DELIMITER);
+                        headers.put(split[0], split[1]);
                     }
+
+                    System.out.println("");
+
+//                    if (line.equals(APL_SPECTUM_START)) {
+//                        //
+//                        String mzValue = bufferedReader.readLine();
+//
+//                        String charge;
+//                        //store m/z value and charge in case it's an unidentified spectrum
+//                        //and these need to be stored as well
+//                        if (includeUnidentifiedSpectra) {
+//
+//                        }
+//                    }
                 }
             }
         } catch (IOException e) {

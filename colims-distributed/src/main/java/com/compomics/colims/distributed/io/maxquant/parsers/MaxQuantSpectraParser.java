@@ -73,8 +73,8 @@ public class MaxQuantSpectraParser {
     }
 
     /**
-     * Parse the msms.txt file. This method returns a map with the String concatenation of RAW file name and scan
-     * sequence number as key and the partially mapped Spectrum instance as value for each row.
+     * Parse the msms.txt file. This method returns a map with a {@link SpectrumKey} instance as key and the partially
+     * mapped Spectrum instance as value for each row.
      *
      * @param msmsFile the MaxQuant msms.txt file
      * @return the mapped spectra

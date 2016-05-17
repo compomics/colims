@@ -4,6 +4,7 @@ import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.TypedCvParamService;
 import com.compomics.colims.core.util.IOUtils;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantParameterHeaders;
@@ -142,7 +143,7 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setSearchType(defaultSearchType);
 
         //parse the parameters file and iterate over the parameters
-        Map<String, String> parameters = ParseUtils.parseParameters(new File(txtFolder, PARAMETERS_FILE), true);
+        Map<String, String> parameters = ParseUtils.parseParameters(new File(txtFolder, PARAMETERS_FILE), MaxQuantConstants.PARAM_DELIMITER.value(), true);
         //get the MaxQuant version
         String versionParameter = parameters.get(MaxQuantParameterHeaders.VERSION.getDefaultColumnName().toLowerCase());
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {

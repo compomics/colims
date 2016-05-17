@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,10 @@ public class MaxQuantSpectraParserTest {
     @Autowired
     private MaxQuantSpectraParser maxQuantSpectraParser;
 
+    @Ignore
     @Test
     public void testParse() throws Exception {
-        maxQuantSpectraParser.
+//        maxQuantSpectraParser.
 
 
         // excluding peaklist as is tested separately
@@ -39,6 +41,7 @@ public class MaxQuantSpectraParserTest {
 //        //assertThat(result.get(0).asMgf(), containsString("TITLE=" + result.get(0).getSpectrumTitle()));
     }
 
+    @Ignore
     @Test
     public void testParsePeakList() {
         String peaks = "y1;y2;y3";
