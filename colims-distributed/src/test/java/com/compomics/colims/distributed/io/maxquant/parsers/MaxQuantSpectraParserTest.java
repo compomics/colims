@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class MaxQuantSpectraParserTest {
 
     @Test
     public void testParse() throws Exception {
-        maxQuantSpectraParser.
+        maxQuantSpectraParser.parse(MaxQuantTestSuite.msmsFile,MaxQuantTestSuite.maxQuantAndromedaDirectory,true);
 
 
         // excluding peaklist as is tested separately
