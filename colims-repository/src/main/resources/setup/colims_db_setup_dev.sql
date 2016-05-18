@@ -1,4 +1,4 @@
-
+use colims;
     create table analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,

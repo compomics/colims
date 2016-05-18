@@ -156,8 +156,8 @@ public class NewOlsServiceTest {
         Assert.assertNotNull(modification);
         Assert.assertEquals("MOD:00935", modification.getAccession());
         Assert.assertEquals("methionine oxidation with neutral loss of 64 Da", modification.getName());
-//        Assert.assertEquals(-63.998286, modification.getMonoIsotopicMassShift(), 0.001);
-//        Assert.assertEquals(-64.1, modification.getAverageMassShift(), 0.001);
+        Assert.assertEquals(-63.998286, modification.getMonoIsotopicMassShift(), 0.001);
+        Assert.assertEquals(-64.1, modification.getAverageMassShift(), 0.001);
     }
 
     /**
