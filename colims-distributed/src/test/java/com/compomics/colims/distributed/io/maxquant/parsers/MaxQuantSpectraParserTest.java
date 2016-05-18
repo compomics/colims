@@ -1,5 +1,7 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
+import com.compomics.colims.model.Spectrum;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,38 +22,9 @@ public class MaxQuantSpectraParserTest {
     @Autowired
     private MaxQuantSpectraParser maxQuantSpectraParser;
 
-    @Ignore
     @Test
     public void testParse() throws Exception {
-//        maxQuantSpectraParser.
-
-
-        // excluding peaklist as is tested separately
-//        Map<Spectrum, Integer> result = maxQuantSpectrumParser.parse(MaxQuantTestSuite.msmsFile);
-//        List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.msmsFile.toPath());
-//
-//        Spectrum spectrum = result.keySet().iterator().next();
-//
-//        // TODO: better test cases
-//
-//        assertThat(result.size(), is(rawFile.size() - 1));
-//        assertThat(rawFile.get(1), containsString(spectrum.getTitle().split("-")[0]));
-//        //assertThat(result.get(0).getPeakList().size(), is(19));
-//        assertThat(spectrum.getRetentionTime(), not(0.0));
-//        //assertThat(result.get(0).asMgf(), containsString("TITLE=" + result.get(0).getSpectrumTitle()));
-    }
-
-    @Ignore
-    @Test
-    public void testParsePeakList() {
-        String peaks = "y1;y2;y3";
-        String intensities = "100.0;200.2;300.3";
-        String masses = "500.5;600.6;700.7";
-
-        Map<Double, Double> peakMap = maxQuantSpectraParser.parsePeakList(peaks, intensities, masses);
-
-        assertThat(peakMap.size(), is(3));
-        assertTrue(peakMap.keySet().contains(500.5));
-        assertThat(peakMap.get(500.5), is(100.0));
+        Map<SpectrumKey, Spectrum> spectra = maxQuantSpectraParser.parse(MaxQuantTestSuite.msmsFile, true);
+        System.out.println("------------");
     }
 }

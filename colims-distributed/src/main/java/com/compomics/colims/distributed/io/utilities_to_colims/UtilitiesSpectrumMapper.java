@@ -6,18 +6,15 @@ import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Precursor;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.zip.GZIPOutputStream;
-
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 /**
  * This class maps a Compomics Utilities spectrum to a Colims spectrum.
@@ -95,10 +92,8 @@ public class UtilitiesSpectrumMapper {
             throw new MappingException(ex.getMessage(), ex.getCause());
         }
 
-        //set SpectrumFiles
-        List<SpectrumFile> spectrumFiles = new ArrayList<>();
-        spectrumFiles.add(spectrumFile);
-        targetSpectrum.setSpectrumFiles(spectrumFiles);
+        //set entity relations
+        targetSpectrum.getSpectrumFiles().add(spectrumFile);
 
         LOGGER.debug("Finished mapping MSnSpectrum with title" + sourceSpectrum.getSpectrumTitle());
     }

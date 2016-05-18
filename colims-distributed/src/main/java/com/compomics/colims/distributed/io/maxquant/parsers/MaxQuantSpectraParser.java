@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -36,7 +35,7 @@ public class MaxQuantSpectraParser {
     /**
      * The start of the spectrum header in the apl file.
      */
-    private static final String KEY_START = "header=RawFile: ";
+    private static final String KEY_START = "RawFile: ";
     private static final String KEY_MIDDLE = " Index: ";
     private static final String TITLE_DELIMITER = "-";
     private static final String NOT_A_NUMBER = "nan";
@@ -57,7 +56,7 @@ public class MaxQuantSpectraParser {
     @Autowired
     private MaxQuantAplParser maxQuantAplParser;
 
-    public Map<SpectrumKey, Spectrum> parse(File msmsFile, File aplFiles, boolean includeUnidentifiedSpectra) throws IOException {
+    public Map<SpectrumKey, Spectrum> parse(File msmsFile, boolean includeUnidentifiedSpectra) throws IOException {
         Map<SpectrumKey, Spectrum> spectra;
 
         //parse the aplFiles summary file
@@ -131,37 +130,7 @@ public class MaxQuantSpectraParser {
         return spectrum;
     }
 
-    /**
-     * Parse a series of strings (separated with ;) (not winky face) and create some mad peaks
-     *
-     * @param peaks       String of peaks
-     * @param intensities String of intensities
-     * @param masses      String of masses
-     * @return A map of peaks keyed with m/z
-     */
-    public Map<Double, Double> parsePeakList(String peaks, String intensities, String masses) throws IllegalArgumentException {
-        Map<Double, Double> peakMap = new TreeMap<>();
-
-        if (!peaks.isEmpty() && !intensities.isEmpty() && !masses.isEmpty()) {
-            String[] peakList = peaks.split(";");
-            String[] intensityList = intensities.split(";");
-            String[] massList = masses.split(";");
-
-            if (intensityList.length != peakList.length || massList.length != peakList.length) {
-                throw new IllegalArgumentException("Input lists are not equal length");
-            }
-
-            for (int i = 0; i < peakList.length; i++) {
-                int charge = 1;
-
-                Double mZ = Double.parseDouble(massList[i]) / charge;
-                peakMap.put(mZ, Double.parseDouble(intensityList[i]));
-            }
-        }
-
-        return peakMap;
-    }
-
+    @Deprecated
     private SpectrumFile spectrumToMGF(Spectrum spectrum, String scanNumber, Map<Double, Double> peakList) {
         StringBuilder results = new StringBuilder();
         String newLine = System.getProperty("line.separator");
