@@ -88,7 +88,7 @@ public class Spectrum extends DatabaseEntity {
      * The SpectrumFile instances linked to this spectrum.
      */
     @OneToMany(mappedBy = "spectrum", cascade = CascadeType.ALL)
-    private List<SpectrumFile> spectrumFiles = new ArrayList<>();
+    private List<SpectrumFile>  spectrumFiles = new ArrayList<>();
 
     /**
      * No-arg constructor.

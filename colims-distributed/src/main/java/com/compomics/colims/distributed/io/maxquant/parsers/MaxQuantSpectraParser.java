@@ -56,8 +56,8 @@ public class MaxQuantSpectraParser {
     @Autowired
     private MaxQuantAplParser maxQuantAplParser;
 
-    public Map<SpectrumKey, Spectrum> parse(File msmsFile, boolean includeUnidentifiedSpectra) throws IOException {
-        Map<SpectrumKey, Spectrum> spectra;
+    public Map<String, Spectrum> parse(File msmsFile, boolean includeUnidentifiedSpectra) throws IOException {
+        Map<String, Spectrum> spectra;
 
         //parse the aplFiles summary file
         maxQuantAplParser.init(new File(MaxQuantConstants.ANDROMEDA_DIRECTORY.value()));
@@ -72,19 +72,19 @@ public class MaxQuantSpectraParser {
     }
 
     /**
-     * Parse the msms.txt file. This method returns a map with a {@link SpectrumKey} instance as key and the partially
+     * Parse the msms.txt file. This method returns a map with a String instance as key and the partially
      * mapped Spectrum instance as value for each row.
      *
      * @param msmsFile the MaxQuant msms.txt file
      * @return the mapped spectra
      */
-    private Map<SpectrumKey, Spectrum> parse(File msmsFile) throws IOException {
-        Map<SpectrumKey, Spectrum> spectra = new HashMap<>();
+    private Map<String, Spectrum> parse(File msmsFile) throws IOException {
+        Map<String, Spectrum> spectra = new HashMap<>();
 
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);
         for (Map<String, String> spectrumValues : valuesIterator) {
-            String idString = spectrumValues.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName());
-            Long id = Long.parseLong(idString);
+         //   String idString = spectrumValues.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName());
+        //    Long id = Long.parseLong(idString);
 
             //concatenate the RAW file name and scan index
             String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName())
@@ -92,7 +92,7 @@ public class MaxQuantSpectraParser {
                     + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_INDEX.getDefaultColumnName());
 
             Spectrum spectrum = mapMsmsSpectrum(aplKey, spectrumValues);
-            spectra.put(new SpectrumKey(id, aplKey), spectrum);
+            spectra.put( aplKey, spectrum);
         }
 
         return spectra;
