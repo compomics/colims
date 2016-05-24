@@ -20,6 +20,7 @@ import static org.junit.Assert.assertThat;
 
 /**
  * @author Davy & Iain
+ * @author niels
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
