@@ -90,6 +90,7 @@ public class MaxQuantAplParser {
         return aplFiles;
     }
 
+
     /**
      * Initialize the parser. This method parses the apl summary file.
      *
@@ -130,19 +131,16 @@ public class MaxQuantAplParser {
      * @param spectra                    the map of spectra (key: String apl header for linking purposes; value: the
      *                                   Colims Spectrum instance)
      * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
-     * @return list of mapped parsed spectra
      */
-    public List<Map<String, Spectrum>> parse(Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws FileNotFoundException {
-        List<Map<String, Spectrum>> parsedSpectraList = new ArrayList<>();
+    public void parse(Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws FileNotFoundException {
         for (String aplFilePath : aplFiles.keySet()) {
             //get the apl file by the parent directory
             File aplfile = new File(andromedaDirectory, FilenameUtils.getName(aplFilePath));
             if (!aplfile.exists()) {
                 throw new FileNotFoundException("The apl spectrum file " + aplFilePath + " could not be found.");
             }
-            parsedSpectraList.add(parseAplFile(aplfile, spectra, includeUnidentifiedSpectra));
+            parseAplFile(aplfile, spectra, includeUnidentifiedSpectra);
         }
-        return parsedSpectraList;
     }
 
     /**
@@ -173,12 +171,12 @@ public class MaxQuantAplParser {
      * @param aplFile                    the MaqQuant .apl spectrum file
      * @param spectra                    the spectra map
      * @param includeUnidentifiedSpectra whether or not to include unidentified spectra
-     * @return the mapped parsed spectra
      */
-    private Map<String, Spectrum> parseAplFile(File aplFile, Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) {
-        Map<String, Spectrum> allParsedSpectra = new HashMap<>();
+    private void parseAplFile(File aplFile, Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) {
         try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(aplFile.toURI()))) {
             Map<String, Spectrum> unidentifiedSpectra = new HashMap<>();
+            List<String> spectrumKeys = new ArrayList<>();
+            spectra.forEach( (k,v) -> spectrumKeys.add(k));
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
@@ -197,7 +195,7 @@ public class MaxQuantAplParser {
                     String header = org.apache.commons.lang3.StringUtils.substringBefore(headers.get(APL_HEADER), " Precursor");
                     Spectrum spectrum = null;
                     //check if the spectrum was identified and therefore can be found in the spectra map
-                    if (spectra.containsKey(header)) {
+                    if (spectrumKeys.contains(header)) {
                         spectrum = spectra.get(header);
                     } else if (spectrum == null && includeUnidentifiedSpectra) {
                         //make new Spectrum instance
@@ -246,7 +244,7 @@ public class MaxQuantAplParser {
 
                             //set entity relation between Spectrum and SpectrumFile
                             spectrum.getSpectrumFiles().add(spectrumFile);
-                            allParsedSpectra.put(header, spectrum);
+                            spectra.put(header, spectrum);
                         } catch (IOException ex) {
                             LOGGER.error(ex);
                         }
@@ -259,7 +257,6 @@ public class MaxQuantAplParser {
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return allParsedSpectra;
     }
 
 }

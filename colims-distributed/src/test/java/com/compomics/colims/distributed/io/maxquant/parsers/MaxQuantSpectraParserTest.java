@@ -24,7 +24,9 @@ public class MaxQuantSpectraParserTest {
 
     @Test
     public void testParse() throws Exception {
+
         Map<String, Spectrum> spectra = maxQuantSpectraParser.parse(MaxQuantTestSuite.msmsFile, true);
+
         System.out.println("------------");
     }
 }
