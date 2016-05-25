@@ -25,6 +25,7 @@ public class MaxQuantTestSuite {
 
     private static final String maxQuantVersion = "1.5.2.8";
 
+    public static File maxQuantDirectory;
     public static File maxQuantTextDirectory;
     public static File maxQuantAndromedaDirectory;
     public static File msmsFile;
@@ -37,6 +38,7 @@ public class MaxQuantTestSuite {
 
     static {
         try {
+            maxQuantDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion).getFile();
             maxQuantAndromedaDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "andromeda").getFile();
             String txtDirectoryPath = "data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "txt";
             maxQuantTextDirectory = new ClassPathResource(txtDirectoryPath).getFile();

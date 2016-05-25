@@ -8,6 +8,7 @@ import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
@@ -56,11 +57,11 @@ public class MaxQuantSpectraParser {
     @Autowired
     private MaxQuantAplParser maxQuantAplParser;
 
-    public Map<String, Spectrum> parse(File msmsFile, boolean includeUnidentifiedSpectra) throws IOException {
+    public Map<String, Spectrum> parse(File maxQuantDirectory, boolean includeUnidentifiedSpectra) throws IOException {
         Map<String, Spectrum> spectra;
-
+        File msmsFile = new FileSystemResource(maxQuantDirectory.getPath()+ File.separator + "txt" + File.separator + "msms.txt").getFile();
         //parse the aplFiles summary file
-        maxQuantAplParser.init(new File(MaxQuantConstants.ANDROMEDA_DIRECTORY.value()));
+        maxQuantAplParser.init(maxQuantDirectory);
 
         //parse the msms.txt file
         spectra = parse(msmsFile);
