@@ -7,6 +7,8 @@ import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -94,15 +96,16 @@ public class MaxQuantAplParser {
     /**
      * Initialize the parser. This method parses the apl summary file.
      *
-     * @param andromedaDirectory the MaxQuant andromeda directory
+     * @param maxQuantDirectory the MaxQuant andromeda directory
      * @throws IOException thrown in case of an I/O related problem
      */
-    public void init(final File andromedaDirectory) throws IOException {
+    public void init(final File maxQuantDirectory) throws IOException {
 
         /**
          * Parse the apl summary file 'aplfiles.txt' to extract the location of the apl spectrum files
          * and the mass analyzer and fragmentation type.
          */
+        File andromedaDirectory = new FileSystemResource(maxQuantDirectory.getPath()+ File.separator + "andromeda").getFile();
         if (!andromedaDirectory.exists()) {
             throw new FileNotFoundException("The andromeda directory " + andromedaDirectory.getPath() + " could not be found.");
         }

@@ -2,6 +2,7 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.model.Spectrum;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +26,8 @@ public class MaxQuantSpectraParserTest {
     @Test
     public void testParse() throws Exception {
 
-        Map<String, Spectrum> spectra = maxQuantSpectraParser.parse(MaxQuantTestSuite.msmsFile, true);
+        Map<String, Spectrum> spectra = maxQuantSpectraParser.parse(MaxQuantTestSuite.maxQuantDirectory, true);
+  //      Assert.assertEquals(1222, spectra.size());
 
         System.out.println("------------");
     }

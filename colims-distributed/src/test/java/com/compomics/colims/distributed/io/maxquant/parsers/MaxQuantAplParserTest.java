@@ -39,7 +39,7 @@ public class MaxQuantAplParserTest {
      */
     @Test
     public void testInit() throws Exception {
-        maxQuantAplParser.init(MaxQuantTestSuite.maxQuantAndromedaDirectory);
+        maxQuantAplParser.init(MaxQuantTestSuite.maxQuantDirectory);
 
         FragmentationType fragmentationType = maxQuantAplParser.getFragmentationType();
         MaxQuantConstants.Analyzer massAnalyzerType = maxQuantAplParser.getMassAnalyzerType();
@@ -51,13 +51,13 @@ public class MaxQuantAplParserTest {
     }
 
     /**
-     * Test the parse method.
+     * Test the parse method for identified spectra
      *
      * @throws Exception in case something goes wrong
      */
     @Test
     public void testParse() throws Exception {
-        maxQuantAplParser.init(MaxQuantTestSuite.maxQuantAndromedaDirectory);
+        maxQuantAplParser.init(MaxQuantTestSuite.maxQuantDirectory);
 
         //replace the apl files with one small one
         Map<String, String> aplFiles = maxQuantAplParser.getAplFiles();
@@ -81,7 +81,7 @@ public class MaxQuantAplParserTest {
         spectrum2.setRetentionTime(123.46);
         spectra.put(spectrumKey2, spectrum2);
 
-        maxQuantAplParser.parse(spectra, true);
+        maxQuantAplParser.parse(spectra, false);
         byte[] unzippedBytes = IOUtils.unzip(spectra.get(spectrumKey1).getSpectrumFiles().get(0).getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
              InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
@@ -96,12 +96,53 @@ public class MaxQuantAplParserTest {
                 headers.put(split[0], split[1]);
             }
             Assert.assertEquals("RawFile: 120329kw_JEnglish_JE10_1 Index: 496 Precursor: 0 _multi_", headers.get("TITLE"));
-     //       Assert.assertEquals(spectrum1.getRetentionTime().toString(), headers.get("RTINSECONDS"));
+            Assert.assertEquals(spectrum1.getRetentionTime().toString(), headers.get("RTINSECONDS"));
             Assert.assertEquals("303.176402121713", headers.get("PEPMASS"));
             Assert.assertEquals("1+", headers.get("CHARGE"));
         }catch (IOException ex) {
             LOGGER.error(ex);
         }
+
         System.out.println("");
+    }
+
+    /**
+     * Test the parse method for unidentified spectra
+     * @throws Exception
+     */
+    @Test
+    public void testParseUnidentified() throws Exception{
+        maxQuantAplParser.init(MaxQuantTestSuite.maxQuantDirectory);
+
+        //replace the apl files with one small one
+        Map<String, String> aplFiles = maxQuantAplParser.getAplFiles();
+        aplFiles.clear();
+        aplFiles.put("allSpectra.CID.ITMS.iso_0_part.apl", "");
+
+        String spectrumKey = "RawFile: 120329kw_JEnglish_JE10_1 Index: 496";
+
+        //create some dummy spectra for unidentified spectra
+        Map<String, Spectrum> spectra = new HashMap<>();
+        maxQuantAplParser.parse(spectra, true);
+
+        byte[] unzippedBytes = IOUtils.unzip(spectra.get(spectrumKey).getSpectrumFiles().get(0).getContent());
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
+             InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
+             BufferedReader br = new BufferedReader(isr)) {
+            String line;
+            Map<String, String> headers = new HashMap<>();
+            //go to the next line
+            br.readLine();
+            //parse spectrum header part
+            while ((line = br.readLine()) != null && !Character.isDigit(line.charAt(0))){
+                String[] split = line.split(APL_HEADER_DELIMITER);
+                headers.put(split[0], split[1]);
+            }
+            Assert.assertEquals("RawFile: 120329kw_JEnglish_JE10_1 Index: 496 Precursor: 0 _multi_", headers.get("TITLE"));
+            Assert.assertEquals("303.176402121713", headers.get("PEPMASS"));
+            Assert.assertEquals("1+", headers.get("CHARGE"));
+        }catch (IOException ex) {
+            LOGGER.error(ex);
+        }
     }
 }
