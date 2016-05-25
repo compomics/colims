@@ -84,16 +84,13 @@ public class MaxQuantSpectraParser {
 
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);
         for (Map<String, String> spectrumValues : valuesIterator) {
-         //   String idString = spectrumValues.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName());
-        //    Long id = Long.parseLong(idString);
-
             //concatenate the RAW file name and scan index
             String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getDefaultColumnName())
                     + KEY_MIDDLE
-                    + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_INDEX.getDefaultColumnName());
+                    + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getDefaultColumnName());
 
             Spectrum spectrum = mapMsmsSpectrum(aplKey, spectrumValues);
-            spectra.put( aplKey, spectrum);
+            spectra.putIfAbsent( aplKey, spectrum);
         }
 
         return spectra;

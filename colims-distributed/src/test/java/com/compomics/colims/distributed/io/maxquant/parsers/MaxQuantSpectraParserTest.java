@@ -26,8 +26,8 @@ public class MaxQuantSpectraParserTest {
     @Test
     public void testParse() throws Exception {
 
-        Map<String, Spectrum> spectra = maxQuantSpectraParser.parse(MaxQuantTestSuite.maxQuantDirectory, true);
-  //      Assert.assertEquals(1222, spectra.size());
+        Map<String, Spectrum> spectra = maxQuantSpectraParser.parse(MaxQuantTestSuite.maxQuantDirectory, false);
+        Assert.assertEquals(1213, spectra.size());
 
         System.out.println("------------");
     }
