@@ -16,18 +16,19 @@ import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Parser for the MaxQuant apl output files; the apl summary file and the actual apl files containing the spectra.
+ * Parser for the MaxQuant andromeda directory; the apl summary file, the actual apl files containing the spectra and
+ * the spectrum parameter file (.apar).
  * <p/>
  *
  * @author Niels Hulstaert
  */
-@Component("maxQuantAplParser")
-public class MaxQuantAplParser {
+@Component("maxQuantAndromedaDirectoryParser")
+public class MaxQuantAndromedaDirectoryParser {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantAplParser.class);
+    private static final Logger LOGGER = Logger.getLogger(MaxQuantAndromedaDirectoryParser.class);
 
     private static final String ALL_SPECTRA = "allSpectra.";
     private static final String ISO = ".iso";
@@ -53,6 +54,10 @@ public class MaxQuantAplParser {
      * The apl spectrum files map (key: apl file name; value: apl param file name);
      */
     private Map<String, String> aplFiles;
+    /**
+     * The spectrum parameters (key: parameter name; value: parameter value).
+     */
+    private Map<String, String> spectrumParameters;
     /**
      * The fragmentation type used.
      */
@@ -89,14 +94,23 @@ public class MaxQuantAplParser {
         return aplFiles;
     }
 
+    /**
+     * Get the spectrum parameters parsed from the .apar file.
+     *
+     * @return the spectrum parameters map
+     */
+    public Map<String, String> getSpectrumParameters() {
+        return spectrumParameters;
+    }
 
     /**
-     * Initialize the parser. This method parses the apl summary file.
+     * Parse the parameter related files of the andromeda directory. This method parses the apl summary file and the
+     * .apar file.
      *
      * @param andromedaDirectory the MaxQuant andromeda directory
      * @throws IOException thrown in case of an I/O related problem
      */
-    public void init(final File andromedaDirectory) throws IOException {
+    public void parseParameters(final File andromedaDirectory) throws IOException {
 
         /**
          * Parse the apl summary file 'aplfiles.txt' to extract the location of the apl spectrum files
@@ -111,12 +125,21 @@ public class MaxQuantAplParser {
         if (!aplSummaryFile.exists()) {
             throw new FileNotFoundException("The apl summary file " + MaxQuantConstants.APL_SUMMARY_FILE + " could not be found.");
         }
-
         aplFiles = ParseUtils.parseParameters(aplSummaryFile, MaxQuantConstants.PARAM_TAB_DELIMITER.value());
-        //get the mass analyzer and type
-        Optional<String> first = aplFiles.keySet().stream().findFirst();
+
+        //get the first entry
+        Optional<Map.Entry<String, String>> first = aplFiles.entrySet().stream().findFirst();
         if (first.isPresent()) {
-            parseMassAnalyzerAndFragmentationType(first.get());
+            //parse the mass analyzer and fragmentation type
+            parseMassAnalyzerAndFragmentationType(first.get().getKey());
+
+            //parse the spectrum parameters
+            String spectrumParametersFileName = FilenameUtils.getName(first.get().getValue());
+            File spectrumParametersFile = new File(andromedaDirectory, spectrumParametersFileName);
+            if (!spectrumParametersFile.exists()) {
+                throw new FileNotFoundException("The spectrum parameters file " + spectrumParametersFileName + " could not be found.");
+            }
+            spectrumParameters = ParseUtils.parseParameters(spectrumParametersFile, MaxQuantConstants.PARAM_EQUALS_DELIMITER.value());
         } else {
             fragmentationType = FragmentationType.UNKNOWN;
             massAnalyzerType = MaxQuantConstants.Analyzer.UNKNOWN;
@@ -124,14 +147,14 @@ public class MaxQuantAplParser {
     }
 
     /**
-     * Parse the spectrum files and map them onto {@link com.compomics.colims.model.SpectrumFile} instances. Parse also
-     * unidentified spectra if specified.
+     * Parse the spectrum files and map them onto {@link SpectrumFile} instances. Parse also unidentified spectra if
+     * specified.
      *
      * @param spectra                    the map of spectra (key: String apl header for linking purposes; value: the
      *                                   Colims Spectrum instance)
      * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
      */
-    public void parse(Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws FileNotFoundException {
+    public void parseSpectra(Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws FileNotFoundException {
         for (String aplFilePath : aplFiles.keySet()) {
             //get the apl file by the parent directory
             File aplfile = new File(andromedaDirectory, FilenameUtils.getName(aplFilePath));
@@ -175,7 +198,7 @@ public class MaxQuantAplParser {
         try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(aplFile.toURI()))) {
             Map<String, Spectrum> unidentifiedSpectra = new HashMap<>();
             List<String> spectrumKeys = new ArrayList<>();
-            spectra.forEach( (k,v) -> spectrumKeys.add(k));
+            spectra.forEach((k, v) -> spectrumKeys.add(k));
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
@@ -202,7 +225,7 @@ public class MaxQuantAplParser {
                     }
 
                     //parse the spectrum
-                    if(spectrum != null) {
+                    if (spectrum != null) {
                         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
                              OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
                              BufferedWriter bw = new BufferedWriter(osw);
@@ -213,7 +236,7 @@ public class MaxQuantAplParser {
                             bw.write(MGF_SPECTRUM_START);
                             bw.newLine();
                             bw.write(MGF_TITLE + headers.get(APL_HEADER));
-                            if(!includeUnidentifiedSpectra){
+                            if (!includeUnidentifiedSpectra) {
                                 bw.newLine();
                                 bw.write(MGF_RETENTION_TIME + spectrum.getRetentionTime());
                             }

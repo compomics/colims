@@ -141,14 +141,14 @@ public class MaxQuantSearchSettingsParser {
         });
 
         /**
-         * Map onto a Colims {@link SearchParameters} instance.
+         * Map the search parameters onto a Colims {@link SearchParameters} instance.
          */
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setSearchType(defaultSearchType);
 
 
         //parse the parameters file and iterate over the parameters
-        Map<String, String> parameters = ParseUtils.parseParameters(new File(maxQuantTxtDirectory, PARAMETERS_FILE), MaxQuantConstants.PARAM_DELIMITER.value(), true);
+        Map<String, String> parameters = ParseUtils.parseParameters(new File(maxQuantTxtDirectory, PARAMETERS_FILE), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
         //get the MaxQuant version
         String versionParameter = parameters.get(MaxQuantParameterHeaders.VERSION.getDefaultColumnName().toLowerCase());
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {

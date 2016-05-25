@@ -29,9 +29,13 @@ public enum MaxQuantConstants {
      */
     APL_SUMMARY_FILE("aplfiles"),
     /**
-     * The delimiter in MaxQuant parameter files.
+     * The tab delimiter in MaxQuant parameter files.
      */
-    PARAM_DELIMITER("\t");
+    PARAM_TAB_DELIMITER("\t"),
+    /**
+     * The equals sign delimiter in MaxQuant parameter files.
+     */
+    PARAM_EQUALS_DELIMITER("=");
 
     public enum Analyzer {
 
