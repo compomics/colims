@@ -119,8 +119,8 @@ public class MaxQuantEvidenceParser {
                 ++i;
             }
 
-            if (values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getDefaultColumnName()) != null) {
-                String[] msmsIds = values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getDefaultColumnName()).split(";");
+            if (values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()) != null) {
+                String[] msmsIds = values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()).split(";");
 
                 for (String msmsId : msmsIds) {
                     if (!msmsId.isEmpty()) {
@@ -186,27 +186,27 @@ public class MaxQuantEvidenceParser {
 
         double probability = -1, pep = -1;
 
-        if (!values.get(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName()).equalsIgnoreCase("nan")) {
-            probability = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName()));
-        } else if (!values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getDefaultColumnName()).equalsIgnoreCase("nan")) {
-            probability = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getDefaultColumnName()));
+        if (!values.get(MaxQuantEvidenceHeaders.SCORE.getValue()).equalsIgnoreCase("nan")) {
+            probability = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.SCORE.getValue()));
+        } else if (!values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getValue()).equalsIgnoreCase("nan")) {
+            probability = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getValue()));
         }
 
-        if (values.containsKey(MaxQuantEvidenceHeaders.PEP.getDefaultColumnName())) {
-            pep = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.PEP.getDefaultColumnName()));
+        if (values.containsKey(MaxQuantEvidenceHeaders.PEP.getValue())) {
+            pep = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.PEP.getValue()));
         }
 
-        peptide.setCharge(Integer.parseInt(values.get(MaxQuantEvidenceHeaders.CHARGE.getDefaultColumnName())));
+        peptide.setCharge(Integer.parseInt(values.get(MaxQuantEvidenceHeaders.CHARGE.getValue())));
         peptide.setPsmPostErrorProbability(pep);
         peptide.setPsmProbability(probability);
-        peptide.setSequence(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()));
-        peptide.setTheoreticalMass(Double.valueOf(values.get(MaxQuantEvidenceHeaders.MASS.getDefaultColumnName())));
+        peptide.setSequence(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getValue()));
+        peptide.setTheoreticalMass(Double.valueOf(values.get(MaxQuantEvidenceHeaders.MASS.getValue())));
         peptide.getPeptideHasModifications().addAll(createModifications(peptide, values));
 
         List<Integer> proteinGroups = new ArrayList<>();
 
-        if (values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getDefaultColumnName()) != null) {
-            for (String id : values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getDefaultColumnName()).split(";")) {
+        if (values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()) != null) {
+            for (String id : values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()).split(";")) {
                 proteinGroups.add(Integer.parseInt(id));
             }
         }
@@ -226,7 +226,7 @@ public class MaxQuantEvidenceParser {
     private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) throws ModificationMappingException {
         List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
-        String modifications = values.get(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName());
+        String modifications = values.get(MaxQuantEvidenceHeaders.MODIFICATIONS.getValue());
 
         if (modifications == null || "Unmodified".equalsIgnoreCase(modifications)) {
             return peptideHasModifications;
@@ -257,7 +257,7 @@ public class MaxQuantEvidenceParser {
                     }
 
                     if (modificationHeader.contains("c-term") && "1".equals(modificationString)) {
-                        PeptideHasModification phModification = createPeptideHasModification(100.0, values.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName()).length() - 1, 100.0, peptide);
+                        PeptideHasModification phModification = createPeptideHasModification(100.0, values.get(MaxQuantEvidenceHeaders.SEQUENCE.getValue()).length() - 1, 100.0, peptide);
 
                         Modification modification = utilitiesModificationMapper.mapByName(modificationHeader);
                         //modification.getPeptideHasModifications().add(phModification);

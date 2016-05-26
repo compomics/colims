@@ -54,7 +54,7 @@ public class MaxQuantProteinGroupParser {
             ProteinGroup proteinGroup = parseProteinGroup(values, parsedFastas);
 
             if (proteinGroup.getMainProtein() != null) {
-                proteinGroups.put(Integer.parseInt(values.get(MaxQuantProteinGroupHeaders.ID.getDefaultColumnName())), parseProteinGroup(values, parsedFastas));
+                proteinGroups.put(Integer.parseInt(values.get(MaxQuantProteinGroupHeaders.ID.getValue())), parseProteinGroup(values, parsedFastas));
             }
         }
 
@@ -72,11 +72,11 @@ public class MaxQuantProteinGroupParser {
         ProteinGroup proteinGroup = new ProteinGroup();
         proteinGroup.setPeptideHasProteinGroups(new ArrayList<>());
 
-        if (values.get(MaxQuantProteinGroupHeaders.PEP.getDefaultColumnName()) != null) {
-            proteinGroup.setProteinPostErrorProbability(Double.parseDouble(values.get(MaxQuantProteinGroupHeaders.PEP.getDefaultColumnName())));
+        if (values.get(MaxQuantProteinGroupHeaders.PEP.getValue()) != null) {
+            proteinGroup.setProteinPostErrorProbability(Double.parseDouble(values.get(MaxQuantProteinGroupHeaders.PEP.getValue())));
         }
 
-        String parsedAccession = values.get(MaxQuantProteinGroupHeaders.ACCESSION.getDefaultColumnName());
+        String parsedAccession = values.get(MaxQuantProteinGroupHeaders.ACCESSION.getValue());
         List<String> filteredAccessions = new ArrayList<>();
 
         if (parsedAccession.contains(";")) {

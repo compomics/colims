@@ -9,6 +9,7 @@ import java.util.Locale;
  * Created by Iain on 02/12/2014.
  */
 public enum MaxQuantEvidenceHeaders implements HeaderEnum {
+
     ACETYL_K(new String[]{"Acetyl (K)"}),
     ACETYL_K_PROBABILITIES(new String[]{"Acetyl (K) Probabilities"}),
     ACETYL_K_SCORE_DIFFS(new String[]{"Acetyl (K) Score Diffs"}),
@@ -80,42 +81,38 @@ public enum MaxQuantEvidenceHeaders implements HeaderEnum {
     UNCALIBRATED_MASS_ERROR_PPM(new String[]{"Uncalibrated Mass Error [ppm]"}),
     UNIPROT(new String[]{"Uniprot"});
 
-
-    List<String> columnNames;
-    int standardColumnNameIndex = 0;
+    /**
+     * The list of header values for the enum value.
+     */
+    private List<String> headerValues;
+    /**
+     * The default header value index.
+     */
+    private int defaultHeaderValueIndex = 0;
 
     /**
-     * Private constructor.
+     * Constructor.
      *
-     * @param fieldnames the array of field names
+     * @param headerValueArray the array header values
      */
-    MaxQuantEvidenceHeaders(final String[] fieldnames) {
+    MaxQuantEvidenceHeaders(final String[] headerValueArray) {
 
-        columnNames = new ArrayList<>(fieldnames.length);
-        Arrays.stream(fieldnames).forEach(e -> columnNames.add(e.toLowerCase(Locale.US)));
+        headerValues = new ArrayList<>(headerValueArray.length);
+        Arrays.stream(headerValueArray).forEach(e -> headerValues.add(e.toLowerCase(Locale.US)));
     }
 
     @Override
-    public List<String> allPossibleColumnNames() {
-        return this.columnNames;
+    public List<String> getPossibleValues() {
+        return this.headerValues;
     }
 
     @Override
-    public void setColumnNameNumber(int columnNameNumber) {
-        standardColumnNameIndex = columnNameNumber;
+    public void setParsedValue(int index) {
+        this.defaultHeaderValueIndex = index;
     }
 
     @Override
-    public String getColumnName(int columnNameNumber) {
-        if(columnNameNumber < 0  || columnNameNumber > columnNames.size()){
-            return columnNames.get(0);
-        }
-        return columnNames.get(columnNameNumber);
-    }
-
-
-    @Override
-    public String getDefaultColumnName() {
-        return columnNames.get(standardColumnNameIndex);
+    public String getValue() {
+        return headerValues.get(defaultHeaderValueIndex);
     }
 }

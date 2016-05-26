@@ -68,8 +68,8 @@ public class MaxQuantParser {
         while (summaryIterator.hasNext()) {
             row = summaryIterator.next();
 
-            if (row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName())) {
-                multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName());
+            if (row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getValue())) {
+                multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getValue());
                 break;
             }
         }

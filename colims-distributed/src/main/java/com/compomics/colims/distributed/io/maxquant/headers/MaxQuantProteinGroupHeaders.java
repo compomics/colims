@@ -8,7 +8,8 @@ import java.util.Locale;
 /**
  * Created by Iain on 03/03/2015.
  */
-public enum  MaxQuantProteinGroupHeaders implements HeaderEnum {
+public enum MaxQuantProteinGroupHeaders implements HeaderEnum {
+
     ACCESSION(new String[]{"Protein IDs"}),
     BESTMSMS(new String[]{"Best MS/MS"}),
     CONTAMINANT(new String[]{"Potential contaminant"}),
@@ -20,42 +21,37 @@ public enum  MaxQuantProteinGroupHeaders implements HeaderEnum {
     PEPTIDEIDS(new String[]{"Peptide IDs"}),
     REVERSE(new String[]{"Reverse"});
 
-
-    List<String> columnNames;
-    int standardColumnNameIndex = 0;
+    /**
+     * The list of header values for the enum value.
+     */
+    private List<String> headerValues;
+    /**
+     * The default header value index.
+     */
+    private int defaultHeaderValueIndex = 0;
 
     /**
-     * Private constructor.
+     * Constructor.
      *
-     * @param fieldnames the array of field names
+     * @param headerValueArray the array header values
      */
-    MaxQuantProteinGroupHeaders(final String[] fieldnames) {
-
-        columnNames = new ArrayList<>(fieldnames.length);
-        Arrays.stream(fieldnames).forEach(e -> columnNames.add(e.toLowerCase(Locale.US)));
+    MaxQuantProteinGroupHeaders(final String[] headerValueArray) {
+        headerValues = new ArrayList<>(headerValueArray.length);
+        Arrays.stream(headerValueArray).forEach(e -> headerValues.add(e.toLowerCase(Locale.US)));
     }
 
     @Override
-    public List<String> allPossibleColumnNames() {
-        return this.columnNames;
+    public List<String> getPossibleValues() {
+        return this.headerValues;
     }
 
     @Override
-    public void setColumnNameNumber(int columnNameNumber) {
-        standardColumnNameIndex = columnNameNumber;
+    public void setParsedValue(int index) {
+        defaultHeaderValueIndex = index;
     }
 
     @Override
-    public String getColumnName(int columnNameNumber) {
-        if(columnNameNumber < 0  || columnNameNumber > columnNames.size()){
-            return columnNames.get(0);
-        }
-        return columnNames.get(columnNameNumber);
-    }
-
-
-    @Override
-    public String getDefaultColumnName() {
-        return columnNames.get(standardColumnNameIndex);
+    public String getValue() {
+        return headerValues.get(defaultHeaderValueIndex);
     }
 }

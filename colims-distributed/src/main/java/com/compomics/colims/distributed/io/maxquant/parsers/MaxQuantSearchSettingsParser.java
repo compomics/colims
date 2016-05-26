@@ -8,24 +8,21 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantParameterHeaders;
+import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSpectrumParameterHeaders;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSummaryHeaders;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.cv.TypedCvParam;
-import com.compomics.colims.model.enums.BinaryFileType;
-import com.compomics.colims.model.enums.CvParamType;
-import com.compomics.colims.model.enums.FastaDbType;
-import com.compomics.colims.model.enums.SearchEngineType;
+import com.compomics.colims.model.enums.*;
 import com.compomics.colims.model.factory.CvParamFactory;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class parses the MaxQuant parameter files and maps them onto the Colims SearchAndValidationSettings and related
@@ -37,6 +34,11 @@ import java.util.Map;
  */
 @Component("maxQuantSearchSettingsParser")
 public class MaxQuantSearchSettingsParser {
+
+    /**
+     * Logger instance.
+     */
+    private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
 
     /**
      * The MaxQuant summary data file name.
@@ -81,7 +83,7 @@ public class MaxQuantSearchSettingsParser {
      * The {@link MaxQuantAplParser} bean for getting search parameters parsed from files in the andromeda directory.
      */
     @Autowired
-    private MaxQuantAplParser maxQuantAplParser;
+    private MaxQuantAndromedaParser maxQuantAndromedaParser;
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
     @Autowired
@@ -150,40 +152,39 @@ public class MaxQuantSearchSettingsParser {
         //parse the parameters file and iterate over the parameters
         Map<String, String> parameters = ParseUtils.parseParameters(new File(maxQuantTxtDirectory, PARAMETERS_FILE), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
         //get the MaxQuant version
-        String versionParameter = parameters.get(MaxQuantParameterHeaders.VERSION.getDefaultColumnName().toLowerCase());
+        String versionParameter = parameters.get(MaxQuantParameterHeaders.VERSION.getValue());
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
             version = versionParameter;
         }
-//        searchParameters.
+        //precursor mass tolerance and unit
+        String precursorMassToleranceString = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE);
+        searchParameters.setPrecMassTolerance(Double.parseDouble(precursorMassToleranceString));
+
+        String precursorMassToleranceUnit = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE_UNIT);
+        searchParameters.setFragMassToleranceUnit(MassAccuracyType.valueOf(precursorMassToleranceUnit.toUpperCase(Locale.ENGLISH)));
+
+        //fragment mass tolerance and unit
+        String fragmentMassToleranceString = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.FRAGMENT_MASS_TOLERANCE);
+        searchParameters.setFragMassTolerance(Double.parseDouble(fragmentMassToleranceString));
+
+        String fragmentMassToleranceUnit = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.FRAGMENT_MASS_TOLERANCE_UNIT);
+        searchParameters.setFragMassToleranceUnit(MassAccuracyType.valueOf(fragmentMassToleranceUnit.toUpperCase(Locale.ENGLISH)));
+
+        //enzyme
+        TypedCvParam enzyme = mapEnzyme(maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.ENZYMES));
+        if (enzyme != null) {
+            searchParameters.setEnzyme((SearchCvParam) enzyme);
+        }
 
         //set the search engine
         searchAndValidationSettings.setSearchEngine(searchAndValidationSettingsService.getSearchEngine(SearchEngineType.MAX_QUANT, version));
 
-        //
-//        Entry<String, String> parameter;
-//        while (parameterIterator.hasNext()) {
-//            parameter = parameterIterator.next();
-//
-//            if (parameter.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.FTMS_MS_MS_TOLERANCE.getDefaultColumnName())) {
-//                searchParameters.setFragMassTolerance(Double.parseDouble(parameter.getValue().split(" ")[0]));
-//                // TODO: precursor mass tolerance, is it anywhere?
-//
-//                if (parameter.getValue().split(" ")[1].equalsIgnoreCase("da")) {
-//                    searchParameters.setFragMassToleranceUnit(MassAccuracyType.DA);
-//                    searchParameters.setPrecMassToleranceUnit(MassAccuracyType.DA);
-//                } else {
-//                    searchParameters.setFragMassToleranceUnit(MassAccuracyType.PPM);
-//                    searchParameters.setPrecMassToleranceUnit(MassAccuracyType.PPM);
-//                }
-//            } else if (parameter.getKey().equalsIgnoreCase(MaxQuantParameterHeaders.VERSION.getDefaultColumnName())) {
-//                version = parameter.getValue();
-//            }
-//        }
-
+        //set entity relations between SearchAndValidationSettings and SearchParameters
         searchAndValidationSettings.setSearchParameters(searchParameters);
         searchParameters.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
-        // currently just storing whole folder
+        // TODO: 26/05/16 check which files to store
+        //currently just storing whole folder
         IdentificationFile identificationFileEntity = new IdentificationFile(maxQuantTxtDirectory.getName(), maxQuantTxtDirectory.getCanonicalPath());
 
         if (storeFiles) {
@@ -192,7 +193,7 @@ public class MaxQuantSearchSettingsParser {
             identificationFileEntity.setContent(content);
         }
 
-        //set entity relations
+        //set entity relations between SearchAndValidationSettings ad IdentificationFile
         identificationFileEntity.setSearchAndValidationSettings(searchAndValidationSettings);
         searchAndValidationSettings.getIdentificationFiles().add(identificationFileEntity);
 
@@ -217,15 +218,15 @@ public class MaxQuantSearchSettingsParser {
             row = summaryIter.next();
             SearchAndValidationSettings runSettings = cloneSearchAndValidationSettings(searchAndValidationSettings);
 
-            if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName())) {
-                multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getDefaultColumnName());
+            if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getValue())) {
+                multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getValue());
             }
 
-            if (!row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()).equalsIgnoreCase("total")) {
+            if (!row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()).equalsIgnoreCase("total")) {
                 // apparently protease was old column name
-                String enzymeName = row.get(MaxQuantSummaryHeaders.ENZYME.getDefaultColumnName()) == null
-                        ? row.get(MaxQuantSummaryHeaders.PROTEASE.getDefaultColumnName())
-                        : row.get(MaxQuantSummaryHeaders.ENZYME.getDefaultColumnName());
+                String enzymeName = row.get(MaxQuantSummaryHeaders.ENZYME.getValue()) == null
+                        ? row.get(MaxQuantSummaryHeaders.PROTEASE.getValue())
+                        : row.get(MaxQuantSummaryHeaders.ENZYME.getValue());
 
                 if (!enzymeName.isEmpty()) {
                     // TODO: separate this into utility (not utilities) class
@@ -244,12 +245,12 @@ public class MaxQuantSearchSettingsParser {
                     runSettings.getSearchParameters().setEnzyme((SearchCvParam) enzyme);
                 }
 
-                if (!row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName()).isEmpty()) {
-                    runSettings.getSearchParameters().setNumberOfMissedCleavages(Integer.parseInt(row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getDefaultColumnName())));
+                if (!row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getValue()).isEmpty()) {
+                    runSettings.getSearchParameters().setNumberOfMissedCleavages(Integer.parseInt(row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getValue())));
                 }
             }
 
-            allSettings.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getDefaultColumnName()), runSettings);
+            allSettings.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()), runSettings);
         }
 
         return allSettings;
@@ -303,6 +304,41 @@ public class MaxQuantSearchSettingsParser {
         } else {
             throw new IllegalStateException("The default search type CV term was not found in the database.");
         }
+    }
+
+    /**
+     * Map the given MaxQuant Enzyme instance to a TypedCvParam instance. Returns null if no mapping was possible.
+     *
+     * @param maxQuantEnzyme the MaxQuant enzyme
+     * @return the TypedCvParam instance
+     */
+    private TypedCvParam mapEnzyme(final String maxQuantEnzyme) {
+        TypedCvParam enzyme;
+
+        //look for the enzyme in the database
+        enzyme = typedCvParamService.findByName(maxQuantEnzyme, CvParamType.SEARCH_PARAM_ENZYME, true);
+
+        if (enzyme == null) {
+            try {
+                //the enzyme was not found by name in the database
+                //look for the enzyme in the MS ontology by name
+                enzyme = newOlsService.findEnzymeByName(maxQuantEnzyme);
+            } catch (RestClientException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+            } catch (IOException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+            }
+
+            if (enzyme == null) {
+                //the enzyme was not found by name in the MS ontology
+                enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, maxQuantEnzyme);
+            }
+
+            //persist the newly created enzyme
+            typedCvParamService.persist(enzyme);
+        }
+
+        return enzyme;
     }
 
     // TODO: is this modification data ever needed? not accessed by mappers

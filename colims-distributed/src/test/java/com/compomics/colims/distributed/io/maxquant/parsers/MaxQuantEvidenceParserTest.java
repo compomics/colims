@@ -59,15 +59,15 @@ public class MaxQuantEvidenceParserTest {
 
         Map<String, String> values = new HashMap<>();
 
-        values.put(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName(), "106.2");
-        values.put(MaxQuantEvidenceHeaders.CHARGE.getDefaultColumnName(), "2");
-        values.put(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName(), "TAVCDIPPR");
-        values.put(MaxQuantEvidenceHeaders.MASS.getDefaultColumnName(), "1027.51206");
-        values.put(MaxQuantEvidenceHeaders.PROTEINS.getDefaultColumnName(), "tr|B2RSN3|B2RSN3_MOUSE;sp|Q9CWF2|TBB2B_MOUSE;sp|Q7TMM9|TBB2A_MOUSE;tr|Q99J49|Q99J49_MOUSE;tr|Q62363|Q62363_MOUSE;sp|P68372|TBB4B_MOUSE;tr|Q9DCR1|Q9DCR1_MOUSE;tr|Q80ZV2|Q80ZV2_MOUSE;sp|Q9D6F9|TBB4A_MOUSE;sp|P99024|TBB5_MOUSE");
-        values.put(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getDefaultColumnName(), "218;407;234;295");
-        values.put(MaxQuantEvidenceHeaders.MS_MS_IDS.getDefaultColumnName(), "982;983;984");
-        values.put(MaxQuantEvidenceHeaders.PEP.getDefaultColumnName(), "0.9");
-        values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName(), "Unmodified");
+        values.put(MaxQuantEvidenceHeaders.SCORE.getValue(), "106.2");
+        values.put(MaxQuantEvidenceHeaders.CHARGE.getValue(), "2");
+        values.put(MaxQuantEvidenceHeaders.SEQUENCE.getValue(), "TAVCDIPPR");
+        values.put(MaxQuantEvidenceHeaders.MASS.getValue(), "1027.51206");
+        values.put(MaxQuantEvidenceHeaders.PROTEINS.getValue(), "tr|B2RSN3|B2RSN3_MOUSE;sp|Q9CWF2|TBB2B_MOUSE;sp|Q7TMM9|TBB2A_MOUSE;tr|Q99J49|Q99J49_MOUSE;tr|Q62363|Q62363_MOUSE;sp|P68372|TBB4B_MOUSE;tr|Q9DCR1|Q9DCR1_MOUSE;tr|Q80ZV2|Q80ZV2_MOUSE;sp|Q9D6F9|TBB4A_MOUSE;sp|P99024|TBB5_MOUSE");
+        values.put(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue(), "218;407;234;295");
+        values.put(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue(), "982;983;984");
+        values.put(MaxQuantEvidenceHeaders.PEP.getValue(), "0.9");
+        values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getValue(), "Unmodified");
 
         Peptide peptide = maxQuantEvidenceParser.createPeptide(values);
 
@@ -85,12 +85,12 @@ public class MaxQuantEvidenceParserTest {
 
         Map<String, String> values = new HashMap<>();
 
-        values.put(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName(), "106.2");
-        values.put(MaxQuantEvidenceHeaders.CHARGE.getDefaultColumnName(), "2");
-        values.put(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName(), "TAVCDIPPR");
-        values.put(MaxQuantEvidenceHeaders.MASS.getDefaultColumnName(), "1027.51206");
-        values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName(), "Acetyl (Protein N-term)");
-        values.put(MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM.getDefaultColumnName(), "1");
+        values.put(MaxQuantEvidenceHeaders.SCORE.getValue(), "106.2");
+        values.put(MaxQuantEvidenceHeaders.CHARGE.getValue(), "2");
+        values.put(MaxQuantEvidenceHeaders.SEQUENCE.getValue(), "TAVCDIPPR");
+        values.put(MaxQuantEvidenceHeaders.MASS.getValue(), "1027.51206");
+        values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getValue(), "Acetyl (Protein N-term)");
+        values.put(MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM.getValue(), "1");
 
         Peptide peptide = maxQuantEvidenceParser.createPeptide(values);
 
@@ -105,14 +105,14 @@ public class MaxQuantEvidenceParserTest {
 
         Map<String, String> values = new HashMap<>();
 
-        values.put(MaxQuantEvidenceHeaders.SCORE.getDefaultColumnName(), "106.2");
-        values.put(MaxQuantEvidenceHeaders.CHARGE.getDefaultColumnName(), "2");
-        values.put(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName(), "TAVCDIPPR");
-        values.put(MaxQuantEvidenceHeaders.MASS.getDefaultColumnName(), "1027.51206");
-        values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getDefaultColumnName(), "3 Oxidation (M)");
-        values.put(MaxQuantEvidenceHeaders.OXIDATION_M_PROBABILITIES.getDefaultColumnName(), "GFM(0.852)VTRSYTVGVM(0.716)M(0.716)M(0.716)HR");
-        values.put(MaxQuantEvidenceHeaders.OXIDATION_M_SCORE_DIFFS.getDefaultColumnName(), "GFM(2.82)VTRSYTVGVM(0)M(0)M(0)HR");
-        values.put(MaxQuantEvidenceHeaders.OXIDATION_M.getDefaultColumnName(), "3");
+        values.put(MaxQuantEvidenceHeaders.SCORE.getValue(), "106.2");
+        values.put(MaxQuantEvidenceHeaders.CHARGE.getValue(), "2");
+        values.put(MaxQuantEvidenceHeaders.SEQUENCE.getValue(), "TAVCDIPPR");
+        values.put(MaxQuantEvidenceHeaders.MASS.getValue(), "1027.51206");
+        values.put(MaxQuantEvidenceHeaders.MODIFICATIONS.getValue(), "3 Oxidation (M)");
+        values.put(MaxQuantEvidenceHeaders.OXIDATION_M_PROBABILITIES.getValue(), "GFM(0.852)VTRSYTVGVM(0.716)M(0.716)M(0.716)HR");
+        values.put(MaxQuantEvidenceHeaders.OXIDATION_M_SCORE_DIFFS.getValue(), "GFM(2.82)VTRSYTVGVM(0)M(0)M(0)HR");
+        values.put(MaxQuantEvidenceHeaders.OXIDATION_M.getValue(), "3");
 
         Peptide peptide = maxQuantEvidenceParser.createPeptide(values);
 

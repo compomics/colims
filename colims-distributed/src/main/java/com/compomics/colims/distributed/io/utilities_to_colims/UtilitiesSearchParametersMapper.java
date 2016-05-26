@@ -11,17 +11,16 @@ import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.compomics.util.experiment.biology.Enzyme;
-import java.io.IOException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import org.apache.log4j.Logger;
 import org.springframework.web.client.RestClientException;
 
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+
 /**
- * This class maps the Utilities search parameters onto the Colims search
- * parameters.
+ * This class maps the Utilities search parameters onto the Colims search parameters.
  *
  * @author Kenneth Verheggen
  * @author Niels Hulstaert
@@ -63,9 +62,8 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      * Map the Utilities SearchParameters to the Colims SearchParameters.
      *
      * @param utilitiesSearchParameters the Utilities search parameters
-     * @param searchParameters the Colims search parameters
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case
-     * of a modification mapping problem
+     * @param searchParameters          the Colims search parameters
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     @Override
     public void map(com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) throws ModificationMappingException {
@@ -103,8 +101,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     }
 
     /**
-     * Map the given Utilities Enzyme instance to a TypedCvParam instance.
-     * Return null if no mapping was possible.
+     * Map the given Utilities Enzyme instance to a TypedCvParam instance. Return null if no mapping was possible.
      *
      * @param utilitiesEnzyme the Utilities Enzyme instance
      * @return the TypedCvParam instance
@@ -139,8 +136,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     }
 
     /**
-     * Get the default search type from the database and assign it to the class
-     * field.
+     * Get the default search type from the database and assign it to the class field.
      */
     @PostConstruct
     private void getDefaultSearchType() {

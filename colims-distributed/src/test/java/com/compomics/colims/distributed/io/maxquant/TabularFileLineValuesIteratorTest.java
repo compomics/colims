@@ -32,9 +32,9 @@ public class TabularFileLineValuesIteratorTest {
 
         Map<String, String> item = iterator.next();
 
-        assertThat(item.get(MaxQuantEvidenceHeaders.ID.getDefaultColumnName()), notNullValue());
-        assertFalse(item.get(MaxQuantEvidenceHeaders.ID.getDefaultColumnName()).isEmpty());
-        assertThat(rawFile.get(1), startsWith(item.get(MaxQuantEvidenceHeaders.SEQUENCE.getDefaultColumnName())));
+        assertThat(item.get(MaxQuantEvidenceHeaders.ID.getValue()), notNullValue());
+        assertFalse(item.get(MaxQuantEvidenceHeaders.ID.getValue()).isEmpty());
+        assertThat(rawFile.get(1), startsWith(item.get(MaxQuantEvidenceHeaders.SEQUENCE.getValue())));
         assertTrue(rawFile.get(0).split("\t").length <= MaxQuantEvidenceHeaders.values().length);
     }
 

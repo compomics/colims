@@ -4,23 +4,31 @@ import java.util.List;
 
 /**
  * This interface is implemented by all MaxQuant header enums to be able to cope with possible changes in
- * naming/ordering of colums or parameters in the MaxQuant files.
+ * naming/ordering of column/parameter header values in the different MaxQuant files.
  *
  * @author Davy
  */
 public interface HeaderEnum {
 
     /**
-     * This method returns 
+     * This method returns all possible header values for a given header.
      *
-     * @return the defined possible headers for a given enum value
+     * @return the possible header values for a given header
      */
-    List<String> allPossibleColumnNames();
+    List<String> getPossibleValues();
 
-    void setColumnNameNumber(int columnNameNumber);
+    /**
+     * Set the parsed header value by index.
+     *
+     * @param index the parsed header value index
+     */
+    void setParsedValue(int index);
 
-    String getColumnName(int columnNameNumber);
-
-    String getDefaultColumnName();
+    /**
+     * Get the parsed header value.
+     *
+     * @return the parsed header value
+     */
+    String getValue();
 
 }

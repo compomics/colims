@@ -10,7 +10,7 @@ import java.util.Locale;
  */
 public enum MaxQuantSummaryHeaders implements HeaderEnum {
     AV_ABSOLUTE_MASS_DEVIATION(new String[]{"Av. Absolute Mass Deviation"}),
-    ENZYME(new String[] {"Enzyme"}),
+    ENZYME(new String[]{"Enzyme"}),
     FIXED_MODIFICATIONS(new String[]{"Fixed modifications"}),
     INSTRUMENT(new String[]{"Instrument"}),
     ISOTOPE_PATTERNS(new String[]{"Isotope Patterns"}),
@@ -58,42 +58,37 @@ public enum MaxQuantSummaryHeaders implements HeaderEnum {
     VARIABLE_MODIFICATIONS(new String[]{"Variable modifications"}),
     VARIABLE_MODIFICATIONS_FIRST_SEARCH(new String[]{"Variable modifications first search"});
 
-
-    List<String> columnNames;
-    int standardColumnNameIndex = 0;
+    /**
+     * The list of header values for the enum value.
+     */
+    private List<String> headerValues;
+    /**
+     * The default header value index.
+     */
+    private int defaultHeaderValueIndex = 0;
 
     /**
-     * Private constructor.
+     * Constructor.
      *
-     * @param fieldnames the array of field names
+     * @param headerValueArray the array header values
      */
-    MaxQuantSummaryHeaders(final String[] fieldnames) {
-
-        columnNames = new ArrayList<>(fieldnames.length);
-        Arrays.stream(fieldnames).forEach(e -> columnNames.add(e.toLowerCase(Locale.US)));
+    MaxQuantSummaryHeaders(final String[] headerValueArray) {
+        this.headerValues = new ArrayList<>(headerValueArray.length);
+        Arrays.stream(headerValueArray).forEach(e -> headerValues.add(e.toLowerCase(Locale.US)));
     }
 
     @Override
-    public List<String> allPossibleColumnNames() {
-        return this.columnNames;
+    public List<String> getPossibleValues() {
+        return this.headerValues;
     }
 
     @Override
-    public void setColumnNameNumber(int columnNameNumber) {
-        standardColumnNameIndex = columnNameNumber;
+    public void setParsedValue(int index) {
+        defaultHeaderValueIndex = index;
     }
 
     @Override
-    public String getColumnName(int columnNameNumber) {
-        if(columnNameNumber < 0  || columnNameNumber > columnNames.size()){
-            return columnNames.get(0);
-        }
-        return columnNames.get(columnNameNumber);
-    }
-
-
-    @Override
-    public String getDefaultColumnName() {
-        return columnNames.get(standardColumnNameIndex);
+    public String getValue() {
+        return headerValues.get(defaultHeaderValueIndex);
     }
 }

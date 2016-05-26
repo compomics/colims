@@ -10,26 +10,29 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Convert a tabular file into an {@link Iterable} that returns
- * {@link Map}<String, String> instances per line that use the values on the
- * first line as keys and the values per line as value. Using this approach one
- * does not have to read the entire file into memory first, providing some much
- * needed relief when parsing large MaxQuant files.
+ * Convert a tabular file into an {@link Iterable} that returns {@link Map}<String, String> instances per line that use
+ * the values on the first line as keys and the values per line as value. Using this approach one does not have to read
+ * the entire file into memory first, providing some much needed relief when parsing large MaxQuant files.
  */
 public class TabularFileLineValuesIterator implements Iterable<Map<String, String>>, Iterator<Map<String, String>> {
 
+    /**
+     * Logger instance.
+     */
     private static final Logger LOGGER = Logger.getLogger(TabularFileLineValuesIterator.class);
 
     private static final char DELIMITER = '\t';
     private FileReader fileReader = null;
     private LineReader lineReader = null;
     private String[] nextLine = null;
+    /**
+     * The header values array. All values are lowercase.
+     */
     private String[] headers = new String[0];
 
     /**
-     * Parse a TSV file and create a map for each line that maps the keys
-     * found on the first line to the values found to the values found on
-     * lines two and further until the end of the file.
+     * Parse a TSV file and create a map for each line that maps the keys found on the first line to the values found to
+     * the values found on lines two and further until the end of the file.
      *
      * @param tsvFile tab separated values file
      * @throws IOException
@@ -41,7 +44,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
         String firstLine = lineReader.readLine();
 
         if (firstLine == null || firstLine.isEmpty()) {
-            throw new IOException("Input file " + tsvFile.getPath() + " is empty");
+            throw new IOException("Input file " + tsvFile.getPath() + " is empty.");
         } else {
             headers = firstLine.toLowerCase(Locale.US).split("" + DELIMITER);
 
@@ -50,8 +53,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
     }
 
     /**
-     * Parse a TSV file and create a map of keys and values for the given enum
-     * of headers and each line in the file.
+     * Parse a TSV file and create a map of keys and values for the given enum of headers and each line in the file.
      *
      * @param tsvFile           The data file
      * @param headerEnumeration An enum of headers to specify values for
@@ -70,45 +72,29 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
 
         List<String> firstLineList = Arrays.asList(firstLine.split(String.valueOf(DELIMITER)));
 
-        for (HeaderEnum aHeader : headerEnumeration) {
-            Optional<String> header = aHeader.allPossibleColumnNames()
-                .stream()
-                .filter(firstLineList::contains)
-                .findFirst();
+        for (HeaderEnum headerEnum : headerEnumeration) {
+            Optional<String> header = headerEnum.getPossibleValues()
+                    .stream()
+                    .filter(firstLineList::contains)
+                    .findFirst();
 
             if (header.isPresent()) {
-                aHeader.setColumnNameNumber(aHeader.allPossibleColumnNames().indexOf(header.get()));
+                headerEnum.setParsedValue(headerEnum.getPossibleValues().indexOf(header.get()));
             }
         }
 
-        headers = firstLine.split("" + DELIMITER);
+        headers = firstLine.split(String.valueOf(DELIMITER));
 
         advanceLine();
     }
 
     /**
+     * Get the header of the file to parse. Note that the header values are lowercase.
+     *
      * @return the headers identified for the currently parsed file
      */
-    String[] getHeaders() {
+    public String[] getHeaders() {
         return headers.clone();
-    }
-
-    /**
-     * Parse the next line and split its values by the configured delimiter.
-     * Also handles the end of file by setting nextLine to null.
-     */
-    void advanceLine() {
-        try {
-            String readLine = lineReader.readLine();
-            if (readLine != null) {
-                nextLine = readLine.split("" + DELIMITER);
-                return;
-            }
-        } catch (IOException e) {
-            // XXX Hmmm, just printing a stacktrace is a very poor way to handle an IOException at this point...
-            LOGGER.error(e.getMessage(), e);
-        }
-        nextLine = null;
     }
 
     @Override
@@ -132,7 +118,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
             lineValues.put(headers[i], nextLine[i]);
         }
 
-        // Advance to the next line for the next invocation
+        //advance to the next line for the next invocation
         advanceLine();
 
         return lineValues;
@@ -147,5 +133,22 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
     public Iterator<Map<String, String>> iterator() {
         // We want to be an iterable and an iterator at the same time
         return this;
+    }
+
+    /**
+     * Parse the next line and split its values by the configured delimiter. Also handles the end of file by setting
+     * nextLine to null.
+     */
+    private void advanceLine() {
+        try {
+            String readLine = lineReader.readLine();
+            if (readLine != null) {
+                nextLine = readLine.split(String.valueOf(DELIMITER));
+                return;
+            }
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        nextLine = null;
     }
 }
