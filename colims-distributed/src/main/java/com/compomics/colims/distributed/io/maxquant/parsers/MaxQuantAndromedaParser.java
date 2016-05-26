@@ -7,6 +7,7 @@ import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -67,6 +68,11 @@ public class MaxQuantAndromedaParser {
      * The mass analyzer type.
      */
     private MaxQuantConstants.Analyzer massAnalyzerType;
+    /**
+     * The .apl spectrum parser.
+     */
+    @Autowired
+    private MaxQuantAplParser maxQuantAplParser;
 
     /**
      * Get the fragmentation type.
@@ -156,7 +162,7 @@ public class MaxQuantAndromedaParser {
             if (!aplfile.exists()) {
                 throw new FileNotFoundException("The apl spectrum file " + aplFilePath + " could not be found.");
             }
-            parseAplFile(aplfile, spectra, includeUnidentifiedSpectra);
+            maxQuantAplParser.parseAplFile(aplfile, spectra, includeUnidentifiedSpectra);
         }
     }
 
@@ -214,100 +220,6 @@ public class MaxQuantAndromedaParser {
                 spectrumParameterHeader.setParsedValue(spectrumParameterHeader.getPossibleValues().indexOf(header.get()));
                 spectrumParameters.put(spectrumParameterHeader, spectrumStringParameters.get(header.get()));
             }
-        }
-    }
-
-    /**
-     * Parse the give MaqQuant .apl spectrum file and update the spectra map.
-     *
-     * @param aplFile                    the MaqQuant .apl spectrum file
-     * @param spectra                    the spectra map
-     * @param includeUnidentifiedSpectra whether or not to include unidentified spectra
-     */
-    private void parseAplFile(File aplFile, Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) {
-        try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(aplFile.toURI()))) {
-            Map<String, Spectrum> unidentifiedSpectra = new HashMap<>();
-            List<String> spectrumKeys = new ArrayList<>();
-            spectra.forEach((k, v) -> spectrumKeys.add(k));
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                //look for a spectrum entry
-                if (line.startsWith(APL_SPECTUM_START)) {
-                    //go to the next line
-                    line = bufferedReader.readLine();
-                    //parse spectrum header part
-                    Map<String, String> headers = new HashMap<>();
-                    while (!Character.isDigit(line.charAt(0))) {
-                        String[] split = line.split(APL_HEADER_DELIMITER);
-                        headers.put(split[0], split[1]);
-                        line = bufferedReader.readLine();
-                    }
-                    //" Precursor: 0 _multi_" is removed before looking up the key in the spectra map
-                    String header = org.apache.commons.lang3.StringUtils.substringBefore(headers.get(APL_HEADER), " Precursor");
-                    Spectrum spectrum = null;
-                    //check if the spectrum was identified and therefore can be found in the spectra map
-                    if (spectrumKeys.contains(header)) {
-                        spectrum = spectra.get(header);
-                    } else if (spectrum == null && includeUnidentifiedSpectra) {
-                        //make new Spectrum instance
-                        spectrum = new Spectrum();
-                    }
-
-                    //parse the spectrum
-                    if (spectrum != null) {
-                        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                             OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
-                             BufferedWriter bw = new BufferedWriter(osw);
-                             ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
-                             GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
-
-                            //write the spectrum in MGF format
-                            bw.write(MGF_SPECTRUM_START);
-                            bw.newLine();
-                            bw.write(MGF_TITLE + headers.get(APL_HEADER));
-                            if (!includeUnidentifiedSpectra) {
-                                bw.newLine();
-                                bw.write(MGF_RETENTION_TIME + spectrum.getRetentionTime());
-                            }
-                            bw.newLine();
-                            bw.write(MGF_MZ + headers.get(APL_MZ));
-                            bw.newLine();
-                            bw.write(MGF_CHARGE + headers.get(APL_CHARGE) + "+");
-                            while (!line.startsWith(APL_SPECTUM_END)) {
-                                bw.newLine();
-                                bw.write(line.replace(MaxQuantConstants.PARAM_TAB_DELIMITER.value(), " "));
-                                line = bufferedReader.readLine();
-                            }
-                            bw.write(MGF_SPECTRUM_END);
-                            bw.flush();
-
-                            //get the bytes from the stream
-                            byte[] unzippedBytes = baos.toByteArray();
-
-                            //gzip byte array
-                            gzipos.write(unzippedBytes);
-                            gzipos.flush();
-                            gzipos.finish();
-
-                            SpectrumFile spectrumFile = new SpectrumFile();
-                            //set content of the SpectrumFile
-                            spectrumFile.setContent(zbaos.toByteArray());
-
-                            //set entity relation between Spectrum and SpectrumFile
-                            spectrum.getSpectrumFiles().add(spectrumFile);
-                            spectra.put(header, spectrum);
-                        } catch (IOException ex) {
-                            LOGGER.error(ex);
-                        }
-                    }
-                    //clear maps
-                    headers.clear();
-                    unidentifiedSpectra.clear();
-                }
-            }
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
         }
     }
 

@@ -1,69 +1,46 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.util.IOUtils;
-import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
-import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.enums.FragmentationType;
-import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 public class MaxQuantAplParserTest {
 
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantAplParser.class);
     private static final String APL_HEADER_DELIMITER = "=";
+    private File testAplFile;
 
     @Autowired
     private MaxQuantAplParser maxQuantAplParser;
 
     /**
-     * Test the init method.
+     * No-arg constructor.
      *
-     * @throws Exception in case something goes wrong
+     * @throws IOException in case of an I/O related problem
      */
-    @Test
-    public void testInit() throws Exception {
-        maxQuantAplParser.init(MaxQuantTestSuite.maxQuantDirectory);
-
-        FragmentationType fragmentationType = maxQuantAplParser.getFragmentationType();
-        MaxQuantConstants.Analyzer massAnalyzerType = maxQuantAplParser.getMassAnalyzerType();
-        Map<String, String> aplFiles = maxQuantAplParser.getAplFiles();
-
-        Assert.assertEquals(fragmentationType, FragmentationType.CID);
-        Assert.assertEquals(massAnalyzerType, MaxQuantConstants.Analyzer.ITMS);
-        Assert.assertEquals(2, aplFiles.size());
+    public MaxQuantAplParserTest() throws IOException {
+        testAplFile = new ClassPathResource("allSpectra.CID.ITMS.iso_0_part.apl").getFile();
     }
 
     /**
-     * Test the parse method for identified spectra
+     * Test the parse method for identified spectra.
      *
      * @throws Exception in case something goes wrong
      */
     @Test
-    public void testParse() throws Exception {
-        maxQuantAplParser.init(MaxQuantTestSuite.maxQuantDirectory);
-
-        //replace the apl files with one small one
-        Map<String, String> aplFiles = maxQuantAplParser.getAplFiles();
-        aplFiles.clear();
-        aplFiles.put("allSpectra.CID.ITMS.iso_0_part.apl", "");
-
+    public void testParseAplFile() throws Exception {
         //create some dummy spectra
         Map<String, Spectrum> spectra = new HashMap<>();
 
@@ -81,7 +58,7 @@ public class MaxQuantAplParserTest {
         spectrum2.setRetentionTime(123.46);
         spectra.put(spectrumKey2, spectrum2);
 
-        maxQuantAplParser.parse(spectra, false);
+        maxQuantAplParser.parseAplFile(testAplFile, spectra, false);
         byte[] unzippedBytes = IOUtils.unzip(spectra.get(spectrumKey1).getSpectrumFiles().get(0).getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
              InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
@@ -91,7 +68,7 @@ public class MaxQuantAplParserTest {
             //go to the next line
             br.readLine();
             //parse spectrum header part
-            while ((line = br.readLine()) != null && !Character.isDigit(line.charAt(0))){
+            while ((line = br.readLine()) != null && !Character.isDigit(line.charAt(0))) {
                 String[] split = line.split(APL_HEADER_DELIMITER);
                 headers.put(split[0], split[1]);
             }
@@ -99,31 +76,22 @@ public class MaxQuantAplParserTest {
             Assert.assertEquals(spectrum1.getRetentionTime().toString(), headers.get("RTINSECONDS"));
             Assert.assertEquals("303.176402121713", headers.get("PEPMASS"));
             Assert.assertEquals("1+", headers.get("CHARGE"));
-        }catch (IOException ex) {
-            LOGGER.error(ex);
         }
 
-        System.out.println("");
     }
 
     /**
-     * Test the parse method for unidentified spectra
-     * @throws Exception
+     * Test the parse method for unidentified spectra.
+     *
+     * @throws Exception in case something goes wrong
      */
     @Test
-    public void testParseUnidentified() throws Exception{
-        maxQuantAplParser.init(MaxQuantTestSuite.maxQuantDirectory);
-
-        //replace the apl files with one small one
-        Map<String, String> aplFiles = maxQuantAplParser.getAplFiles();
-        aplFiles.clear();
-        aplFiles.put("allSpectra.CID.ITMS.iso_0_part.apl", "");
-
+    public void testParseUnidentified() throws Exception {
         String spectrumKey = "RawFile: 120329kw_JEnglish_JE10_1 Index: 496";
 
         //create some dummy spectra for unidentified spectra
         Map<String, Spectrum> spectra = new HashMap<>();
-        maxQuantAplParser.parse(spectra, true);
+        maxQuantAplParser.parseAplFile(testAplFile, spectra, true);
 
         byte[] unzippedBytes = IOUtils.unzip(spectra.get(spectrumKey).getSpectrumFiles().get(0).getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
@@ -134,15 +102,13 @@ public class MaxQuantAplParserTest {
             //go to the next line
             br.readLine();
             //parse spectrum header part
-            while ((line = br.readLine()) != null && !Character.isDigit(line.charAt(0))){
+            while ((line = br.readLine()) != null && !Character.isDigit(line.charAt(0))) {
                 String[] split = line.split(APL_HEADER_DELIMITER);
                 headers.put(split[0], split[1]);
             }
             Assert.assertEquals("RawFile: 120329kw_JEnglish_JE10_1 Index: 496 Precursor: 0 _multi_", headers.get("TITLE"));
             Assert.assertEquals("303.176402121713", headers.get("PEPMASS"));
             Assert.assertEquals("1+", headers.get("CHARGE"));
-        }catch (IOException ex) {
-            LOGGER.error(ex);
         }
     }
 }

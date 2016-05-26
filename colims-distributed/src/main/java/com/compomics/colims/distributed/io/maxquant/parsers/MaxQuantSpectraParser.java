@@ -4,25 +4,22 @@ import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterato
 import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantMSMSHeaders;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.SpectrumFile;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.GZIPOutputStream;
 
 /**
- * Parser for the MaxQuant msms.txt output files that creates {@link Spectrum} instances.
+ * Parser for the MaxQuant msms.txt output and .apl files that creates {@link Spectrum} and {@link
+ * com.compomics.colims.model.SpectrumFile} instances.
  * <p/>
- * This class uses the {@link TabularFileLineValuesIterator} to actually parse the files into Map<String,String>
- * records.
+ *
+ * @author niels
  */
 @Component("maxQuantSpectraParser")
 public class MaxQuantSpectraParser {
@@ -51,22 +48,24 @@ public class MaxQuantSpectraParser {
     };
 
     /**
-     * The MaxQuantAplParser for parsing the .apl spectra files.
+     * The MaxQuantAndromedaParser for parsing the .apl spectra files.
      */
     @Autowired
-    private MaxQuantAplParser maxQuantAplParser;
+    private MaxQuantAndromedaParser maxQuantAndromedaParser;
 
     public Map<String, Spectrum> parse(File maxQuantDirectory, boolean includeUnidentifiedSpectra) throws IOException {
         Map<String, Spectrum> spectra;
+
+        // TODO: 26/05/16 fix this
         File msmsFile = new FileSystemResource(maxQuantDirectory.getPath() + File.separator + "txt" + File.separator + "msms.txt").getFile();
         //parse the aplFiles summary file
-        maxQuantAplParser.init(maxQuantDirectory);
+//        maxQuantAndromedaParser.init(maxQuantDirectory);
 
         //parse the msms.txt file
         spectra = parse(msmsFile);
 
         //parse the apl files containing the spectrum peak lists
-        maxQuantAplParser.parse(spectra, includeUnidentifiedSpectra);
+        maxQuantAndromedaParser.parseSpectra(spectra, includeUnidentifiedSpectra);
 
         return spectra;
     }
@@ -83,16 +82,13 @@ public class MaxQuantSpectraParser {
 
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);
         for (Map<String, String> spectrumValues : valuesIterator) {
-            //   String idString = spectrumValues.get(MaxQuantMSMSHeaders.ID.getDefaultColumnName());
-            //    Long id = Long.parseLong(idString);
-
             //concatenate the RAW file name and scan index
             String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getValue())
                     + KEY_MIDDLE
-                    + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_INDEX.getValue());
+                    + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getValue());
 
             Spectrum spectrum = mapMsmsSpectrum(aplKey, spectrumValues);
-            spectra.put(aplKey, spectrum);
+            spectra.putIfAbsent(aplKey, spectrum);
         }
 
         return spectra;
@@ -118,7 +114,7 @@ public class MaxQuantSpectraParser {
         Spectrum spectrum = new com.compomics.colims.model.Spectrum();
         spectrum.setAccession(aplKey);
         spectrum.setCharge(Integer.valueOf(spectrumValues.get(MaxQuantMSMSHeaders.CHARGE.getValue())));
-        spectrum.setFragmentationType(maxQuantAplParser.getFragmentationType());
+        spectrum.setFragmentationType(maxQuantAndromedaParser.getFragmentationType());
         spectrum.setIntensity(Double.parseDouble(intensity));
         spectrum.setMzRatio(Double.valueOf(spectrumValues.get(MaxQuantMSMSHeaders.M_Z.getValue())));
         spectrum.setRetentionTime(Double.valueOf(spectrumValues.get(MaxQuantMSMSHeaders.RETENTION_TIME.getValue())));
@@ -129,51 +125,4 @@ public class MaxQuantSpectraParser {
 
         return spectrum;
     }
-
-    @Deprecated
-    private SpectrumFile spectrumToMGF(Spectrum spectrum, String scanNumber, Map<Double, Double> peakList) {
-        StringBuilder results = new StringBuilder();
-        String newLine = System.getProperty("line.separator");
-
-        results.append("BEGIN IONS").append(newLine)
-                .append("TITLE=").append(spectrum.getTitle()).append(newLine)
-                .append("PEPMASS=").append(spectrum.getMzRatio()).append("\t").append(spectrum.getIntensity()).append(newLine);
-
-        if (spectrum.getRetentionTime() != -1) {
-            results.append("RTINSECONDS=").append(spectrum.getRetentionTime()).append(newLine);
-        }
-
-        if (spectrum.getCharge() != null) {
-            // TODO: add as method param and do loop in calling method
-            results.append("CHARGE=").append(spectrum.getCharge()).append(newLine);
-        }
-
-        if (scanNumber != null && !scanNumber.equals("")) {
-            results.append("SCANS=").append(scanNumber).append(newLine);
-        }
-
-        peakList.entrySet().stream().forEach((entry) -> {
-            results.append(entry.getKey()).append(" ").append(entry.getValue()).append(newLine);
-        });
-
-        results.append("END IONS").append(newLine).append(newLine);
-
-        SpectrumFile spectrumFile = new SpectrumFile();
-        byte[] mgfBytes = results.toString().getBytes(Charset.forName("UTF-8"));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-        try {
-            GZIPOutputStream gzipStream = new GZIPOutputStream(outputStream);
-            gzipStream.write(mgfBytes);
-            gzipStream.flush();
-            gzipStream.finish();
-
-            spectrumFile.setContent(outputStream.toByteArray());
-        } catch (IOException e) {
-
-        }
-
-        return spectrumFile;
-    }
-
 }
