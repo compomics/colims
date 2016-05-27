@@ -33,10 +33,10 @@ public class MaxQuantEvidenceParserTest {
         maxQuantEvidenceParser.clear();
         maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextDirectory.toFile(), "1");
 
-        assertThat(maxQuantEvidenceParser.peptides.size(), not(0));
-        assertThat(maxQuantEvidenceParser.quantifications.size(), not(0));
-        assertThat(maxQuantEvidenceParser.quantifications.get(0).get(0).getIntensity(), is(7431500.0));
-        assertThat(maxQuantEvidenceParser.quantifications.get(0).get(0).getWeight(), is(QuantificationWeight.LIGHT));
+        assertThat(maxQuantEvidenceParser.getPeptides().size(), not(0));
+        assertThat(maxQuantEvidenceParser.getQuantifications().size(), not(0));
+        assertThat(maxQuantEvidenceParser.getQuantifications().get(0).get(0).getIntensity(), is(7431500.0));
+        assertThat(maxQuantEvidenceParser.getQuantifications().get(0).get(0).getWeight(), is(QuantificationWeight.LIGHT));
     }
 
     @Test

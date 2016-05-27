@@ -90,6 +90,7 @@ public class MaxQuantParser {
     public void parse(File maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity) throws IOException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
 //        spectrumIds = maxQuantSpectrumParser.parse(new File(txtFolder, MSMS_FILE));
+//        maxQuantSpectraParser.
 
         //look for the MaxQuant txt directory
         File txtDirectory = new File(maxQuantDirectory, MaxQuantConstants.TXT_DIRECTORY.value());
@@ -121,7 +122,7 @@ public class MaxQuantParser {
         LOGGER.debug("parsing protein groups");
         proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()));
 
-        if (this.spectrumIds.isEmpty() || maxQuantEvidenceParser.peptides.isEmpty() || proteinGroups.isEmpty()) {
+        if (this.spectrumIds.isEmpty() || maxQuantEvidenceParser.getPeptides().isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");
         } else {
             parsed = true;
@@ -178,14 +179,14 @@ public class MaxQuantParser {
     }
 
     /**
-     * Fetch the identification associated with a spectrum
+     * Fetch the identification(s) associated with a spectrum.
      *
      * @param spectrum the spectrum
-     * @return the {@code PeptideAssumption} connected to the spectrum
+     * @return the peptide(s) connected to the spectrum
      * @throws NumberFormatException if the spectrum is not present in the parsed file
      */
-    public Peptide getIdentificationForSpectrum(Spectrum spectrum) throws NumberFormatException {
-        return maxQuantEvidenceParser.peptides.get(spectrumIds.get(spectrum));
+    public List<Peptide> getIdentificationForSpectrum(Spectrum spectrum) throws NumberFormatException {
+        return maxQuantEvidenceParser.getPeptides().get(spectrumIds.get(spectrum));
     }
 
     /**
@@ -200,12 +201,12 @@ public class MaxQuantParser {
     /**
      * Return a list of protein group matches for a peptide
      *
-     * @param peptide A peptide
+     * @param peptide the given {@link Peptide} instance
      * @return Collection of protein groups
      * @throws NumberFormatException thrown in case of a String to numeric format conversion error.
      */
     public List<ProteinGroup> getProteinHitsForIdentification(Peptide peptide) throws NumberFormatException {
-        List<ProteinGroup> peptideProteinGroups = maxQuantEvidenceParser.peptideProteins.get(peptide)
+        List<ProteinGroup> peptideProteinGroups = maxQuantEvidenceParser.getPeptideProteins().get(peptide)
                 .stream()
                 .map(proteinGroups::get)
                 .collect(Collectors.toList());

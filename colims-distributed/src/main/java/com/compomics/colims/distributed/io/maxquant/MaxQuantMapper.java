@@ -105,27 +105,30 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     /**
      * Create relationships for the children of a spectrum.
      *
-     * @param spectrum A spectrum object
+     * @param spectrum the spectrum object
      * @return The same object but with a bunch of relations
      * @throws MappingException
      */
     private Spectrum mapSpectrum(Spectrum spectrum) throws MappingException {
-        Peptide peptide = maxQuantParser.getIdentificationForSpectrum(spectrum);
+        // TODO: 27/05/16 check if this still works with multiple peptides linked to one spectrum
+        List<Peptide> peptides = maxQuantParser.getIdentificationForSpectrum(spectrum);
+        for (Peptide peptide : peptides) {
+            List<ProteinGroup> proteinGroups = new ArrayList<>(maxQuantParser.getProteinHitsForIdentification(peptide));
 
-        List<ProteinGroup> proteinGroups = new ArrayList<>(maxQuantParser.getProteinHitsForIdentification(peptide));
+            proteinGroups.stream().forEach(proteinGroup -> {
+                PeptideHasProteinGroup phpGroup = new PeptideHasProteinGroup();
+                phpGroup.setPeptidePostErrorProbability(peptide.getPsmPostErrorProbability());
+                phpGroup.setPeptideProbability(peptide.getPsmProbability());
+                phpGroup.setPeptide(peptide);
+                phpGroup.setProteinGroup(proteinGroup);
 
-        proteinGroups.stream().forEach(proteinGroup -> {
-            PeptideHasProteinGroup phpGroup = new PeptideHasProteinGroup();
-            phpGroup.setPeptidePostErrorProbability(peptide.getPsmPostErrorProbability());
-            phpGroup.setPeptideProbability(peptide.getPsmProbability());
-            phpGroup.setPeptide(peptide);
-            phpGroup.setProteinGroup(proteinGroup);
+                proteinGroup.getPeptideHasProteinGroups().add(phpGroup);
+            });
 
-            proteinGroup.getPeptideHasProteinGroups().add(phpGroup);
-        });
-
-        spectrum.getPeptides().add(peptide);
-        peptide.setSpectrum(spectrum);
+            //set entity relations between Spectrum and Peptide
+            spectrum.getPeptides().addAll(peptides);
+            peptide.setSpectrum(spectrum);
+        }
 
         return spectrum;
     }

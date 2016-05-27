@@ -20,6 +20,10 @@ public enum MaxQuantConstants {
      */
     MSMS_FILE("msms.txt"),
     /**
+     * The evidence file name.
+     */
+    EVIDENCE_FILE("evidence.txt"),
+    /**
      * The proteinGroups file name.
      */
     PROTEIN_GROUPS_FILE("proteinGroups.txt"),

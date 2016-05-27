@@ -13,7 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,27 +52,62 @@ public class MaxQuantSpectraParser {
     };
 
     /**
+     * The map of identified spectra (key: the msms.txt ID; value: the mapped Spectrum instance).
+     */
+    private Map<Integer, Spectrum> identifiedSpectra = new HashMap<>();
+    /**
+     * The list of unidentified spectra.
+     */
+    private List<Spectrum> unidentifiedSpectra = new ArrayList<>();
+    /**
      * The MaxQuantAndromedaParser for parsing the .apl spectra files.
      */
     @Autowired
     private MaxQuantAndromedaParser maxQuantAndromedaParser;
 
-    public Map<String, Spectrum> parse(Path maxQuantDirectory, boolean includeUnidentifiedSpectra) throws IOException {
-        Map<String, Spectrum> spectra;
+    public Map<Integer, Spectrum> getIdentifiedSpectra() {
+        return identifiedSpectra;
+    }
 
+    public List<Spectrum> getUnidentifiedSpectra() {
+        return unidentifiedSpectra;
+    }
+
+    /**
+     * This method parses the msms.txt and .apl spectrum files and returns the result in a map.
+     *
+     * @param maxQuantDirectory          the MaxQuant parent directory
+     * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
+     * @return
+     * @throws IOException
+     */
+    public void parse(Path maxQuantDirectory, boolean includeUnidentifiedSpectra) throws IOException {
         Path andromedaDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
         Path msmsFile = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value() + File.separator + MaxQuantConstants.MSMS_FILE.value());
 
         //parse the parameter files in the andromeda directory
         maxQuantAndromedaParser.parseParameters(andromedaDirectory);
 
+        Map<String, Integer> msmsIds = new HashMap<>();
+        Map<String, Spectrum> spectra = new HashMap<>();
         //parse the msms.txt file
-        spectra = parse(msmsFile);
+        parse(msmsFile, msmsIds, spectra);
 
         //parse the apl files containing the spectrum peak lists
         maxQuantAndromedaParser.parseSpectra(spectra, includeUnidentifiedSpectra);
 
-        return spectra;
+        //clear the map before adding the identified spectra
+        identifiedSpectra.clear();
+        spectra.entrySet().stream().forEach(e -> identifiedSpectra.put(msmsIds.get(e.getKey()), e.getValue()));
+    }
+
+    /**
+     * Clear the resources of this parser.
+     */
+    public void clear() {
+        maxQuantAndromedaParser.clear();
+        identifiedSpectra.clear();
+        unidentifiedSpectra.clear();
     }
 
     /**
@@ -78,11 +115,11 @@ public class MaxQuantSpectraParser {
      * Spectrum instance as value for each row.
      *
      * @param msmsFile the MaxQuant msms.txt file path
+     * @param msmsIds  the msms IDs map (key: apl spectrum header key; value: the msms ID)
+     * @param spectra  the spectra map (key: apl spectrum header key; value: the mapped Spectrum instance)
      * @return the mapped spectra
      */
-    private Map<String, Spectrum> parse(Path msmsFile) throws IOException {
-        Map<String, Spectrum> spectra = new HashMap<>();
-
+    private void parse(Path msmsFile, Map<String, Integer> msmsIds, Map<String, Spectrum> spectra) throws IOException {
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile.toFile(), mandatoryHeaders);
         for (Map<String, String> spectrumValues : valuesIterator) {
             //concatenate the RAW file name and scan index
@@ -90,11 +127,13 @@ public class MaxQuantSpectraParser {
                     + KEY_MIDDLE
                     + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getValue());
 
+            //add to msmsIds map
+            msmsIds.putIfAbsent(aplKey, Integer.parseInt(spectrumValues.get(MaxQuantMSMSHeaders.ID.getValue())));
+            //map the spectrum
             Spectrum spectrum = mapMsmsSpectrum(aplKey, spectrumValues);
+            //add to spectra map
             spectra.putIfAbsent(aplKey, spectrum);
         }
-
-        return spectra;
     }
 
     /**

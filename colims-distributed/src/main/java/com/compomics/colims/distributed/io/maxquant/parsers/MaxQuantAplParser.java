@@ -44,18 +44,30 @@ public class MaxQuantAplParser {
     private static final String MGF_TITLE = "TITLE=";
 
     /**
+     * The list of unidentified spectra.
+     */
+    private List<Spectrum> unidentifiedSpectra = new ArrayList<>();
+
+    /**
+     * Get the list of unidentified spectra.
+     *
+     * @return the unidentified spectra
+     */
+    public List<Spectrum> getUnidentifiedSpectra() {
+        return unidentifiedSpectra;
+    }
+
+    /**
      * Parse the give MaqQuant .apl spectrum file and update the spectra map.
      *
      * @param aplFilePath                the MaqQuant .apl spectrum file path
      * @param spectra                    the spectra map
      * @param includeUnidentifiedSpectra whether or not to include unidentified spectra
      */
-    public void parseAplFile(Path aplFilePath, Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) {
+    public void parseAplFile(Path aplFilePath, Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws IOException {
         try (BufferedReader bufferedReader = Files.newBufferedReader(aplFilePath)) {
-            Map<String, Spectrum> unidentifiedSpectra = new HashMap<>();
-            List<String> spectrumKeys = new ArrayList<>();
-            spectra.forEach((k, v) -> spectrumKeys.add(k));
             String line;
+            Map<String, String> headers = new HashMap<>();
 
             while ((line = bufferedReader.readLine()) != null) {
                 //look for a spectrum entry
@@ -63,7 +75,6 @@ public class MaxQuantAplParser {
                     //go to the next line
                     line = bufferedReader.readLine();
                     //parse spectrum header part
-                    Map<String, String> headers = new HashMap<>();
                     while (!Character.isDigit(line.charAt(0))) {
                         String[] split = line.split(APL_HEADER_DELIMITER);
                         headers.put(split[0], split[1]);
@@ -73,15 +84,17 @@ public class MaxQuantAplParser {
                     String header = org.apache.commons.lang3.StringUtils.substringBefore(headers.get(APL_HEADER), " Precursor");
                     Spectrum spectrum = null;
                     //check if the spectrum was identified and therefore can be found in the spectra map
-                    if (spectrumKeys.contains(header)) {
+                    if (spectra.containsKey(header)) {
                         spectrum = spectra.get(header);
                     } else if (spectrum == null && includeUnidentifiedSpectra) {
-                        //make new Spectrum instance
+                        //make new Spectrum instance and add it to the unidentified ones
                         spectrum = new Spectrum();
+                        unidentifiedSpectra.add(spectrum);
                     }
 
                     //parse the spectrum
                     if (spectrum != null) {
+                        // TODO: 27/05/16 for an unidentief spectrum, fill in as much fields as possible in the Spectrum instance 
                         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
                              OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
                              BufferedWriter bw = new BufferedWriter(osw);
@@ -116,25 +129,26 @@ public class MaxQuantAplParser {
                             gzipos.flush();
                             gzipos.finish();
 
+                            //create new SpectrumFile instance and set the content
                             SpectrumFile spectrumFile = new SpectrumFile();
-                            //set content of the SpectrumFile
                             spectrumFile.setContent(zbaos.toByteArray());
 
                             //set entity relation between Spectrum and SpectrumFile
                             spectrum.getSpectrumFiles().add(spectrumFile);
-                            spectra.put(header, spectrum);
-                        } catch (IOException ex) {
-                            LOGGER.error(ex);
                         }
                     }
-                    //clear maps
+                    //clear headers map
                     headers.clear();
-                    unidentifiedSpectra.clear();
                 }
             }
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Clear the resources of the parser.
+     */
+    public void clear() {
+        unidentifiedSpectra.clear();
     }
 
 }

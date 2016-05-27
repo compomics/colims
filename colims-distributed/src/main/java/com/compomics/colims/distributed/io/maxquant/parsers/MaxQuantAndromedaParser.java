@@ -152,7 +152,7 @@ public class MaxQuantAndromedaParser {
      *                                   Colims Spectrum instance)
      * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
      */
-    public void parseSpectra(Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws FileNotFoundException {
+    public void parseSpectra(Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws IOException {
         for (Path aplFilePath : aplFilePaths.keySet()) {
             if (!Files.exists(aplFilePath)) {
                 throw new FileNotFoundException("The apl spectrum file " + aplFilePath.toString() + " could not be found.");
@@ -165,7 +165,7 @@ public class MaxQuantAndromedaParser {
      * Clear the resources used by the parser.
      */
     public void clear() {
-
+        maxQuantAplParser.clear();
     }
 
     /**

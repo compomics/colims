@@ -2,6 +2,7 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.ModificationMappingException;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
@@ -15,26 +16,18 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * Parser for the MaxQuant evidence file
+ * Parser class for the MaxQuant evidence file.
  * <p/>
  * Created by Iain on 01/12/2014.
  */
-@Component
+@Component("maxQuantEvidenceParser")
 public class MaxQuantEvidenceParser {
 
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
-
-    /**
-     * Name of evidence file
-     */
-    private static final String EVIDENCETXT = "evidence.txt";
 
     private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
             MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
@@ -51,24 +44,25 @@ public class MaxQuantEvidenceParser {
     };
 
     /**
-     * Spectrum IDs and associated quantifications
-     */
-    public Map<Integer, List<Quantification>> quantifications = new HashMap<>();
-
-    /**
-     * Spectrum IDs and peptides
-     */
-    public Map<Integer, Peptide> peptides = new HashMap<>();
-
-    /**
-     * Peptides and associated protein group IDs
-     */
-    public Map<Peptide, List<Integer>> peptideProteins = new HashMap<>();
-
-    /**
      * Iterable intensity headers, based on number of labels chosen.
      */
     private static final Map<Integer, String[]> INTENSITY_HEADERS = new HashMap<>();
+    /**
+     * As above but quantification weights.
+     */
+    private static final Map<Integer, QuantificationWeight[]> WEIGHT_OPTIONS = new HashMap<>();
+    /**
+     * Spectrum IDs and associated quantifications.
+     */
+    private Map<Integer, List<Quantification>> quantifications = new HashMap<>();
+    /**
+     * Spectrum IDs and peptides.
+     */
+    private Map<Integer, List<Peptide>> peptides = new HashMap<>();
+    /**
+     * Peptides and associated protein group IDs.
+     */
+    private Map<Peptide, List<Integer>> peptideProteins = new HashMap<>();
 
     static {
         INTENSITY_HEADERS.put(1, new String[]{"intensity"});
@@ -76,28 +70,35 @@ public class MaxQuantEvidenceParser {
         INTENSITY_HEADERS.put(3, new String[]{"intensity l", "intensity m", "intensity h"});
     }
 
-    /**
-     * As above but quantification weights.
-     */
-    public static final Map<Integer, QuantificationWeight[]> WEIGHT_OPTIONS = new HashMap<>();
-
     static {
         WEIGHT_OPTIONS.put(1, new QuantificationWeight[]{QuantificationWeight.LIGHT});
         WEIGHT_OPTIONS.put(2, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.HEAVY});
         WEIGHT_OPTIONS.put(3, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.MEDIUM, QuantificationWeight.HEAVY});
     }
 
+    public Map<Integer, List<Quantification>> getQuantifications() {
+        return quantifications;
+    }
+
+    public Map<Integer, List<Peptide>> getPeptides() {
+        return peptides;
+    }
+
+    public Map<Peptide, List<Integer>> getPeptideProteins() {
+        return peptideProteins;
+    }
+
     /**
      * Parse an evidence file for peptides and quantifications, also create groups for these.
      *
-     * @param quantFolder Evidence text file from MQ output
+     * @param quantFolder  Evidence text file from MQ output
      * @param multiplicity
-     * @throws IOException in case of an I/O related problem
+     * @throws IOException                                                       in case of an I/O related problem
      * @throws com.compomics.colims.distributed.io.maxquant.UnparseableException
-     * @throws com.compomics.colims.core.io.MappingException in case of a mapping problem
+     * @throws com.compomics.colims.core.io.MappingException                     in case of a mapping problem
      */
     public void parse(File quantFolder, String multiplicity) throws IOException, UnparseableException, MappingException {
-        TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, EVIDENCETXT), MANDATORY_HEADERS);
+        TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, MaxQuantConstants.EVIDENCE_FILE.value()), MANDATORY_HEADERS);
 
         Map<String, String> values;
         int intensityCount;
@@ -113,7 +114,6 @@ public class MaxQuantEvidenceParser {
             double[] intensities = new double[intensityCount];
 
             int i = 0;
-
             for (String header : intensityColumns) {
                 intensities[i] = parseIntensity(values.get(header));
                 ++i;
@@ -124,17 +124,16 @@ public class MaxQuantEvidenceParser {
 
                 for (String msmsId : msmsIds) {
                     if (!msmsId.isEmpty()) {
-                        if (peptides.containsKey(Integer.parseInt(msmsId))) {
-                            throw new UnparseableException("conflicts in the evidence file: multiple peptides for the same spectrum");
-                        }
-
-                        int spectrumID = Integer.parseInt(msmsId);
+                        Integer spectrumID = Integer.parseInt(msmsId);
                         Peptide peptide = createPeptide(values);
 
-                        peptides.put(spectrumID, peptide);
+                        if (!peptides.containsKey(spectrumID)) {
+                            peptides.put(spectrumID, Arrays.asList(new Peptide[]{peptide}));
+                        } else {
+                            peptides.get(spectrumID).add(peptide);
+                        }
 
                         List<Quantification> spectrumQuantList = new ArrayList<>();
-
                         for (int j = 0; j < intensityCount; ++j) {
                             Quantification quant = new Quantification();
                             quant.setIntensity(intensities[j]);

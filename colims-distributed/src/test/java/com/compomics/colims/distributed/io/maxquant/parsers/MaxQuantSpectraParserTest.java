@@ -1,18 +1,18 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -25,7 +25,13 @@ public class MaxQuantSpectraParserTest {
 
     @Test
     public void testParse() throws Exception {
-        Map<String, Spectrum> spectra = maxQuantSpectraParser.parse(MaxQuantTestSuite.maxQuantDirectory, false);
-        Assert.assertEquals(1213, spectra.size());
+        maxQuantSpectraParser.clear();
+        maxQuantSpectraParser.parse(MaxQuantTestSuite.maxQuantDirectory, false);
+
+        Map<Integer, Spectrum> identifiedSpectra = maxQuantSpectraParser.getIdentifiedSpectra();
+        List<Spectrum> unidentifiedSpectra = maxQuantSpectraParser.getUnidentifiedSpectra();
+
+        Assert.assertEquals(1213, identifiedSpectra.size());
+        Assert.assertTrue(unidentifiedSpectra.isEmpty());
     }
 }

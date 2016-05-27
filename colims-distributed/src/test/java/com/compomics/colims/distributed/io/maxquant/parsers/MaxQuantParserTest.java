@@ -66,13 +66,15 @@ public class MaxQuantParserTest {
     @Test
     public void testGetIdentificationForSpectrum() throws Exception {
         Spectrum spectrum = maxQuantParser.getSpectra().keySet().iterator().next();
-        Peptide assumption = maxQuantParser.getIdentificationForSpectrum(spectrum);
+        List<Peptide> peptides = maxQuantParser.getIdentificationForSpectrum(spectrum);
 
-        assertThat(assumption, isA(Peptide.class));
+        Peptide peptide = peptides.get(0);
+        assertThat(peptide, isA(Peptide.class));
 
         maxQuantParser.clear();
-        assumption = maxQuantParser.getIdentificationForSpectrum(spectrum);
-        assertThat(assumption, nullValue());
+        peptides = maxQuantParser.getIdentificationForSpectrum(spectrum);
+        // TODO: 27/05/16 make this test work for multiple peptides linked to the same spectrum 
+        assertThat(peptides, nullValue());
     }
 
     /**
