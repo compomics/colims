@@ -23,12 +23,12 @@ public class TabularFileLineValuesIteratorTest {
 
     @Test
     public void testTabularFileLineValuesIterator() throws IOException, UnparseableException {
-        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(MaxQuantTestSuite.evidenceFile, new HeaderEnum[]{
+        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(MaxQuantTestSuite.evidenceFile.toFile(), new HeaderEnum[]{
                 MaxQuantEvidenceHeaders.ID,
                 MaxQuantEvidenceHeaders.SEQUENCE
         });
 
-        List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.evidenceFile.toPath());
+        List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.evidenceFile);
 
         Map<String, String> item = iterator.next();
 
@@ -40,8 +40,8 @@ public class TabularFileLineValuesIteratorTest {
 
     @Test
     public void testGetHeaders() throws IOException {
-        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(MaxQuantTestSuite.msmsFile);
-        List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.msmsFile.toPath());
+        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(MaxQuantTestSuite.msmsFile.toFile());
+        List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.msmsFile);
 
         String[] headers = iterator.getHeaders();
 

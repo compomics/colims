@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +30,6 @@ public class MaxQuantAplParser {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantAplParser.class);
 
-    private static final String ALL_SPECTRA = "allSpectra.";
-    private static final String ISO = ".iso";
-    private static final String ANALYZER_TYPE_DELIMITER = "\\.";
     private static final String APL_SPECTUM_START = "peaklist start";
     private static final String APL_SPECTUM_END = "peaklist end";
     private static final String APL_HEADER_DELIMITER = "=";
@@ -49,12 +46,12 @@ public class MaxQuantAplParser {
     /**
      * Parse the give MaqQuant .apl spectrum file and update the spectra map.
      *
-     * @param aplFile                    the MaqQuant .apl spectrum file
+     * @param aplFilePath                the MaqQuant .apl spectrum file path
      * @param spectra                    the spectra map
      * @param includeUnidentifiedSpectra whether or not to include unidentified spectra
      */
-    public void parseAplFile(File aplFile, Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) {
-        try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(aplFile.toURI()))) {
+    public void parseAplFile(Path aplFilePath, Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) {
+        try (BufferedReader bufferedReader = Files.newBufferedReader(aplFilePath)) {
             Map<String, Spectrum> unidentifiedSpectra = new HashMap<>();
             List<String> spectrumKeys = new ArrayList<>();
             spectra.forEach((k, v) -> spectrumKeys.add(k));

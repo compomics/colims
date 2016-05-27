@@ -6,8 +6,8 @@ import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.QuantificationSettingsMapper;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.QuantificationEngineType;
@@ -70,7 +70,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             maxQuantImport.getFastaDbIds().forEach((fastaDbType, fastaDbId) -> {
                 fastaDbs.put(fastaDbType, fastaDbService.findById(fastaDbId));
             });
-            parameterParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, false);
+            parameterParser.parse(maxQuantImport.getMaxQuantDirectory().toPath(), fastaDbs, false);
             maxQuantParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, parameterParser.getMultiplicity());
 
             proteinGroups = maxQuantParser.getProteinGroupSet();

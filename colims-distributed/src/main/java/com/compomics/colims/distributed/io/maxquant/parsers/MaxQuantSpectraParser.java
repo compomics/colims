@@ -1,16 +1,18 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantMSMSHeaders;
 import com.compomics.colims.model.Spectrum;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,13 +55,14 @@ public class MaxQuantSpectraParser {
     @Autowired
     private MaxQuantAndromedaParser maxQuantAndromedaParser;
 
-    public Map<String, Spectrum> parse(File maxQuantDirectory, boolean includeUnidentifiedSpectra) throws IOException {
+    public Map<String, Spectrum> parse(Path maxQuantDirectory, boolean includeUnidentifiedSpectra) throws IOException {
         Map<String, Spectrum> spectra;
 
-        // TODO: 26/05/16 fix this
-        File msmsFile = new FileSystemResource(maxQuantDirectory.getPath() + File.separator + "txt" + File.separator + "msms.txt").getFile();
-        //parse the aplFiles summary file
-//        maxQuantAndromedaParser.init(maxQuantDirectory);
+        Path andromedaDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
+        Path msmsFile = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value() + File.separator + MaxQuantConstants.MSMS_FILE.value());
+
+        //parse the parameter files in the andromeda directory
+        maxQuantAndromedaParser.parseParameters(andromedaDirectory);
 
         //parse the msms.txt file
         spectra = parse(msmsFile);
@@ -74,13 +77,13 @@ public class MaxQuantSpectraParser {
      * Parse the msms.txt file. This method returns a map with a String instance as key and the partially mapped
      * Spectrum instance as value for each row.
      *
-     * @param msmsFile the MaxQuant msms.txt file
+     * @param msmsFile the MaxQuant msms.txt file path
      * @return the mapped spectra
      */
-    private Map<String, Spectrum> parse(File msmsFile) throws IOException {
+    private Map<String, Spectrum> parse(Path msmsFile) throws IOException {
         Map<String, Spectrum> spectra = new HashMap<>();
 
-        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile, mandatoryHeaders);
+        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile.toFile(), mandatoryHeaders);
         for (Map<String, String> spectrumValues : valuesIterator) {
             //concatenate the RAW file name and scan index
             String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getValue())

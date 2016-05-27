@@ -10,12 +10,15 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.zip.GZIPOutputStream;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Parser for the MaxQuant andromeda directory; the apl summary file, the actual apl files containing the spectra and
@@ -35,27 +38,15 @@ public class MaxQuantAndromedaParser {
     private static final String ALL_SPECTRA = "allSpectra.";
     private static final String ISO = ".iso";
     private static final String ANALYZER_TYPE_DELIMITER = "\\.";
-    private static final String APL_SPECTUM_START = "peaklist start";
-    private static final String APL_SPECTUM_END = "peaklist end";
-    private static final String APL_HEADER_DELIMITER = "=";
-    private static final String APL_MZ = "mz";
-    private static final String APL_HEADER = "header";
-    private static final String APL_CHARGE = "charge";
-    private static final String MGF_SPECTRUM_START = "BEGIN IONS";
-    private static final String MGF_SPECTRUM_END = "END IONS";
-    private static final String MGF_MZ = "PEPMASS=";
-    private static final String MGF_RETENTION_TIME = "RTINSECONDS=";
-    private static final String MGF_CHARGE = "CHARGE=";
-    private static final String MGF_TITLE = "TITLE=";
 
     /**
      * The MaxQuant andromeda directory.
      */
-    private File andromedaDirectory;
+    private Path andromedaDirectory;
     /**
-     * The apl spectrum files map (key: apl file name; value: apl param file name);
+     * The apl spectrum file paths map (key: apl file path; value: apl param file path);
      */
-    private Map<String, String> aplFiles = new HashMap<>();
+    private Map<Path, Path> aplFilePaths = new HashMap<>();
     /**
      * The spectrum parameters (key: parameter enum; value: parameter value).
      */
@@ -93,12 +84,12 @@ public class MaxQuantAndromedaParser {
     }
 
     /**
-     * Get the apl files map (key: .apl file path; value: .apar file path)
+     * Get the apl file paths map (key: .apl file path; value: .apar file path)
      *
      * @return the apl files map
      */
-    public Map<String, String> getAplFiles() {
-        return aplFiles;
+    public Map<Path, Path> getAplFilePaths() {
+        return aplFilePaths;
     }
 
     /**
@@ -117,24 +108,30 @@ public class MaxQuantAndromedaParser {
      * @param andromedaDirectory the MaxQuant andromeda directory
      * @throws IOException thrown in case of an I/O related problem
      */
-    public void parseParameters(final File andromedaDirectory) throws IOException {
+    public void parseParameters(final Path andromedaDirectory) throws IOException {
         /**
          * Parse the apl summary file 'aplfiles.txt' to extract the apl spectrum file paths, the spectrum parameter file paths
          * and the mass analyzer and fragmentation type.
          */
-        if (!andromedaDirectory.exists()) {
-            throw new FileNotFoundException("The andromeda directory " + andromedaDirectory.getPath() + " could not be found.");
+        if (!Files.exists(andromedaDirectory)) {
+            throw new FileNotFoundException("The andromeda directory " + andromedaDirectory.toString() + " could not be found.");
         }
         this.andromedaDirectory = andromedaDirectory;
 
-        File aplSummaryFile = new File(andromedaDirectory, MaxQuantConstants.APL_SUMMARY_FILE.value());
-        if (!aplSummaryFile.exists()) {
+        Path aplSummaryPath = Paths.get(andromedaDirectory.toString(), MaxQuantConstants.APL_SUMMARY_FILE.value());
+        if (!Files.exists(aplSummaryPath)) {
             throw new FileNotFoundException("The apl summary file " + MaxQuantConstants.APL_SUMMARY_FILE + " could not be found.");
         }
-        aplFiles = ParseUtils.parseParameters(aplSummaryFile, MaxQuantConstants.PARAM_TAB_DELIMITER.value());
+        Map<String, String> aplFilePaths = ParseUtils.parseParameters(aplSummaryPath, MaxQuantConstants.PARAM_TAB_DELIMITER.value());
+        aplFilePaths.entrySet().stream().forEach(entry -> {
+            //use paths relative to the andromeda directory
+            Path relativeAplfilePath = Paths.get(andromedaDirectory.toString(), FilenameUtils.getName(entry.getKey().toString()));
+            Path relativeSpectrumParametersfilePath = Paths.get(andromedaDirectory.toString(), FilenameUtils.getName(entry.getValue().toString()));
+            this.aplFilePaths.put(relativeAplfilePath, relativeSpectrumParametersfilePath);
+        });
 
         //get the first entry
-        Optional<Map.Entry<String, String>> first = aplFiles.entrySet().stream().findFirst();
+        Optional<Map.Entry<Path, Path>> first = this.aplFilePaths.entrySet().stream().findFirst();
         if (first.isPresent()) {
             //parse the mass analyzer and fragmentation type
             parseMassAnalyzerAndFragmentationType(first.get().getKey());
@@ -156,13 +153,11 @@ public class MaxQuantAndromedaParser {
      * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
      */
     public void parseSpectra(Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws FileNotFoundException {
-        for (String aplFilePath : aplFiles.keySet()) {
-            //get the apl file by the parent directory
-            File aplfile = new File(andromedaDirectory, FilenameUtils.getName(aplFilePath));
-            if (!aplfile.exists()) {
-                throw new FileNotFoundException("The apl spectrum file " + aplFilePath + " could not be found.");
+        for (Path aplFilePath : aplFilePaths.keySet()) {
+            if (!Files.exists(aplFilePath)) {
+                throw new FileNotFoundException("The apl spectrum file " + aplFilePath.toString() + " could not be found.");
             }
-            maxQuantAplParser.parseAplFile(aplfile, spectra, includeUnidentifiedSpectra);
+            maxQuantAplParser.parseAplFile(aplFilePath, spectra, includeUnidentifiedSpectra);
         }
     }
 
@@ -176,13 +171,14 @@ public class MaxQuantAndromedaParser {
     /**
      * Parse the mass analyzer and fragmentation type.
      *
-     * @param aplFilesPath the aplFiles file path
+     * @param aplFilesPath the aplFilePaths file path
      */
-    private void parseMassAnalyzerAndFragmentationType(String aplFilesPath) {
+    private void parseMassAnalyzerAndFragmentationType(Path aplFilesPath) {
         fragmentationType = FragmentationType.UNKNOWN;
         massAnalyzerType = MaxQuantConstants.Analyzer.UNKNOWN;
 
-        String analyzerAndType = aplFilesPath.substring(aplFilesPath.lastIndexOf(ALL_SPECTRA) + ALL_SPECTRA.length(), aplFilesPath.lastIndexOf(ISO));
+        String aplFilePathString = aplFilesPath.toString();
+        String analyzerAndType = aplFilePathString.substring(aplFilePathString.lastIndexOf(ALL_SPECTRA) + ALL_SPECTRA.length(), aplFilePathString.lastIndexOf(ISO));
         //get the fragmentation type
         String[] split = analyzerAndType.split(ANALYZER_TYPE_DELIMITER);
         if (split.length == 2) {
@@ -200,15 +196,13 @@ public class MaxQuantAndromedaParser {
      *
      * @param spectrumParametersFilePath the spectrum parameters file path
      */
-    private void parseSpectrumParameters(String spectrumParametersFilePath) throws IOException {
-        String spectrumParametersFileName = FilenameUtils.getName(spectrumParametersFilePath);
-        File spectrumParametersFile = new File(andromedaDirectory, spectrumParametersFileName);
-        if (!spectrumParametersFile.exists()) {
-            throw new FileNotFoundException("The spectrum parameters file " + spectrumParametersFileName + " could not be found.");
+    private void parseSpectrumParameters(Path spectrumParametersFilePath) throws IOException {
+        if (!Files.exists(spectrumParametersFilePath)) {
+            throw new FileNotFoundException("The spectrum parameters file " + spectrumParametersFilePath.toString() + " could not be found.");
         }
 
         //parse the parameters
-        Map<String, String> spectrumStringParameters = ParseUtils.parseParameters(spectrumParametersFile, MaxQuantConstants.PARAM_EQUALS_DELIMITER.value(), true);
+        Map<String, String> spectrumStringParameters = ParseUtils.parseParameters(spectrumParametersFilePath, MaxQuantConstants.PARAM_EQUALS_DELIMITER.value(), true);
         //put them in an EnumMap
         for (MaxQuantSpectrumParameterHeaders spectrumParameterHeader : MaxQuantSpectrumParameterHeaders.values()) {
             Optional<String> header = spectrumParameterHeader.getPossibleValues()

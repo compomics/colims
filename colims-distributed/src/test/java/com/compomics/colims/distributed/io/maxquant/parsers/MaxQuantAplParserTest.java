@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ import java.util.Map;
 public class MaxQuantAplParserTest {
 
     private static final String APL_HEADER_DELIMITER = "=";
-    private File testAplFile;
+    private Path testAplFile;
 
     @Autowired
     private MaxQuantAplParser maxQuantAplParser;
@@ -31,7 +32,7 @@ public class MaxQuantAplParserTest {
      * @throws IOException in case of an I/O related problem
      */
     public MaxQuantAplParserTest() throws IOException {
-        testAplFile = new ClassPathResource("allSpectra.CID.ITMS.iso_0_part.apl").getFile();
+        testAplFile = new ClassPathResource("data" + File.separator + "maxquant_1.5.2.8" + File.separator + "andromeda" + File.separator + "allSpectra.CID.ITMS.iso_0_part.apl").getFile().toPath();
     }
 
     /**
@@ -59,6 +60,7 @@ public class MaxQuantAplParserTest {
         spectra.put(spectrumKey2, spectrum2);
 
         maxQuantAplParser.parseAplFile(testAplFile, spectra, false);
+        Assert.assertEquals(2, spectra.size());
         byte[] unzippedBytes = IOUtils.unzip(spectra.get(spectrumKey1).getSpectrumFiles().get(0).getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
              InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
@@ -86,13 +88,15 @@ public class MaxQuantAplParserTest {
      * @throws Exception in case something goes wrong
      */
     @Test
-    public void testParseUnidentified() throws Exception {
+    public void testParseAplFileUnidentified() throws Exception {
         String spectrumKey = "RawFile: 120329kw_JEnglish_JE10_1 Index: 496";
 
         //create some dummy spectra for unidentified spectra
         Map<String, Spectrum> spectra = new HashMap<>();
         maxQuantAplParser.parseAplFile(testAplFile, spectra, true);
 
+        //check the size
+        Assert.assertEquals(7, spectra.size());
         byte[] unzippedBytes = IOUtils.unzip(spectra.get(spectrumKey).getSpectrumFiles().get(0).getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
              InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());

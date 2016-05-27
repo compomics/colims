@@ -8,6 +8,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Created by Iain on 07/04/2015.
@@ -25,29 +26,29 @@ public class MaxQuantTestSuite {
 
     private static final String maxQuantVersion = "1.5.2.8";
 
-    public static File maxQuantDirectory;
-    public static File maxQuantTextDirectory;
-    public static File maxQuantAndromedaDirectory;
-    public static File msmsFile;
-    public static File proteinGroupsFile;
-    public static File evidenceFile;
-    public static File parameterFile;
-    public static File peptidesFile;
+    public static Path maxQuantDirectory;
+    public static Path maxQuantTextDirectory;
+    public static Path maxQuantAndromedaDirectory;
+    public static Path msmsFile;
+    public static Path proteinGroupsFile;
+    public static Path evidenceFile;
+    public static Path parameterFile;
+    public static Path peptidesFile;
     public static FastaDb testFastaDb;
     public static FastaDb contaminantsFastaDb;
 
     static {
         try {
-            maxQuantDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion).getFile();
-            maxQuantAndromedaDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "andromeda").getFile();
+            maxQuantDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion).getFile().toPath();
+            maxQuantAndromedaDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "andromeda").getFile().toPath();
             String txtDirectoryPath = "data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "txt";
-            maxQuantTextDirectory = new ClassPathResource(txtDirectoryPath).getFile();
+            maxQuantTextDirectory = new ClassPathResource(txtDirectoryPath).getFile().toPath();
             txtDirectoryPath += File.separator;
-            msmsFile = new ClassPathResource(txtDirectoryPath + "msms.txt").getFile();
-            proteinGroupsFile = new ClassPathResource(txtDirectoryPath + "proteinGroups.txt").getFile();
-            evidenceFile = new ClassPathResource(txtDirectoryPath + "evidence.txt").getFile();
-            parameterFile = new ClassPathResource(txtDirectoryPath + "parameters.txt").getFile();
-            peptidesFile = new ClassPathResource(txtDirectoryPath + "peptides.txt").getFile();
+            msmsFile = new ClassPathResource(txtDirectoryPath + "msms.txt").getFile().toPath();
+            proteinGroupsFile = new ClassPathResource(txtDirectoryPath + "proteinGroups.txt").getFile().toPath();
+            evidenceFile = new ClassPathResource(txtDirectoryPath + "evidence.txt").getFile().toPath();
+            parameterFile = new ClassPathResource(txtDirectoryPath + "parameters.txt").getFile().toPath();
+            peptidesFile = new ClassPathResource(txtDirectoryPath + "peptides.txt").getFile().toPath();
             testFastaDb = new FastaDb();
             testFastaDb.setName("test fasta");
             testFastaDb.setFileName("uniprot-taxonomy%3A10090.fasta");

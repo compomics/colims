@@ -20,8 +20,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -111,12 +112,12 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Parse the search parameters for a MaxQuant experiment.
      *
-     * @param maxQuantTxtDirectory the MaxQuant txt directory
+     * @param maxQuantTxtDirectory the MaxQuant txt directory path
      * @param fastaDbs             the FASTA databases used in the experiment
      * @param storeFiles           whether data files should be stored with the experiment
      * @throws IOException thrown in case of of an I/O related problem
      */
-    public void parse(File maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
+    public void parse(Path maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
         //parse the search settings
         SearchAndValidationSettings searchAndValidationSettings = parseSearchSettings(maxQuantTxtDirectory, fastaDbs, storeFiles);
 
@@ -127,13 +128,13 @@ public class MaxQuantSearchSettingsParser {
      * Parse the search settings for the given experiment and map them onto a Colims SearchAndValidationSettings
      * instance.
      *
-     * @param maxQuantTxtDirectory the MaxQuant txt directory
+     * @param maxQuantTxtDirectory the MaxQuant txt directory path
      * @param fastaDbs             the FASTA databases used in the experiment
      * @param storeFiles           whether data files should be stored with experiment
      * @return the mapped SearchAndValidationSettings instance
      * @throws IOException thrown in case of of an I/O related problem
      */
-    private SearchAndValidationSettings parseSearchSettings(File maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
+    private SearchAndValidationSettings parseSearchSettings(Path maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         //set the FASTA databases entity associations
@@ -150,7 +151,7 @@ public class MaxQuantSearchSettingsParser {
 
 
         //parse the parameters file and iterate over the parameters
-        Map<String, String> parameters = ParseUtils.parseParameters(new File(maxQuantTxtDirectory, PARAMETERS_FILE), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
+        Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), PARAMETERS_FILE), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
         //get the MaxQuant version
         String versionParameter = parameters.get(MaxQuantParameterHeaders.VERSION.getValue());
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
@@ -185,11 +186,11 @@ public class MaxQuantSearchSettingsParser {
 
         // TODO: 26/05/16 check which files to store
         //currently just storing whole folder
-        IdentificationFile identificationFileEntity = new IdentificationFile(maxQuantTxtDirectory.getName(), maxQuantTxtDirectory.getCanonicalPath());
+        IdentificationFile identificationFileEntity = new IdentificationFile(maxQuantTxtDirectory.getFileName().toString(), maxQuantTxtDirectory.toString());
 
         if (storeFiles) {
             identificationFileEntity.setBinaryFileType(BinaryFileType.ZIP);
-            byte[] content = IOUtils.readAndZip(maxQuantTxtDirectory);
+            byte[] content = IOUtils.readAndZip(maxQuantTxtDirectory.toFile());
             identificationFileEntity.setContent(content);
         }
 
@@ -204,14 +205,14 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Parse the search and validation settings for a given data set.
      *
-     * @param maxQuantTxtDirectory        the MaxQuant txt directory
+     * @param maxQuantTxtDirectory        the MaxQuant txt directory path
      * @param searchAndValidationSettings An initial SearchAndValidationSettings object to decorate per run
      * @return Settings indexed by run file name
      * @throws IOException thrown in case of of an I/O related problem
      */
-    private Map<String, SearchAndValidationSettings> parseRuns(File maxQuantTxtDirectory, SearchAndValidationSettings searchAndValidationSettings) throws IOException {
+    private Map<String, SearchAndValidationSettings> parseRuns(Path maxQuantTxtDirectory, SearchAndValidationSettings searchAndValidationSettings) throws IOException {
         Map<String, SearchAndValidationSettings> allSettings = new HashMap<>();
-        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(new File(maxQuantTxtDirectory, SUMMARY), MANDATORY_HEADERS);
+        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(Paths.get(maxQuantTxtDirectory.toString(), SUMMARY).toFile(), MANDATORY_HEADERS);
         Map<String, String> row;
 
         while (summaryIter.hasNext()) {

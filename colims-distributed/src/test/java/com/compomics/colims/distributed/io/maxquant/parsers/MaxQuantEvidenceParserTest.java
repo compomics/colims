@@ -31,7 +31,7 @@ public class MaxQuantEvidenceParserTest {
     @Test
     public void testParse() throws Exception {
         maxQuantEvidenceParser.clear();
-        maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextDirectory, "1");
+        maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextDirectory.toFile(), "1");
 
         assertThat(maxQuantEvidenceParser.peptides.size(), not(0));
         assertThat(maxQuantEvidenceParser.quantifications.size(), not(0));

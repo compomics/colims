@@ -1,11 +1,10 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -26,16 +25,16 @@ public class ParseUtils {
     /**
      * Parse the given parameters file and put the parameters in a map (key: parameters name; value: parameter value).
      *
-     * @param parametersFile the given parameters file
+     * @param parametersPath the given parameters path
      * @param delimiter      the delimiter between the parameter name and value
      * @param toLowerCase    whether or not to convert the parameter names to lowercase
      * @return the map of parsed parameters (key: the parameter name; value: the parameter value)
      * @throws IOException thrown in case of of an I/O related problem
      */
-    public static Map<String, String> parseParameters(File parametersFile, String delimiter, boolean toLowerCase) throws IOException {
+    public static Map<String, String> parseParameters(Path parametersPath, String delimiter, boolean toLowerCase) throws IOException {
         Map<String, String> parameters = new HashMap<>();
 
-        try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(parametersFile.toURI()), StandardCharsets.UTF_8)) {
+        try (BufferedReader bufferedReader = Files.newBufferedReader(parametersPath, StandardCharsets.UTF_8)) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 parseParameter(line, parameters, delimiter, toLowerCase);
@@ -48,13 +47,13 @@ public class ParseUtils {
     /**
      * Parse the given parameters file and put the parameters in a map (key: parameters name; value: parameter value).
      *
-     * @param parametersFile the given parameters file
+     * @param parametersPath the given parameters path
      * @param delimiter      the delimiter between the parameter name and value
      * @return the map of parsed parameters (key: the parameter name; value: the parameter value)
      * @throws IOException thrown in case of of an I/O related problem
      */
-    public static Map<String, String> parseParameters(File parametersFile, String delimiter) throws IOException {
-        return parseParameters(parametersFile, delimiter, false);
+    public static Map<String, String> parseParameters(Path parametersPath, String delimiter) throws IOException {
+        return parseParameters(parametersPath, delimiter, false);
     }
 
     /**
