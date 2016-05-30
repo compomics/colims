@@ -3,7 +3,9 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
+import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -36,6 +38,7 @@ public class MaxQuantAplParser {
     private static final String APL_MZ = "mz";
     private static final String APL_HEADER = "header";
     private static final String APL_CHARGE = "charge";
+    private static final String APL_FRAGMENTATION = "fragmentation";
     private static final String MGF_SPECTRUM_START = "BEGIN IONS";
     private static final String MGF_SPECTRUM_END = "END IONS";
     private static final String MGF_MZ = "PEPMASS=";
@@ -43,19 +46,6 @@ public class MaxQuantAplParser {
     private static final String MGF_CHARGE = "CHARGE=";
     private static final String MGF_TITLE = "TITLE=";
 
-    /**
-     * The list of unidentified spectra.
-     */
-    private List<Spectrum> unidentifiedSpectra = new ArrayList<>();
-
-    /**
-     * Get the list of unidentified spectra.
-     *
-     * @return the unidentified spectra
-     */
-    public List<Spectrum> getUnidentifiedSpectra() {
-        return unidentifiedSpectra;
-    }
 
     /**
      * Parse the give MaqQuant .apl spectrum file and update the spectra map.
@@ -64,7 +54,7 @@ public class MaxQuantAplParser {
      * @param spectra                    the spectra map
      * @param includeUnidentifiedSpectra whether or not to include unidentified spectra
      */
-    public void parseAplFile(Path aplFilePath, Map<String, Spectrum> spectra, boolean includeUnidentifiedSpectra) throws IOException {
+    public void parseAplFile(Path aplFilePath, MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
         try (BufferedReader bufferedReader = Files.newBufferedReader(aplFilePath)) {
             String line;
             Map<String, String> headers = new HashMap<>();
@@ -84,17 +74,20 @@ public class MaxQuantAplParser {
                     String header = org.apache.commons.lang3.StringUtils.substringBefore(headers.get(APL_HEADER), " Precursor");
                     Spectrum spectrum = null;
                     //check if the spectrum was identified and therefore can be found in the spectra map
-                    if (spectra.containsKey(header)) {
-                        spectrum = spectra.get(header);
+                    if (maxQuantSpectra.getSpectra().containsKey(header)) {
+                        spectrum = maxQuantSpectra.getSpectra().get(header);
                     } else if (spectrum == null && includeUnidentifiedSpectra) {
                         //make new Spectrum instance and add it to the unidentified ones
                         spectrum = new Spectrum();
-                        unidentifiedSpectra.add(spectrum);
+                        spectrum.setAccession(header);
+                        spectrum.setMzRatio(Double.valueOf(headers.get(APL_MZ)));
+                        spectrum.setFragmentationType(FragmentationType.valueOf(headers.get(APL_FRAGMENTATION)));
+                        spectrum.setCharge(Integer.valueOf(headers.get(APL_CHARGE)));
+                        maxQuantSpectra.getUnidentifiedSpectra().add(spectrum);
                     }
 
                     //parse the spectrum
                     if (spectrum != null) {
-                        // TODO: 27/05/16 for an unidentief spectrum, fill in as much fields as possible in the Spectrum instance 
                         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
                              OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
                              BufferedWriter bw = new BufferedWriter(osw);
@@ -143,12 +136,4 @@ public class MaxQuantAplParser {
             }
         }
     }
-
-    /**
-     * Clear the resources of the parser.
-     */
-    public void clear() {
-        unidentifiedSpectra.clear();
-    }
-
 }
