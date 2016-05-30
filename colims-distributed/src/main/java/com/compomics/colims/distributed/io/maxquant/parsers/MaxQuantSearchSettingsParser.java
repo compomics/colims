@@ -41,15 +41,6 @@ public class MaxQuantSearchSettingsParser {
      */
     private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
 
-    /**
-     * The MaxQuant summary data file name.
-     */
-    private static final String SUMMARY = "summary.txt";
-    /**
-     * The MaxQuant Parameters file name.
-     */
-    private static final String PARAMETERS_FILE = "parameters.txt";
-
     private static final String MS_ONTOLOGY_LABEL = "MS";
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
     private static final String NOT_APPLICABLE = "N/A";
@@ -150,7 +141,7 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setSearchType(defaultSearchType);
 
         //parse the parameters file and iterate over the parameters
-        Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), PARAMETERS_FILE), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
+        Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), MaxQuantConstants.PARAMETERS_FILE.value()), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
 
 
         //get the MaxQuant version
@@ -207,17 +198,17 @@ public class MaxQuantSearchSettingsParser {
      * Parse the search and validation settings for a given data set.
      *
      * @param maxQuantTxtDirectory        the MaxQuant txt directory path
-     * @param searchAndValidationSettings An initial SearchAndValidationSettings object to decorate per run
-     * @return Settings indexed by run file name
+     * @param searchAndValidationSettings an initial SearchAndValidationSettings object to decorate per run
+     * @return the search and validation settings indexed by run file name
      * @throws IOException thrown in case of of an I/O related problem
      */
     private Map<String, SearchAndValidationSettings> parseRuns(Path maxQuantTxtDirectory, SearchAndValidationSettings searchAndValidationSettings) throws IOException {
         Map<String, SearchAndValidationSettings> allSettings = new HashMap<>();
-        TabularFileLineValuesIterator summaryIter = new TabularFileLineValuesIterator(Paths.get(maxQuantTxtDirectory.toString(), SUMMARY).toFile(), MANDATORY_HEADERS);
+        TabularFileLineValuesIterator summaryIterator = new TabularFileLineValuesIterator(Paths.get(maxQuantTxtDirectory.toString(), MaxQuantConstants.SUMMARY_FILE.value()).toFile(), MANDATORY_HEADERS);
         Map<String, String> row;
 
-        while (summaryIter.hasNext()) {
-            row = summaryIter.next();
+        while (summaryIterator.hasNext()) {
+            row = summaryIterator.next();
             SearchAndValidationSettings runSettings = cloneSearchAndValidationSettings(searchAndValidationSettings);
 
             if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getValue())) {
