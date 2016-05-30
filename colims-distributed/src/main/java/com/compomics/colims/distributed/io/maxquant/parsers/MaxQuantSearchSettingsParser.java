@@ -149,9 +149,10 @@ public class MaxQuantSearchSettingsParser {
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setSearchType(defaultSearchType);
 
-
         //parse the parameters file and iterate over the parameters
         Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), PARAMETERS_FILE), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
+
+
         //get the MaxQuant version
         String versionParameter = parameters.get(MaxQuantParameterHeaders.VERSION.getValue());
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
