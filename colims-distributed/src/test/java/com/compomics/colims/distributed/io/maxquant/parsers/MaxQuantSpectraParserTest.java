@@ -25,13 +25,20 @@ public class MaxQuantSpectraParserTest {
 
     @Test
     public void testParse() throws Exception {
-        maxQuantSpectraParser.clear();
         maxQuantSpectraParser.parse(MaxQuantTestSuite.maxQuantDirectory, false);
 
-        Map<Integer, Spectrum> identifiedSpectra = maxQuantSpectraParser.getIdentifiedSpectra();
-        List<Spectrum> unidentifiedSpectra = maxQuantSpectraParser.getUnidentifiedSpectra();
+        MaxQuantSpectra maxQuantSpectra = maxQuantSpectraParser.getMaxQuantSpectra();
 
-        Assert.assertEquals(1213, identifiedSpectra.size());
-        Assert.assertTrue(unidentifiedSpectra.isEmpty());
+        Assert.assertEquals(1213, maxQuantSpectra.getIdentifiedSpectra().size());
+        Assert.assertTrue(maxQuantSpectra.getUnidentifiedSpectra().isEmpty());
+
+        // test for the unidentified spectra
+        maxQuantSpectraParser.parse(MaxQuantTestSuite.maxQuantDirectory, true);
+
+        MaxQuantSpectra maxQuantSpectra2 = maxQuantSpectraParser.getMaxQuantSpectra();
+
+        Assert.assertEquals(1213, maxQuantSpectra2.getIdentifiedSpectra().size());
+        Assert.assertEquals(5020, maxQuantSpectra2.getUnidentifiedSpectra().size());
+
     }
 }

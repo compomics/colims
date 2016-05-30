@@ -52,25 +52,22 @@ public class MaxQuantSpectraParser {
     };
 
     /**
-     * The map of identified spectra (key: the msms.txt ID; value: the mapped Spectrum instance).
-     */
-    private Map<Integer, Spectrum> identifiedSpectra = new HashMap<>();
-    /**
-     * The list of unidentified spectra.
-     */
-    private List<Spectrum> unidentifiedSpectra = new ArrayList<>();
-    /**
      * The MaxQuantAndromedaParser for parsing the .apl spectra files.
      */
     @Autowired
     private MaxQuantAndromedaParser maxQuantAndromedaParser;
 
-    public Map<Integer, Spectrum> getIdentifiedSpectra() {
-        return identifiedSpectra;
-    }
+    /**
+     * MaxQuantSpectra object to store identified and unidentified spectra
+     */
+    private MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
 
-    public List<Spectrum> getUnidentifiedSpectra() {
-        return unidentifiedSpectra;
+    /**
+     * Get maxQuantSpectra
+     * @return maxQuantSpectra
+     */
+    public MaxQuantSpectra getMaxQuantSpectra() {
+        return maxQuantSpectra;
     }
 
     /**
@@ -89,26 +86,17 @@ public class MaxQuantSpectraParser {
         maxQuantAndromedaParser.parseParameters(andromedaDirectory);
 
         Map<String, Integer> msmsIds = new HashMap<>();
-        Map<String, Spectrum> spectra = new HashMap<>();
+
         //parse the msms.txt file
-        parse(msmsFile, msmsIds, spectra);
+        parse(msmsFile, msmsIds, maxQuantSpectra);
 
         //parse the apl files containing the spectrum peak lists
-        maxQuantAndromedaParser.parseSpectra(spectra, includeUnidentifiedSpectra);
+        maxQuantAndromedaParser.parseSpectra(maxQuantSpectra, includeUnidentifiedSpectra);
 
-        //clear the map before adding the identified spectra
-        identifiedSpectra.clear();
-        spectra.entrySet().stream().forEach(e -> identifiedSpectra.put(msmsIds.get(e.getKey()), e.getValue()));
+        // create identified spectra map <integer, spectrum>
+        maxQuantSpectra.createIdentifiedSpectra(msmsIds);
     }
 
-    /**
-     * Clear the resources of this parser.
-     */
-    public void clear() {
-        maxQuantAndromedaParser.clear();
-        identifiedSpectra.clear();
-        unidentifiedSpectra.clear();
-    }
 
     /**
      * Parse the msms.txt file. This method returns a map with a String instance as key and the partially mapped
@@ -119,7 +107,7 @@ public class MaxQuantSpectraParser {
      * @param spectra  the spectra map (key: apl spectrum header key; value: the mapped Spectrum instance)
      * @return the mapped spectra
      */
-    private void parse(Path msmsFile, Map<String, Integer> msmsIds, Map<String, Spectrum> spectra) throws IOException {
+    private void parse(Path msmsFile, Map<String, Integer> msmsIds, MaxQuantSpectra maxQuantSpectra) throws IOException {
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile.toFile(), mandatoryHeaders);
         for (Map<String, String> spectrumValues : valuesIterator) {
             //concatenate the RAW file name and scan index
@@ -132,7 +120,7 @@ public class MaxQuantSpectraParser {
             //map the spectrum
             Spectrum spectrum = mapMsmsSpectrum(aplKey, spectrumValues);
             //add to spectra map
-            spectra.putIfAbsent(aplKey, spectrum);
+            maxQuantSpectra.getSpectra().putIfAbsent(aplKey, spectrum);
         }
     }
 
