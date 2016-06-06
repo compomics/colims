@@ -59,6 +59,8 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
     @Override
     public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException {
+
+        //try notepad
         LOGGER.info("started mapping folder: " + maxQuantImport.getMaxQuantDirectory().getName());
 
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
