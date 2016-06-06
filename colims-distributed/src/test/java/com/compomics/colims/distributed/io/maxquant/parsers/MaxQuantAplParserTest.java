@@ -50,24 +50,24 @@ public class MaxQuantAplParserTest {
         Spectrum spectrum1 = new Spectrum();
         spectrum1.setAccession("acc_1");
         spectrum1.setRetentionTime(123.45);
-        maxQuantSpectra.getSpectra().put(spectrumKey1, spectrum1);
+        maxQuantSpectra.getAplSpectra().put(spectrumKey1, spectrum1);
 
         //create another dummy spectrum one
         String spectrumKey2 = "RawFile: 120329kw_JEnglish_JE10_1 Index: 7729";
         Spectrum spectrum2 = new Spectrum();
         spectrum2.setAccession("acc_2");
         spectrum2.setRetentionTime(123.46);
-        maxQuantSpectra.getSpectra().put(spectrumKey2, spectrum2);
+        maxQuantSpectra.getAplSpectra().put(spectrumKey2, spectrum2);
 
         maxQuantAplParser.parseAplFile(testAplFile, maxQuantSpectra, false);
         //check the sizes
         //2 identified spectra
-        Assert.assertEquals(2, maxQuantSpectra.getSpectra().size());
+        Assert.assertEquals(2, maxQuantSpectra.getAplSpectra().size());
         //don't include unidentified ones
         Assert.assertTrue(maxQuantSpectra.getUnidentifiedSpectra().isEmpty());
 
         //do some additional testing
-        byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getSpectra().get(spectrumKey1).getSpectrumFiles().get(0).getContent());
+        byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getAplSpectra().get(spectrumKey1).getSpectrumFiles().get(0).getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
              InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
              BufferedReader br = new BufferedReader(isr)) {
@@ -105,13 +105,13 @@ public class MaxQuantAplParserTest {
         Spectrum spectrum1 = new Spectrum();
         spectrum1.setAccession("acc_1");
         spectrum1.setRetentionTime(123.45);
-        maxQuantSpectra.getSpectra().put(spectrumKey1, spectrum1);
+        maxQuantSpectra.getAplSpectra().put(spectrumKey1, spectrum1);
 
         maxQuantAplParser.parseAplFile(testAplFile, maxQuantSpectra, true);
 
         //check the sizes
         //one identified
-        Assert.assertEquals(1, maxQuantSpectra.getSpectra().size());
+        Assert.assertEquals(1, maxQuantSpectra.getAplSpectra().size());
         //6 unidentified
         Assert.assertEquals(6, maxQuantSpectra.getUnidentifiedSpectra().size());
 

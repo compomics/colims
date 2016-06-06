@@ -24,6 +24,10 @@ public enum MaxQuantConstants {
      */
     EVIDENCE_FILE("evidence.txt"),
     /**
+     * The summary file name
+     */
+    SUMMARY_FILE("summary.txt"),
+    /**
      * The proteinGroups file name.
      */
     PROTEIN_GROUPS_FILE("proteinGroups.txt"),

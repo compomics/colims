@@ -121,7 +121,6 @@ public class MaxQuantEvidenceParser {
 
             if (values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()) != null) {
                 String[] msmsIds = values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()).split(";");
-
                 for (String msmsId : msmsIds) {
                     if (!msmsId.isEmpty()) {
                         Integer spectrumID = Integer.parseInt(msmsId);

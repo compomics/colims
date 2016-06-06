@@ -40,10 +40,6 @@ import static org.junit.Assert.assertThat;
 @Rollback
 public class MaxQuantIT {
 
-    private static final String maxQuantVersion = "1.5.2.8";
-    private static final String fastaFilePath = "data/maxquant_" + maxQuantVersion + "/uniprot-taxonomy%3A10090.fasta";
-    private static final String maxQuantTextFolderPath = "data/maxquant_" + maxQuantVersion;
-
     @Autowired
     private FastaDbService fastaDbService;
     @Autowired
@@ -66,26 +62,20 @@ public class MaxQuantIT {
      */
     @Test
     public void testMap() throws Exception {
-        FastaDb maxQuantTestFastaDb = new FastaDb();
-        ClassPathResource fastaResource = new ClassPathResource(fastaFilePath);
-        maxQuantTestFastaDb.setName(fastaResource.getFilename());
-        maxQuantTestFastaDb.setFileName(fastaResource.getFilename());
-        maxQuantTestFastaDb.setFilePath(fastaResource.getFile().getPath());
-
         //persist the fasta db. We don't have it as an insert statement in the import.sql file
         //as the file path might be different depending on the OS
-        fastaDbService.persist(maxQuantTestFastaDb);
+        fastaDbService.persist(MaxQuantTestSuite.testFastaDb);
 
         EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, maxQuantTestFastaDb.getId());
+        fastaDbIds.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb.getId());
 
-        MaxQuantImport maxQuantImport = new MaxQuantImport(new ClassPathResource(maxQuantTextFolderPath).getFile(), fastaDbIds);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.maxQuantDirectory.toFile(), fastaDbIds);
         MappedData mappedData = maxQuantImporter.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 
         assertThat(analyticalRuns.size(), is(1));
         assertThat(analyticalRuns.get(0).getSpectrums().size(), greaterThan(0));
-        assertThat(analyticalRuns.get(0).getSearchAndValidationSettings().getSearchSettingsHasFastaDbs().get(0), is(maxQuantTestFastaDb));
+        assertThat(analyticalRuns.get(0).getSearchAndValidationSettings().getSearchSettingsHasFastaDbs().get(0), is(MaxQuantTestSuite.testFastaDb));
         assertThat(analyticalRuns.get(0).getQuantificationSettings(), notNullValue());
         // TODO: more assertions
     }

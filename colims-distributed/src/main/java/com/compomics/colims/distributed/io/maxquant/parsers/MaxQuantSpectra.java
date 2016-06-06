@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Object to hold identified and unidentified spectra
+ * Object to hold identified and unidentified aplSpectra
  * @author  demet on 5/30/2016.
  */
 
@@ -22,19 +22,18 @@ public class MaxQuantSpectra {
 
     /**
      * This map is used to link with apl files
-     * The identified spectra map (key: Spectrum Key; value: spectrum).
+     * The aplSpectra map (key: Spectrum Key; value: spectrum).
      */
-    private Map<String, Spectrum> spectra = new HashMap<>();
+    private Map<String, Spectrum> aplSpectra = new HashMap<>();
 
     /**
-     * This map is used to link with msms files
-     * The identified spectra map (key: Spectrum Key; value: spectrum).
+     * This map is used to link with spectra IDs in msms file
+     * The spectrumIDs map (key: Spectrum; value: list of msms ID)
      */
-    private Map<Integer, Spectrum> identifiedSpectra = new HashMap<>();
-
+    private Map<Spectrum, List<Integer>> spectrumIDs = new HashMap<>();
 
     /**
-     * The list of unidentified spectra.
+     * The list of unidentified aplSpectra.
      */
     private List<Spectrum> unidentifiedSpectra = new ArrayList<>();
 
@@ -43,38 +42,29 @@ public class MaxQuantSpectra {
     }
 
     /**
-     * Get the hashmap of identified spectra (for apl file)
+     * Get the hashmap of aplSpectra (for apl file)
      *
-     * @return the identified spectra
+     * @return the identified aplSpectra
      */
-    public Map<String, Spectrum> getSpectra() {
-        return spectra;
+    public Map<String, Spectrum> getAplSpectra() {
+        return aplSpectra;
     }
 
     /**
-     * Get the hashmap of identified spectra (for msms file)
+     * Get the hashmap of spectrumIDs
      *
-     * @return the identified spectra
+     * @return spectrumIDs
      */
-    public Map<Integer, Spectrum> getIdentifiedSpectra() {
-        return identifiedSpectra;
-    }
+    public Map<Spectrum, List<Integer>> getSpectrumIDs() { return spectrumIDs; }
+
 
     /**
-     * Get the list of unidentified spectra.
+     * Get the list of unidentified aplSpectra.
      *
-     * @return the unidentified spectra
+     * @return the unidentified aplSpectra
      */
     public List<Spectrum> getUnidentifiedSpectra() {
         return unidentifiedSpectra;
     }
 
-    /**
-     * Match the msmsIDs map with the spectra map
-     * @param maxQuantSpectra
-     * @param msmsIds
-     */
-    public void createIdentifiedSpectra(Map<String, Integer> msmsIds){
-        getSpectra().entrySet().stream().forEach(e -> getIdentifiedSpectra().put(msmsIds.get(e.getKey()), e.getValue()));
-    }
 }

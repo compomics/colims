@@ -170,6 +170,9 @@ public class PersistDbTaskHandler {
                 break;
             case MAX_QUANT:
                 //clear resources before mapping
+                //// TODO: 6/1/2016 change this to inline calls parser and mapper instead of mapper calling parser
+                //mappedData = maxQuantMapper.mapData(maxQuantParser.parseData((MaxQuantImport) (persistDbTask.getDataImport())))
+
                 maxQuantMapper.clear();
 
                 mappedData = maxQuantMapper.mapData((MaxQuantImport) (persistDbTask.getDataImport()));

@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -70,11 +72,14 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             maxQuantImport.getFastaDbIds().forEach((fastaDbType, fastaDbId) -> {
                 fastaDbs.put(fastaDbType, fastaDbService.findById(fastaDbId));
             });
-            parameterParser.parse(maxQuantImport.getMaxQuantDirectory().toPath(), fastaDbs, false);
-            maxQuantParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, parameterParser.getMultiplicity());
+            Path txtDirectory = Paths.get(maxQuantImport.getMaxQuantDirectory().getAbsolutePath() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
+            parameterParser.parse(txtDirectory, fastaDbs, false);
+            // TODO: 5/31/2016 change all files to path
+            maxQuantParser.parse(maxQuantImport.getMaxQuantDirectory().toPath(), fastaDbs, parameterParser.getMultiplicity());
 
             proteinGroups = maxQuantParser.getProteinGroupSet();
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
+                //// TODO: 6/1/2016 move this line to parser method
                 analyticalRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());
 
                 SearchAndValidationSettings searchAndValidationSettings = parameterParser.getRunSettings().values().iterator().next();

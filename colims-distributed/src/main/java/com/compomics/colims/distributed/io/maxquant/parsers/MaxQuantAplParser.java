@@ -5,16 +5,13 @@ import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
@@ -74,8 +71,8 @@ public class MaxQuantAplParser {
                     String header = org.apache.commons.lang3.StringUtils.substringBefore(headers.get(APL_HEADER), " Precursor");
                     Spectrum spectrum = null;
                     //check if the spectrum was identified and therefore can be found in the spectra map
-                    if (maxQuantSpectra.getSpectra().containsKey(header)) {
-                        spectrum = maxQuantSpectra.getSpectra().get(header);
+                    if (maxQuantSpectra.getAplSpectra().containsKey(header)) {
+                        spectrum = maxQuantSpectra.getAplSpectra().get(header);
                     } else if (spectrum == null && includeUnidentifiedSpectra) {
                         //make new Spectrum instance and add it to the unidentified ones
                         spectrum = new Spectrum();

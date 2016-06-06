@@ -40,7 +40,7 @@ public class MaxQuantParserTest {
         fastaDbs.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb);
 
         maxQuantParser.clear();
-        maxQuantParser.parse(MaxQuantTestSuite.maxQuantTextDirectory.toFile(), fastaDbs);
+        maxQuantParser.parse(MaxQuantTestSuite.maxQuantDirectory, fastaDbs);
     }
 
     @Test
@@ -72,19 +72,19 @@ public class MaxQuantParserTest {
         assertThat(peptide, isA(Peptide.class));
 
         maxQuantParser.clear();
+        peptides.clear();
         peptides = maxQuantParser.getIdentificationForSpectrum(spectrum);
-        // TODO: 27/05/16 make this test work for multiple peptides linked to the same spectrum 
-        assertThat(peptides, nullValue());
+        assertThat(peptides.isEmpty(), is(true));
     }
 
     /**
-     * Test of getSpectra method, of class MaxQuantParser.
+     * Test of getAplSpectra method, of class MaxQuantParser.
      *
      * @throws java.lang.Exception in case of an exception
      */
     @Test
     public void testGetSpectra() throws Exception {
-        Map<Spectrum, Integer> spectra = maxQuantParser.getSpectra();
+        Map<Spectrum, List<Integer>> spectra = maxQuantParser.getSpectra();
         assertThat(spectra.size(), not(0));
         assertThat(spectra.keySet().iterator().next(), isA(Spectrum.class));
 
