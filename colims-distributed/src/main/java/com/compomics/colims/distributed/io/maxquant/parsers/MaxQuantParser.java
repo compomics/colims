@@ -11,6 +11,7 @@ import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.IllegalStateException;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -94,6 +95,7 @@ public class MaxQuantParser {
      */
     public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity) throws IOException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
+        // TODO: 6/8/2016 write a method for unidentified spectra 
         maxQuantSpectraParser.parse(maxQuantDirectory, false);
 
         //look for the MaxQuant txt directory
@@ -195,6 +197,8 @@ public class MaxQuantParser {
         for (int spectrumKey : spectrumKeys) {
             if(!maxQuantEvidenceParser.getPeptides().isEmpty()){
                 peptideList.addAll(maxQuantEvidenceParser.getPeptides().get(spectrumKey));
+            }else {
+                throw new java.lang.IllegalStateException("At this stage peptites map is empty");
             }
         }
         return peptideList;

@@ -69,14 +69,16 @@ public class MaxQuantIT {
         EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb.getId());
 
-        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.maxQuantDirectory.toFile(), fastaDbIds);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.maxQuantDirectory, fastaDbIds);
         MappedData mappedData = maxQuantImporter.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 
         assertThat(analyticalRuns.size(), is(1));
         assertThat(analyticalRuns.get(0).getSpectrums().size(), greaterThan(0));
-        assertThat(analyticalRuns.get(0).getSearchAndValidationSettings().getSearchSettingsHasFastaDbs().get(0), is(MaxQuantTestSuite.testFastaDb));
+        assertThat(analyticalRuns.get(0).getSearchAndValidationSettings().getSearchSettingsHasFastaDbs().get(0).getFastaDb(), is(MaxQuantTestSuite.testFastaDb));
         assertThat(analyticalRuns.get(0).getQuantificationSettings(), notNullValue());
-        // TODO: more assertions
+        assertThat(analyticalRuns.get(0).getSpectrums().get(0).getPeptides().size(), greaterThan(0));
+        // TODO: 6/6/2016 more test.. 
+
     }
 }

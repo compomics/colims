@@ -53,6 +53,7 @@ public class MaxQuantTestSuite {
             testFastaDb.setName("test fasta");
             testFastaDb.setFileName("uniprot-taxonomy%3A10090.fasta");
             testFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "uniprot-taxonomy%3A10090.fasta").getFile().getAbsolutePath());
+         //   testFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "uniprot-mus+musculus.fasta").getFile().getAbsolutePath());
             contaminantsFastaDb = new FastaDb();
             contaminantsFastaDb.setName("test contaminants fasta");
             contaminantsFastaDb.setFileName("contaminants.fasta");
