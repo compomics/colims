@@ -6,6 +6,7 @@ import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.QuantificationSettingsMapper;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantAndromedaParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
 import com.compomics.colims.model.*;
@@ -44,9 +45,11 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     private static final String QUANT_FILE = "msms.txt";
 
     @Autowired
-    private MaxQuantSearchSettingsParser parameterParser;
+    private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
     @Autowired
     private MaxQuantParser maxQuantParser;
+    @Autowired
+    private MaxQuantAndromedaParser maxQuantAndromedaParser;
     @Autowired
     private QuantificationSettingsMapper quantificationSettingsMapper;
     @Autowired
@@ -54,14 +57,12 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
     @Override
     public void clear() {
-        parameterParser.clear();
+        maxQuantSearchSettingsParser.clear();
     }
 
     @Override
     public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException {
-
-        //try notepad
-        LOGGER.info("started mapping folder: " + maxQuantImport.getMaxQuantDirectory().getName());
+        LOGGER.info("started mapping folder: " + maxQuantImport.getMaxQuantDirectory().toFile().getName());
 
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         Set<ProteinGroup> proteinGroups;
@@ -74,22 +75,23 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             maxQuantImport.getFastaDbIds().forEach((fastaDbType, fastaDbId) -> {
                 fastaDbs.put(fastaDbType, fastaDbService.findById(fastaDbId));
             });
-            Path txtDirectory = Paths.get(maxQuantImport.getMaxQuantDirectory().getAbsolutePath() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
-            parameterParser.parse(txtDirectory, fastaDbs, false);
-            // TODO: 5/31/2016 change all files to path
-            maxQuantParser.parse(maxQuantImport.getMaxQuantDirectory().toPath(), fastaDbs, parameterParser.getMultiplicity());
+            Path txtDirectory = Paths.get(maxQuantImport.getMaxQuantDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
+            Path andromedaDirectory = Paths.get(maxQuantImport.getMaxQuantDirectory()+ File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
+            maxQuantAndromedaParser.parseParameters(andromedaDirectory);
+            maxQuantSearchSettingsParser.parse(txtDirectory, fastaDbs, false);
+            maxQuantParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, maxQuantSearchSettingsParser.getMultiplicity());
 
             proteinGroups = maxQuantParser.getProteinGroupSet();
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
                 //// TODO: 6/1/2016 move this line to parser method
-                analyticalRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().getCanonicalPath());
+                analyticalRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().toString());
 
-                SearchAndValidationSettings searchAndValidationSettings = parameterParser.getRunSettings().values().iterator().next();
+                SearchAndValidationSettings searchAndValidationSettings = maxQuantSearchSettingsParser.getRunSettings().values().iterator().next();
                 //set search and validation settings-run entity associations
                 analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
                 searchAndValidationSettings.setAnalyticalRun(analyticalRun);
 
-                analyticalRun.setQuantificationSettings(importQuantSettings(new File(maxQuantImport.getMaxQuantDirectory(), QUANT_FILE), analyticalRun));
+                analyticalRun.setQuantificationSettings(importQuantSettings(new File(txtDirectory.toFile(), QUANT_FILE), analyticalRun));
 
                 List<Spectrum> mappedSpectra = new ArrayList<>(analyticalRun.getSpectrums().size());
                 //set spectrum-run entity associations
@@ -155,7 +157,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         quantFiles.add(quantFile);
         QuantificationParameters params = new QuantificationParameters();
 
-        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, parameterParser.getVersion(), quantFiles, params);
+        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, maxQuantSearchSettingsParser.getVersion(), quantFiles, params);
 
         quantificationSettings.setAnalyticalRun(analyticalRun);
 

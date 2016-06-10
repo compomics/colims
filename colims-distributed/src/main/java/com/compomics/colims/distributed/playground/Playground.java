@@ -3,13 +3,26 @@ package com.compomics.colims.distributed.playground;
 
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.io.MappedData;
+import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.ExperimentService;
+import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantMapper;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantAndromedaParser;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
 import com.compomics.colims.model.*;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.math.DoubleMath;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -17,12 +30,43 @@ import java.util.*;
  */
 public class Playground {
 
-    public static void main(String[] args) {
-//        ApplicationContextProvider.getInstance().setDefaultApplicationContext();
-//        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
-//
-////        PeptideShakerIO peptideShakerIO = applicationContext.getBean("peptideShakerIO", PeptideShakerIO.class);
-////        PeptideShakerImporter peptideShakerImporter = applicationContext.getBean("peptideShakerImporter", PeptideShakerImporter.class);
+    @Autowired
+    static MaxQuantMapper maxQuantMapper;
+
+    public static void main(String[] args) throws MappingException {
+        ApplicationContextProvider.getInstance().setDefaultApplicationContext();
+        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
+
+    //    MaxQuantMapper maxQuantMapper = applicationContext.getBean("maxQuantMapper", MaxQuantMapper.class);
+        UserBean userBean = applicationContext.getBean("userBean", UserBean.class);
+        UserService userService = applicationContext.getBean("userService", UserService.class);
+        FastaDbService fastaDbService = applicationContext.getBean("fastaDbService", FastaDbService.class);
+
+        //set admin user in authentication bean
+        User adminUser = userService.findByName("admin");
+        userBean.setCurrentUser(adminUser);
+
+        String maxquantPath = "C:/Users/demet/projects/colims/colims-distributed/src/test/resources/data/maxquant_1.5.2.8";
+        String txtDirectory = maxquantPath + File.separator + MaxQuantConstants.TXT_DIRECTORY.value();
+        FastaDb testFastaDb = new FastaDb();
+        testFastaDb.setName("test fasta");
+        testFastaDb.setFileName("uniprot-taxonomy%3A10090.fasta");
+        testFastaDb.setFilePath(txtDirectory +  "uniprot-taxonomy%3A10090.fasta");
+        fastaDbService.persist(testFastaDb);
+
+        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, testFastaDb.getId());
+
+        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(maxquantPath), fastaDbIds);
+        MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
+        List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
+        System.out.println("Everything is parsed!");
+      //  MaxQuantSearchSettingsParser maxQuantSearchSettingsParser = applicationContext.getBean("maxQuantSearchSettingsParser", MaxQuantSearchSettingsParser.class);
+     //   MaxQuantParser maxQuantParser = applicationContext.getBean("maxQuantParser", MaxQuantParser.class);
+     //   MaxQuantAndromedaParser maxQuantAndromedaParser = applicationContext.getBean("maxQuantAndromedaParser", MaxQuantAndromedaParser.class);
+
+
+//        PeptideShakerImporter peptideShakerImporter = applicationContext.getBean("peptideShakerImporter", PeptideShakerImporter.class);
 //        UserService userService = applicationContext.getBean("userService", UserService.class);
 ////        SampleService sampleService = applicationContext.getBean("sampleService", SampleService.class);
 ////        AnalyticalRunService analyticalRunService = applicationContext.getBean("analyticalRunService", AnalyticalRunService.class);

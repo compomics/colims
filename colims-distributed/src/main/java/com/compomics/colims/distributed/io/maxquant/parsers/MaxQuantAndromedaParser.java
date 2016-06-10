@@ -171,10 +171,12 @@ public class MaxQuantAndromedaParser {
         massAnalyzerType = MaxQuantConstants.Analyzer.UNKNOWN;
 
         String aplFilePathString = aplFilesPath.toString();
-        String analyzerAndType = aplFilePathString.substring(aplFilePathString.lastIndexOf(ALL_SPECTRA) + ALL_SPECTRA.length(), aplFilePathString.lastIndexOf(ISO));
+     //   String analyzerAndType = aplFilePathString.substring(aplFilePathString.lastIndexOf(ALL_SPECTRA) + ALL_SPECTRA.length(), aplFilePathString.lastIndexOf(ISO));
+        String analyzerAndType = org.apache.commons.lang3.StringUtils.substringAfter(aplFilePathString, ALL_SPECTRA);
+        System.out.println(analyzerAndType);
         //get the fragmentation type
         String[] split = analyzerAndType.split(ANALYZER_TYPE_DELIMITER);
-        if (split.length == 2) {
+        if (split.length >= 2) {
             try {
                 fragmentationType = FragmentationType.valueOf(split[0].toUpperCase());
                 massAnalyzerType = MaxQuantConstants.Analyzer.valueOf(split[1].toUpperCase());

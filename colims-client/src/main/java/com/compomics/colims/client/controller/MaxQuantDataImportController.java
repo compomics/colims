@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -32,7 +33,7 @@ public class MaxQuantDataImportController implements Controllable {
     private static final Logger LOGGER = Logger.getLogger(MaxQuantDataImportController.class);
 
     //model
-    private File maxQuantDirectory;
+    private Path maxQuantDirectory;
     private FastaDb primaryFastaDb;
     private FastaDb additionalFastaDb;
     private FastaDb contaminantsFastaDb;
@@ -66,10 +67,10 @@ public class MaxQuantDataImportController implements Controllable {
             //in response to the button click, show open dialog
             int returnVal = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().showOpenDialog(maxQuantDataImportPanel);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                maxQuantDirectory = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().getSelectedFile();
+                maxQuantDirectory = maxQuantDataImportPanel.getMaxQuantDirectoryChooser().getSelectedFile().toPath();
 
                 //show MaxQuant directory name in label
-                maxQuantDataImportPanel.getMaxQuantDirectoryTextField().setText(maxQuantDirectory.getAbsolutePath());
+                maxQuantDataImportPanel.getMaxQuantDirectoryTextField().setText(maxQuantDirectory.toString());
             }
         });
 

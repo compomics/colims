@@ -154,7 +154,7 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setPrecMassTolerance(Double.parseDouble(precursorMassToleranceString));
 
         String precursorMassToleranceUnit = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE_UNIT);
-        searchParameters.setFragMassToleranceUnit(MassAccuracyType.valueOf(precursorMassToleranceUnit.toUpperCase(Locale.ENGLISH)));
+        searchParameters.setPrecMassToleranceUnit(MassAccuracyType.valueOf(precursorMassToleranceUnit.toUpperCase(Locale.ENGLISH)));
 
         //fragment mass tolerance and unit
         String fragmentMassToleranceString = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.FRAGMENT_MASS_TOLERANCE);
@@ -168,6 +168,13 @@ public class MaxQuantSearchSettingsParser {
         if (enzyme != null) {
             searchParameters.setEnzyme((SearchCvParam) enzyme);
         }
+
+        //missed cleavages
+        String missedCleavages = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.MAX_MISSED_CLEAVAGES);
+        searchParameters.setNumberOfMissedCleavages(Integer.parseInt(missedCleavages));
+
+        //look for the given search parameter settings in the database
+        searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
 
         //set the search engine
         searchAndValidationSettings.setSearchEngine(searchAndValidationSettingsService.getSearchEngine(SearchEngineType.MAX_QUANT, version));
@@ -215,34 +222,6 @@ public class MaxQuantSearchSettingsParser {
                 multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getValue());
             }
 
-            if (!row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()).equalsIgnoreCase("total")) {
-                // apparently protease was old column name
-                String enzymeName = row.get(MaxQuantSummaryHeaders.ENZYME.getValue()) == null
-                        ? row.get(MaxQuantSummaryHeaders.PROTEASE.getValue())
-                        : row.get(MaxQuantSummaryHeaders.ENZYME.getValue());
-
-                if (!enzymeName.isEmpty()) {
-                    // TODO: separate this into utility (not utilities) class
-                    TypedCvParam enzyme = typedCvParamService.findByName(enzymeName, CvParamType.SEARCH_PARAM_ENZYME, true);
-
-                    if (enzyme == null) {
-                        enzyme = newOlsService.findEnzymeByName(enzymeName);
-
-                        if (enzyme == null) {
-                            enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, enzymeName);
-                        }
-
-                        typedCvParamService.persist(enzyme);
-                    }
-
-                    runSettings.getSearchParameters().setEnzyme((SearchCvParam) enzyme);
-                }
-
-                if (!row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getValue()).isEmpty()) {
-                    runSettings.getSearchParameters().setNumberOfMissedCleavages(Integer.parseInt(row.get(MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES.getValue())));
-                }
-            }
-
             allSettings.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()), runSettings);
         }
 
@@ -263,6 +242,11 @@ public class MaxQuantSearchSettingsParser {
         newSettings.setSearchEngine(oldSettings.getSearchEngine());
         newSettings.getSearchParameters().setFragMassTolerance(oldSettings.getSearchParameters().getFragMassTolerance());
         newSettings.getSearchParameters().setFragMassToleranceUnit(oldSettings.getSearchParameters().getFragMassToleranceUnit());
+        newSettings.getSearchParameters().setPrecMassTolerance(oldSettings.getSearchParameters().getPrecMassTolerance());
+        newSettings.getSearchParameters().setPrecMassToleranceUnit(oldSettings.getSearchParameters().getPrecMassToleranceUnit());
+        newSettings.getSearchParameters().setSearchType(oldSettings.getSearchParameters().getSearchType());
+        newSettings.getSearchParameters().setEnzyme(oldSettings.getSearchParameters().getEnzyme());
+        newSettings.getSearchParameters().setNumberOfMissedCleavages(oldSettings.getSearchParameters().getNumberOfMissedCleavages());
 
         return newSettings;
     }

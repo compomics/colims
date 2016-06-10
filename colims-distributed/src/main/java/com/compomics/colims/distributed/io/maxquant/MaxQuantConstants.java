@@ -18,10 +18,6 @@ public enum MaxQuantConstants {
     /**
      * The msms file name.
      */
-    SUMMARY_FILE("summary.txt"),
-    /**
-     * The msms file name.
-     */
     PARAMETERS_FILE("parameters.txt"),
     /**
      * The msms file name.
