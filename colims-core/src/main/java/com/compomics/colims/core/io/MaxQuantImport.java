@@ -7,6 +7,7 @@ import java.util.EnumMap;
 
 /**
  * @author Davy
+ * @author niels
  */
 public class MaxQuantImport extends DataImport {
 
