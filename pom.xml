@@ -104,23 +104,11 @@
                     <version>2.5.1</version>
                     <inherited>true</inherited>
                     <configuration>
-                        <annotationProcessors>
-                            <annotationProcessor>
-                                org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor
-                            </annotationProcessor>
-                        </annotationProcessors>
                         <source>1.8</source>
                         <target>1.8</target>
                         <showDeprecation>true</showDeprecation>
                         <debug>true</debug>
                     </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.hibernate</groupId>
-                            <artifactId>hibernate-jpamodelgen</artifactId>
-                            <version>5.0.3.Final</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
 
                 <plugin>
