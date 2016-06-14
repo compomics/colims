@@ -119,7 +119,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         selectContaminantsFastaDbButton.setMinimumSize(new java.awt.Dimension(80, 25));
         selectContaminantsFastaDbButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        additionalFastaFileSelectionLabel.setText("<html>Select an additional FASTA file:<br>(with e.g. some additional sequences)</html>");
+        additionalFastaFileSelectionLabel.setText("Select an additional FASTA file (with e.g. some additional sequences):");
 
         selectAdditionalFastaDbButton.setText("browse...");
         selectAdditionalFastaDbButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -139,7 +139,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(maxQuantDirectoryTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                                .addComponent(maxQuantDirectoryTextField)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(selectMaxQuantDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
@@ -152,7 +152,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(contaminantsFastaDbTextField)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(additionalFastaFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(additionalFastaFileSelectionLabel)
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addComponent(additionalFastaDbTextField))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -183,12 +183,12 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                     .addComponent(contaminantsFastaDbTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectContaminantsFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(additionalFastaFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(additionalFastaFileSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(additionalFastaDbTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectAdditionalFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

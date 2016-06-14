@@ -29,7 +29,7 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="maxQuantDirectoryTextField" pref="320" max="32767" attributes="0"/>
+                              <Component id="maxQuantDirectoryTextField" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="selectMaxQuantDirectoryButton" min="-2" pref="92" max="-2" attributes="0"/>
                           </Group>
@@ -93,7 +93,7 @@
                   <Component id="additionalFastaDbTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="selectAdditionalFastaDbButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="24" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -170,7 +170,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="additionalFastaFileSelectionLabel">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;Select an additional FASTA file:&lt;br&gt;(with e.g. some additional sequences)&lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="Select an additional FASTA file (with e.g. some additional sequences):"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="additionalFastaDbTextField">
