@@ -91,7 +91,17 @@ public class MaxQuantProteinGroupParser {
             boolean isMainGroup = true;
 
             for (String accession : filteredAccessions) {
-                proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFastas.get(accession), accession, isMainGroup));
+                String sequence = "";
+                for(String key : parsedFastas.keySet()) {
+                    if(key.contains(accession)){
+                        sequence = parsedFastas.get(key);
+                        break;
+                    }
+                }
+                if(sequence.equals("")){
+                    throw new IllegalArgumentException("Protein has no sequence in Fasta File!");
+                }
+                proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequence, accession, isMainGroup));
 
                 if (isMainGroup) {
                     isMainGroup = false;

@@ -19,6 +19,12 @@ public class MaxQuantImport extends DataImport {
     private Path maxQuantDirectory;
 
     /**
+     * no-arg Constructor.
+     */
+    public MaxQuantImport() {
+    }
+
+    /**
      * Constructor.
      *
      * @param maxQuantDirectory the MaxQuant files directory
