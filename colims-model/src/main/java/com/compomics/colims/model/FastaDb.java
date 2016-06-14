@@ -1,11 +1,11 @@
 package com.compomics.colims.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class represents a FASTA database in the database.
@@ -69,8 +69,14 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "md5_checksum", nullable = true)
     private String md5CheckSum;
     /**
-     * The SearchSettingsHasFastaDb instances from the join table between the
-     * search and validation settings and FASTA databases.
+     * The regular expression for parsing the FASTA headers to extract the protein accession.
+     */
+    @Basic(optional = true)
+    @Column(name = "header_parse_rule", nullable = true)
+    private String headerParseRule;
+    /**
+     * The SearchSettingsHasFastaDb instances from the join table between the search and validation settings and FASTA
+     * databases.
      */
     @OneToMany(mappedBy = "fastaDb", cascade = CascadeType.ALL)
     private List<SearchSettingsHasFastaDb> searchSettingsHasFastaDbs = new ArrayList<>();
@@ -129,6 +135,14 @@ public class FastaDb extends DatabaseEntity {
 
     public void setMd5CheckSum(String md5CheckSum) {
         this.md5CheckSum = md5CheckSum;
+    }
+
+    public String getHeaderParseRule() {
+        return headerParseRule;
+    }
+
+    public void setHeaderParseRule(String headerParseRule) {
+        this.headerParseRule = headerParseRule;
     }
 
     public List<SearchSettingsHasFastaDb> getSearchSettingsHasFastaDbs() {

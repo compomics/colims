@@ -1,4 +1,4 @@
-
+use colims;
     create table analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
@@ -55,6 +55,7 @@
         id bigint not null auto_increment,
         file_name varchar(200) not null,
         file_path varchar(250) not null,
+        header_parse_rule varchar(255),
         md5_checksum varchar(255),
         name varchar(100) not null,
         species varchar(255),

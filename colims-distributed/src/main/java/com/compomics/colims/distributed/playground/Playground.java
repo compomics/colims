@@ -19,6 +19,7 @@ import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.math.DoubleMath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -34,10 +35,9 @@ public class Playground {
     static MaxQuantMapper maxQuantMapper;
 
     public static void main(String[] args) throws MappingException {
-        ApplicationContextProvider.getInstance().setDefaultApplicationContext();
-        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
 
-    //    MaxQuantMapper maxQuantMapper = applicationContext.getBean("maxQuantMapper", MaxQuantMapper.class);
+        MaxQuantMapper maxQuantMapper = applicationContext.getBean("maxQuantMapper", MaxQuantMapper.class);
         UserBean userBean = applicationContext.getBean("userBean", UserBean.class);
         UserService userService = applicationContext.getBean("userService", UserService.class);
         FastaDbService fastaDbService = applicationContext.getBean("fastaDbService", FastaDbService.class);
