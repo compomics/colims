@@ -1,6 +1,6 @@
 package com.compomics.colims.client.model.table.model;
 
-import com.compomics.colims.model.cv.AuditableTypedCvParam;
+import com.compomics.colims.model.cv.CvParam;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
@@ -9,19 +9,19 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Niels Hulstaert
  */
-public class TypedCvParamTableModel2 extends AbstractTableModel {
+public class CvParamTableModel2 extends AbstractTableModel {
 
     private static final String[] COLUMN_NAMES = {"ontology label", "accession", "name"};
     private static final int ONTOLOGY_LABEL_INDEX = 0;
     private static final int ACCESSION_INDEX = 1;
     private static final int NAME_INDEX = 2;
 
-    private List<AuditableTypedCvParam> cvParams;
+    private List<CvParam> cvParams;
 
     /**
      * No-arg constructor.
      */
-    public TypedCvParamTableModel2() {
+    public CvParamTableModel2() {
         cvParams = new ArrayList<>();
     }
 
@@ -30,15 +30,15 @@ public class TypedCvParamTableModel2 extends AbstractTableModel {
      *
      * @param cvParams the list of CV params
      */
-    public TypedCvParamTableModel2(List<AuditableTypedCvParam> cvParams) {
+    public CvParamTableModel2(List<CvParam> cvParams) {
         this.cvParams = cvParams;
     }
 
-    public List<AuditableTypedCvParam> getCvParams() {
+    public List<CvParam> getCvParams() {
         return cvParams;
     }
 
-    public void setCvParams(List<AuditableTypedCvParam> cvParams) {
+    public void setCvParams(List<CvParam> cvParams) {
         this.cvParams = cvParams;
         fireTableDataChanged();
     }
@@ -60,7 +60,7 @@ public class TypedCvParamTableModel2 extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        AuditableTypedCvParam selectedCvParam = cvParams.get(rowIndex);
+        CvParam selectedCvParam = cvParams.get(rowIndex);
 
         switch (columnIndex) {
             case ONTOLOGY_LABEL_INDEX:
@@ -79,7 +79,7 @@ public class TypedCvParamTableModel2 extends AbstractTableModel {
      *
      * @param cvParam the CV param to add
      */
-    public void addCvParam(AuditableTypedCvParam cvParam) {
+    public void addCvParam(CvParam cvParam) {
         //add CV param to list
         cvParams.add(cvParam);
         fireTableRowsInserted(cvParams.size() - 1, cvParams.size() - 1);
@@ -91,7 +91,7 @@ public class TypedCvParamTableModel2 extends AbstractTableModel {
      * @param cvParam the CV param to update
      * @param rowIndex the row index of the CV param to update
      */
-    public void updateCvParam(AuditableTypedCvParam cvParam, int rowIndex) {
+    public void updateCvParam(CvParam cvParam, int rowIndex) {
         cvParams.set(rowIndex, cvParam);
         fireTableRowsUpdated(rowIndex, rowIndex);
     }

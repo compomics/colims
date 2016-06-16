@@ -6,13 +6,15 @@ import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.FastaDbManagementDialog;
+import com.compomics.colims.core.model.ols.OntologyTerm;
+import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.TaxonomyCvParam;
+import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.google.common.eventbus.EventBus;
-import no.uib.olsdialog.OLSDialog;
-import no.uib.olsdialog.OLSInputable;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.*;
@@ -27,14 +29,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_ID_SEARCH;
 
 /**
  * The FASTA db management view controller.
@@ -43,12 +41,17 @@ import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_ID_SEARCH;
  */
 @Component("fastaDbManagementController")
 @Lazy
-public class FastaDbManagementController implements Controllable, OLSInputable {
+public class FastaDbManagementController implements Controllable {
 
     /**
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(FastaDbManagementController.class);
+
+    /**
+     * The taxonomy ontology namespaces.
+     */
+    private static final List<String> TAXONOMY_ONTOLOGY_NAMESPACES = Arrays.asList("ncbitaxon");
 
     //model
     private BindingGroup bindingGroup;
@@ -58,9 +61,17 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     //parent controller
     @Autowired
     private AnalyticalRunsAdditionController analyticalRunsAdditionController;
+    //child controller
+    @Autowired
+    @Lazy
+    private CvParamManagementController cvParamManagementController;
+    @Autowired
+    private OlsController olsController;
     //services
     @Autowired
     private EventBus eventBus;
+    @Autowired
+    private CvParamService cvParamService;
     @Autowired
     private FastaDbService fastaDbService;
 
@@ -90,19 +101,28 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.taxonomyAccession"), fastaDbManagementDialog.getTaxonomyTextField(), ELProperty.create("${text}"), "taxonomyBinding");
         bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.species"), fastaDbManagementDialog.getSpeciesTextField(), ELProperty.create("${text}"), "speciesBinding");
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.headerParseRule"), fastaDbManagementDialog.getHeaderParseRuleTextField(), ELProperty.create("${text}"), "headerParseRuleBinding");
         bindingGroup.addBinding(binding);
 
         bindingGroup.bind();
-
-        //add listeners
-        fastaDbManagementDialog.getBrowseTaxonomyButton().addActionListener(e -> showOlsDialog());
 
         //init FASTA file selection
         //disable select multiple files
         fastaDbManagementDialog.getFastaFileChooser().setMultiSelectionEnabled(false);
         //set FASTA file filter
         fastaDbManagementDialog.getFastaFileChooser().setFileFilter(new FastaFileFilter());
+
+        //add listeners
+        fastaDbManagementDialog.getBrowseTaxonomyButton().addActionListener(e -> {
+            List<CvParam> cvParams = cvParamService.findByCvParamByClass(TaxonomyCvParam.class);
+
+            //update the CV param list
+            cvParamManagementController.updateDialog(TaxonomyCvParam.class, cvParams);
+
+            cvParamManagementController.showView();
+
+            showOlsDialog();
+        });
 
         fastaDbManagementDialog.getBrowseFastaButton().addActionListener(e -> {
             //in response to the button click, show open dialog
@@ -258,17 +278,6 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog.setVisible(true);
     }
 
-    @Override
-    public void insertOLSResult(final String field, final String selectedValue, final String accession, final String ontologyShort, final String ontologyLong, final int modifiedRow, final String mappedTerm, final Map<String, String> metadata) {
-        fastaDbManagementDialog.getTaxonomyTextField().setText(accession);
-        fastaDbManagementDialog.getSpeciesTextField().setText(selectedValue);
-    }
-
-    @Override
-    public Window getWindow() {
-        return fastaDbManagementDialog;
-    }
-
     /**
      * Return the selected FASTA DB.
      *
@@ -298,19 +307,16 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
      * Show the OLS dialog.
      */
     private void showOlsDialog() {
-        String ontology = "NEWT UniProt Taxonomy Database [NEWT]";
+        /**
+         * The ontology term instance that is passed to the OLS controller for
+         * storing the result of the OLS search.
+         */
+        OntologyTerm ontologyTerm = new OntologyTerm();
+        olsController.showView(ontologyTerm, TAXONOMY_ONTOLOGY_NAMESPACES);
 
-        Map<String, List<String>> preselectedOntologies = new HashMap<>();
-        preselectedOntologies.put("NEWT", null);
+        if (ontologyTerm != null) {
 
-        String field = "";
-
-        fastaDbManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-
-        //show new OLS dialog
-        new OLSDialog(fastaDbManagementDialog, this, true, field, ontology, -1, null, null, null, OLS_DIALOG_TERM_ID_SEARCH, preselectedOntologies);
-
-        fastaDbManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        }
     }
 
     /**
@@ -333,7 +339,6 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog.getFilePathTextField().setText("");
         fastaDbManagementDialog.getVersionTextField().setText("");
         fastaDbManagementDialog.getTaxonomyTextField().setText("");
-        fastaDbManagementDialog.getSpeciesTextField().setText("");
         fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
     }
 

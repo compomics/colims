@@ -5,16 +5,18 @@ import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.table.model.CvParamTableModel2;
+import com.compomics.colims.client.model.table.model.TypedCvParamTableModel2;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvParamManagementDialog;
 import com.compomics.colims.core.model.ols.OntologyTerm;
-import com.compomics.colims.core.service.CvParamService;
+import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.core.service.OlsService;
-import com.compomics.colims.model.cv.CvParam;
+import com.compomics.colims.model.cv.AuditableTypedCvParam;
+import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.google.common.eventbus.EventBus;
 import java.io.IOException;
+import java.util.Arrays;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -30,21 +32,21 @@ import org.springframework.web.client.RestClientException;
 /**
  * @author Niels Hulstaert
  */
-@Component("cvParamManagementController")
+@Component("typedCvParamManagementController")
 @Lazy
-public class CvParamManagementController implements Controllable {
+public class TypedCvParamManagementController implements Controllable {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(CvParamManagementController.class);
+    private static final Logger LOGGER = Logger.getLogger(TypedCvParamManagementController.class);
 
     //model
-    private CvParamTableModel2 cvParamTableModel2;
+    private TypedCvParamTableModel2 typeCvParamTableModel2;
     /**
-     * The CvParam subclass.
+     * The cvParamType of the CV params in the table model.
      */
-    private Class cvParamSubClass;
+    private CvParamType cvParamType;
     /**
      * Boolean that keeps track of the CV param state that is passed to the OLS
      * dialog. It can be a new CV param (true) or one that needs to be updated
@@ -68,7 +70,7 @@ public class CvParamManagementController implements Controllable {
     private EventBus eventBus;
     //services
     @Autowired
-    private CvParamService cvParamService;
+    private AuditableTypedCvParamService cvParamService;
     @Autowired
     private OlsService newOlsService;
 
@@ -79,15 +81,15 @@ public class CvParamManagementController implements Controllable {
         cvParamManagementDialog = new CvParamManagementDialog(mainController.getMainFrame(), true);
 
         //init and set table model
-        cvParamTableModel2 = new CvParamTableModel2();
-        cvParamManagementDialog.getCvParamTable().setModel(cvParamTableModel2);
+        typeCvParamTableModel2 = new TypedCvParamTableModel2();
+        cvParamManagementDialog.getCvParamTable().setModel(typeCvParamTableModel2);
 
         //add listeners
         cvParamManagementDialog.getCvParamTable().getSelectionModel().addListSelectionListener(lse -> {
             if (!lse.getValueIsAdjusting()) {
                 int selectedRow = cvParamManagementDialog.getCvParamTable().getSelectedRow();
-                if (selectedRow != -1 && !cvParamTableModel2.getCvParams().isEmpty()) {
-                    CvParam selectedCvParam = cvParamTableModel2.getCvParams().get(selectedRow);
+                if (selectedRow != -1 && !typeCvParamTableModel2.getCvParams().isEmpty()) {
+                    AuditableTypedCvParam selectedCvParam = typeCvParamTableModel2.getCvParams().get(selectedRow);
 
                     //check if the CV param has an ID.
                     //If so, change the save button text and the info state label.
@@ -131,7 +133,7 @@ public class CvParamManagementController implements Controllable {
 
         cvParamManagementDialog.getSaveOrUpdateButton().addActionListener(e -> {
             if (cvParamManagementDialog.getCvParamTable().getSelectedRow() != -1) {
-                CvParam selectedCvParam = getSelectedCvParam();
+                AuditableTypedCvParam selectedCvParam = getSelectedCvParam();
                 //validate CV param
                 List<String> validationMessages = GuiUtils.validateEntity(selectedCvParam);
                 //check for a new CV param if the accession already exists in the db
@@ -164,14 +166,14 @@ public class CvParamManagementController implements Controllable {
             int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();
 
             if (selectedIndex != -1) {
-                CvParam cvparamToDelete = getSelectedCvParam();
+                AuditableTypedCvParam cvparamToDelete = getSelectedCvParam();
                 //check if instrument type has an id.
                 //If so, try to delete the permission from the db.
                 if (cvparamToDelete.getId() != null) {
                     try {
                         cvParamService.remove(cvparamToDelete);
 
-                        cvParamTableModel2.removeCvParam(selectedIndex);
+                        typeCvParamTableModel2.removeCvParam(selectedIndex);
                         cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
 
                         eventBus.post(new CvParamChangeEvent());
@@ -187,7 +189,7 @@ public class CvParamManagementController implements Controllable {
                         }
                     }
                 } else {
-                    cvParamTableModel2.removeCvParam(selectedIndex);
+                    typeCvParamTableModel2.removeCvParam(selectedIndex);
                     cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
                 }
             } else {
@@ -219,16 +221,16 @@ public class CvParamManagementController implements Controllable {
     /**
      * Update the CV param list and set the current cvParamType.
      *
-     * @param cvParamSubClass the cvParamType of the CV params in the list
+     * @param cvParamType the cvParamType of the CV params in the list
      * @param preselectedOntologyNamespaces the list of preselected ontology
      * namespaces
      * @param cvParams the list of CV params
      */
-    public void updateDialog(final Class cvParamSubClass, final List<String> preselectedOntologyNamespaces, final List<CvParam> cvParams) {
-        this.cvParamSubClass = cvParamSubClass;
+    public void updateDialog(final CvParamType cvParamType, final List<String> preselectedOntologyNamespaces, final List<AuditableTypedCvParam> cvParams) {
+        this.cvParamType = cvParamType;
         this.preselectedOntologyNamespaces = preselectedOntologyNamespaces;
 
-        cvParamTableModel2.setCvParams(cvParams);
+        typeCvParamTableModel2.setCvParams(cvParams);
 
         //clear selection
         cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
@@ -240,9 +242,9 @@ public class CvParamManagementController implements Controllable {
      * @param cvParam the selected CV param
      * @return the does exist boolean
      */
-    private boolean isExistingCvParamAccession(final CvParam cvParam) {
+    private boolean isExistingCvParamAccession(final AuditableTypedCvParam cvParam) {
         boolean isExistingCvParamAccession = true;
-        CvParam foundCvParam = cvParamService.findByAccession(cvParamSubClass, cvParam.getAccession());
+        AuditableTypedCvParam foundCvParam = cvParamService.findByAccession(cvParam.getAccession(), cvParam.getCvParamType());
         if (foundCvParam == null) {
             isExistingCvParamAccession = false;
         }
@@ -259,7 +261,7 @@ public class CvParamManagementController implements Controllable {
      * @param accession the accession
      * @param name the name
      */
-    private void updateCvParam(final CvParam cvParam, final String ontology, final String label, final String accession, final String name) {
+    private void updateCvParam(final AuditableTypedCvParam cvParam, final String ontology, final String label, final String accession, final String name) {
         if (!cvParam.getOntology().equalsIgnoreCase(ontology)) {
             cvParam.setOntology(ontology);
         }
@@ -289,21 +291,21 @@ public class CvParamManagementController implements Controllable {
         if (ontologyTerm != null) {
             //check whether a CV param has to be added or updated
             if (newCvParam) {
-                CvParam cvParam = CvParamFactory.newCvInstance(cvParamSubClass, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 //add CV param to the table model
-                cvParamTableModel2.addCvParam(cvParam);
+                typeCvParamTableModel2.addCvParam(cvParam);
 
                 //set selected index to newly added CV param
-                cvParamManagementDialog.getCvParamTable().getSelectionModel().setSelectionInterval(cvParamTableModel2.getRowCount() - 1, cvParamTableModel2.getRowCount() - 1);
+                cvParamManagementDialog.getCvParamTable().getSelectionModel().setSelectionInterval(typeCvParamTableModel2.getRowCount() - 1, typeCvParamTableModel2.getRowCount() - 1);
             } else {
                 //update selected CV param
-                CvParam selectedCvParam = getSelectedCvParam();
+                AuditableTypedCvParam selectedCvParam = getSelectedCvParam();
                 updateCvParam(selectedCvParam, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 //update CV param in table model
                 int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();
-                cvParamTableModel2.updateCvParam(selectedCvParam, selectedIndex);
+                typeCvParamTableModel2.updateCvParam(selectedCvParam, selectedIndex);
 
                 //clear selection and set selected index again
                 cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
@@ -318,10 +320,10 @@ public class CvParamManagementController implements Controllable {
      *
      * @return the selected CV param
      */
-    private CvParam getSelectedCvParam() {
+    private AuditableTypedCvParam getSelectedCvParam() {
         int selectedCvParamIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();
 
-        return (selectedCvParamIndex != -1) ? cvParamTableModel2.getCvParams().get(selectedCvParamIndex) : null;
+        return (selectedCvParamIndex != -1) ? typeCvParamTableModel2.getCvParams().get(selectedCvParamIndex) : null;
     }
 
     /**

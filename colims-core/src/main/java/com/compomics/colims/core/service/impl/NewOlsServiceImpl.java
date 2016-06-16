@@ -58,6 +58,8 @@ public class NewOlsServiceImpl implements OlsService {
     private static final String OBO_ID = "obo_id";
     private static final String LABEL = "label";
     private static final String OBO_XREF = "obo_xref";
+    private static final String DESCRIPTION = "description";
+    private static final String DATABASE = "database";
     private static final String MOD_EXACT_NAME_QUERY = OLS_BASE_SEARCH_URL + "{name}&ontology=mod&exact=true&queryFields=label";
     private static final String MOD_OBO_ID_QUERY = "/" + MOD_ONTOLOGY_NAMESPACE + "/terms?obo_id={obo_id}";
     private static final String TERMS_OBO_ID_QUERY = OLS_BASE_URL + "/" + "{ontology_namespace}/terms?obo_id={obo_id}";
@@ -246,7 +248,10 @@ public class NewOlsServiceImpl implements OlsService {
 
         Iterator<JsonNode> termIterator = responseBody.get(EMBEDDED).get(TERMS).iterator();
         if (termIterator.hasNext()) {
-            description = termIterator.next().get("description").get(0).asText();
+            JsonNode termNode = termIterator.next();
+            if (termNode.hasNonNull(DESCRIPTION)) {
+                description = termNode.get(DESCRIPTION).get(0).asText();
+            }
         }
 
         return description;
@@ -325,7 +330,7 @@ public class NewOlsServiceImpl implements OlsService {
             Iterator<JsonNode> children = docsNode.elements();
             while (children.hasNext()) {
                 JsonNode child = children.next();
-                if (child.has(LABEL)) {
+                if (child.hasNonNull(LABEL)) {
                     String label = child.get(LABEL).asText();
                     if (label.equalsIgnoreCase(name)) {
                         OntologyTerm ontologyTerm = objectReader.treeToValue(child, OntologyTerm.class);
@@ -367,16 +372,14 @@ public class NewOlsServiceImpl implements OlsService {
         if (termIterator.hasNext()) {
             JsonNode node = termIterator.next();
             modification = objectReader.treeToValue(node, clazz);
-            if(node.has(OBO_XREF)){
-                for(int i=0; i<node.get(OBO_XREF).size(); i++){
-                    if(node.get(OBO_XREF).get(i).get("id").asText().equals("DiffAvg:")){
-                        double avMassShift =  node.get(OBO_XREF).get(i).get("database").asDouble();
+            if (node.hasNonNull(OBO_XREF)) {
+                for (int i = 0; i < node.get(OBO_XREF).size(); i++) {
+                    if (node.get(OBO_XREF).get(i).get(DATABASE).asText().equals("DiffAvg")) {
+                        double avMassShift = node.get(OBO_XREF).get(i).get(DESCRIPTION).asDouble();
                         modification.setAverageMassShift(avMassShift);
-                    }else if(node.get(OBO_XREF).get(i).get("id").asText().equals("DiffMono:")){
-                        double massMono = node.get(OBO_XREF).get(i).get("database").asDouble();
+                    } else if (node.get(OBO_XREF).get(i).get(DATABASE).asText().equals("DiffMono")) {
+                        double massMono = node.get(OBO_XREF).get(i).get(DESCRIPTION).asDouble();
                         modification.setMonoIsotopicMassShift(massMono);
-                    }else{
-                        continue;
                     }
                 }
             }

@@ -29,6 +29,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -103,7 +104,7 @@ public class OlsController implements Controllable {
         //init the dual list
         olsDialog.getOntologiesDualList().init(new OntologyTitleComparator());
 
-        getOntologies();
+        loadPreselectedOntologies();
 
         //disable paged result table buttons
         olsDialog.getFirstResultPageButton().setEnabled(false);
@@ -142,7 +143,10 @@ public class OlsController implements Controllable {
                     olsDialog.getOntologyNamespaceTextField().setText(selectedSearchResult.getOntologyTerm().getOntologyNamespace());
                     olsDialog.getTermAccessionTextField().setText(selectedSearchResult.getOntologyTerm().getOboId());
                     olsDialog.getTermLabelTextField().setText(selectedSearchResult.getOntologyTerm().getLabel());
-                    olsDialog.getTermDescriptionTextArea().setText(selectedSearchResult.getOntologyTerm().getDescription().stream().collect(Collectors.joining(System.lineSeparator())));
+                    //check for null values
+                    if (selectedSearchResult.getOntologyTerm().getDescription() != null) {
+                        olsDialog.getTermDescriptionTextArea().setText(selectedSearchResult.getOntologyTerm().getDescription().stream().collect(Collectors.joining(System.lineSeparator())));
+                    }
                 } else {
                     resetTermDetailFields();
                 }
@@ -274,6 +278,10 @@ public class OlsController implements Controllable {
 
         olsDialog.getCancelButton().addActionListener(e -> {
             clear();
+
+            //dereference callback instance
+            ontologyTerm = null;
+
             olsDialog.dispose();
         });
 
@@ -289,11 +297,56 @@ public class OlsController implements Controllable {
     /**
      * Show the OLS dialog with an OntologyTerm passed as callback.
      *
-     * @param ontologyTerm the OntologyTerm callback instance
+     * @param ontologyTerm the OntologyTerm callback instance. If the user has
+     * cancelled the OLS dialog, null is assigned to this instance.
      */
     public void showView(OntologyTerm ontologyTerm) {
+        this.showView(ontologyTerm, new ArrayList<>());
+    }
+
+    /**
+     * Show the OLS dialog with an OntologyTerm instance passed as callback and
+     * a list of preselected ontology namespaces.
+     *
+     * @param ontologyTerm the OntologyTerm callback instance. If the user has
+     * cancelled the OLS dialog, null is assigned to this instance.
+     * @param viewPreselectedOntologyNamespaces the namespaces of the
+     * preselected view ontologies that will be preselected
+     */
+    public void showView(OntologyTerm ontologyTerm, List<String> viewPreselectedOntologyNamespaces) {
         //keep a callback reference for the result of the search
         this.ontologyTerm = ontologyTerm;
+
+        if (!viewPreselectedOntologyNamespaces.isEmpty()) {
+            //add the previously loaded ontologies to the view preselected ones
+            List<Ontology> viewPreselectedOntologies = ((List<Ontology>) olsDialog.getOntologiesDualList().getAllItems())
+                    .stream()
+                    .filter(ontology -> viewPreselectedOntologyNamespaces.contains(ontology.getNameSpace()))
+                    .collect(Collectors.toList());
+            List<String> loadedViewPreselectedOntologyNamespaces = viewPreselectedOntologies
+                    .stream()
+                    .map(ontology -> ontology.getNameSpace())
+                    .collect(Collectors.toList());
+            //look for non loaded ontologies
+            List<String> nonLoadedOntologyNamespaces = viewPreselectedOntologyNamespaces.stream().filter(ns -> !loadedViewPreselectedOntologyNamespaces.contains(ns)).collect(Collectors.toList());
+            if (!nonLoadedOntologyNamespaces.isEmpty()) {
+                //fetch the not loaded view preselected ontologies
+                try {
+                    viewPreselectedOntologies.addAll(newOlsService.getOntologiesByNamespace(nonLoadedOntologyNamespaces));
+                } catch (IOException ex) {
+                    LOGGER.error(ex.getMessage(), ex);
+                    eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.PARSE_ERROR));
+                } catch (HttpClientErrorException ex) {
+                    LOGGER.error(ex.getMessage(), ex);
+                    eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.CONNECTION_ERROR));
+                }
+            }
+            if (!viewPreselectedOntologies.isEmpty()) {
+                //replace the previously preselected ontologies with the ones for this view
+                olsDialog.getOntologiesDualList().populateLists(olsDialog.getOntologiesDualList().getAllItems(), viewPreselectedOntologies);
+                olsDialog.getPreselectedOntologiesRadioButton().setSelected(true);
+            }
+        }
 
         GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), olsDialog);
         olsDialog.setVisible(true);
@@ -315,7 +368,7 @@ public class OlsController implements Controllable {
         olsDialog.getLastResultPageButton().setEnabled(false);
 
         //reset the ontologies
-        getOntologies();
+        loadPreselectedOntologies();
 
         //reset search text field and term detail fields
         olsDialog.getSearchInputTextField().setText("");
@@ -391,16 +444,16 @@ public class OlsController implements Controllable {
     }
 
     /**
-     * Get the (preselected) ontologies and add them to the dual list if
+     * Get the preselected ontologies and add them to the dual list if
      * necessary.
      */
-    private void getOntologies() {
+    private void loadPreselectedOntologies() {
         if (!preselectedOntologyNamespaces.isEmpty()) {
             try {
                 if (preselectedOntologies.isEmpty()) {
                     preselectedOntologies.addAll(newOlsService.getOntologiesByNamespace(preselectedOntologyNamespaces));
                 }
-                olsDialog.getOntologiesDualList().populateLists(olsDialog.getOntologiesDualList().getAvailableItems(), preselectedOntologies);
+                olsDialog.getOntologiesDualList().populateLists(olsDialog.getOntologiesDualList().getAllItems(), preselectedOntologies);
                 olsDialog.getPreselectedOntologiesRadioButton().setSelected(true);
             } catch (IOException ex) {
                 LOGGER.error(ex.getMessage(), ex);

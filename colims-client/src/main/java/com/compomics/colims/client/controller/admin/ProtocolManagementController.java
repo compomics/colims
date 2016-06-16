@@ -61,7 +61,7 @@ public class ProtocolManagementController implements Controllable {
     private MainController mainController;
     @Autowired
     @Lazy
-    private CvParamManagementController cvParamManagementController;
+    private TypedCvParamManagementController typedCvParamManagementController;
     //services
     @Autowired
     private ProtocolService protocolService;
@@ -97,8 +97,8 @@ public class ProtocolManagementController implements Controllable {
 
     /**
      * Listen to a CV param change event posted by the
-     * CvParamManagementController. If the ProtocolManagementDialog is visible,
-     * clear the selection in the CV param summary list.
+     * TypedCvParamManagementController. If the ProtocolManagementDialog is
+     * visible, clear the selection in the CV param summary list.
      *
      * @param cvParamChangeEvent the CvParamChangeEvent
      */
@@ -370,9 +370,9 @@ public class ProtocolManagementController implements Controllable {
                 List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedCvParamType);
 
                 //update the CV param list
-                cvParamManagementController.updateDialog(selectedCvParamType, cvParams);
+                typedCvParamManagementController.updateDialog(selectedCvParamType, cvParams);
 
-                cvParamManagementController.showView();
+                typedCvParamManagementController.showView();
             } else {
                 eventBus.post(new MessageEvent("Protocol CV param type selection", "Please select a protocol CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
             }

@@ -5,8 +5,11 @@ import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.InstrumentCvParam;
 import com.compomics.colims.model.MaterialCvParam;
 import com.compomics.colims.model.ProtocolCvParam;
+import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
+import java.util.logging.Level;
+import org.apache.log4j.Logger;
 
 /**
  * Factory class for creating CV term types.
@@ -14,6 +17,11 @@ import com.compomics.colims.model.enums.CvParamType;
  * @author Niels Hulstaert
  */
 public final class CvParamFactory {
+
+    /**
+     * Logger instance.
+     */
+    private static final Logger LOGGER = Logger.getLogger(CvParamFactory.class);
 
     /**
      * Private constructor to prevent instantiation.
@@ -70,6 +78,32 @@ public final class CvParamFactory {
             cvParam = new SearchCvParam(cvParamType, ontology, label, accession, name);
         } else {
             throw new IllegalStateException("Unknown CvParamType family");
+        }
+
+        return cvParam;
+    }
+
+    /**
+     * Create a new CvParam instance.
+     *
+     * @param <T> the CvParam subclass
+     * @param clazz the CvParam subclass
+     * @param ontology the ontology name
+     * @param label the ontology label
+     * @param accession CV term accession
+     * @param name the CV term name
+     * @return the TypedCvParam instance
+     */
+    public static <T extends CvParam> T newCvInstance(final Class<T> clazz, final String ontology, final String label, final String accession, final String name) {
+        T cvParam = null;
+        try {
+            cvParam = clazz.newInstance();
+            cvParam.setOntology(ontology);
+            cvParam.setAccession(accession);
+            cvParam.setLabel(label);
+            cvParam.setName(name);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(CvParamFactory.class);
         }
 
         return cvParam;

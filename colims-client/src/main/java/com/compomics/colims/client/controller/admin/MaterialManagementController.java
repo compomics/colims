@@ -60,7 +60,7 @@ public class MaterialManagementController implements Controllable {
     private MainController mainController;
     @Autowired
     @Lazy
-    private CvParamManagementController cvParamManagementController;
+    private TypedCvParamManagementController typedCvParamManagementController;
     //services
     @Autowired
     private MaterialService materialService;
@@ -96,7 +96,7 @@ public class MaterialManagementController implements Controllable {
 
     /**
      * Listen to a CV param change event posted by the
-     * CvParamManagementController. If the MaterialManagementDialog is visible,
+ TypedCvParamManagementController. If the MaterialManagementDialog is visible,
      * clear the selection in the CV param summary list.
      *
      * @param cvParamChangeEvent the CvParamChangeEvent
@@ -365,9 +365,9 @@ public class MaterialManagementController implements Controllable {
                 List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedcvParamType);
 
                 //update the CV param list
-                cvParamManagementController.updateDialog(selectedcvParamType, cvParams);
+                typedCvParamManagementController.updateDialog(selectedcvParamType, cvParams);
 
-                cvParamManagementController.showView();
+                typedCvParamManagementController.showView();
             } else {
                 eventBus.post(new MessageEvent("Material CV param type selection", "Please select a material CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
             }

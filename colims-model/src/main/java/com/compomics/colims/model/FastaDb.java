@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents a FASTA database in the database.
@@ -43,18 +44,6 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "file_path", nullable = false)
     private String filePath;
     /**
-     * The taxonomy ID.
-     */
-    @Basic(optional = true)
-    @Column(name = "taxonomy_accession", nullable = true)
-    private String taxonomyAccession = "N/A";
-    /**
-     * The species name.
-     */
-    @Basic(optional = true)
-    @Column(name = "species", nullable = true)
-    private String species = "N/A";
-    /**
      * The version of the FASTA db.
      */
     @Basic(optional = false)
@@ -69,14 +58,21 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "md5_checksum", nullable = true)
     private String md5CheckSum;
     /**
-     * The regular expression for parsing the FASTA headers to extract the protein accession.
+     * The regular expression for parsing the FASTA headers to extract the
+     * protein accession.
      */
     @Basic(optional = true)
     @Column(name = "header_parse_rule", nullable = true)
     private String headerParseRule;
     /**
-     * The SearchSettingsHasFastaDb instances from the join table between the search and validation settings and FASTA
-     * databases.
+     * The species taxonomy CV term.
+     */
+    @ManyToOne
+    @JoinColumn(name = "l_taxonomy_cv_id", referencedColumnName = "id", nullable = true)
+    private TaxonomyCvParam taxonomy;
+    /**
+     * The SearchSettingsHasFastaDb instances from the join table between the
+     * search and validation settings and FASTA databases.
      */
     @OneToMany(mappedBy = "fastaDb", cascade = CascadeType.ALL)
     private List<SearchSettingsHasFastaDb> searchSettingsHasFastaDbs = new ArrayList<>();
@@ -97,28 +93,12 @@ public class FastaDb extends DatabaseEntity {
         this.fileName = fileName;
     }
 
-    public String getTaxonomyAccession() {
-        return taxonomyAccession;
-    }
-
-    public void setTaxonomyAccession(String taxonomyAccession) {
-        this.taxonomyAccession = taxonomyAccession;
-    }
-
     public String getFilePath() {
         return filePath;
     }
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-    }
-
-    public String getSpecies() {
-        return species;
-    }
-
-    public void setSpecies(String species) {
-        this.species = species;
     }
 
     public String getVersion() {
@@ -155,51 +135,56 @@ public class FastaDb extends DatabaseEntity {
 
     @Override
     public String toString() {
-        return name + ", accession: " + taxonomyAccession + ", species: " + species + ", version: " + version;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        FastaDb fastaDb = (FastaDb) o;
-
-        if (name != null ? !name.equals(fastaDb.name) : fastaDb.name != null) {
-            return false;
-        }
-        if (fileName != null ? !fileName.equals(fastaDb.fileName) : fastaDb.fileName != null) {
-            return false;
-        }
-        if (filePath != null ? !filePath.equals(fastaDb.filePath) : fastaDb.filePath != null) {
-            return false;
-        }
-        if (taxonomyAccession != null ? !taxonomyAccession.equals(fastaDb.taxonomyAccession) : fastaDb.taxonomyAccession != null) {
-            return false;
-        }
-        if (species != null ? !species.equals(fastaDb.species) : fastaDb.species != null) {
-            return false;
-        }
-        if (version != null ? !version.equals(fastaDb.version) : fastaDb.version != null) {
-            return false;
-        }
-        return !(md5CheckSum != null ? !md5CheckSum.equals(fastaDb.md5CheckSum) : fastaDb.md5CheckSum != null);
-
+        return name + ", accession: " + taxonomy.getAccession() + ", species: " + taxonomy.getLabel() + ", version: " + version;
     }
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
-        result = 31 * result + (filePath != null ? filePath.hashCode() : 0);
-        result = 31 * result + (taxonomyAccession != null ? taxonomyAccession.hashCode() : 0);
-        result = 31 * result + (species != null ? species.hashCode() : 0);
-        result = 31 * result + (version != null ? version.hashCode() : 0);
-        result = 31 * result + (md5CheckSum != null ? md5CheckSum.hashCode() : 0);
-        return result;
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.name);
+        hash = 53 * hash + Objects.hashCode(this.fileName);
+        hash = 53 * hash + Objects.hashCode(this.filePath);
+        hash = 53 * hash + Objects.hashCode(this.version);
+        hash = 53 * hash + Objects.hashCode(this.md5CheckSum);
+        hash = 53 * hash + Objects.hashCode(this.headerParseRule);
+        hash = 53 * hash + Objects.hashCode(this.taxonomy);
+        return hash;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FastaDb other = (FastaDb) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (!Objects.equals(this.fileName, other.fileName)) {
+            return false;
+        }
+        if (!Objects.equals(this.filePath, other.filePath)) {
+            return false;
+        }
+        if (!Objects.equals(this.version, other.version)) {
+            return false;
+        }
+        if (!Objects.equals(this.md5CheckSum, other.md5CheckSum)) {
+            return false;
+        }
+        if (!Objects.equals(this.headerParseRule, other.headerParseRule)) {
+            return false;
+        }
+        if (!Objects.equals(this.taxonomy, other.taxonomy)) {
+            return false;
+        }
+        return true;
+    }
+
 }

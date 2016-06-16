@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.EnumMap;

@@ -12,6 +12,6 @@ package com.compomics.colims.model.enums;
  */
 public enum SearchEngineType {
 
-    PEPTIDESHAKER, MAX_QUANT
+    PEPTIDESHAKER, MAXQUANT
 
 }
