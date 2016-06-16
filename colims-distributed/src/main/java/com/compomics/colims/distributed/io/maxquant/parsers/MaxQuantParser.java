@@ -22,6 +22,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 //// TODO: 6/1/2016 make youtrack entry to separate concerns between mapper and parser class, i.e. remove all setting to parser class from mapper class
@@ -41,6 +43,7 @@ public class MaxQuantParser {
 
     private static final String BLOCK_SEPARATOR = ">";
     private static final String SPLITTER = " ";
+    private static final String PARSE_RULE_SPLITTER = ";";
 
     private Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
     private final Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
@@ -143,7 +146,6 @@ public class MaxQuantParser {
      */
     public Map<String, String> parseFastas(Collection<FastaDb> fastaDbs) throws IOException {
         Map<String, String> parsedFasta = new HashMap<>();
-
         try {
             final StringBuilder sequenceBuilder = new StringBuilder();
             String header = "";
@@ -155,7 +157,14 @@ public class MaxQuantParser {
                         if (line.startsWith(BLOCK_SEPARATOR)) {
                             //add limiting check for protein store to avoid growing
                             if (sequenceBuilder.length() > 0) {
-                                parsedFasta.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                                //get parse rule from fastaDb and parse the key
+                                Pattern pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
+                                Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
+                                if(matcher.find()){
+                                    parsedFasta.put(matcher.group(1), sequenceBuilder.toString().trim());
+                                }else{
+                                    parsedFasta.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                                }
                                 sequenceBuilder.setLength(0);
                             }
                             header = line;
