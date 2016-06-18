@@ -2,7 +2,10 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
+import com.compomics.colims.client.event.admin.GroupChangeEvent;
+import com.compomics.colims.client.event.admin.TypedCvParamChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.table.model.CvParamTableModel2;
@@ -139,18 +142,21 @@ public class CvParamManagementController implements Controllable {
                     validationMessages.add(selectedCvParam.getAccession() + " already exists in the database.");
                 }
                 if (validationMessages.isEmpty()) {
+                    EntityChangeEvent.Type type;
                     if (selectedCvParam.getId() != null) {
+                        type = EntityChangeEvent.Type.UPDATED;
                         selectedCvParam = cvParamService.merge(selectedCvParam);
                     } else {
+                        type = EntityChangeEvent.Type.CREATED;
                         cvParamService.persist(selectedCvParam);
                     }
                     cvParamManagementDialog.getSaveOrUpdateButton().setText("update");
                     cvParamManagementDialog.getCvParamStateInfoLabel().setText("");
 
+                    eventBus.post(new CvParamChangeEvent(type, selectedCvParam));
+
                     MessageEvent messageEvent = new MessageEvent("CV param store confirmation", "CV param " + selectedCvParam.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
-
-                    eventBus.post(new CvParamChangeEvent());
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
@@ -164,22 +170,23 @@ public class CvParamManagementController implements Controllable {
             int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();
 
             if (selectedIndex != -1) {
-                CvParam cvparamToDelete = getSelectedCvParam();
+                CvParam cvParamToDelete = getSelectedCvParam();
                 //check if instrument type has an id.
                 //If so, try to delete the permission from the db.
-                if (cvparamToDelete.getId() != null) {
+                if (cvParamToDelete.getId() != null) {
                     try {
-                        cvParamService.remove(cvparamToDelete);
+                        cvParamService.remove(cvParamToDelete);
+                        eventBus.post(new CvParamChangeEvent(EntityChangeEvent.Type.DELETED, cvParamToDelete));
 
                         cvParamTableModel2.removeCvParam(selectedIndex);
                         cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
 
-                        eventBus.post(new CvParamChangeEvent());
+                        eventBus.post(new TypedCvParamChangeEvent());
                     } catch (DataIntegrityViolationException dive) {
                         //check if the CV param can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations
                         if (dive.getCause() instanceof ConstraintViolationException) {
-                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("CV term", cvparamToDelete.getName());
+                            DbConstraintMessageEvent dbConstraintMessageEvent = new DbConstraintMessageEvent("CV term", cvParamToDelete.getName());
                             eventBus.post(dbConstraintMessageEvent);
                         } else {
                             //pass the exception

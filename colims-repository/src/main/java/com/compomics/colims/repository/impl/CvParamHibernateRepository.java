@@ -14,6 +14,11 @@ import java.util.List;
 public class CvParamHibernateRepository extends GenericHibernateRepository<CvParam, Long> implements CvParamRepository {
 
     @Override
+    public CvParam getMappedSuperclassReference(Class entityClass, Long id) {
+        return (CvParam) getEntityManager().getReference(entityClass, id);
+    }
+
+    @Override
     public List<CvParam> findByAccession(final String accession) {
         return findByCriteria(Restrictions.eq("accession", accession));
     }

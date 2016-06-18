@@ -3,6 +3,7 @@ package com.compomics.colims.client.controller.admin.user;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
+import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.GroupChangeEvent;
 import com.compomics.colims.client.event.admin.UserChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
@@ -274,12 +275,15 @@ public class UserManagementController implements Controllable {
                 }
 
                 //save or update the user
+                UserChangeEvent.Type type;
                 if (selectedUser.getId() != null) {
+                    type = EntityChangeEvent.Type.UPDATED;
                     if (selectedInstitution != null && !selectedInstitution.equals(selectedUser.getInstitution())) {
                         selectedUser.setInstitution(selectedInstitution);
                     }
                     selectedUser = userService.merge(selectedUser);
                 } else {
+                    type = EntityChangeEvent.Type.CREATED;
                     if (selectedInstitution != null) {
                         selectedUser.setInstitution(selectedInstitution);
                     }
@@ -288,8 +292,7 @@ public class UserManagementController implements Controllable {
                 userManagementDialog.getUserNameTextField().setEnabled(false);
                 userManagementDialog.getUserSaveOrUpdateButton().setText("update");
                 userManagementDialog.getUserStateInfoLabel().setText("");
-
-                UserChangeEvent.Type type = (selectedUser.getId() == null) ? UserChangeEvent.Type.CREATED : UserChangeEvent.Type.UPDATED;
+                
                 eventBus.post(new UserChangeEvent(type, areChildrenAffected, selectedUser));
 
                 MessageEvent messageEvent = new MessageEvent("User store confirmation", "User " + selectedUser.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
@@ -309,7 +312,8 @@ public class UserManagementController implements Controllable {
     }
 
     /**
-     * Listen to a GroupChangeEvent and update the available groups in the DualList.
+     * Listen to a GroupChangeEvent and update the available groups in the
+     * DualList.
      *
      * @param groupChangeEvent the GroupEvent
      */

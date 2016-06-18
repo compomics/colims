@@ -10,6 +10,15 @@ import java.util.List;
  */
 public interface CvParamRepository extends GenericRepository<CvParam, Long> {
 
+     /**
+     * Get an instance, whose state may be lazily fetched.
+     *
+     * @param entityClass the entity class that is a subclass of CvParam
+     * @param id the entity ID
+     * @return the referenced entity
+     */
+    CvParam getMappedSuperclassReference(Class entityClass, Long id);
+
     /**
      * Find CV params by accession.
      *

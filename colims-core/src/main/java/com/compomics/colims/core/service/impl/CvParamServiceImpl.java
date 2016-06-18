@@ -63,7 +63,7 @@ public class CvParamServiceImpl implements CvParamService {
     @Override
     public void remove(CvParam entity) {
         //get a reference to the entity
-        CvParam reference = cvParamRepository.getReference(entity.getId());
+        CvParam reference = cvParamRepository.getMappedSuperclassReference(entity.getClass(), entity.getId());
         cvParamRepository.remove(reference);
     }
 

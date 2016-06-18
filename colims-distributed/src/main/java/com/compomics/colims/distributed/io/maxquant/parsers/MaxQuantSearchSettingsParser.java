@@ -177,11 +177,11 @@ public class MaxQuantSearchSettingsParser {
         searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
 
         //set the search engine
-        searchAndValidationSettings.setSearchEngine(searchAndValidationSettingsService.getSearchEngine(SearchEngineType.MAX_QUANT, version));
+        searchAndValidationSettings.setSearchEngine(searchAndValidationSettingsService.getSearchEngine(SearchEngineType.MAXQUANT, version));
 
         //set entity relations between SearchAndValidationSettings and SearchParameters
         searchAndValidationSettings.setSearchParameters(searchParameters);
-        // TODO: 6/13/2016 change! 
+        // TODO: 6/13/2016 change!
    //     searchParameters.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         // TODO: 26/05/16 check which files to store

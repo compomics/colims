@@ -2,7 +2,7 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
-import com.compomics.colims.client.event.admin.CvParamChangeEvent;
+import com.compomics.colims.client.event.admin.TypedCvParamChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.table.model.TypedCvParamTableModel2;
@@ -16,7 +16,6 @@ import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.google.common.eventbus.EventBus;
 import java.io.IOException;
-import java.util.Arrays;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -152,7 +151,7 @@ public class TypedCvParamManagementController implements Controllable {
                     MessageEvent messageEvent = new MessageEvent("CV param store confirmation", "CV param " + selectedCvParam.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                     eventBus.post(messageEvent);
 
-                    eventBus.post(new CvParamChangeEvent());
+                    eventBus.post(new TypedCvParamChangeEvent());
                 } else {
                     MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
@@ -176,7 +175,7 @@ public class TypedCvParamManagementController implements Controllable {
                         typeCvParamTableModel2.removeCvParam(selectedIndex);
                         cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();
 
-                        eventBus.post(new CvParamChangeEvent());
+                        eventBus.post(new TypedCvParamChangeEvent());
                     } catch (DataIntegrityViolationException dive) {
                         //check if the CV param can be deleted without breaking existing database relations,
                         //i.e. are there any constraints violations

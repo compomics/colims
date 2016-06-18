@@ -16,6 +16,16 @@ import java.util.List;
 public class AuditableTypedCvParamHibernateRepository extends GenericHibernateRepository<AuditableTypedCvParam, Long> implements AuditableTypedCvParamRepository {
 
     @Override
+    public AuditableTypedCvParam getReference(Long id) {
+        throw new UnsupportedOperationException("This method is not supported for mappedsuperclass instances.");
+    }
+
+    @Override
+    public AuditableTypedCvParam findById(Long id) {
+        throw new UnsupportedOperationException("This method is not supported for mappedsuperclass instances.");
+    }
+
+    @Override
     public AuditableTypedCvParam findByAccession(final String accession, final CvParamType cvParamType) {
         return findUniqueByCriteria(Restrictions.eq("accession", accession), Restrictions.eq("cvParamType", cvParamType));
     }
@@ -33,4 +43,10 @@ public class AuditableTypedCvParamHibernateRepository extends GenericHibernateRe
     public List<AuditableTypedCvParam> findByCvParamType(final CvParamType cvParamType) {
         return findByCriteria(Restrictions.eq("cvParamType", cvParamType));
     }
+
+    @Override
+    public AuditableTypedCvParam getMappedSuperclassReference(Class entityClass, Long id) {
+        return (AuditableTypedCvParam) getEntityManager().getReference(entityClass, id);
+    }
+
 }

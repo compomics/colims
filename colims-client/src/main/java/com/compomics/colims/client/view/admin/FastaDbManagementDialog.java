@@ -2,6 +2,7 @@ package com.compomics.colims.client.view.admin;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -75,8 +76,8 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         return versionTextField;
     }
 
-    public JTextField getTaxonomyTextField() {
-        return taxonomyTextField;
+    public JComboBox<String> getTaxomomyComboBox() {
+        return taxomomyComboBox;
     }
 
     public JLabel getFastaDbStateInfoLabel() {
@@ -144,12 +145,12 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         versionLabel = new javax.swing.JLabel();
         versionTextField = new javax.swing.JTextField();
         taxonomyLabel = new javax.swing.JLabel();
-        taxonomyTextField = new javax.swing.JTextField();
         browseTaxonomyButton = new javax.swing.JButton();
         fastaDbStateInfoLabel = new javax.swing.JLabel();
         saveOrUpdateButton = new javax.swing.JButton();
         headerParseRuleTextField = new javax.swing.JTextField();
         HeaderParseRuleLabel = new javax.swing.JLabel();
+        taxomomyComboBox = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Fasta database management");
@@ -321,6 +322,8 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
 
         HeaderParseRuleLabel.setText("Parse rule");
 
+        taxomomyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout fastaDbDetailPanelLayout = new javax.swing.GroupLayout(fastaDbDetailPanel);
         fastaDbDetailPanel.setLayout(fastaDbDetailPanelLayout);
         fastaDbDetailPanelLayout.setHorizontalGroup(
@@ -341,7 +344,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
                         .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(versionTextField)
                             .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
-                                .addComponent(taxonomyTextField)
+                                .addComponent(taxomomyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(browseTaxonomyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(headerParseRuleTextField)))
@@ -384,9 +387,9 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
                     .addComponent(versionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(taxonomyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(browseTaxonomyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(taxonomyLabel))
+                    .addComponent(taxonomyLabel)
+                    .addComponent(taxomomyComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(HeaderParseRuleLabel)
@@ -481,8 +484,8 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
     private javax.swing.JButton okButton;
     private javax.swing.JCheckBox primaryCheckBox;
     private javax.swing.JButton saveOrUpdateButton;
+    private javax.swing.JComboBox<String> taxomomyComboBox;
     private javax.swing.JLabel taxonomyLabel;
-    private javax.swing.JTextField taxonomyTextField;
     private javax.swing.JLabel versionLabel;
     private javax.swing.JTextField versionTextField;
     // End of variables declaration//GEN-END:variables
