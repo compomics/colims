@@ -51,7 +51,7 @@ public class MaterialManagementController implements Controllable {
     /**
      * The preselected ontology namespaces.
      */
-    private static final List<String> PRESELECTED_ONTOLOGY_NAMESPACES = Arrays.asList("ms");
+    private static final List<String> PRESELECTED_ONTOLOGY_NAMESPACES = Arrays.asList("ms", "ncbitaxon");
 
     //model
     private TypedCvParamSummaryListModel<MaterialCvParam> typedCvParamSummaryListModel;

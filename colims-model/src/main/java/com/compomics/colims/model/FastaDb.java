@@ -125,6 +125,14 @@ public class FastaDb extends DatabaseEntity {
         this.headerParseRule = headerParseRule;
     }
 
+    public TaxonomyCvParam getTaxonomy() {
+        return taxonomy;
+    }
+
+    public void setTaxonomy(TaxonomyCvParam taxonomy) {
+        this.taxonomy = taxonomy;
+    }
+
     public List<SearchSettingsHasFastaDb> getSearchSettingsHasFastaDbs() {
         return searchSettingsHasFastaDbs;
     }
@@ -135,7 +143,9 @@ public class FastaDb extends DatabaseEntity {
 
     @Override
     public String toString() {
-        return name + ", accession: " + taxonomy.getAccession() + ", species: " + taxonomy.getLabel() + ", version: " + version;
+        String taxonomyAccession = (taxonomy != null) ? taxonomy.getAccession() : "";
+        String taxonomyLabel = (taxonomy != null) ? taxonomy.getLabel() : "";;
+        return name + ", accession: " + taxonomyAccession + ", species: " + taxonomyLabel + ", version: " + version;
     }
 
     @Override

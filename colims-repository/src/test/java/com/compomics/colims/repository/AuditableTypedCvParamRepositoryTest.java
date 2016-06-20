@@ -1,6 +1,5 @@
 package com.compomics.colims.repository;
 
-
 import com.compomics.colims.model.InstrumentCvParam;
 import com.compomics.colims.model.ProtocolCvParam;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
@@ -85,6 +84,15 @@ public class AuditableTypedCvParamRepositoryTest {
         cvParams = cvParamRepository.findByCvParamType(CvParamType.ENZYME);
         Assert.assertNotNull(cvParams);
         Assert.assertEquals(2, cvParams.size());
+    }
+
+    @Test
+    public void testRemove() {
+        AuditableTypedCvParam cvParam = cvParamRepository.findByName("Orbitrap Fuhrer", CvParamType.TYPE, true);
+        cvParamRepository.remove(cvParam);
+
+        cvParam = cvParamRepository.findByName("Orbitrap Fuhrer", CvParamType.TYPE, true);
+        Assert.assertNull(cvParam);
     }
 
 }
