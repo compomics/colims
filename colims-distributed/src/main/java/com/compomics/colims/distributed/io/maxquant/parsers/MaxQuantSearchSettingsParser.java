@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.TypedCvParamService;
@@ -10,6 +11,7 @@ import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantParameterHeaders;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSpectrumParameterHeaders;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSummaryHeaders;
+import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPtmSettingsMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.*;
@@ -46,6 +48,8 @@ public class MaxQuantSearchSettingsParser {
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
     private static final String PARAMETER_DELIMITER = "\t";
+    private static final String MODIFICATIONS_DELIMITER = ",";
+    private static final String MODIFICATION_NAME_ONLY = " ";
 
     private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
             MaxQuantSummaryHeaders.ENZYME,
@@ -82,6 +86,8 @@ public class MaxQuantSearchSettingsParser {
     private TypedCvParamService typedCvParamService;
     @Autowired
     private OlsService newOlsService;
+    @Autowired
+    private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
 
     /**
      * Get the version of MaxQuant used.
@@ -108,7 +114,7 @@ public class MaxQuantSearchSettingsParser {
      * @param storeFiles           whether data files should be stored with the experiment
      * @throws IOException thrown in case of of an I/O related problem
      */
-    public void parse(Path maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
+    public void parse(Path maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException  {
         //parse the search settings
         SearchAndValidationSettings searchAndValidationSettings = parseSearchSettings(maxQuantTxtDirectory, fastaDbs, storeFiles);
 
@@ -125,7 +131,7 @@ public class MaxQuantSearchSettingsParser {
      * @return the mapped SearchAndValidationSettings instance
      * @throws IOException thrown in case of of an I/O related problem
      */
-    private SearchAndValidationSettings parseSearchSettings(Path maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException {
+    private SearchAndValidationSettings parseSearchSettings(Path maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException  {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         //set the FASTA databases entity associations
@@ -143,12 +149,13 @@ public class MaxQuantSearchSettingsParser {
         //parse the parameters file and iterate over the parameters
         Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), MaxQuantConstants.PARAMETERS_FILE.value()), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
 
-
         //get the MaxQuant version
         String versionParameter = parameters.get(MaxQuantParameterHeaders.VERSION.getValue());
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
             version = versionParameter;
         }
+
+
         //precursor mass tolerance and unit
         String precursorMassToleranceString = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE);
         searchParameters.setPrecMassTolerance(Double.parseDouble(precursorMassToleranceString));
@@ -173,6 +180,13 @@ public class MaxQuantSearchSettingsParser {
         String missedCleavages = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.MAX_MISSED_CLEAVAGES);
         searchParameters.setNumberOfMissedCleavages(Integer.parseInt(missedCleavages));
 
+        //upper charge
+        String upperCharge =maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.MAX_CHARGE);
+        searchParameters.setUpperCharge(Integer.parseInt(upperCharge));
+
+        //add modifications
+        searchParameters.getSearchParametersHasModifications().addAll(createModifications(searchParameters, maxQuantAndromedaParser));
+
         //look for the given search parameter settings in the database
         searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
 
@@ -181,8 +195,6 @@ public class MaxQuantSearchSettingsParser {
 
         //set entity relations between SearchAndValidationSettings and SearchParameters
         searchAndValidationSettings.setSearchParameters(searchParameters);
-        // TODO: 6/13/2016 change! 
-   //     searchParameters.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         // TODO: 26/05/16 check which files to store
         //currently just storing whole folder
@@ -194,7 +206,7 @@ public class MaxQuantSearchSettingsParser {
             identificationFileEntity.setContent(content);
         }
 
-        //set entity relations between SearchAndValidationSettings ad IdentificationFile
+        //set entity relations between SearchAndValidationSettings and IdentificationFile
         identificationFileEntity.setSearchAndValidationSettings(searchAndValidationSettings);
         searchAndValidationSettings.getIdentificationFiles().add(identificationFileEntity);
 
@@ -217,13 +229,13 @@ public class MaxQuantSearchSettingsParser {
 
         while (summaryIterator.hasNext()) {
             row = summaryIterator.next();
-            SearchAndValidationSettings runSettings = cloneSearchAndValidationSettings(searchAndValidationSettings);
+    //        SearchAndValidationSettings runSettings = cloneSearchAndValidationSettings(searchAndValidationSettings);
 
             if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getValue())) {
                 multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getValue());
             }
 
-            allSettings.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()), runSettings);
+            allSettings.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()), searchAndValidationSettings);
         }
 
         return allSettings;
@@ -317,6 +329,57 @@ public class MaxQuantSearchSettingsParser {
         }
 
         return enzyme;
+    }
+
+    private List<SearchParametersHasModification> createModifications(SearchParameters searchParameters, MaxQuantAndromedaParser maxQuantAndromedaParser) throws ModificationMappingException {
+        List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
+        // find the name of fixed modification
+        String fixedModifications = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.FIXED_MODIFICATIONS);
+        // find the name of variable modification
+        String variableModifications = maxQuantAndromedaParser.getSpectrumParameters().get(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS);
+
+        if(fixedModifications == null && variableModifications == null){
+            return searchParametersHasModifications;
+        }
+
+        if(fixedModifications != null){
+            String[] split = fixedModifications.split(MODIFICATIONS_DELIMITER);
+            for(int i=0; i<split.length; i++){
+                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, "");
+
+                SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(split[i].split(MODIFICATION_NAME_ONLY)[0]);
+
+                searchParametersHasModification.setModificationType(ModificationType.FIXED);
+                searchParametersHasModification.setSearchModification(searchModification);
+
+                searchParametersHasModifications.add(searchParametersHasModification);
+            }
+        }
+
+        if(variableModifications != null){
+            String[] split = variableModifications.split(MODIFICATIONS_DELIMITER);
+            for(int i=0; i<split.length; i++){
+                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, "");
+
+                SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(split[i].split(MODIFICATION_NAME_ONLY)[0]);
+
+                searchParametersHasModification.setModificationType(ModificationType.VARIABLE);
+                searchParametersHasModification.setSearchModification(searchModification);
+
+                searchParametersHasModifications.add(searchParametersHasModification);
+            }
+        }
+
+        return searchParametersHasModifications;
+    }
+
+    private SearchParametersHasModification createSearchParametersHasModification(SearchParameters searchParameters, String residues){
+        SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
+
+        searchParametersHasModification.setSearchParameters(searchParameters);
+        searchParametersHasModification.setResidues(residues);
+
+        return searchParametersHasModification;
     }
 
     // TODO: is this modification data ever needed? not accessed by mappers

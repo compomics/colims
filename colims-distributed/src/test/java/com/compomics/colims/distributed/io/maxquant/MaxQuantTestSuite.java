@@ -24,7 +24,7 @@ import java.nio.file.Path;
 })
 public class MaxQuantTestSuite {
 
-    private static final String maxQuantVersion = "1.5.2.8";
+    private static final String maxQuantVersion = "test1";
 
     public static Path maxQuantDirectory;
     public static Path maxQuantTextDirectory;
@@ -51,12 +51,12 @@ public class MaxQuantTestSuite {
             peptidesFile = new ClassPathResource(txtDirectoryPath + "peptides.txt").getFile().toPath();
             testFastaDb = new FastaDb();
             testFastaDb.setName("test fasta");
-            testFastaDb.setFileName("uniprot-taxonomy%3A10090.fasta");
-        //    testFastaDb.setFileName("uniprot-mouse.fasta");
-            testFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "uniprot-taxonomy%3A10090.fasta").getFile().getAbsolutePath());
+      //      testFastaDb.setFileName("uniprot-taxonomy%3A10090.fasta");
+            testFastaDb.setFileName("uniprot-mouse.fasta");
+      //      testFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "uniprot-taxonomy%3A10090.fasta").getFile().getAbsolutePath());
       //      testFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "uniprot-mus+musculus.fasta").getFile().getAbsolutePath());
-        //    testFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "uniprot-mouse.fasta").getFile().getAbsolutePath());
-            testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+            testFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "uniprot-mouse.fasta").getFile().getAbsolutePath());
+       //     testFastaDb.setHeaderParseRule("&gt;([^ ]*)");
             contaminantsFastaDb = new FastaDb();
             contaminantsFastaDb.setName("test contaminants fasta");
             contaminantsFastaDb.setFileName("contaminants.fasta");

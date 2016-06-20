@@ -44,6 +44,7 @@ public class MaxQuantParser {
     private static final String BLOCK_SEPARATOR = ">";
     private static final String SPLITTER = " ";
     private static final String PARSE_RULE_SPLITTER = ";";
+    private static final String EMPTY_HEADER_PARSE_RULE = "&gt;([^ ]*)";
 
     private Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
     private final Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
@@ -158,7 +159,15 @@ public class MaxQuantParser {
                             //add limiting check for protein store to avoid growing
                             if (sequenceBuilder.length() > 0) {
                                 //get parse rule from fastaDb and parse the key
-                                Pattern pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
+                                if(fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")){
+                                    fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);
+                                }
+                                Pattern pattern;
+                                if(fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)){
+                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
+                                }else{
+                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule());
+                                }
                                 Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
                                 if(matcher.find()){
                                     parsedFasta.put(matcher.group(1), sequenceBuilder.toString().trim());

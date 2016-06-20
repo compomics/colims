@@ -91,7 +91,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                 analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
                 searchAndValidationSettings.setAnalyticalRun(analyticalRun);
 
-                analyticalRun.setQuantificationSettings(importQuantSettings(new File(txtDirectory.toFile(), QUANT_FILE), analyticalRun));
+ //               analyticalRun.setQuantificationSettings(importQuantSettings(new File(txtDirectory.toFile(), QUANT_FILE), analyticalRun));
 
                 List<Spectrum> mappedSpectra = new ArrayList<>(analyticalRun.getSpectrums().size());
                 //set spectrum-run entity associations

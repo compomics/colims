@@ -17,7 +17,8 @@ public enum MaxQuantSpectrumParameterHeaders implements HeaderEnum {
     PEPTIDE_MASS_TOLERANCE_UNIT(new String[]{"peptide mass tolerance Unit"}),
     FRAGMENT_MASS_TOLERANCE(new String[]{"fragment mass tolerance"}),
     FRAGMENT_MASS_TOLERANCE_UNIT(new String[]{"fragment mass tolerance Unit"}),
-    MAX_MISSED_CLEAVAGES(new String[]{"max missed cleavages"});
+    MAX_MISSED_CLEAVAGES(new String[]{"max missed cleavages"}),
+    MAX_CHARGE(new String[]{"max charge"});
 
     /**
      * The list of header values for the enum value.
