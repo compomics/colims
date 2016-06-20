@@ -17,7 +17,7 @@ public interface CvParamRepository extends GenericRepository<CvParam, Long> {
      * @param id the entity ID
      * @return the referenced entity
      */
-    CvParam getMappedSuperclassReference(Class entityClass, Long id);
+    CvParam getMappedSuperclassReference(Class<? extends CvParam> entityClass, Long id);
 
     /**
      * Find CV params by accession.
