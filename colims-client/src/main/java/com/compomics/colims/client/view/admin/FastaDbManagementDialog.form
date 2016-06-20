@@ -30,7 +30,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="fastaDbManagmentParentPanel" alignment="0" max="32767" attributes="0"/>
+          <Component id="fastaDbManagmentParentPanel" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -58,13 +58,13 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="fastaDbManagementPanel" pref="307" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="fastaDbManagementPanel" pref="306" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="okButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -151,7 +151,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="fastaDbTypesPanel" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="fastaDbListScrollPane" pref="131" max="32767" attributes="0"/>
+                          <Component id="fastaDbListScrollPane" pref="130" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="deleteButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
@@ -326,27 +326,20 @@
                                       <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="102" attributes="0">
-                                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                                  <Component id="taxonomyLabel" alignment="0" pref="67" max="32767" attributes="0"/>
-                                                  <Component id="versionLabel" alignment="0" max="32767" attributes="0"/>
-                                              </Group>
-                                              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                                          </Group>
-                                          <Group type="102" alignment="1" attributes="0">
-                                              <Component id="speciesLabel" min="-2" pref="67" max="-2" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
-                                          </Group>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="taxonomyLabel" alignment="0" pref="67" max="32767" attributes="0"/>
+                                          <Component id="versionLabel" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="HeaderParseRuleLabel" alignment="0" max="32767" attributes="0"/>
                                       </Group>
+                                      <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="versionTextField" max="32767" attributes="0"/>
-                                          <Component id="speciesTextField" max="32767" attributes="0"/>
                                           <Group type="102" alignment="0" attributes="0">
-                                              <Component id="taxonomyTextField" max="32767" attributes="0"/>
-                                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                                              <Component id="taxomomyComboBox" max="32767" attributes="0"/>
+                                              <EmptySpace max="-2" attributes="0"/>
                                               <Component id="browseTaxonomyButton" min="-2" max="-2" attributes="0"/>
                                           </Group>
+                                          <Component id="headerParseRuleTextField" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
@@ -355,7 +348,7 @@
                                           <Component id="fileNameLabel" alignment="0" max="32767" attributes="0"/>
                                           <Component id="filePathLabel" alignment="0" max="32767" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="nameTextField" alignment="1" max="32767" attributes="0"/>
                                           <Component id="filePathTextField" max="32767" attributes="0"/>
@@ -400,14 +393,14 @@
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="taxonomyTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="browseTaxonomyButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="taxonomyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="taxomomyComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="speciesTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="speciesLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="HeaderParseRuleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="headerParseRuleTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -474,12 +467,10 @@
                         <Property name="text" type="java.lang.String" value="Taxonomy"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JTextField" name="taxonomyTextField">
-                    </Component>
                     <Component class="javax.swing.JButton" name="browseTaxonomyButton">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="browse"/>
-                        <Property name="toolTipText" type="java.lang.String" value="select taxonomy ID and species from the NEWT taxonomy ontology"/>
+                        <Property name="toolTipText" type="java.lang.String" value="select taxonomy ID and species from the NCBI taxonomy ontology"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[80, 25]"/>
                         </Property>
@@ -490,16 +481,6 @@
                           <Dimension value="[80, 25]"/>
                         </Property>
                       </Properties>
-                    </Component>
-                    <Component class="javax.swing.JLabel" name="speciesLabel">
-                      <Properties>
-                        <Property name="text" type="java.lang.String" value="Species"/>
-                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                          <Dimension value="[48, 14]"/>
-                        </Property>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JTextField" name="speciesTextField">
                     </Component>
                     <Component class="javax.swing.JLabel" name="fastaDbStateInfoLabel">
                       <Properties>
@@ -536,6 +517,28 @@
                           <Dimension value="[80, 25]"/>
                         </Property>
                       </Properties>
+                    </Component>
+                    <Component class="javax.swing.JTextField" name="headerParseRuleTextField">
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="HeaderParseRuleLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Parse rule"/>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="taxomomyComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="4">
+                            <StringItem index="0" value="Item 1"/>
+                            <StringItem index="1" value="Item 2"/>
+                            <StringItem index="2" value="Item 3"/>
+                            <StringItem index="3" value="Item 4"/>
+                          </StringArray>
+                        </Property>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
                     </Component>
                   </SubComponents>
                 </Container>

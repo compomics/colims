@@ -4,7 +4,7 @@ import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.admin.CvParamChangeEvent;
+import com.compomics.colims.client.event.admin.TypedCvParamChangeEvent;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -38,6 +38,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,6 +49,11 @@ import java.util.stream.Collectors;
 @Component("instrumentManagementController")
 @Lazy
 public class InstrumentManagementController implements Controllable {
+
+    /**
+     * The preselected ontology namespaces.
+     */
+    private static final List<String> PRESELECTED_ONTOLOGY_NAMESPACES = Arrays.asList("ms");
 
     //model
     private TypedCvParamSummaryListModel<InstrumentCvParam> typedCvParamSummaryListModel;
@@ -60,9 +66,10 @@ public class InstrumentManagementController implements Controllable {
     //parent controller
     @Autowired
     private MainController mainController;
+    //child controller
     @Autowired
     @Lazy
-    private CvParamManagementController cvParamManagementController;
+    private TypedCvParamManagementController typedCvParamManagementController;
     //services
     @Autowired
     private InstrumentService instrumentService;
@@ -98,13 +105,13 @@ public class InstrumentManagementController implements Controllable {
 
     /**
      * Listen to a CV param change event posted by the
-     * CvParamManagementController. If the InstrumentManagementDialog is
+     * TypedCvParamManagementController. If the InstrumentManagementDialog is
      * visible, clear the selection in the CV param summary list.
      *
-     * @param cvParamChangeEvent the CvParamChangeEvent instance
+     * @param cvParamChangeEvent the TypedCvParamChangeEvent instance
      */
     @Subscribe
-    public void onCvParamChangeEvent(CvParamChangeEvent cvParamChangeEvent) {
+    public void onCvParamChangeEvent(TypedCvParamChangeEvent cvParamChangeEvent) {
         if (instrumentEditDialog.isVisible()) {
             instrumentEditDialog.getCvParamSummaryList().getSelectionModel().clearSelection();
         }
@@ -358,9 +365,9 @@ public class InstrumentManagementController implements Controllable {
                 List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedcvParamType);
 
                 //update the CV param list
-                cvParamManagementController.updateDialog(selectedcvParamType, cvParams);
+                typedCvParamManagementController.updateDialog(selectedcvParamType, PRESELECTED_ONTOLOGY_NAMESPACES, cvParams);
 
-                cvParamManagementController.showView();
+                typedCvParamManagementController.showView();
             } else {
                 eventBus.post(new MessageEvent("Instrument CV param type selection", "Please select an instrument CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
             }

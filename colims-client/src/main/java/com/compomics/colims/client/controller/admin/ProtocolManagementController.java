@@ -4,7 +4,7 @@ import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.admin.CvParamChangeEvent;
+import com.compomics.colims.client.event.admin.TypedCvParamChangeEvent;
 import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,6 +48,11 @@ import java.util.stream.Collectors;
 @Component("protocolManagementController")
 @Lazy
 public class ProtocolManagementController implements Controllable {
+
+    /**
+     * The preselected ontology namespaces.
+     */
+    private static final List<String> PRESELECTED_ONTOLOGY_NAMESPACES = Arrays.asList("ms");
 
     //model
     private TypedCvParamSummaryListModel<ProtocolCvParam> typedCvParamSummaryListModel;
@@ -61,7 +67,7 @@ public class ProtocolManagementController implements Controllable {
     private MainController mainController;
     @Autowired
     @Lazy
-    private CvParamManagementController cvParamManagementController;
+    private TypedCvParamManagementController typedCvParamManagementController;
     //services
     @Autowired
     private ProtocolService protocolService;
@@ -97,13 +103,13 @@ public class ProtocolManagementController implements Controllable {
 
     /**
      * Listen to a CV param change event posted by the
-     * CvParamManagementController. If the ProtocolManagementDialog is visible,
-     * clear the selection in the CV param summary list.
+     * TypedCvParamManagementController. If the ProtocolManagementDialog is
+     * visible, clear the selection in the CV param summary list.
      *
-     * @param cvParamChangeEvent the CvParamChangeEvent
+     * @param cvParamChangeEvent the TypedCvParamChangeEvent
      */
     @Subscribe
-    public void onCvParamChangeEvent(final CvParamChangeEvent cvParamChangeEvent) {
+    public void onCvParamChangeEvent(final TypedCvParamChangeEvent cvParamChangeEvent) {
         if (protocolEditDialog.isVisible()) {
             protocolEditDialog.getCvParamSummaryList().getSelectionModel().clearSelection();
         }
@@ -370,9 +376,9 @@ public class ProtocolManagementController implements Controllable {
                 List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedCvParamType);
 
                 //update the CV param list
-                cvParamManagementController.updateDialog(selectedCvParamType, cvParams);
+                typedCvParamManagementController.updateDialog(selectedCvParamType, PRESELECTED_ONTOLOGY_NAMESPACES, cvParams);
 
-                cvParamManagementController.showView();
+                typedCvParamManagementController.showView();
             } else {
                 eventBus.post(new MessageEvent("Protocol CV param type selection", "Please select a protocol CV param type to edit.", JOptionPane.INFORMATION_MESSAGE));
             }

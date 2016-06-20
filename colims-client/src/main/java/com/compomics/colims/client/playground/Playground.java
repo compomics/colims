@@ -45,7 +45,7 @@ public class Playground {
         persistMetadata.setStartDate(new Date());
         persistDbTask.setPersistMetadata(persistMetadata);
 
-        List<File> mgfFiles = Arrays.asList(new File("test1"), new File("test2"));
+        List<File> mgfFiles = Arrays.asList(new File("maxquant_test1"), new File("test2"));
         EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, 1L);
         DataImport dataImport = new PeptideShakerImport(new File("testFile"), fastaDbIds, mgfFiles);

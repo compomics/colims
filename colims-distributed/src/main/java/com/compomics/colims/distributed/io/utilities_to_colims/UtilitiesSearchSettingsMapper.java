@@ -88,7 +88,7 @@ public class UtilitiesSearchSettingsMapper {
                 case PEPTIDESHAKER:
                     binaryFileType = BinaryFileType.TEXT;
                     break;
-                case MAX_QUANT:
+                case MAXQUANT:
                     binaryFileType = BinaryFileType.ZIP;
                     break;
                 default:

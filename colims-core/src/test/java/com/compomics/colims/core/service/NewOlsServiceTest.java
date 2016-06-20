@@ -47,7 +47,7 @@ public class NewOlsServiceTest {
         List<Ontology> allOntologies = newOlsService.getAllOntologies();
 
         Assert.assertFalse(allOntologies.isEmpty());
-        Assert.assertEquals(148, allOntologies.size());
+        Assert.assertEquals(149, allOntologies.size());
     }
 
     @Test
@@ -137,6 +137,14 @@ public class NewOlsServiceTest {
         Assert.assertEquals("Analysis software.", description);
     }
 
+    @Test
+    public void testGetTermDescriptionByOboId_3() throws RestClientException, IOException {
+        //try to find a description for an term that has no description, should return an empty String
+        String description = newOlsService.getTermDescriptionByOboId("ncbitaxon", "NCBITaxon:9606");
+
+        Assert.assertTrue(description.isEmpty());
+    }
+
     /**
      * Test the find modification by accession method from the OlsService.
      */
@@ -145,6 +153,7 @@ public class NewOlsServiceTest {
         //try to find a non existing modification
         Modification modification = newOlsService.findModificationByAccession(Modification.class, "MOD:0093599922");
     }
+
     /**
      * Test the find modification by accession method from the OlsService.
      */
@@ -189,7 +198,6 @@ public class NewOlsServiceTest {
 //        Assert.assertNotNull(modification);
 //        Assert.assertNotNull(modification.getAccession());
 //    }
-
 //    /**
 //     * Test the modifications cache from the OlsService.
 //     */
@@ -214,7 +222,6 @@ public class NewOlsServiceTest {
 //        //the modification should not have been added to the cache
 //        Assert.assertEquals(cacheSize + 2, newOlsService.getModificationsCache().size());
 //    }
-
     /**
      * Test the find enzyme CV param by name method from the OlsService.
      */

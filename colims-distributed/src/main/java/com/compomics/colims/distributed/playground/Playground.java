@@ -20,7 +20,6 @@ import com.google.common.math.DoubleMath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -61,7 +60,9 @@ public class Playground {
         MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
         System.out.println("Everything is parsed!");
-      //  MaxQuantSearchSettingsParser maxQuantSearchSettingsParser = applicationContext.getBean("maxQuantSearchSettingsParser", MaxQuantSearchSettingsParser.class);
+
+
+        //  MaxQuantSearchSettingsParser maxQuantSearchSettingsParser = applicationContext.getBean("maxQuantSearchSettingsParser", MaxQuantSearchSettingsParser.class);
      //   MaxQuantParser maxQuantParser = applicationContext.getBean("maxQuantParser", MaxQuantParser.class);
      //   MaxQuantAndromedaParser maxQuantAndromedaParser = applicationContext.getBean("maxQuantAndromedaParser", MaxQuantAndromedaParser.class);
 

@@ -273,7 +273,7 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
             .addGroup(confirmationPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(confirmationLabel)
-                .addContainerGap(208, Short.MAX_VALUE))
+                .addContainerGap(219, Short.MAX_VALUE))
         );
 
         topPanel.add(confirmationPanel, "confirmationPanel");
@@ -351,7 +351,7 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
             parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(topPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 241, Short.MAX_VALUE)
+                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())

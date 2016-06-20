@@ -201,16 +201,18 @@ public class RoleManagementController implements Controllable {
                         + System.lineSeparator() + "please choose another role name.");
             }
             if (validationMessages.isEmpty()) {
+                EntityChangeEvent.Type type;
                 if (selectedRole.getId() != null) {
+                    type = EntityChangeEvent.Type.UPDATED;
                     selectedRole = roleService.merge(selectedRole);
                 } else {
+                    type = EntityChangeEvent.Type.CREATED;
                     roleService.persist(selectedRole);
                 }
                 userManagementDialog.getRoleNameTextField().setEnabled(false);
                 userManagementDialog.getRoleSaveOrUpdateButton().setText("update");
                 userManagementDialog.getRoleStateInfoLabel().setText("");
 
-                EntityChangeEvent.Type type = (selectedRole.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                 eventBus.post(new RoleChangeEvent(type, areChildrenAffected, selectedRole));
 
                 MessageEvent messageEvent = new MessageEvent("Role store confirmation", "Role " + selectedRole.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
@@ -241,7 +243,8 @@ public class RoleManagementController implements Controllable {
     }
 
     /**
-     * Listen to a PermissionChangeEvent and update the available permissions in the DualList.
+     * Listen to a PermissionChangeEvent and update the available permissions in
+     * the DualList.
      *
      * @param permissionChangeEvent the PermissionChangeEvent
      */

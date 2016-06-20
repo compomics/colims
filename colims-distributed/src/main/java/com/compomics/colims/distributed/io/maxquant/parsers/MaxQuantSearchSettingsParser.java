@@ -195,11 +195,10 @@ public class MaxQuantSearchSettingsParser {
 
         //set entity relations between SearchAndValidationSettings and SearchParameters
         searchAndValidationSettings.setSearchParameters(searchParameters);
-<<<<<<< HEAD
-=======
+
         // TODO: 6/13/2016 change!
    //     searchParameters.getSearchAndValidationSettingses().add(searchAndValidationSettings);
->>>>>>> eb1857a9843bae8f9b00814e891ea45b94993e17
+
 
         // TODO: 26/05/16 check which files to store
         //currently just storing whole folder

@@ -171,9 +171,12 @@ public class PermissionManagementController implements Controllable {
                         + System.lineSeparator() + "please choose another permission name.");
             }
             if (validationMessages.isEmpty()) {
+                EntityChangeEvent.Type type;
                 if (selectedPermission.getId() != null) {
+                    type = EntityChangeEvent.Type.UPDATED;
                     selectedPermission = permissionService.merge(selectedPermission);
                 } else {
+                    type = EntityChangeEvent.Type.CREATED;
                     permissionService.persist(selectedPermission);
                     //refresh permission list
                     userManagementDialog.getPermissionList().updateUI();
@@ -182,7 +185,6 @@ public class PermissionManagementController implements Controllable {
                 userManagementDialog.getPermissionSaveOrUpdateButton().setText("update");
                 userManagementDialog.getPermissionStateInfoLabel().setText("");
 
-                EntityChangeEvent.Type type = (selectedPermission.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                 eventBus.post(new PermissionChangeEvent(type, false, selectedPermission));
 
                 MessageEvent messageEvent = new MessageEvent("Permission store confirmation", "Permission " + selectedPermission.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);

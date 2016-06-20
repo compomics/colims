@@ -25,16 +25,16 @@ import java.util.List;
 public class TypedCvParamRepositoryTest {
 
     @Autowired
-    private TypedCvParamRepository cvParamRepository;
+    private TypedCvParamRepository typedCvParamRepository;
 
     @Test
     public void testFindByAccession() {
         //look for unknown search enzyme
-        TypedCvParam cvParam = cvParamRepository.findByAccession("unknown enzyme", CvParamType.SEARCH_PARAM_ENZYME);
+        TypedCvParam cvParam = typedCvParamRepository.findByAccession("unknown enzyme", CvParamType.SEARCH_PARAM_ENZYME);
         Assert.assertNull(cvParam);
 
         //look for a known search enzyme
-        cvParam = cvParamRepository.findByAccession("MS:1001251", CvParamType.SEARCH_PARAM_ENZYME);
+        cvParam = typedCvParamRepository.findByAccession("MS:1001251", CvParamType.SEARCH_PARAM_ENZYME);
         Assert.assertNotNull(cvParam);
         //check if the CvParam is an SearchCvParam
         Assert.assertTrue(cvParam instanceof SearchCvParam);
@@ -43,21 +43,21 @@ public class TypedCvParamRepositoryTest {
     @Test
     public void testFindByName() {
         //look for unknown analyzer
-        TypedCvParam cvParam = cvParamRepository.findByName("unknown enzyme", CvParamType.SEARCH_PARAM_ENZYME, false);
+        TypedCvParam cvParam = typedCvParamRepository.findByName("unknown enzyme", CvParamType.SEARCH_PARAM_ENZYME, false);
         Assert.assertNull(cvParam);
 
         //look for known enzyme, equal casing
-        cvParam = cvParamRepository.findByName("Trypsin", CvParamType.SEARCH_PARAM_ENZYME, false);
+        cvParam = typedCvParamRepository.findByName("Trypsin", CvParamType.SEARCH_PARAM_ENZYME, false);
         Assert.assertNotNull(cvParam);
         //check if the CvParam is a SearchCvParam
         Assert.assertTrue(cvParam instanceof SearchCvParam);
 
         //look for known enzyme, different casing, ignoreCase false
-        cvParam = cvParamRepository.findByName("TRYPSIN", CvParamType.SEARCH_PARAM_ENZYME, false);
+        cvParam = typedCvParamRepository.findByName("TRYPSIN", CvParamType.SEARCH_PARAM_ENZYME, false);
         Assert.assertNull(cvParam);
 
         //look for known enzyme, different casing, ignoreCase true
-        cvParam = cvParamRepository.findByName("TRYPSIN", CvParamType.SEARCH_PARAM_ENZYME, true);
+        cvParam = typedCvParamRepository.findByName("TRYPSIN", CvParamType.SEARCH_PARAM_ENZYME, true);
         Assert.assertNotNull(cvParam);
         //check if the CvParam is a SearchCvParam
         Assert.assertTrue(cvParam instanceof SearchCvParam);
@@ -65,11 +65,11 @@ public class TypedCvParamRepositoryTest {
 
     @Test
     public void testFindByCvParamType() {
-        List<TypedCvParam> cvParams = cvParamRepository.findByCvParamType(CvParamType.SEARCH_PARAM_ENZYME);
+        List<TypedCvParam> cvParams = typedCvParamRepository.findByCvParamType(CvParamType.SEARCH_PARAM_ENZYME);
         Assert.assertNotNull(cvParams);
         Assert.assertEquals(2, cvParams.size());
 
-        cvParams = cvParamRepository.findByCvParamType(CvParamType.SEARCH_TYPE);
+        cvParams = typedCvParamRepository.findByCvParamType(CvParamType.SEARCH_TYPE);
         Assert.assertNotNull(cvParams);
         Assert.assertEquals(1, cvParams.size());
     }

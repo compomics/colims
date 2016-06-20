@@ -213,16 +213,18 @@ public class GroupManagementController implements Controllable {
                         + System.lineSeparator() + "please choose another group name.");
             }
             if (validationMessages.isEmpty()) {
+                EntityChangeEvent.Type type;
                 if (selectedGroup.getId() != null) {
+                    type = EntityChangeEvent.Type.UPDATED;
                     selectedGroup = groupService.merge(selectedGroup);
                 } else {
+                    type = EntityChangeEvent.Type.CREATED;
                     groupService.persist(selectedGroup);
                 }
                 userManagementDialog.getGroupNameTextField().setEnabled(false);
                 userManagementDialog.getGroupSaveOrUpdateButton().setText("update");
                 userManagementDialog.getGroupStateInfoLabel().setText("");
 
-                EntityChangeEvent.Type type = (selectedGroup.getId() == null) ? EntityChangeEvent.Type.CREATED : EntityChangeEvent.Type.UPDATED;
                 eventBus.post(new GroupChangeEvent(type, areChildrenAffected, selectedGroup));
 
                 MessageEvent messageEvent = new MessageEvent("Group store confirmation", "Group " + selectedGroup.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);

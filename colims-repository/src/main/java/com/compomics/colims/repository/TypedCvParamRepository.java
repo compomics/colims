@@ -38,4 +38,5 @@ public interface TypedCvParamRepository extends GenericRepository<TypedCvParam, 
      * @return the found CV params
      */
     List<TypedCvParam> findByCvParamType(CvParamType cvParamType);
+    
 }

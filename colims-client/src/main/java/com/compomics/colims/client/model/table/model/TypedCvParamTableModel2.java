@@ -18,10 +18,18 @@ public class TypedCvParamTableModel2 extends AbstractTableModel {
 
     private List<AuditableTypedCvParam> cvParams;
 
+    /**
+     * No-arg constructor.
+     */
     public TypedCvParamTableModel2() {
         cvParams = new ArrayList<>();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param cvParams the list of CV params
+     */
     public TypedCvParamTableModel2(List<AuditableTypedCvParam> cvParams) {
         this.cvParams = cvParams;
     }
@@ -69,7 +77,7 @@ public class TypedCvParamTableModel2 extends AbstractTableModel {
     /**
      * Add a CV param as the last entry.
      *
-     * cvParam the CV param to add
+     * @param cvParam the CV param to add
      */
     public void addCvParam(AuditableTypedCvParam cvParam) {
         //add CV param to list

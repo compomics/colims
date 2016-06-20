@@ -2,17 +2,21 @@ package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.controller.AnalyticalRunsAdditionController;
 import com.compomics.colims.client.controller.Controllable;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.FastaDbManagementDialog;
+import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.TaxonomyCvParam;
+import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.google.common.eventbus.EventBus;
-import no.uib.olsdialog.OLSDialog;
-import no.uib.olsdialog.OLSInputable;
+import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.*;
@@ -27,14 +31,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
-import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_ID_SEARCH;
+import org.jdesktop.swingbinding.JComboBoxBinding;
 
 /**
  * The FASTA db management view controller.
@@ -43,24 +44,40 @@ import static no.uib.olsdialog.OLSDialog.OLS_DIALOG_TERM_ID_SEARCH;
  */
 @Component("fastaDbManagementController")
 @Lazy
-public class FastaDbManagementController implements Controllable, OLSInputable {
+public class FastaDbManagementController implements Controllable {
 
     /**
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(FastaDbManagementController.class);
 
+    /**
+     * The preselected ontology namespaces.
+     */
+    private static final List<String> PRESELECTED_ONTOLOGY_NAMESPACES = Arrays.asList("ncbitaxon");
+    /**
+     * The default taxonomy value for the taxonomy combo box.
+     */
+    private static final TaxonomyCvParam TAXONOMY_CV_PARAM_NONE = new TaxonomyCvParam("none", "none", "none", "none");
+
     //model
     private BindingGroup bindingGroup;
     private ObservableList<FastaDb> fastaDbBindingList;
+    private ObservableList<CvParam> taxonomyBindingList;
     //view
     private FastaDbManagementDialog fastaDbManagementDialog;
     //parent controller
     @Autowired
     private AnalyticalRunsAdditionController analyticalRunsAdditionController;
+    //child controller
+    @Autowired
+    @Lazy
+    private CvParamManagementController cvParamManagementController;
     //services
     @Autowired
     private EventBus eventBus;
+    @Autowired
+    private CvParamService cvParamService;
     @Autowired
     private FastaDbService fastaDbService;
 
@@ -71,13 +88,20 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog = new FastaDbManagementDialog(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), true);
 
         //register to event bus
-        //eventBus.register(this);
+        eventBus.register(this);
+
         //init binding
         bindingGroup = new BindingGroup();
 
         fastaDbBindingList = ObservableCollections.observableList(new ArrayList<>());
         JListBinding fastaDbListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbBindingList, fastaDbManagementDialog.getFastaDbList());
         bindingGroup.addBinding(fastaDbListBinding);
+
+        taxonomyBindingList = ObservableCollections.observableList(new ArrayList<>());
+        taxonomyBindingList.add(TAXONOMY_CV_PARAM_NONE);
+        taxonomyBindingList.addAll(cvParamService.findByCvParamByClass(TaxonomyCvParam.class));
+        JComboBoxBinding taxonomyComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, taxonomyBindingList, fastaDbManagementDialog.getTaxomomyComboBox());
+        bindingGroup.addBinding(taxonomyComboBoxBinding);
 
         //selected fasta database bindings
         Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.name"), fastaDbManagementDialog.getNameTextField(), ELProperty.create("${text}"), "nameBinding");
@@ -88,21 +112,26 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.version"), fastaDbManagementDialog.getVersionTextField(), ELProperty.create("${text}"), "versionBinding");
         bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.taxonomyAccession"), fastaDbManagementDialog.getTaxonomyTextField(), ELProperty.create("${text}"), "taxonomyBinding");
-        bindingGroup.addBinding(binding);
-        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.species"), fastaDbManagementDialog.getSpeciesTextField(), ELProperty.create("${text}"), "speciesBinding");
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.headerParseRule"), fastaDbManagementDialog.getHeaderParseRuleTextField(), ELProperty.create("${text}"), "headerParseRuleBinding");
         bindingGroup.addBinding(binding);
 
         bindingGroup.bind();
-
-        //add listeners
-        fastaDbManagementDialog.getBrowseTaxonomyButton().addActionListener(e -> showOlsDialog());
 
         //init FASTA file selection
         //disable select multiple files
         fastaDbManagementDialog.getFastaFileChooser().setMultiSelectionEnabled(false);
         //set FASTA file filter
         fastaDbManagementDialog.getFastaFileChooser().setFileFilter(new FastaFileFilter());
+
+        //add listeners
+        fastaDbManagementDialog.getBrowseTaxonomyButton().addActionListener(e -> {
+            List<CvParam> cvParams = cvParamService.findByCvParamByClass(TaxonomyCvParam.class);
+
+            //update the CV param list
+            cvParamManagementController.updateDialog(TaxonomyCvParam.class, PRESELECTED_ONTOLOGY_NAMESPACES, cvParams);
+
+            cvParamManagementController.showView();
+        });
 
         fastaDbManagementDialog.getBrowseFastaButton().addActionListener(e -> {
             //in response to the button click, show open dialog
@@ -120,6 +149,12 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
             if (!e.getValueIsAdjusting()) {
                 if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
                     FastaDb fastaDb = getSelectedFastaDb();
+
+                    if (fastaDb.getTaxonomy() == null) {
+                        fastaDbManagementDialog.getTaxomomyComboBox().setSelectedIndex(0);
+                    } else {
+                        fastaDbManagementDialog.getTaxomomyComboBox().getModel().setSelectedItem(fastaDb.getTaxonomy());
+                    }
 
                     //enable save and delete button
                     fastaDbManagementDialog.getSaveOrUpdateButton().setEnabled(true);
@@ -190,6 +225,13 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                 //validate FASTA DB
                 List<String> validationMessages = GuiUtils.validateEntity(selectedFastaDb);
                 if (validationMessages.isEmpty()) {
+                    int taxonomyIndex = fastaDbManagementDialog.getTaxomomyComboBox().getSelectedIndex();
+                    if (taxonomyIndex == 0) {
+                        selectedFastaDb.setTaxonomy(null);
+                    } else {
+                        selectedFastaDb.setTaxonomy((TaxonomyCvParam) taxonomyBindingList.get(taxonomyIndex));
+                    }
+
                     if (selectedFastaDb.getId() != null) {
                         selectedFastaDb = fastaDbService.merge(selectedFastaDb);
                     } else {
@@ -197,6 +239,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
                         //refresh fasta DB list
                         fastaDbManagementDialog.getFastaDbList().updateUI();
                     }
+
                     fastaDbManagementDialog.getNameTextField().setEnabled(false);
                     fastaDbManagementDialog.getSaveOrUpdateButton().setText("update");
                     fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
@@ -258,17 +301,6 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog.setVisible(true);
     }
 
-    @Override
-    public void insertOLSResult(final String field, final String selectedValue, final String accession, final String ontologyShort, final String ontologyLong, final int modifiedRow, final String mappedTerm, final Map<String, String> metadata) {
-        fastaDbManagementDialog.getTaxonomyTextField().setText(accession);
-        fastaDbManagementDialog.getSpeciesTextField().setText(selectedValue);
-    }
-
-    @Override
-    public Window getWindow() {
-        return fastaDbManagementDialog;
-    }
-
     /**
      * Return the selected FASTA DB.
      *
@@ -276,6 +308,32 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
      */
     public FastaDb getFastaDb() {
         return getSelectedFastaDb();
+    }
+
+    /**
+     * Listen to a CV param change event posted by the
+     * CvParamManagementController. If the InstrumentManagementDialog is
+     * visible, clear the selection in the CV param summary list.
+     *
+     * @param cvParamChangeEvent the CvParamChangeEvent instance
+     */
+    @Subscribe
+    public void onCvParamChangeEvent(CvParamChangeEvent cvParamChangeEvent) {
+        CvParam cvParam = cvParamChangeEvent.getCvParam();
+        if (cvParam instanceof TaxonomyCvParam) {
+            EntityChangeEvent.Type type = cvParamChangeEvent.getType();
+            switch (type) {
+                case CREATED:
+                    taxonomyBindingList.add(cvParam);
+                    break;
+                case UPDATED:
+                    taxonomyBindingList.set(taxonomyBindingList.indexOf(cvParam), cvParam);
+                    break;
+                case DELETED:
+                    taxonomyBindingList.remove(cvParam);
+                    break;
+            }
+        }
     }
 
     /**
@@ -295,32 +353,19 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
     }
 
     /**
-     * Show the OLS dialog.
-     */
-    private void showOlsDialog() {
-        String ontology = "NEWT UniProt Taxonomy Database [NEWT]";
-
-        Map<String, List<String>> preselectedOntologies = new HashMap<>();
-        preselectedOntologies.put("NEWT", null);
-
-        String field = "";
-
-        fastaDbManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
-
-        //show new OLS dialog
-        new OLSDialog(fastaDbManagementDialog, this, true, field, ontology, -1, null, null, null, OLS_DIALOG_TERM_ID_SEARCH, preselectedOntologies);
-
-        fastaDbManagementDialog.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-    }
-
-    /**
      * Get the selected FASTA DB in the FASTA DB JList.
      *
      * @return the selected FASTA DB
      */
     private FastaDb getSelectedFastaDb() {
+        FastaDb selectedFastaDb = null;
+
         int selectedIndex = fastaDbManagementDialog.getFastaDbList().getSelectedIndex();
-        return (selectedIndex != -1) ? fastaDbBindingList.get(selectedIndex) : null;
+        if (selectedIndex != -1) {
+            selectedFastaDb = fastaDbBindingList.get(selectedIndex);
+        }
+
+        return selectedFastaDb;
     }
 
     /**
@@ -332,8 +377,7 @@ public class FastaDbManagementController implements Controllable, OLSInputable {
         fastaDbManagementDialog.getFileNameTextField().setText("");
         fastaDbManagementDialog.getFilePathTextField().setText("");
         fastaDbManagementDialog.getVersionTextField().setText("");
-        fastaDbManagementDialog.getTaxonomyTextField().setText("");
-        fastaDbManagementDialog.getSpeciesTextField().setText("");
+        fastaDbManagementDialog.getTaxomomyComboBox().setSelectedIndex(0);
         fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
     }
 
