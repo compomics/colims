@@ -13,6 +13,7 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import org.apache.log4j.Logger;
+import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,7 +62,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     }
 
     @Override
-    public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException {
+    public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException, JDOMException{
         LOGGER.info("started mapping folder: " + maxQuantImport.getMaxQuantDirectory().toFile().getName());
 
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
@@ -75,33 +76,37 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             maxQuantImport.getFastaDbIds().forEach((fastaDbType, fastaDbId) -> {
                 fastaDbs.put(fastaDbType, fastaDbService.findById(fastaDbId));
             });
-            Path txtDirectory = Paths.get(maxQuantImport.getMaxQuantDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
-            Path andromedaDirectory = Paths.get(maxQuantImport.getMaxQuantDirectory()+ File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
-            maxQuantAndromedaParser.parseParameters(andromedaDirectory);
-            maxQuantSearchSettingsParser.parse(txtDirectory, fastaDbs, false);
-            maxQuantParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, maxQuantSearchSettingsParser.getMultiplicity());
+            Path combinedDirectory = Paths.get(maxQuantImport.getMaxQuantDirectory() + File.separator + MaxQuantConstants.COMBINED_DIRECTORY.value());
+            Path txtDirectory = Paths.get(combinedDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
+            Path andromedaDirectory = Paths.get(combinedDirectory + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
+            try{
+                maxQuantSearchSettingsParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, false);
+            }catch (JDOMException e){
+                e.printStackTrace();
+            }
+
+            maxQuantParser.parse(combinedDirectory, fastaDbs, maxQuantSearchSettingsParser.getMultiplicity());
 
             proteinGroups = maxQuantParser.getProteinGroupSet();
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
-                //// TODO: 6/1/2016 move this line to parser method
-                analyticalRun.setStorageLocation(maxQuantImport.getMaxQuantDirectory().toString());
+                if(maxQuantSearchSettingsParser.getRunSettings().containsKey(analyticalRun.getName())){
+                    analyticalRun.setStorageLocation(combinedDirectory.toString());
+                    SearchAndValidationSettings searchAndValidationSettings = maxQuantSearchSettingsParser.getRunSettings().get(analyticalRun.getName());
+                    //set search and validation settings-run entity associations
+                    analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
+                    searchAndValidationSettings.setAnalyticalRun(analyticalRun);
+                    List<Spectrum> mappedSpectra = new ArrayList<>(analyticalRun.getSpectrums().size());
+                    //set spectrum-run entity associations
+                    for (Spectrum spectrum : analyticalRun.getSpectrums()) {
+                        spectrum.setAnalyticalRun(analyticalRun);
+                        mappedSpectra.add(mapSpectrum(spectrum));
+                    }
+                    analyticalRun.setSpectrums(mappedSpectra);
 
-                SearchAndValidationSettings searchAndValidationSettings = maxQuantSearchSettingsParser.getRunSettings().values().iterator().next();
-                //set search and validation settings-run entity associations
-                analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
-                searchAndValidationSettings.setAnalyticalRun(analyticalRun);
+                    analyticalRuns.add(analyticalRun);
 
- //               analyticalRun.setQuantificationSettings(importQuantSettings(new File(txtDirectory.toFile(), QUANT_FILE), analyticalRun));
-
-                List<Spectrum> mappedSpectra = new ArrayList<>(analyticalRun.getSpectrums().size());
-                //set spectrum-run entity associations
-                for (Spectrum spectrum : analyticalRun.getSpectrums()) {
-                    spectrum.setAnalyticalRun(analyticalRun);
-                    mappedSpectra.add(mapSpectrum(spectrum));
+                    //               analyticalRun.setQuantificationSettings(importQuantSettings(new File(txtDirectory.toFile(), QUANT_FILE), analyticalRun));
                 }
-                analyticalRun.setSpectrums(mappedSpectra);
-
-                analyticalRuns.add(analyticalRun);
             }
         } catch (IOException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
@@ -132,6 +137,8 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                 phpGroup.setProteinGroup(proteinGroup);
 
                 proteinGroup.getPeptideHasProteinGroups().add(phpGroup);
+                // set peptideHasProteinGroups in peptide
+                peptide.getPeptideHasProteinGroups().add(phpGroup);
             });
 
             //set entity relations between Spectrum and Peptide

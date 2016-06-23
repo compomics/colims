@@ -70,7 +70,6 @@ public class MaxQuantProteinGroupParser {
      */
     private ProteinGroup parseProteinGroup(Map<String, String> values, Map<String, String> parsedFastas) {
         ProteinGroup proteinGroup = new ProteinGroup();
-        proteinGroup.setPeptideHasProteinGroups(new ArrayList<>());
 
         if (values.get(MaxQuantProteinGroupHeaders.PEP.getValue()) != null) {
             proteinGroup.setProteinPostErrorProbability(Double.parseDouble(values.get(MaxQuantProteinGroupHeaders.PEP.getValue())));
@@ -101,14 +100,14 @@ public class MaxQuantProteinGroupParser {
                 if(sequence.equals("")){
                     throw new IllegalArgumentException("Protein has no sequence in Fasta File!");
                 }
-                proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequence, accession, isMainGroup));
+                proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequence, accession, isMainGroup, proteinGroup));
 
                 if (isMainGroup) {
                     isMainGroup = false;
                 }
             }
         } else if (!parsedAccession.contains("REV") && !parsedAccession.contains("CON")) {
-            proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFastas.get(parsedAccession), parsedAccession, true));
+            proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFastas.get(parsedAccession), parsedAccession, true, proteinGroup));
         }
 
         return proteinGroup;
@@ -122,7 +121,7 @@ public class MaxQuantProteinGroupParser {
      * @param mainGroup Whether this is the main protein of the group
      * @return A ProteinGroupHasProtein object
      */
-    private ProteinGroupHasProtein createProteinGroupHasProtein(String sequence, String accession, boolean mainGroup) {
+    private ProteinGroupHasProtein createProteinGroupHasProtein(String sequence, String accession, boolean mainGroup, ProteinGroup proteinGroup) {
         Protein protein = proteinService.findBySequence(sequence);
 
         if (protein == null) {
@@ -139,6 +138,7 @@ public class MaxQuantProteinGroupParser {
         //protein.getProteinGroupHasProteins().add(proteinGroupHasProtein);
         proteinGroupHasProtein.setProtein(protein);
         proteinGroupHasProtein.setProteinAccession(accession);
+        proteinGroupHasProtein.setProteinGroup(proteinGroup);
 
         return proteinGroupHasProtein;
     }

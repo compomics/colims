@@ -1,10 +1,13 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
+import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSpectrumParameterHeaders;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.FastaDbType;
+import org.jdom2.JDOMException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -55,6 +61,20 @@ public class MaxQuantSearchSettingsParserTest {
 //
 //        assertThat(parameters.size(), is(uniqueLines.size()));
 //        assertThat(parameters.get("user name"), is("compomics"));
+    }
+    @Test
+    public void testparseSpectrumParameters() throws JDOMException {
+
+        maxQuantSearchSettingsParser.parseSpectrumParameters(MaxQuantTestSuite.parameterDirectory);
+
+        assertThat(maxQuantSearchSettingsParser.getSpectrumParamsWithRawFile().get("V20239_3911_Eik_green_10").
+                get(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS), is("Acetyl (Protein N-term),Oxidation (M)"));
+        assertThat(maxQuantSearchSettingsParser.getSpectrumParamsWithRawFile().get("V20239_3911_Eik_green_10").
+                get(MaxQuantSpectrumParameterHeaders.MAX_CHARGE), is("7"));
+//        assertThat(maxQuantSearchSettingsParser.getSpectrumParamsWithRawFile().get("V20239_3911_Eik_green_10").
+  //              get(MaxQuantSpectrumParameterHeaders.MAX_CHARGE), is("9"));
+
+
     }
 
 }

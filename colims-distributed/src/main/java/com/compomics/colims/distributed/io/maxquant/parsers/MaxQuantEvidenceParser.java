@@ -40,7 +40,7 @@ public class MaxQuantEvidenceParser {
             MaxQuantEvidenceHeaders.PEP,
             MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
             MaxQuantEvidenceHeaders.SCORE,
-            MaxQuantEvidenceHeaders.SEQUENCE
+            MaxQuantEvidenceHeaders.SEQUENCE,
     };
 
     /**
@@ -232,6 +232,7 @@ public class MaxQuantEvidenceParser {
             ArrayList<String> modificationList = new ArrayList<>();
 
             for (String mod : modifications.split(";")) {
+
                 modificationList.add(mod.toLowerCase());
             }
 

@@ -122,6 +122,7 @@ public class MaxQuantAplParser {
                             //create new SpectrumFile instance and set the content
                             SpectrumFile spectrumFile = new SpectrumFile();
                             spectrumFile.setContent(zbaos.toByteArray());
+                            spectrumFile.setSpectrum(spectrum);
 
                             //set entity relation between Spectrum and SpectrumFile
                             spectrum.getSpectrumFiles().add(spectrumFile);

@@ -27,6 +27,7 @@ public class MaxQuantTestSuite {
     private static final String maxQuantVersion = "test1";
 
     public static Path maxQuantDirectory;
+    public static Path maxQuantCombinedDirectory;
     public static Path maxQuantTextDirectory;
     public static Path maxQuantAndromedaDirectory;
     public static Path msmsFile;
@@ -36,12 +37,14 @@ public class MaxQuantTestSuite {
     public static Path peptidesFile;
     public static FastaDb testFastaDb;
     public static FastaDb contaminantsFastaDb;
+    public static Path parameterDirectory;
 
     static {
         try {
             maxQuantDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion).getFile().toPath();
-            maxQuantAndromedaDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "andromeda").getFile().toPath();
-            String txtDirectoryPath = "data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "txt";
+            maxQuantCombinedDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "combined").getFile().toPath();
+            maxQuantAndromedaDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "combined" + File.separator + "andromeda").getFile().toPath();
+            String txtDirectoryPath = "data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "combined" + File.separator + "txt";
             maxQuantTextDirectory = new ClassPathResource(txtDirectoryPath).getFile().toPath();
             txtDirectoryPath += File.separator;
             msmsFile = new ClassPathResource(txtDirectoryPath + "msms.txt").getFile().toPath();
@@ -49,6 +52,8 @@ public class MaxQuantTestSuite {
             evidenceFile = new ClassPathResource(txtDirectoryPath + "evidence.txt").getFile().toPath();
             parameterFile = new ClassPathResource(txtDirectoryPath + "parameters.txt").getFile().toPath();
             peptidesFile = new ClassPathResource(txtDirectoryPath + "peptides.txt").getFile().toPath();
+            String txtParameterDirectory = "data" + File.separator + "maxquant_" + maxQuantVersion + File.separator + "mqpar.xml";
+            parameterDirectory = new ClassPathResource(txtParameterDirectory).getFile().toPath();
             testFastaDb = new FastaDb();
             testFastaDb.setName("test fasta");
       //      testFastaDb.setFileName("uniprot-taxonomy%3A10090.fasta");

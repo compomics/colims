@@ -109,7 +109,7 @@ public class MaxQuantParser {
         }
 
         getSpectra().forEach( (k,v) -> {
-            String rawFile = k.getTitle().split("-")[0];
+            String rawFile = k.getTitle().split("--")[0];
             if (analyticalRuns.containsKey(rawFile)) {
                 analyticalRuns.get(rawFile).getSpectrums().add(k);
             } else {

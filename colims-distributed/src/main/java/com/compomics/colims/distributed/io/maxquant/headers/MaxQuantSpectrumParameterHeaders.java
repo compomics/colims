@@ -11,14 +11,14 @@ import java.util.Locale;
 public enum MaxQuantSpectrumParameterHeaders implements HeaderEnum {
 
     ENZYMES(new String[]{"enzymes"}),
-    VARIABLE_MODIFICATIONS(new String[]{"variable modifications"}),
-    FIXED_MODIFICATIONS(new String[]{"fixed modifications"}),
-    PEPTIDE_MASS_TOLERANCE(new String[]{"peptide mass tolerance"}),
-    PEPTIDE_MASS_TOLERANCE_UNIT(new String[]{"peptide mass tolerance Unit"}),
-    FRAGMENT_MASS_TOLERANCE(new String[]{"fragment mass tolerance"}),
-    FRAGMENT_MASS_TOLERANCE_UNIT(new String[]{"fragment mass tolerance Unit"}),
-    MAX_MISSED_CLEAVAGES(new String[]{"max missed cleavages"}),
-    MAX_CHARGE(new String[]{"max charge"});
+    VARIABLE_MODIFICATIONS(new String[]{"variableModifications"}),
+    FIXED_MODIFICATIONS(new String[]{"fixedModifications"}),
+    PEPTIDE_MASS_TOLERANCE(new String[]{"mainSearchTol"}),
+    PEPTIDE_MASS_TOLERANCE_UNIT(new String[]{"searchTolInPpm"}),
+    FRAGMENT_MASS_TOLERANCE(new String[]{"firstSearchTol"}),
+//    FRAGMENT_MASS_TOLERANCE_UNIT(new String[]{"fragment mass tolerance Unit"}),
+    MAX_MISSED_CLEAVAGES(new String[]{"maxMissedCleavages"}),
+    MAX_CHARGE(new String[]{"maxCharge"});
 
     /**
      * The list of header values for the enum value.

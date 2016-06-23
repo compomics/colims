@@ -8,6 +8,10 @@ package com.compomics.colims.distributed.io.maxquant;
 public enum MaxQuantConstants {
 
     /**
+     * The combined directory name.
+     */
+    COMBINED_DIRECTORY("combined"),
+    /**
      * The andromeda directory name.
      */
     ANDROMEDA_DIRECTORY("andromeda"),
@@ -40,6 +44,10 @@ public enum MaxQuantConstants {
      * matching parameter files.
      */
     APL_SUMMARY_FILE("aplfiles"),
+    /**
+     * The parameter file name. This xml file keeps search parameters
+     */
+    PARAMETER_FILE("mqpar.xml"),
     /**
      * The tab delimiter in MaxQuant parameter files.
      */

@@ -38,7 +38,7 @@ public class MaxQuantSpectraParser {
      */
     private static final String KEY_START = "RawFile: ";
     private static final String KEY_MIDDLE = " Index: ";
-    private static final String TITLE_DELIMITER = "-";
+    private static final String TITLE_DELIMITER = "--";
     private static final String NOT_A_NUMBER = "nan";
     private static final String NO_INTENSITY = "-1";
     private static final String MSMS_TYPE = "MULTI-SECPEP";

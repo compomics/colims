@@ -17,6 +17,7 @@ import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettin
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.math.DoubleMath;
+import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -33,7 +34,7 @@ public class Playground {
     @Autowired
     static MaxQuantMapper maxQuantMapper;
 
-    public static void main(String[] args) throws MappingException {
+    public static void main(String[] args) throws MappingException, JDOMException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
 
         MaxQuantMapper maxQuantMapper = applicationContext.getBean("maxQuantMapper", MaxQuantMapper.class);
