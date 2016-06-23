@@ -21,7 +21,7 @@ public interface AuditableTypedCvParamRepository extends GenericRepository<Audit
      * @param id the entity ID
      * @return the referenced entity
      */
-    AuditableTypedCvParam getMappedSuperclassReference(Class entityClass, Long id);
+    AuditableTypedCvParam getMappedSuperclassReference(Class<? extends AuditableTypedCvParam> entityClass, Long id);
 
     /**
      * Find a CV param by accession and CvParamType. Returns null if nothing was

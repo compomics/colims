@@ -87,12 +87,12 @@ public class AuditableTypedCvParamRepositoryTest {
     }
 
     @Test
-    public void testRemove() {
-        AuditableTypedCvParam cvParam = cvParamRepository.findByName("Orbitrap Fuhrer", CvParamType.TYPE, true);
-        cvParamRepository.remove(cvParam);
+    public void testGetMappedSuperclassReference() {
+        AuditableTypedCvParam cvParam = cvParamRepository.getMappedSuperclassReference(InstrumentCvParam.class, 1L);
 
-        cvParam = cvParamRepository.findByName("Orbitrap Fuhrer", CvParamType.TYPE, true);
-        Assert.assertNull(cvParam);
+        Assert.assertNotNull(cvParam);
+        //check the subclass
+        Assert.assertTrue(cvParam instanceof InstrumentCvParam);
     }
 
 }

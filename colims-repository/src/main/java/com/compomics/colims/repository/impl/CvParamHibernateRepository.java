@@ -14,8 +14,8 @@ import java.util.List;
 public class CvParamHibernateRepository extends GenericHibernateRepository<CvParam, Long> implements CvParamRepository {
 
     @Override
-    public CvParam getMappedSuperclassReference(Class entityClass, Long id) {
-        return (CvParam) getEntityManager().getReference(entityClass, id);
+    public CvParam getMappedSuperclassReference(Class<? extends CvParam> entityClass, Long id) {
+        return getEntityManager().getReference(entityClass, id);
     }
 
     @Override

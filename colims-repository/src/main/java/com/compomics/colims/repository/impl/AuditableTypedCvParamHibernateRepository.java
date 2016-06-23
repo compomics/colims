@@ -45,8 +45,8 @@ public class AuditableTypedCvParamHibernateRepository extends GenericHibernateRe
     }
 
     @Override
-    public AuditableTypedCvParam getMappedSuperclassReference(Class entityClass, Long id) {
-        return (AuditableTypedCvParam) getEntityManager().getReference(entityClass, id);
+    public AuditableTypedCvParam getMappedSuperclassReference(Class<? extends AuditableTypedCvParam> entityClass, Long id) {
+        return getEntityManager().getReference(entityClass, id);
     }
 
 }
