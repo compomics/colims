@@ -163,4 +163,12 @@ public class MaxQuantSpectraParser {
 
         return spectrum;
     }
+
+    /**
+     * Clear run data from parser.
+     */
+    public void clear(){
+        maxQuantSpectra.clear();
+        maxQuantAndromedaParser.clear();
+    }
 }

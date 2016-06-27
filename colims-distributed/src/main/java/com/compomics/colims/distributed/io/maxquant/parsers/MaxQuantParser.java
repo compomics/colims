@@ -212,11 +212,13 @@ public class MaxQuantParser {
         // TODO: 6/1/2016 move peptide list to this class.
         List<Integer> spectrumKeys = getSpectra().get(spectrum);
         List<Peptide> peptideList = new ArrayList<>();
-        for (int spectrumKey : spectrumKeys) {
-            if(!maxQuantEvidenceParser.getPeptides().isEmpty()){
-                peptideList.addAll(maxQuantEvidenceParser.getPeptides().get(spectrumKey));
-            }else {
-                throw new java.lang.IllegalStateException("At this stage peptites map is empty");
+        if(spectrumKeys != null){
+            for (int spectrumKey : spectrumKeys) {
+                if(!maxQuantEvidenceParser.getPeptides().isEmpty()){
+                    peptideList.addAll(maxQuantEvidenceParser.getPeptides().get(spectrumKey));
+                }else {
+                    throw new java.lang.IllegalStateException("At this stage peptites map is empty");
+                }
             }
         }
         return peptideList;
@@ -275,6 +277,7 @@ public class MaxQuantParser {
         maxQuantEvidenceParser.clear();
         proteinGroups.clear();
         analyticalRuns.clear();
+        maxQuantSpectraParser.clear();
         parsed = false;
     }
 }

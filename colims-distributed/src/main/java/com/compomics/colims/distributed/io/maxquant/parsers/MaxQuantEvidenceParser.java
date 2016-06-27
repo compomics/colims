@@ -229,25 +229,26 @@ public class MaxQuantEvidenceParser {
         if (modifications == null || "Unmodified".equalsIgnoreCase(modifications)) {
             return peptideHasModifications;
         } else {
-            ArrayList<String> modificationList = new ArrayList<>();
+            ArrayList<String[]> modificationList = new ArrayList<>();
 
             for (String mod : modifications.split(";")) {
-
-                modificationList.add(mod.toLowerCase());
+                String modWithLowerCase[] = {mod, mod.toLowerCase()};
+                modificationList.add(modWithLowerCase);
             }
 
-            for (String modificationHeader : modificationList) {
-                if (Character.isDigit(modificationHeader.charAt(0))) {
-                    modificationHeader = modificationHeader.split(" ", 2)[1];
+            for (String[] modificationHeader : modificationList) {
+                if (Character.isDigit(modificationHeader[1].charAt(0))) {
+                    modificationHeader[1] = modificationHeader[1].split(" ", 2)[1];
+                    modificationHeader[0] = modificationHeader[0].split(" ", 2)[1];
                 }
 
-                String modificationString = values.get(modificationHeader);
+                String modificationString = values.get(modificationHeader[1]);
 
                 if (modificationString != null) {
-                    if (modificationHeader.contains("n-term") && "1".equals(modificationString)) {
+                    if (modificationHeader[1].contains("n-term") && "1".equals(modificationString)) {
                         PeptideHasModification phModification = createPeptideHasModification(100.0, 0, 100.0, peptide);
 
-                        Modification modification = utilitiesModificationMapper.mapByName(modificationHeader);
+                        Modification modification = utilitiesModificationMapper.mapByName(modificationHeader[0].split(" ")[0]);
 
                         //modification.getPeptideHasModifications().add(phModification);
 
@@ -255,10 +256,10 @@ public class MaxQuantEvidenceParser {
                         peptideHasModifications.add(phModification);
                     }
 
-                    if (modificationHeader.contains("c-term") && "1".equals(modificationString)) {
+                    if (modificationHeader[1].contains("c-term") && "1".equals(modificationString)) {
                         PeptideHasModification phModification = createPeptideHasModification(100.0, values.get(MaxQuantEvidenceHeaders.SEQUENCE.getValue()).length() - 1, 100.0, peptide);
 
-                        Modification modification = utilitiesModificationMapper.mapByName(modificationHeader);
+                        Modification modification = utilitiesModificationMapper.mapByName(modificationHeader[0].split(" ")[0]);
                         //modification.getPeptideHasModifications().add(phModification);
 
                         phModification.setModification(modification);
@@ -267,15 +268,15 @@ public class MaxQuantEvidenceParser {
                     }
 
                     // TODO: find some test data for this
-                    if ((modificationString = values.get(modificationHeader + " probabilities")) != null && modificationString.contains("(")) {
+                    if ((modificationString = values.get(modificationHeader[1] + " probabilities")) != null && modificationString.contains("(")) {
                         modificationString = modificationString.replaceAll("_", "");
                         int location = -1;
                         int previousLocation = 0;
                         String[] modificationLocations = modificationString.split("\\(");
                         String[] modificationDeltaScores = null;
 
-                        if (values.containsKey(modificationHeader + " score diffs")) {
-                            modificationDeltaScores = values.get(modificationHeader + " score diffs").split("\\(");
+                        if (values.containsKey(modificationHeader[1] + " score diffs")) {
+                            modificationDeltaScores = values.get(modificationHeader[1] + " score diffs").split("\\(");
                         }
 
                         for (int i = 0; i < modificationLocations.length; i++) {
@@ -285,7 +286,7 @@ public class MaxQuantEvidenceParser {
                                 phModification.setModificationType(ModificationType.VARIABLE);
                                 phModification.setPeptide(peptide);
 
-                                Modification modification = utilitiesModificationMapper.mapByName(modificationHeader);
+                                Modification modification = utilitiesModificationMapper.mapByName(modificationHeader[0].split(" ")[0]);
                                 //modification.getPeptideHasModifications().add(phModification);
 
                                 if (modificationDeltaScores != null) {

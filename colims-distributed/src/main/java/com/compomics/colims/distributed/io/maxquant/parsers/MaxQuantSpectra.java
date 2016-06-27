@@ -67,4 +67,13 @@ public class MaxQuantSpectra {
         return unidentifiedSpectra;
     }
 
+    /**
+     * Clear max quant spectra.
+     */
+    public void clear(){
+        aplSpectra.clear();
+        spectrumIDs.clear();
+        unidentifiedSpectra.clear();
+    }
+
 }

@@ -40,10 +40,6 @@ public class MaxQuantAndromedaParserTest {
         Assert.assertEquals(massAnalyzerType, MaxQuantConstants.Analyzer.ITMS);
         //check apl files
         Assert.assertEquals(3, aplFilePaths.size());
-        //check spectrum parameters
-        EnumMap<MaxQuantSpectrumParameterHeaders, String> spectrumParameters = maxQuantAndromedaParser.getSpectrumParameters();
-        Assert.assertNotNull(spectrumParameters);
-        Assert.assertEquals(8, spectrumParameters.size());
     }
 
 }

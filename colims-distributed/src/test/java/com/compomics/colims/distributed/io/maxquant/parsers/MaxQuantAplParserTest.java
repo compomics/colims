@@ -32,7 +32,7 @@ public class MaxQuantAplParserTest {
      * @throws IOException in case of an I/O related problem
      */
     public MaxQuantAplParserTest() throws IOException {
-        testAplFile = new ClassPathResource("data" + File.separator + "maxquant_1.5.2.8" + File.separator + "andromeda" + File.separator + "allSpectra.CID.ITMS.iso_0_part.apl").getFile().toPath();
+        testAplFile = new ClassPathResource("data" + File.separator + "maxquant_test1" + File.separator + "combined" + File.separator + "andromeda" + File.separator + "allSpectra.CID.ITMS.iso_0.apl").getFile().toPath();
     }
 
     /**
@@ -46,14 +46,14 @@ public class MaxQuantAplParserTest {
         MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
 
         //create dummy spectrum one
-        String spectrumKey1 = "RawFile: 120329kw_JEnglish_JE10_1 Index: 496";
+        String spectrumKey1 = "RawFile: V20239_3911_Eik_green_10 Index: 4047";
         Spectrum spectrum1 = new Spectrum();
         spectrum1.setAccession("acc_1");
         spectrum1.setRetentionTime(123.45);
         maxQuantSpectra.getAplSpectra().put(spectrumKey1, spectrum1);
 
         //create another dummy spectrum one
-        String spectrumKey2 = "RawFile: 120329kw_JEnglish_JE10_1 Index: 7729";
+        String spectrumKey2 = "RawFile: V20239_3911_Eik_green_10 Index: 1084";
         Spectrum spectrum2 = new Spectrum();
         spectrum2.setAccession("acc_2");
         spectrum2.setRetentionTime(123.46);
@@ -80,9 +80,9 @@ public class MaxQuantAplParserTest {
                 String[] split = line.split(APL_HEADER_DELIMITER);
                 headers.put(split[0], split[1]);
             }
-            Assert.assertEquals("RawFile: 120329kw_JEnglish_JE10_1 Index: 496 Precursor: 0 _multi_", headers.get("TITLE"));
+            Assert.assertEquals("RawFile: V20239_3911_Eik_green_10 Index: 4047 Precursor: 0 _multi_", headers.get("TITLE"));
             Assert.assertEquals(spectrum1.getRetentionTime().toString(), headers.get("RTINSECONDS"));
-            Assert.assertEquals("303.176402121713", headers.get("PEPMASS"));
+            Assert.assertEquals("300.178852107217", headers.get("PEPMASS"));
             Assert.assertEquals("1+", headers.get("CHARGE"));
         }
 
@@ -95,17 +95,16 @@ public class MaxQuantAplParserTest {
      */
     @Test
     public void testParseAplFileUnidentified() throws IOException {
-        String spectrumKey = "RawFile: 120329kw_JEnglish_JE10_1 Index: 496";
 
         //create some dummy maxQuantSpectra object
         MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
 
         //create dummy spectrum one
-        String spectrumKey1 = "RawFile: 120329kw_JEnglish_JE10_1 Index: 7729";
-        Spectrum spectrum1 = new Spectrum();
-        spectrum1.setAccession("acc_1");
-        spectrum1.setRetentionTime(123.45);
-        maxQuantSpectra.getAplSpectra().put(spectrumKey1, spectrum1);
+        String spectrumKey = "RawFile: V20239_3911_Eik_green_10 Index: 4047";
+        Spectrum spectrum = new Spectrum();
+        spectrum.setAccession("acc_1");
+        spectrum.setRetentionTime(123.45);
+        maxQuantSpectra.getAplSpectra().put(spectrumKey, spectrum);
 
         maxQuantAplParser.parseAplFile(testAplFile, maxQuantSpectra, true);
 
@@ -113,7 +112,7 @@ public class MaxQuantAplParserTest {
         //one identified
         Assert.assertEquals(1, maxQuantSpectra.getAplSpectra().size());
         //6 unidentified
-        Assert.assertEquals(6, maxQuantSpectra.getUnidentifiedSpectra().size());
+        Assert.assertEquals(15959, maxQuantSpectra.getUnidentifiedSpectra().size());
 
         //some additional testing
         byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getUnidentifiedSpectra().get(0).getSpectrumFiles().get(0).getContent());
@@ -129,8 +128,8 @@ public class MaxQuantAplParserTest {
                 String[] split = line.split(APL_HEADER_DELIMITER);
                 headers.put(split[0], split[1]);
             }
-            Assert.assertEquals("RawFile: 120329kw_JEnglish_JE10_1 Index: 496 Precursor: 0 _multi_", headers.get("TITLE"));
-            Assert.assertEquals("303.176402121713", headers.get("PEPMASS"));
+            Assert.assertEquals("RawFile: V20239_3911_Eik_green_10 Index: 1084 Precursor: 0 _multi_", headers.get("TITLE"));
+            Assert.assertEquals("300.202816933043", headers.get("PEPMASS"));
             Assert.assertEquals("1+", headers.get("CHARGE"));
         }
     }

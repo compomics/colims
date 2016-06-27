@@ -40,7 +40,7 @@ public class MaxQuantParserTest {
         fastaDbs.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb);
 
         maxQuantParser.clear();
-        maxQuantParser.parse(MaxQuantTestSuite.maxQuantDirectory, fastaDbs);
+        maxQuantParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs);
     }
 
     @Test
@@ -51,11 +51,11 @@ public class MaxQuantParserTest {
 
         Map<String, String> parsedContaminantsFasta = maxQuantParser.parseFastas(fastaDbs);
 
-        Assert.assertEquals(77512, parsedContaminantsFasta.size());
+        Assert.assertEquals(33322, parsedContaminantsFasta.size());
         //look for a protein
-        Assert.assertTrue(parsedContaminantsFasta.containsKey("tr|Q8CGR9|Q8CGR9_MOUSE"));
+        Assert.assertTrue(parsedContaminantsFasta.containsKey("sp|Q9D103|IFM1_MOUSE"));
         //look for a contaminants protein
-        Assert.assertTrue(parsedContaminantsFasta.containsKey("CON__P09870"));
+   //     Assert.assertTrue(parsedContaminantsFasta.containsKey("CON__P09870"));
     }
 
     /**
@@ -87,7 +87,6 @@ public class MaxQuantParserTest {
         Map<Spectrum, List<Integer>> spectra = maxQuantParser.getSpectra();
         assertThat(spectra.size(), not(0));
         assertThat(spectra.keySet().iterator().next(), isA(Spectrum.class));
-
         maxQuantParser.clear();
         spectra = maxQuantParser.getSpectra();
         assertThat(spectra.size(), is(0));

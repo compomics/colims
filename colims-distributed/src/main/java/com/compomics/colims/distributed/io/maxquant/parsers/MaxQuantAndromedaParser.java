@@ -48,10 +48,6 @@ public class MaxQuantAndromedaParser {
      */
     private Map<Path, Path> aplFilePaths = new HashMap<>();
     /**
-     * The spectrum parameters (key: parameter enum; value: parameter value).
-     */
-    private EnumMap<MaxQuantSpectrumParameterHeaders, String> spectrumParameters = new EnumMap<>(MaxQuantSpectrumParameterHeaders.class);
-    /**
      * The fragmentation type used.
      */
     private FragmentationType fragmentationType;
@@ -93,15 +89,6 @@ public class MaxQuantAndromedaParser {
     }
 
     /**
-     * Get the spectrum parameters parsed from the .apar file.
-     *
-     * @return the spectrum parameters map
-     */
-    public EnumMap<MaxQuantSpectrumParameterHeaders, String> getSpectrumParameters() {
-        return spectrumParameters;
-    }
-
-    /**
      * Parse the parameter related files of the andromeda directory. This method parses the apl summary file and the
      * .apar file.
      *
@@ -135,9 +122,6 @@ public class MaxQuantAndromedaParser {
         if (first.isPresent()) {
             //parse the mass analyzer and fragmentation type
             parseMassAnalyzerAndFragmentationType(first.get().getKey());
-
-            //parse the spectrum parameters
-            parseSpectrumParameters(first.get().getValue());
         } else {
             fragmentationType = FragmentationType.UNKNOWN;
             massAnalyzerType = MaxQuantConstants.Analyzer.UNKNOWN;
@@ -187,29 +171,9 @@ public class MaxQuantAndromedaParser {
     }
 
     /**
-     * Parse the spectrum parameters.
-     *
-     * @param spectrumParametersFilePath the spectrum parameters file path
+     * Clear run data from parser.
      */
-    private void parseSpectrumParameters(Path spectrumParametersFilePath) throws IOException {
-        if (!Files.exists(spectrumParametersFilePath)) {
-            throw new FileNotFoundException("The spectrum parameters file " + spectrumParametersFilePath.toString() + " could not be found.");
-        }
-
-        //parse the parameters
-        Map<String, String> spectrumStringParameters = ParseUtils.parseParameters(spectrumParametersFilePath, MaxQuantConstants.PARAM_EQUALS_DELIMITER.value(), true);
-        //put them in an EnumMap
-        for (MaxQuantSpectrumParameterHeaders spectrumParameterHeader : MaxQuantSpectrumParameterHeaders.values()) {
-            Optional<String> header = spectrumParameterHeader.getPossibleValues()
-                    .stream()
-                    .filter(spectrumStringParameters::containsKey)
-                    .findFirst();
-
-            if (header.isPresent()) {
-                spectrumParameterHeader.setParsedValue(spectrumParameterHeader.getPossibleValues().indexOf(header.get()));
-                spectrumParameters.put(spectrumParameterHeader, spectrumStringParameters.get(header.get()));
-            }
-        }
+    public void clear(){
+        aplFilePaths.clear();
     }
-
 }

@@ -40,14 +40,13 @@ public class MaxQuantSearchSettingsParserTest {
         EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
         fastaDbs.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb);
 
-        maxQuantSearchSettingsParser.parse(MaxQuantTestSuite.maxQuantTextDirectory, fastaDbs, false);
+        maxQuantSearchSettingsParser.parse(MaxQuantTestSuite.maxQuantDirectory, fastaDbs, false);
         Map<String, SearchAndValidationSettings> result = maxQuantSearchSettingsParser.getRunSettings();
 
         // insane way to get the single entry from the map
         SearchParameters testProfile = result.entrySet().iterator().next().getValue().getSearchParameters();
         assertThat(testProfile.getEnzyme().getName(), is("Trypsin/P"));
-        //assertThat(testProfile.getFixedModifications(), is(empty()));
-        //assertThat(testProfile.getVariableModifications().size(), is(2));
+        assertThat(testProfile.getSearchParametersHasModifications().size(), is(3));
     }
 
     @Ignore
@@ -71,9 +70,6 @@ public class MaxQuantSearchSettingsParserTest {
                 get(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS), is("Acetyl (Protein N-term),Oxidation (M)"));
         assertThat(maxQuantSearchSettingsParser.getSpectrumParamsWithRawFile().get("V20239_3911_Eik_green_10").
                 get(MaxQuantSpectrumParameterHeaders.MAX_CHARGE), is("7"));
-//        assertThat(maxQuantSearchSettingsParser.getSpectrumParamsWithRawFile().get("V20239_3911_Eik_green_10").
-  //              get(MaxQuantSpectrumParameterHeaders.MAX_CHARGE), is("9"));
-
 
     }
 
