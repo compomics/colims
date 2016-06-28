@@ -288,7 +288,7 @@ public class MaxQuantEvidenceParser {
 
                                 Modification modification = utilitiesModificationMapper.mapByName(modificationHeader[0].split(" ")[0]);
                                 //modification.getPeptideHasModifications().add(phModification);
-
+                                phModification.setModification(modification);
                                 if (modificationDeltaScores != null) {
                                     phModification.setDeltaScore(Double.parseDouble(modificationDeltaScores[i].substring(0, modificationDeltaScores[i].indexOf(")"))));
                                 } else {
