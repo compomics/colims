@@ -135,8 +135,6 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
             //load the spectrum files, peptide en protein matches
             cpsParent.loadSpectrumFiles(null);
 
-            IdentificationFile identificationFile = searchAndValidationSettings.getIdentificationFiles().get(0);
-
             //We don't need to iterate over the samples in the .cps file because
             //for the moment, because PeptideShaker .cps files contain only one sample.
             //We don't need to iterate over the replicates/analytical runs in the .cps file
@@ -213,9 +211,6 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
                                 targetSpectrum.getPeptides().add(targetPeptide);
                                 targetPeptide.setSpectrum(targetSpectrum);
 
-                                //set entity associations the IdentificationFile and Peptide entities
-                                targetPeptide.setIdentificationFile(identificationFile);
-
                                 //set entity associations between Peptide and PeptideHasProteinGroup entities
                                 targetPeptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
                                 peptideHasProteinGroup.setPeptide(targetPeptide);
@@ -250,12 +245,10 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
         CpsParent cpsParent = unpackedPeptideShakerImport.getCpsParent();
         String version = cpsParent.getProjectDetails().getPeptideShakerVersion();
 
-        List<File> identificationFiles = new ArrayList<>();
-        identificationFiles.add(unpackedPeptideShakerImport.getPeptideShakerCpsArchive());
         EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
         fastaDbs.put(FastaDbType.PRIMARY, fastaDb);
 
-        searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, fastaDbs, cpsParent.getIdentificationParameters().getSearchParameters(), identificationFiles, false);
+        searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, fastaDbs, cpsParent.getIdentificationParameters().getSearchParameters(), false);
 
         //set entity associations
         analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);

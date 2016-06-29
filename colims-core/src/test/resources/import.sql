@@ -116,12 +116,9 @@ INSERT INTO search_and_validation_settings (id, creation_date, modification_date
 -- insert test search and val settings has fasta db
 INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 0);
 
--- insert a test identification file
-INSERT INTO identification_file (id, file_type, content, file_name, file_path, l_search_and_val_settings_id) VALUES (1, 'TEXT', 'AAAAAA', 'test.xml', 'C:\test', 1);
-
 -- insert test peptides
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'LENNART', 1, 1);
 
 -- insert a test peptide has modification
 INSERT INTO peptide_has_modification (id,  delta_score,  location,  modification_type,  prob_score,  l_modification_id,  l_peptide_id) VALUES (1, 0.5, 1, 1, 1, 1, 1);

@@ -4,7 +4,6 @@ import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.TypedCvParamService;
-import com.compomics.colims.core.util.IOUtils;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
 import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
@@ -16,14 +15,12 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.*;
 import com.compomics.colims.model.factory.CvParamFactory;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -87,7 +84,7 @@ public class MaxQuantSearchSettingsParser {
     /**
      * The spectrum parameters with raw file name (key: raw file name; value: enum map of spectrum parameters).
      */
-    private Map<String, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithRawFile= new HashMap<>();
+    private Map<String, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithRawFile = new HashMap<>();
 
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
@@ -133,7 +130,7 @@ public class MaxQuantSearchSettingsParser {
         while (summaryIterator.hasNext()) {
             row = summaryIterator.next();
             //parse the search settings
-            if(getSpectrumParamsWithRawFile().containsKey(row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()))){
+            if (getSpectrumParamsWithRawFile().containsKey(row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()))) {
                 SearchAndValidationSettings searchAndValidationSettings =
                         parseSearchSettings(txtDirectory, fastaDbs, storeFiles, row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()));
                 if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getValue())) {
@@ -156,7 +153,7 @@ public class MaxQuantSearchSettingsParser {
      * @return the mapped SearchAndValidationSettings instance
      * @throws IOException thrown in case of of an I/O related problem
      */
-    private SearchAndValidationSettings parseSearchSettings(Path maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles, String rawFileName) throws IOException, ModificationMappingException  {
+    private SearchAndValidationSettings parseSearchSettings(Path maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles, String rawFileName) throws IOException, ModificationMappingException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         //set the FASTA databases entity associations
@@ -186,11 +183,11 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setPrecMassTolerance(Double.parseDouble(precursorMassToleranceString));
 
         String massToleranceUnit = "";
-        if(getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("true")){
+        if (getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("true")) {
             massToleranceUnit = "ppm";
-        }else if(getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("false")){
+        } else if (getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("false")) {
             massToleranceUnit = "da";
-        }else{
+        } else {
             massToleranceUnit = "";
         }
         searchParameters.setPrecMassToleranceUnit(MassAccuracyType.valueOf(massToleranceUnit.toUpperCase(Locale.ENGLISH)));
@@ -228,22 +225,7 @@ public class MaxQuantSearchSettingsParser {
         searchAndValidationSettings.setSearchParameters(searchParameters);
 
         // TODO: 6/13/2016 change!
-   //     searchParameters.getSearchAndValidationSettingses().add(searchAndValidationSettings);
-
-
-        // TODO: 26/05/16 check which files to store
-        //currently just storing whole folder
-        IdentificationFile identificationFileEntity = new IdentificationFile(maxQuantTxtDirectory.getFileName().toString(), maxQuantTxtDirectory.toString());
-
-        if (storeFiles) {
-            identificationFileEntity.setBinaryFileType(BinaryFileType.ZIP);
-            byte[] content = IOUtils.readAndZip(maxQuantTxtDirectory.toFile());
-            identificationFileEntity.setContent(content);
-        }
-
-        //set entity relations between SearchAndValidationSettings and IdentificationFile
-        identificationFileEntity.setSearchAndValidationSettings(searchAndValidationSettings);
-        searchAndValidationSettings.getIdentificationFiles().add(identificationFileEntity);
+        //searchParameters.getSearchAndValidationSettingses().add(searchAndValidationSettings);
 
         return searchAndValidationSettings;
     }
@@ -282,6 +264,7 @@ public class MaxQuantSearchSettingsParser {
 
     /**
      * Get the spectrum parameters which have link with Raw Files (runs).
+     *
      * @return copy of the spectrum parameter with raw file
      */
     public Map<String, EnumMap<MaxQuantSpectrumParameterHeaders, String>> getSpectrumParamsWithRawFile() {
@@ -325,6 +308,7 @@ public class MaxQuantSearchSettingsParser {
 
     /**
      * Create modifications for the given search parameter and the raw file that linked to that parameter.
+     *
      * @param searchParameters
      * @param rawFileName
      * @return list of SearchParametersHasModification object.
@@ -337,13 +321,13 @@ public class MaxQuantSearchSettingsParser {
         // find the name of variable modification
         String variableModifications = getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS);
 
-        if(fixedModifications == null && variableModifications == null){
+        if (fixedModifications == null && variableModifications == null) {
             return searchParametersHasModifications;
         }
 
-        if(fixedModifications != null && !fixedModifications.isEmpty()){
+        if (fixedModifications != null && !fixedModifications.isEmpty()) {
             String[] split = fixedModifications.split(MODIFICATIONS_DELIMITER);
-            for(int i=0; i<split.length; i++){
+            for (int i = 0; i < split.length; i++) {
                 SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, "");
 
                 SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(split[i].split(MODIFICATION_NAME_ONLY)[0]);
@@ -355,9 +339,9 @@ public class MaxQuantSearchSettingsParser {
             }
         }
 
-        if(variableModifications != null && !variableModifications.isEmpty()){
+        if (variableModifications != null && !variableModifications.isEmpty()) {
             String[] split = variableModifications.split(MODIFICATIONS_DELIMITER);
-            for(int i=0; i<split.length; i++){
+            for (int i = 0; i < split.length; i++) {
                 SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, "");
 
                 SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(split[i].split(MODIFICATION_NAME_ONLY)[0]);
@@ -374,11 +358,12 @@ public class MaxQuantSearchSettingsParser {
 
     /**
      * Create searchParametersHasModification instance
+     *
      * @param searchParameters
      * @param residues
      * @return searchParametersHasModification instance
      */
-    private SearchParametersHasModification createSearchParametersHasModification(SearchParameters searchParameters, String residues){
+    private SearchParametersHasModification createSearchParametersHasModification(SearchParameters searchParameters, String residues) {
         SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
 
         searchParametersHasModification.setSearchParameters(searchParameters);
@@ -389,6 +374,7 @@ public class MaxQuantSearchSettingsParser {
 
     /**
      * Parse spectrum parameters and match with runs.
+     *
      * @param spectrumParametersFilePath
      * @throws JDOMException
      */
@@ -398,24 +384,24 @@ public class MaxQuantSearchSettingsParser {
         //create a map to hold raw file groups for each run (key: group index; value: group number).
         Map<Integer, Integer> rawFileGroup = new HashMap<>();
         //create a map to hold enum map of spectrum parameters and their group(key: group number; value: enumMAp of spectrum parameters).
-        Map<Integer, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithGroup= new HashMap<>();
+        Map<Integer, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithGroup = new HashMap<>();
 
         Resource spectrumParameterResource = new FileSystemResource(spectrumParametersFilePath.toFile());
 
         SAXBuilder builder = new SAXBuilder();
 
         Document document;
-        try{
+        try {
             document = builder.build(spectrumParameterResource.getInputStream());
 
             Element root = document.getRootElement();
             // keep each raw file in a map (key: int, value: name of file).
             Element filePathsElement = getChildByName(root, "filepaths");
             int counter = 0;
-            for(Element filePathElement : filePathsElement.getChildren()){
+            for (Element filePathElement : filePathsElement.getChildren()) {
                 String rawFile = filePathElement.getContent().get(0).getValue();
                 String[] split = rawFile.split("\\\\");
-                rawFile = org.apache.commons.lang3.StringUtils.substringBefore(split[split.length-1], ".raw");
+                rawFile = org.apache.commons.lang3.StringUtils.substringBefore(split[split.length - 1], ".raw");
                 rawFilePath.put(counter, rawFile);
                 counter++;
             }
@@ -423,7 +409,7 @@ public class MaxQuantSearchSettingsParser {
             // keep each raw file group number in a map (key: int, value: group number).
             Element rawFileGroupsElement = getChildByName(root, "paramgroupindices");
             counter = 0;
-            for(Element rawFileGroupElement : rawFileGroupsElement.getChildren()){
+            for (Element rawFileGroupElement : rawFileGroupsElement.getChildren()) {
                 int groupNo = Integer.parseInt(rawFileGroupElement.getContent().get(0).getValue().toString());
                 rawFileGroup.put(counter, groupNo);
                 counter++;
@@ -432,7 +418,7 @@ public class MaxQuantSearchSettingsParser {
             // keep each search parameters in a map (key: group number, value = maxQuantSpectrumParameterHeaders)
             Element parameterGroupsElement = getChildByName(root, "parametergroups");
             counter = 0;
-            for(Element parameterGroupElement : parameterGroupsElement.getChildren()){
+            for (Element parameterGroupElement : parameterGroupsElement.getChildren()) {
                 //create enumMap for spectrum parameters (key: parameter enum; value: parameter value).
                 EnumMap<MaxQuantSpectrumParameterHeaders, String> spectrumParameters = new EnumMap<>(MaxQuantSpectrumParameterHeaders.class);
                 for (MaxQuantSpectrumParameterHeaders spectrumParameterHeader : MaxQuantSpectrumParameterHeaders.values()) {
@@ -441,19 +427,19 @@ public class MaxQuantSearchSettingsParser {
                             .findFirst();
                     spectrumParameterHeader.setParsedValue(spectrumParameterHeader.getPossibleValues().indexOf(header.get()));
                     if (header.isPresent()) {
-                        if(header.get().equals(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS.getValue()) || header.get().equals(MaxQuantSpectrumParameterHeaders.ENZYMES.getValue())){
+                        if (header.get().equals(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS.getValue()) || header.get().equals(MaxQuantSpectrumParameterHeaders.ENZYMES.getValue())) {
                             StringBuilder stringBuilder = new StringBuilder();
-                            for(Element variableModifications : getChildByName(parameterGroupElement, header.get()).getChildren()){
+                            for (Element variableModifications : getChildByName(parameterGroupElement, header.get()).getChildren()) {
                                 stringBuilder.append("," + variableModifications.getContent().get(0).getValue().toString());
                             }
                             spectrumParameters.put(spectrumParameterHeader, org.apache.commons.lang3.StringUtils.substringAfter(stringBuilder.toString(), ","));
-                        }else if(header.get().equals(MaxQuantSpectrumParameterHeaders.FIXED_MODIFICATIONS.getValue())){
+                        } else if (header.get().equals(MaxQuantSpectrumParameterHeaders.FIXED_MODIFICATIONS.getValue())) {
                             StringBuilder fixedModification = new StringBuilder();
-                            for(Element fixedModifications : getChildByName(root, header.get()).getChildren()){
+                            for (Element fixedModifications : getChildByName(root, header.get()).getChildren()) {
                                 fixedModification.append("," + fixedModifications.getContent().get(0).getValue().toString());
                             }
-                            spectrumParameters.put(spectrumParameterHeader,org.apache.commons.lang3.StringUtils.substringAfter(fixedModification.toString(), ","));
-                        }else{
+                            spectrumParameters.put(spectrumParameterHeader, org.apache.commons.lang3.StringUtils.substringAfter(fixedModification.toString(), ","));
+                        } else {
                             spectrumParameters.put(spectrumParameterHeader, getChildByName(parameterGroupElement, header.get()).getContent().get(0).getValue().toString());
                         }
                     }
@@ -461,7 +447,7 @@ public class MaxQuantSearchSettingsParser {
                 spectrumParamsWithGroup.put(counter, spectrumParameters);
                 counter++;
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
         // match all maps and put them in spectrumParamsWithRawFile map
@@ -473,16 +459,17 @@ public class MaxQuantSearchSettingsParser {
 
     /**
      * Find child element by name, case insensitive.
+     *
      * @param root
      * @param qName
      * @return child element
      */
-    private Element getChildByName(Element root, String qName){
+    private Element getChildByName(Element root, String qName) {
         Element element = root.getChild(qName);
-        if(element == null){
-            for(Element e: root.getChildren()){
+        if (element == null) {
+            for (Element e : root.getChildren()) {
                 String tagName = e.getName();
-                if(tagName.equalsIgnoreCase(qName)){
+                if (tagName.equalsIgnoreCase(qName)) {
                     return e;
                 }
             }

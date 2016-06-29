@@ -131,6 +131,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         samplePopupMenu.add(mzTabExportMenuItem);
 
         setBackground(new java.awt.Color(255, 255, 255));
+        setPreferredSize(new java.awt.Dimension(0, 0));
         setLayout(new java.awt.GridBagLayout());
 
         projectsOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Projects"));

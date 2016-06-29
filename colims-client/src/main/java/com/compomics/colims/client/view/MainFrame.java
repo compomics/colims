@@ -115,11 +115,14 @@ public class MainFrame extends javax.swing.JFrame {
         helpMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(900, 600));
+        setMinimumSize(new java.awt.Dimension(400, 200));
+        setPreferredSize(new java.awt.Dimension(0, 0));
 
         mainTabbedPane.setTabPlacement(javax.swing.JTabbedPane.RIGHT);
+        mainTabbedPane.setMinimumSize(new java.awt.Dimension(400, 200));
         mainTabbedPane.setName("mainTabbedPane"); // NOI18N
         mainTabbedPane.setOpaque(true);
+        mainTabbedPane.setPreferredSize(new java.awt.Dimension(0, 0));
 
         projectsManagementParentPanel.setBackground(new java.awt.Color(255, 255, 255));
         projectsManagementParentPanel.setLayout(new java.awt.GridBagLayout());
@@ -186,11 +189,17 @@ public class MainFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(3, 3, 3)
+                .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 674, Short.MAX_VALUE)
+                .addGap(3, 3, 3))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(3, 3, 3)
+                .addComponent(mainTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 142, Short.MAX_VALUE)
+                .addGap(3, 3, 3))
         );
 
         pack();

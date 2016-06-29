@@ -123,8 +123,8 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
         exportFileChooser.setDialogTitle("Save protein data as TSV file");
 
         setBackground(new java.awt.Color(255, 255, 255));
-        setMinimumSize(new java.awt.Dimension(1398, 800));
-        setPreferredSize(new java.awt.Dimension(1398, 800));
+        setMinimumSize(new java.awt.Dimension(0, 0));
+        setPreferredSize(new java.awt.Dimension(0, 0));
         setLayout(new javax.swing.OverlayLayout(this));
 
         jSplitPane1.setDividerLocation(330);

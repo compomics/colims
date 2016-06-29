@@ -58,6 +58,11 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
     @OneToMany(mappedBy = "analyticalRun", cascade = CascadeType.ALL)
     private List<Spectrum> spectrums = new ArrayList<>();
     /**
+     * The analytical run attachments. These are stored as lob's in the database.
+     */
+    @OneToMany(mappedBy = "analyticalRun", cascade = CascadeType.ALL)
+    List<AnalyticalRunBinaryFile> binaryFiles = new ArrayList<>();
+    /**
      * The search and validation settings for this run.
      */
     @OneToOne(mappedBy = "analyticalRun", cascade = CascadeType.ALL)
@@ -106,6 +111,14 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
 
     public void setSpectrums(List<Spectrum> spectrums) {
         this.spectrums = spectrums;
+    }
+
+    public List<AnalyticalRunBinaryFile> getBinaryFiles() {
+        return binaryFiles;
+    }
+
+    public void setBinaryFiles(List<AnalyticalRunBinaryFile> binaryFiles) {
+        this.binaryFiles = binaryFiles;
     }
 
     public Sample getSample() {

@@ -12,7 +12,6 @@ import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
-import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -24,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The experiment edit view controller.
@@ -285,12 +285,7 @@ public class ExperimentEditController implements Controllable {
      * @return the joined attachments String
      */
     private String getAttachmentsAsString() {
-        String concatenatedString;
-
-        Joiner joiner = Joiner.on(", ");
-        concatenatedString = joiner.join(experimentToEdit.getBinaryFiles());
-
-        return concatenatedString;
+        return experimentToEdit.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", "));
     }
 
 }
