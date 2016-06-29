@@ -76,21 +76,20 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             maxQuantImport.getFastaDbIds().forEach((fastaDbType, fastaDbId) -> {
                 fastaDbs.put(fastaDbType, fastaDbService.findById(fastaDbId));
             });
-            Path combinedDirectory = Paths.get(maxQuantImport.getMaxQuantDirectory() + File.separator + MaxQuantConstants.COMBINED_DIRECTORY.value());
-            Path txtDirectory = Paths.get(combinedDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
-            Path andromedaDirectory = Paths.get(combinedDirectory + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
+            Path txtDirectory = Paths.get(maxQuantImport.getCombinedFolderDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
+            Path andromedaDirectory = Paths.get(maxQuantImport.getCombinedFolderDirectory() + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
             try{
                 maxQuantSearchSettingsParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, false);
             }catch (JDOMException e){
                 e.printStackTrace();
             }
 
-            maxQuantParser.parse(combinedDirectory, fastaDbs, maxQuantSearchSettingsParser.getMultiplicity());
+            maxQuantParser.parse(maxQuantImport.getCombinedFolderDirectory(), fastaDbs, maxQuantSearchSettingsParser.getMultiplicity());
 
             proteinGroups = maxQuantParser.getProteinGroupSet();
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
                 if(maxQuantSearchSettingsParser.getRunSettings().containsKey(analyticalRun.getName())){
-                    analyticalRun.setStorageLocation(combinedDirectory.toString());
+                    analyticalRun.setStorageLocation(maxQuantImport.getCombinedFolderDirectory().toString());
                     SearchAndValidationSettings searchAndValidationSettings = maxQuantSearchSettingsParser.getRunSettings().get(analyticalRun.getName());
                     //set search and validation settings-run entity associations
                     analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);

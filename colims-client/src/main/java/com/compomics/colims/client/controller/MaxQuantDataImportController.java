@@ -179,7 +179,7 @@ public class MaxQuantDataImportController implements Controllable {
             fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDb.getId());
         }
 
-        return new MaxQuantImport(maxQuantDirectory, fastaDbIds);
+        return new MaxQuantImport(maxQuantDirectory, combinedFolderDirectory, fastaDbIds);
     }
 
 }

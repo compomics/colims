@@ -69,7 +69,7 @@ public class MaxQuantIT {
         EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb.getId());
 
-        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.maxQuantDirectory, fastaDbIds);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.maxQuantDirectory, MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds);
         MappedData mappedData = maxQuantImporter.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 

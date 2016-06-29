@@ -57,9 +57,9 @@ public class Playground {
         EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, testFastaDb.getId());
 
-        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(maxquantPath), fastaDbIds);
-        MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
-        List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
+   //     MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(maxquantPath), fastaDbIds);
+  //      MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
+   //     List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
         System.out.println("Everything is parsed!");
 
 
