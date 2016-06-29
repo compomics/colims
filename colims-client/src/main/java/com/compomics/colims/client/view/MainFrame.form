@@ -85,7 +85,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[700, 700]"/>
+      <Dimension value="[900, 600]"/>
     </Property>
   </Properties>
   <SyntheticProperties>

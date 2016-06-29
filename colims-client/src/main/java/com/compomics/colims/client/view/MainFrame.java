@@ -115,7 +115,7 @@ public class MainFrame extends javax.swing.JFrame {
         helpMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(700, 700));
+        setMinimumSize(new java.awt.Dimension(900, 600));
 
         mainTabbedPane.setTabPlacement(javax.swing.JTabbedPane.RIGHT);
         mainTabbedPane.setName("mainTabbedPane"); // NOI18N

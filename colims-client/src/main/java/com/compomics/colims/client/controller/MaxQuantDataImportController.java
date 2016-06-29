@@ -33,6 +33,7 @@ public class MaxQuantDataImportController implements Controllable {
 
     //model
     private Path maxQuantDirectory;
+    private Path combinedFolderDirectory;
     private FastaDb primaryFastaDb;
     private FastaDb additionalFastaDb;
     private FastaDb contaminantsFastaDb;
@@ -72,7 +73,23 @@ public class MaxQuantDataImportController implements Controllable {
                 maxQuantDataImportPanel.getMaxQuantDirectoryTextField().setText(maxQuantDirectory.toString());
             }
         });
-
+        
+        //init Combined Folder directory file selection
+        //disable select multiple files
+        maxQuantDataImportPanel.getCombinedFolderChooser().setMultiSelectionEnabled(false);
+        //set select directories only
+        maxQuantDataImportPanel.getCombinedFolderChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        
+        maxQuantDataImportPanel.getSelectCombinedFolderButton().addActionListener(e ->{
+            //in response to the button click, show open dialog
+            int returnVal = maxQuantDataImportPanel.getCombinedFolderChooser().showOpenDialog(maxQuantDataImportPanel);
+            if(returnVal == JFileChooser.APPROVE_OPTION){
+                combinedFolderDirectory = maxQuantDataImportPanel.getCombinedFolderChooser().getSelectedFile().toPath();
+                // show combined folder directory name in label
+                maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(combinedFolderDirectory.toString());
+            }
+        });
+        
         maxQuantDataImportPanel.getSelectPrimaryFastaDbButton().addActionListener(e -> {
             fastaDbManagementController.showView();
 
@@ -85,7 +102,7 @@ public class MaxQuantDataImportController implements Controllable {
             }
         });
 
-        maxQuantDataImportPanel.getSelectAddtionalFastaDbButton().addActionListener(e -> {
+        maxQuantDataImportPanel.getSelectAdditionalFastaDbButton().addActionListener(e -> {
             fastaDbManagementController.showView();
 
             additionalFastaDb = fastaDbManagementController.getFastaDb();
@@ -118,6 +135,7 @@ public class MaxQuantDataImportController implements Controllable {
         contaminantsFastaDb = null;
         //reset the input fields
         maxQuantDataImportPanel.getMaxQuantDirectoryTextField().setText("");
+        maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText("");
         maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText("");
         maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
         maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
@@ -134,6 +152,9 @@ public class MaxQuantDataImportController implements Controllable {
 
         if (maxQuantDirectory == null) {
             validationMessages.add("Please select a MaxQuant data files directory.");
+        }
+        if (combinedFolderDirectory == null) {
+            validationMessages.add("Please select Combined Folder directory.");
         }
         if (primaryFastaDb == null) {
             validationMessages.add("Please select a primary FASTA file.");
