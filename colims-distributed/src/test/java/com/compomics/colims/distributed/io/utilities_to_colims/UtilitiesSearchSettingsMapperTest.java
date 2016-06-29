@@ -4,7 +4,6 @@ import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchSettingsMapper;
 import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.IdentificationFile;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
 import com.compomics.colims.model.enums.FastaDbType;
@@ -17,15 +16,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -36,7 +31,6 @@ public class UtilitiesSearchSettingsMapperTest {
 
     private SearchParameters searchParameters;
     private EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
-    private List<File> identificationFiles;
     @Autowired
     private UtilitiesSearchSettingsMapper utilitiesSearchSettingsMapper;
     @Autowired
@@ -65,11 +59,6 @@ public class UtilitiesSearchSettingsMapperTest {
 
         //look for a FastaDB instance from the db
         fastaDbs.put(FastaDbType.PRIMARY, fastaDbService.findById(1L));
-
-        //set stub IdentificationFile
-        File identificationFile = new ClassPathResource("data/peptideshaker/colims_test_ps_file.cpsx").getFile();
-        identificationFiles = new ArrayList<>();
-        identificationFiles.add(identificationFile);
     }
 
     /**
@@ -81,21 +70,9 @@ public class UtilitiesSearchSettingsMapperTest {
      */
     @Test
     public void testMap() throws IOException, ModificationMappingException {
-        SearchAndValidationSettings searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDbs, searchParameters, identificationFiles, false);
+        SearchAndValidationSettings searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDbs, searchParameters, false);
 
         Assert.assertNotNull(searchAndValidationSettings);
-
-        //identification files
-        Assert.assertNotNull(searchAndValidationSettings.getIdentificationFiles());
-        Assert.assertFalse(searchAndValidationSettings.getIdentificationFiles().isEmpty());
-        Assert.assertEquals(1, searchAndValidationSettings.getIdentificationFiles().size());
-        IdentificationFile mappedIdentificationFile = searchAndValidationSettings.getIdentificationFiles().get(0);
-        Assert.assertEquals(identificationFiles.get(0).getName(), mappedIdentificationFile.getFileName());
-        Assert.assertEquals(identificationFiles.get(0).getCanonicalPath(), mappedIdentificationFile.getFilePath());
-        Assert.assertNull(mappedIdentificationFile.getBinaryFileType());
-        Assert.assertNull(mappedIdentificationFile.getContent());
-        Assert.assertNotNull(mappedIdentificationFile.getSearchAndValidationSettings());
-        Assert.assertEquals(searchAndValidationSettings, mappedIdentificationFile.getSearchAndValidationSettings());
 
         //search parameters
         Assert.assertNotNull(searchAndValidationSettings.getSearchParameters());

@@ -47,6 +47,14 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         return storageLocationTextField;
     }
 
+    public JTextField getAttachementsTextField() {
+        return attachementsTextField;
+    }
+
+    public JButton getAttachmentsEditButton() {
+        return attachmentsEditButton;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -67,6 +75,9 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         dateTimePicker = new com.compomics.colims.client.compoment.DateTimePicker();
         locationLabel = new javax.swing.JLabel();
         storageLocationTextField = new javax.swing.JTextField();
+        attachementsLabel = new javax.swing.JLabel();
+        attachementsTextField = new javax.swing.JTextField();
+        attachmentsEditButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Analytical run metadata management");
@@ -98,6 +109,16 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
 
         locationLabel.setText("Location");
 
+        attachementsLabel.setText("Attachments");
+
+        attachementsTextField.setEditable(false);
+
+        attachmentsEditButton.setText("edit...");
+        attachmentsEditButton.setToolTipText("edit the binary attachments");
+        attachmentsEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        attachmentsEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        attachmentsEditButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
         javax.swing.GroupLayout analyticalRunEditPanelLayout = new javax.swing.GroupLayout(analyticalRunEditPanel);
         analyticalRunEditPanel.setLayout(analyticalRunEditPanelLayout);
         analyticalRunEditPanelLayout.setHorizontalGroup(
@@ -116,10 +137,15 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
                                 .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(instrumentLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(labelLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(locationLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(locationLabel)
+                            .addComponent(attachementsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(dateTimePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE)
+                            .addGroup(analyticalRunEditPanelLayout.createSequentialGroup()
+                                .addComponent(attachementsTextField)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(attachmentsEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(dateTimePicker, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
                             .addComponent(nameTextField)
                             .addComponent(instrumentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(storageLocationTextField))))
@@ -144,6 +170,11 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
                 .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(locationLabel)
                     .addComponent(storageLocationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(attachementsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(attachmentsEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(attachementsLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -166,6 +197,9 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel analyticalRunEditPanel;
+    private javax.swing.JLabel attachementsLabel;
+    private javax.swing.JTextField attachementsTextField;
+    private javax.swing.JButton attachmentsEditButton;
     private javax.swing.JButton cancelButton;
     private com.compomics.colims.client.compoment.DateTimePicker dateTimePicker;
     private javax.swing.JComboBox instrumentComboBox;

@@ -2,10 +2,7 @@ package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
-import com.compomics.colims.core.util.IOUtils;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchParametersMapper;
 import com.compomics.colims.model.*;
-import com.compomics.colims.model.enums.BinaryFileType;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +39,12 @@ public class UtilitiesSearchSettingsMapper {
      * @param version                   the search engine version
      * @param fastaDbs                  the FastaDb instances
      * @param utilitiesSearchParameters the Utilities search parameters
-     * @param identificationFiles       the list of identification files
      * @param storeIdentificationFile   store the identification or not
      * @return the mapped SearchAndValidationSettings
      * @throws IOException                  thrown in case of an I/O related exception
      * @throws ModificationMappingException in case of a modification mapping problem
      */
-    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, EnumMap<FastaDbType, FastaDb> fastaDbs, com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, List<File> identificationFiles, boolean storeIdentificationFile) throws IOException, ModificationMappingException {
+    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, EnumMap<FastaDbType, FastaDb> fastaDbs, com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, boolean storeIdentificationFile) throws IOException, ModificationMappingException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         /**
@@ -79,35 +75,6 @@ public class UtilitiesSearchSettingsMapper {
             searchAndValidationSettings.getSearchSettingsHasFastaDbs().add(searchSettingsHasFastaDb);
         });
 
-        /**
-         * IdentificationFile(s)
-         */
-        BinaryFileType binaryFileType = null;
-        if (storeIdentificationFile) {
-            switch (searchEngineType) {
-                case PEPTIDESHAKER:
-                    binaryFileType = BinaryFileType.TEXT;
-                    break;
-                case MAXQUANT:
-                    binaryFileType = BinaryFileType.ZIP;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        for (File identificationFile : identificationFiles) {
-            IdentificationFile identificationFileEntity = new IdentificationFile(identificationFile.getName(), identificationFile.getCanonicalPath());
-            if (storeIdentificationFile) {
-                identificationFileEntity.setBinaryFileType(binaryFileType);
-                byte[] content = IOUtils.readAndZip(identificationFile);
-                identificationFileEntity.setContent(content);
-            }
-
-            //set entity associations
-            identificationFileEntity.setSearchAndValidationSettings(searchAndValidationSettings);
-            searchAndValidationSettings.getIdentificationFiles().add(identificationFileEntity);
-        }
 
         return searchAndValidationSettings;
     }

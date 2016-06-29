@@ -97,18 +97,15 @@ INSERT INTO search_and_validation_settings (id, creation_date, modification_date
 -- insert test search and val settings has fasta db
 INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 0), (2, 2, 1, 1);
 
--- insert a test identification file
-INSERT INTO identification_file (id, file_type, content, file_name, file_path, l_search_and_val_settings_id) VALUES (1, 'TEXT', 'AAAAAA', 'test.xml', 'C:\test', 1);
-
 -- insert test spectra
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000000', 1, 'CID', 100.5, 555.3, 24.3, 'no', 3, 'Test Spectrum', 1);
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (2, 'MS:00000004', 3, 'CID', 600.3, 1300.1, 26, 'no', 3, 'Test Spectrum 2', 1);
 
 -- insert test peptides
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'BLENNART', 1, 1, 1);
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (3, 1, 0.5, 0.5, 'LENNART', 1, 1, 1);
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_identification_file_id, l_spectrum_id) VALUES (4, 1, 0.5, 0.5, 'LENNART', 1, 1, NULL);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'BLENNART', 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (3, 1, 0.5, 0.5, 'LENNART', 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (4, 1, 0.5, 0.5, 'LENNART', 1, NULL);
 
 --insert test peptide has modifications
 INSERT INTO peptide_has_modification (id, l_peptide_id, l_modification_id, prob_score, delta_score) VALUES (1, 1, 1, 0.3, 0.5);

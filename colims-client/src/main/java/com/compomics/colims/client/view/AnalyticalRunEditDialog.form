@@ -52,7 +52,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" alignment="0" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
@@ -61,10 +61,16 @@
                                   <Component id="labelLabel" max="32767" attributes="0"/>
                               </Group>
                               <Component id="locationLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="attachementsLabel" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="dateTimePicker" pref="389" max="32767" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="attachementsTextField" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="attachmentsEditButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="dateTimePicker" pref="595" max="32767" attributes="0"/>
                               <Component id="nameTextField" max="32767" attributes="0"/>
                               <Component id="instrumentComboBox" max="32767" attributes="0"/>
                               <Component id="storageLocationTextField" alignment="0" max="32767" attributes="0"/>
@@ -97,6 +103,12 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="locationLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="storageLocationTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="attachementsTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="attachmentsEditButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="attachementsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -183,6 +195,31 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="storageLocationTextField">
+        </Component>
+        <Component class="javax.swing.JLabel" name="attachementsLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Attachments"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="attachementsTextField">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="attachmentsEditButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="edit..."/>
+            <Property name="toolTipText" type="java.lang.String" value="edit the binary attachments"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

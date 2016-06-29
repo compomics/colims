@@ -1,13 +1,17 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.event.*;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
+import com.compomics.colims.client.view.AnalyticalRunBinaryFileDialog;
 import com.compomics.colims.client.view.AnalyticalRunEditDialog;
 import com.compomics.colims.core.service.AnalyticalRunService;
+import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.AnalyticalRunBinaryFile;
 import com.compomics.colims.model.Instrument;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -27,6 +31,7 @@ import javax.swing.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Niels Hulstaert
@@ -46,6 +51,7 @@ public class AnalyticalRunEditController implements Controllable {
     private AnalyticalRun analyticalRunToEdit;
     //view
     private AnalyticalRunEditDialog analyticalRunEditDialog;
+    private AnalyticalRunBinaryFileDialog analyticalRunBinaryFileDialog;
     //parent controller
     @Autowired
     private SampleEditController sampleEditController;
@@ -54,6 +60,8 @@ public class AnalyticalRunEditController implements Controllable {
     private AnalyticalRunService analyticalRunService;
     @Autowired
     private InstrumentService instrumentService;
+    @Autowired
+    private BinaryFileService binaryFileService;
     @Autowired
     private EventBus eventBus;
 
@@ -74,6 +82,8 @@ public class AnalyticalRunEditController implements Controllable {
 
         //init view
         analyticalRunEditDialog = new AnalyticalRunEditDialog(sampleEditController.getSampleEditDialog(), true);
+        analyticalRunBinaryFileDialog = new AnalyticalRunBinaryFileDialog(analyticalRunEditDialog, true);
+        analyticalRunBinaryFileDialog.getBinaryFileManagementPanel().init(AnalyticalRunBinaryFile.class);
 
         //set DateTimePicker format
         analyticalRunEditDialog.getDateTimePicker().setFormats(new SimpleDateFormat("dd-MM-yyyy HH:mm"));
@@ -111,6 +121,55 @@ public class AnalyticalRunEditController implements Controllable {
             }
         });
 
+        analyticalRunBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.ADD, evt -> {
+            AnalyticalRunBinaryFile binaryFileToAdd = (AnalyticalRunBinaryFile) evt.getNewValue();
+
+            //set experiment in binary file
+            binaryFileToAdd.setAnalyticalRun(analyticalRunToEdit);
+
+            //save binary file
+            binaryFileService.persist(binaryFileToAdd);
+
+            analyticalRunToEdit.getBinaryFiles().add(binaryFileToAdd);
+            analyticalRunEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+        });
+
+        analyticalRunBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, evt -> {
+            AnalyticalRunBinaryFile binaryFileToRemove = (AnalyticalRunBinaryFile) evt.getNewValue();
+
+            if (analyticalRunToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
+                analyticalRunToEdit.getBinaryFiles().remove(binaryFileToRemove);
+            }
+
+            //remove binary file
+            binaryFileService.remove(binaryFileToRemove);
+
+            analyticalRunEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+        });
+
+        analyticalRunBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.FILE_TYPE_CHANGE, evt -> {
+            AnalyticalRunBinaryFile binaryFileToUpdate = (AnalyticalRunBinaryFile) evt.getNewValue();
+
+            //update binary file
+            binaryFileService.merge(binaryFileToUpdate);
+
+            analyticalRunEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+        });
+
+        analyticalRunBinaryFileDialog.getCancelButton().addActionListener(e -> analyticalRunBinaryFileDialog.dispose());
+
+        analyticalRunEditDialog.getAttachmentsEditButton().addActionListener(e -> {
+            if (analyticalRunToEdit.getId() != null) {
+                analyticalRunBinaryFileDialog.getBinaryFileManagementPanel().populateList(analyticalRunToEdit.getBinaryFiles());
+
+                GuiUtils.centerDialogOnComponent(analyticalRunEditDialog, analyticalRunBinaryFileDialog);
+                analyticalRunBinaryFileDialog.setVisible(true);
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Experiment attachments", "Please save the experiment first before adding attachments.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+        });
+
         analyticalRunEditDialog.getCancelButton().addActionListener(e -> analyticalRunEditDialog.dispose());
     }
 
@@ -121,7 +180,8 @@ public class AnalyticalRunEditController implements Controllable {
     }
 
     /**
-     * Update the analytical run edit dialog with the selected analytical run in the analytical run overview table.
+     * Update the analytical run edit dialog with the selected analytical run in
+     * the analytical run overview table.
      *
      * @param analyticalRun the selected analytical run in the overview table
      */
@@ -156,7 +216,8 @@ public class AnalyticalRunEditController implements Controllable {
     }
 
     /**
-     * Listen to a AnalyticalRunChangeEvent and update the runs table if necessary.
+     * Listen to a AnalyticalRunChangeEvent and update the runs table if
+     * necessary.
      *
      * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent instance
      */
@@ -216,7 +277,8 @@ public class AnalyticalRunEditController implements Controllable {
     }
 
     /**
-     * Update the instance fields of the selected analytical run in the analytical runs table
+     * Update the instance fields of the selected analytical run in the
+     * analytical runs table
      */
     private void updateAnalyticalRunToEdit() {
         analyticalRunToEdit.setName(analyticalRunEditDialog.getNameTextField().getText());
@@ -227,6 +289,15 @@ public class AnalyticalRunEditController implements Controllable {
             analyticalRunToEdit.setInstrument(instrumentBindingList.get(analyticalRunEditDialog.getInstrumentComboBox().getSelectedIndex()));
         }
         analyticalRunToEdit.setStorageLocation(analyticalRunEditDialog.getStorageLocationTextField().getText());
+    }
+
+    /**
+     * Get the attachments file names as a concatenated string.
+     *
+     * @return the joined attachments String
+     */
+    private String getAttachmentsAsString() {
+        return analyticalRunToEdit.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", "));
     }
 
 }

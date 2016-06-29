@@ -32,25 +32,11 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
     @ManyToOne(cascade = CascadeType.MERGE)
     private SearchParameters searchParameters;
     /**
-     * The identification files provided by the search engine. Multiple files can be linked to one
-     * SearchAndValidationSettings instance.
-     */
-    @OneToMany(mappedBy = "searchAndValidationSettings", cascade = javax.persistence.CascadeType.ALL)
-    private List<IdentificationFile> identificationFiles = new ArrayList<>();
-    /**
      * The SearchSettingsHasFastaDb instances from the join table between the search and validation settings and FASTA
      * databases.
      */
     @OneToMany(mappedBy = "searchAndValidationSettings", cascade = CascadeType.ALL)
     private List<SearchSettingsHasFastaDb> searchSettingsHasFastaDbs = new ArrayList<>();
-
-    public List<IdentificationFile> getIdentificationFiles() {
-        return identificationFiles;
-    }
-
-    public void setIdentificationFiles(List<IdentificationFile> identificationFiles) {
-        this.identificationFiles = identificationFiles;
-    }
 
     public AnalyticalRun getAnalyticalRun() {
         return analyticalRun;

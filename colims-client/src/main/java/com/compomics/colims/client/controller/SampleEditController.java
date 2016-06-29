@@ -48,6 +48,7 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The sample edit view controller.
@@ -314,7 +315,8 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Update the sample edit dialog with the selected sample in the sample overview table.
+     * Update the sample edit dialog with the selected sample in the sample
+     * overview table.
      *
      * @param sample the Sample
      */
@@ -348,7 +350,8 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Get the row index of the selected analytical run in the analytical runs table.
+     * Get the row index of the selected analytical run in the analytical runs
+     * table.
      *
      * @return the selected analytical run index
      */
@@ -388,7 +391,8 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Listen to a AnalyticalRunChangeEvent and update the runs table if necessary.
+     * Listen to a AnalyticalRunChangeEvent and update the runs table if
+     * necessary.
      *
      * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent instance
      */
@@ -453,11 +457,13 @@ public class SampleEditController implements Controllable {
     }
 
     /**
-     * Delete the database entity (project, experiment, analytical runs) from the database. Shows a confirmation dialog
-     * first. When confirmed, a DeleteDbTask message is sent to the DB task queue. A message dialog is shown in case the
-     * queue cannot be reached or in case of an IOException thrown by the sendDbTask method.
+     * Delete the database entity (project, experiment, analytical runs) from
+     * the database. Shows a confirmation dialog first. When confirmed, a
+     * DeleteDbTask message is sent to the DB task queue. A message dialog is
+     * shown in case the queue cannot be reached or in case of an IOException
+     * thrown by the sendDbTask method.
      *
-     * @param entity        the entity to delete
+     * @param entity the entity to delete
      * @param dbEntityClass the database entity class
      * @return true if the delete task is confirmed.
      */
@@ -508,16 +514,12 @@ public class SampleEditController implements Controllable {
      * @return the concatenated String
      */
     private String getAttachmentsAsString() {
-        String concatenatedString;
-
-        Joiner joiner = Joiner.on(", ");
-        concatenatedString = joiner.join(sampleToEdit.getBinaryFiles());
-
-        return concatenatedString;
+        return sampleToEdit.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", "));
     }
 
     /**
-     * Update the state (enables/disabled) of the analytical run related buttons.
+     * Update the state (enables/disabled) of the analytical run related
+     * buttons.
      *
      * @param enable the enable the buttons boolean
      */

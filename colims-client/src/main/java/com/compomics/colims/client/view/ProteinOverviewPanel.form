@@ -13,10 +13,10 @@
       <Color blue="ff" green="ff" red="ff" type="rgb"/>
     </Property>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[1398, 800]"/>
+      <Dimension value="[0, 0]"/>
     </Property>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[1398, 800]"/>
+      <Dimension value="[0, 0]"/>
     </Property>
   </Properties>
   <AuxValues>

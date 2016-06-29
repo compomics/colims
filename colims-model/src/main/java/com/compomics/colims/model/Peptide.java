@@ -52,13 +52,6 @@ public class Peptide extends DatabaseEntity {
     @Column(name = "psm_post_error_prob", nullable = true)
     private Double psmPostErrorProbability;
     /**
-     * The IdentificationFile instance that identified this peptide-to-spectrum match.
-     */
-    @JoinColumn(name = "l_identification_file_id", referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-//    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private IdentificationFile identificationFile;
-    /**
      * The spectrum identified by this peptide.
      */
     @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
@@ -105,14 +98,6 @@ public class Peptide extends DatabaseEntity {
 
     public void setCharge(Integer charge) {
         this.charge = charge;
-    }
-
-    public IdentificationFile getIdentificationFile() {
-        return identificationFile;
-    }
-
-    public void setIdentificationFile(IdentificationFile identificationFile) {
-        this.identificationFile = identificationFile;
     }
 
     public Spectrum getSpectrum() {

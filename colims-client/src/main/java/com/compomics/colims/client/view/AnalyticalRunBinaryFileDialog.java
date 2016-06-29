@@ -1,7 +1,7 @@
 package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
-import com.compomics.colims.model.ExperimentBinaryFile;
+import com.compomics.colims.model.AnalyticalRunBinaryFile;
 import java.awt.Dialog;
 import javax.swing.JButton;
 
@@ -9,7 +9,7 @@ import javax.swing.JButton;
  *
  * @author Niels Hulstaert
  */
-public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
+public class AnalyticalRunBinaryFileDialog extends javax.swing.JDialog {
 
     /**
      * Dialog constructor.
@@ -17,13 +17,13 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
-    public ExperimentBinaryFileDialog(Dialog parent, boolean modal) {
+    public AnalyticalRunBinaryFileDialog(Dialog parent, boolean modal) {
         super(parent, modal);
 
         initComponents();
     }
 
-    public BinaryFileManagementPanel<ExperimentBinaryFile> getBinaryFileManagementPanel() {
+    public BinaryFileManagementPanel<AnalyticalRunBinaryFile> getBinaryFileManagementPanel() {
         return binaryFileManagementPanel;
     }
 
@@ -94,7 +94,7 @@ public class ExperimentBinaryFileDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.compomics.colims.client.compoment.BinaryFileManagementPanel<ExperimentBinaryFile> binaryFileManagementPanel;
+    private com.compomics.colims.client.compoment.BinaryFileManagementPanel<AnalyticalRunBinaryFile> binaryFileManagementPanel;
     private javax.swing.JPanel binaryFileManagementParentPanel;
     private javax.swing.JButton cancelButton;
     // End of variables declaration//GEN-END:variables
