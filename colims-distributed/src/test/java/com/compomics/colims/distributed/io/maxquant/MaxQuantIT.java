@@ -25,7 +25,6 @@ import java.util.EnumMap;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 
@@ -69,7 +68,7 @@ public class MaxQuantIT {
         EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb.getId());
 
-        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.maxQuantDirectory, fastaDbIds);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.parameterDirectory, MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds);
         MappedData mappedData = maxQuantImporter.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 

@@ -40,7 +40,7 @@ public class MaxQuantSearchSettingsParserTest {
         EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
         fastaDbs.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb);
 
-        maxQuantSearchSettingsParser.parse(MaxQuantTestSuite.maxQuantDirectory, fastaDbs, false);
+        maxQuantSearchSettingsParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.parameterDirectory, fastaDbs, false);
         Map<String, SearchAndValidationSettings> result = maxQuantSearchSettingsParser.getRunSettings();
 
         // insane way to get the single entry from the map

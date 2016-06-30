@@ -115,15 +115,15 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Parse the search parameters for a MaxQuant experiment.
      *
-     * @param maxQuantTxtDirectory the MaxQuant txt directory path
+     * @param combinedFolderDirectory the MaxQuant combined folder directory path
+     * @param parameterFilePath the parameter file
      * @param fastaDbs             the FASTA databases used in the experiment
      * @param storeFiles           whether data files should be stored with the experiment
      * @throws IOException thrown in case of of an I/O related problem
      */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
-        Path parameterDirectory = Paths.get(maxQuantDirectory + File.separator + MaxQuantConstants.PARAMETER_FILE.value());
-        Path txtDirectory = Paths.get(maxQuantDirectory + File.separator + MaxQuantConstants.COMBINED_DIRECTORY.value() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
-        parseSpectrumParameters(parameterDirectory);
+    public void parse(Path combinedFolderDirectory,Path parameterFilePath, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
+        Path txtDirectory = Paths.get(combinedFolderDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
+        parseSpectrumParameters(parameterFilePath);
         TabularFileLineValuesIterator summaryIterator = new TabularFileLineValuesIterator(Paths.get(txtDirectory.toString(), MaxQuantConstants.SUMMARY_FILE.value()).toFile(), MANDATORY_HEADERS);
         Map<String, String> row;
 
@@ -375,10 +375,10 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Parse spectrum parameters and match with runs.
      *
-     * @param spectrumParametersFilePath
+     * @param spectrumParametersPath
      * @throws JDOMException
      */
-    public void parseSpectrumParameters(Path spectrumParametersFilePath) throws JDOMException {
+    public void parseSpectrumParameters(Path spectrumParametersPath) throws JDOMException {
         // create a map to hold raw files for each run (key: group index; value: raw file).
         Map<Integer, String> rawFilePath = new HashMap<>();
         //create a map to hold raw file groups for each run (key: group index; value: group number).
@@ -386,7 +386,7 @@ public class MaxQuantSearchSettingsParser {
         //create a map to hold enum map of spectrum parameters and their group(key: group number; value: enumMAp of spectrum parameters).
         Map<Integer, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithGroup = new HashMap<>();
 
-        Resource spectrumParameterResource = new FileSystemResource(spectrumParametersFilePath.toFile());
+        Resource spectrumParameterResource = new FileSystemResource(spectrumParametersPath.toFile());
 
         SAXBuilder builder = new SAXBuilder();
 

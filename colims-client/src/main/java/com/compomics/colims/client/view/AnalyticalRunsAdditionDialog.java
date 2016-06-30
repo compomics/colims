@@ -266,14 +266,14 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
             .addGroup(confirmationPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(confirmationLabel)
-                .addContainerGap(434, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         confirmationPanelLayout.setVerticalGroup(
             confirmationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(confirmationPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(confirmationLabel)
-                .addContainerGap(219, Short.MAX_VALUE))
+                .addContainerGap(226, Short.MAX_VALUE))
         );
 
         topPanel.add(confirmationPanel, "confirmationPanel");
@@ -351,7 +351,7 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
             parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bottomPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -365,7 +365,7 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(parentPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(parentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();

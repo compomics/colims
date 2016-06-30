@@ -10,7 +10,8 @@ import javax.swing.JTextField;
  */
 public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
-    private final JFileChooser maxQuantDirectoryChooser = new JFileChooser();
+    private final JFileChooser parameterDirectoryChooser = new JFileChooser();
+    private final JFileChooser combinedFolderChooser = new JFileChooser();
     private final JFileChooser primaryFastaFileChooser = new JFileChooser();
     private final JFileChooser additionalFastaFileChooser = new JFileChooser();
     private final JFileChooser contaminantsFastaFileChooser = new JFileChooser();
@@ -22,10 +23,14 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public JFileChooser getMaxQuantDirectoryChooser() {
-        return maxQuantDirectoryChooser;
+    public JFileChooser getParameterDirectoryChooser() {
+        return parameterDirectoryChooser;
     }
 
+    public JFileChooser getCombinedFolderChooser() {
+        return combinedFolderChooser;
+    }
+   
     public JFileChooser getPrimaryFastaFileChooser() {
         return primaryFastaFileChooser;
     }
@@ -46,15 +51,19 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         return contaminantsFastaDbTextField;
     }
 
-    public JTextField getMaxQuantDirectoryTextField() {
-        return maxQuantDirectoryTextField;
+    public JTextField getParameterDirectoryTextField() {
+        return parameterDirectoryTextField;
+    }
+
+    public JTextField getCombinedFolderDirectoryTextField() {
+        return combinedFolderDirectoryTextField;
     }
 
     public JTextField getPrimaryFastaDbTextField() {
         return primaryFastaDbTextField;
     }
 
-    public JButton getSelectAddtionalFastaDbButton() {
+    public JButton getSelectAdditionalFastaDbButton() {
         return selectAdditionalFastaDbButton;
     }
 
@@ -62,8 +71,12 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         return selectContaminantsFastaDbButton;
     }
 
-    public JButton getSelectMaxQuantDirectoryButton() {
-        return selectMaxQuantDirectoryButton;
+    public JButton getSelectParameterDirectoryButton() {
+        return selectParameterDirectoryButton;
+    }
+
+    public JButton getSelectCombinedFolderButton() {
+        return selectCombinedFolderButton;
     }
 
     public JButton getSelectPrimaryFastaDbButton() {
@@ -78,12 +91,18 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        leftPanel = new javax.swing.JPanel();
+        combinedFolderDirectorySelectionLabel = new javax.swing.JLabel();
+        combinedFolderDirectoryTextField = new javax.swing.JTextField();
+        selectCombinedFolderButton = new javax.swing.JButton();
         maxQuantDirectorySelectionLabel = new javax.swing.JLabel();
-        selectMaxQuantDirectoryButton = new javax.swing.JButton();
+        selectParameterDirectoryButton = new javax.swing.JButton();
+        parameterDirectoryTextField = new javax.swing.JTextField();
+        rightPanel = new javax.swing.JPanel();
         selectPrimaryFastaDbButton = new javax.swing.JButton();
         primaryFastaFileSelectionLabel = new javax.swing.JLabel();
-        maxQuantDirectoryTextField = new javax.swing.JTextField();
         primaryFastaDbTextField = new javax.swing.JTextField();
         contaminantsFastaFileSelectionLabel = new javax.swing.JLabel();
         contaminantsFastaDbTextField = new javax.swing.JTextField();
@@ -93,13 +112,71 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         selectAdditionalFastaDbButton = new javax.swing.JButton();
 
         setOpaque(false);
+        setLayout(new java.awt.GridBagLayout());
 
-        maxQuantDirectorySelectionLabel.setText("Select the MaxQuant files directory*:");
+        combinedFolderDirectorySelectionLabel.setText("Select the Combined folder directory*:");
 
-        selectMaxQuantDirectoryButton.setText("browse...");
-        selectMaxQuantDirectoryButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        selectMaxQuantDirectoryButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        selectMaxQuantDirectoryButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        selectCombinedFolderButton.setText("browse...");
+        selectCombinedFolderButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        selectCombinedFolderButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        selectCombinedFolderButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
+        maxQuantDirectorySelectionLabel.setText("Select the parameter file (mqpar) directory*:");
+
+        selectParameterDirectoryButton.setText("browse...");
+        selectParameterDirectoryButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        selectParameterDirectoryButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        selectParameterDirectoryButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
+        parameterDirectoryTextField.setEditable(false);
+
+        javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
+        leftPanel.setLayout(leftPanelLayout);
+        leftPanelLayout.setHorizontalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftPanelLayout.createSequentialGroup()
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(combinedFolderDirectoryTextField)
+                    .addComponent(parameterDirectoryTextField))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(selectCombinedFolderButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftPanelLayout.createSequentialGroup()
+                        .addComponent(selectParameterDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3))))
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(combinedFolderDirectorySelectionLabel)
+                    .addComponent(maxQuantDirectorySelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 232, Short.MAX_VALUE))
+        );
+        leftPanelLayout.setVerticalGroup(
+            leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(leftPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(combinedFolderDirectorySelectionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(combinedFolderDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectCombinedFolderButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(maxQuantDirectorySelectionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(parameterDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectParameterDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(85, Short.MAX_VALUE))
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(leftPanel, gridBagConstraints);
+
+        rightPanel.setPreferredSize(new java.awt.Dimension(480, 175));
 
         selectPrimaryFastaDbButton.setText("browse...");
         selectPrimaryFastaDbButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -107,8 +184,6 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         selectPrimaryFastaDbButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         primaryFastaFileSelectionLabel.setText("Select a primary FASTA file*:");
-
-        maxQuantDirectoryTextField.setEditable(false);
 
         primaryFastaDbTextField.setEditable(false);
 
@@ -126,85 +201,87 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         selectAdditionalFastaDbButton.setMinimumSize(new java.awt.Dimension(80, 25));
         selectAdditionalFastaDbButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        javax.swing.GroupLayout rightPanelLayout = new javax.swing.GroupLayout(rightPanel);
+        rightPanel.setLayout(rightPanelLayout);
+        rightPanelLayout.setHorizontalGroup(
+            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rightPanelLayout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(rightPanelLayout.createSequentialGroup()
+                        .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(additionalFastaDbTextField)
+                            .addComponent(contaminantsFastaDbTextField))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(selectContaminantsFastaDbButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(selectAdditionalFastaDbButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(rightPanelLayout.createSequentialGroup()
+                        .addComponent(primaryFastaDbTextField)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(selectPrimaryFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1))
+                    .addGroup(rightPanelLayout.createSequentialGroup()
+                        .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(contaminantsFastaFileSelectionLabel)
+                            .addComponent(primaryFastaFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(6, 6, 6))
+            .addGroup(rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(contaminantsFastaFileSelectionLabel)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(maxQuantDirectoryTextField)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(selectMaxQuantDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(primaryFastaDbTextField)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(selectPrimaryFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(maxQuantDirectorySelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(primaryFastaFileSelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(contaminantsFastaDbTextField)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(additionalFastaFileSelectionLabel)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addComponent(additionalFastaDbTextField))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(selectContaminantsFastaDbButton, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                                    .addComponent(selectAdditionalFastaDbButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addGap(452, 452, 452))))
+                .addComponent(additionalFastaFileSelectionLabel)
+                .addContainerGap(92, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        rightPanelLayout.setVerticalGroup(
+            rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(maxQuantDirectorySelectionLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(selectMaxQuantDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(maxQuantDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(primaryFastaFileSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(selectPrimaryFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(primaryFastaDbTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(primaryFastaDbTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectPrimaryFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(contaminantsFastaFileSelectionLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(6, 6, 6)
+                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(contaminantsFastaDbTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectContaminantsFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(additionalFastaFileSelectionLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(6, 6, 6)
+                .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(additionalFastaDbTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectAdditionalFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(rightPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField additionalFastaDbTextField;
     private javax.swing.JLabel additionalFastaFileSelectionLabel;
+    private javax.swing.JLabel combinedFolderDirectorySelectionLabel;
+    private javax.swing.JTextField combinedFolderDirectoryTextField;
     private javax.swing.JTextField contaminantsFastaDbTextField;
     private javax.swing.JLabel contaminantsFastaFileSelectionLabel;
+    private javax.swing.JPanel leftPanel;
     private javax.swing.JLabel maxQuantDirectorySelectionLabel;
-    private javax.swing.JTextField maxQuantDirectoryTextField;
+    private javax.swing.JTextField parameterDirectoryTextField;
     private javax.swing.JTextField primaryFastaDbTextField;
     private javax.swing.JLabel primaryFastaFileSelectionLabel;
+    private javax.swing.JPanel rightPanel;
     private javax.swing.JButton selectAdditionalFastaDbButton;
+    private javax.swing.JButton selectCombinedFolderButton;
     private javax.swing.JButton selectContaminantsFastaDbButton;
-    private javax.swing.JButton selectMaxQuantDirectoryButton;
+    private javax.swing.JButton selectParameterDirectoryButton;
     private javax.swing.JButton selectPrimaryFastaDbButton;
     // End of variables declaration//GEN-END:variables
 }
