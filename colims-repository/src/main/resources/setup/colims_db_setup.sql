@@ -1,5 +1,6 @@
 use colims;
     
+   
     create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
@@ -467,11 +468,6 @@ use colims;
         primary key (id)
     );
 
-    create table colims.search_parameters_has_other_cv_param (
-        l_search_parameters_id bigint not null,
-        l_other_search_cv_param_id bigint not null
-    );
-
     create table colims.search_params_has_modification (
         id bigint not null auto_increment,
         modification_type integer,
@@ -479,6 +475,11 @@ use colims;
         l_search_modification_id bigint,
         l_search_parameters_id bigint,
         primary key (id)
+    );
+
+    create table colims.search_params_has_other_cv_param (
+        l_search_params_id bigint not null,
+        l_other_search_cv_param_id bigint not null
     );
 
     create table colims.search_settings_has_fasta_db (
@@ -547,103 +548,103 @@ use colims;
         primary key (id)
     );
 
-    alter table colims.analytical_run
-        add constraint FKiteej35b4sjhfx12kd02jm6iw
-        foreign key (l_instrument_id)
+    alter table colims.analytical_run 
+        add constraint FKiteej35b4sjhfx12kd02jm6iw 
+        foreign key (l_instrument_id) 
         references colims.instrument (id);
 
-    alter table colims.analytical_run
-        add constraint FKe9t2cb0e8d0xob2qfcoly21t5
-        foreign key (l_sample_id)
+    alter table colims.analytical_run 
+        add constraint FKe9t2cb0e8d0xob2qfcoly21t5 
+        foreign key (l_sample_id) 
         references colims.sample (id);
 
-    alter table colims.analytical_run_binary_file
-        add constraint FKhhc6e2qdpbe1lkvwn6iypoja0
-        foreign key (l_analytical_run_id)
+    alter table colims.analytical_run_binary_file 
+        add constraint FKhhc6e2qdpbe1lkvwn6iypoja0 
+        foreign key (l_analytical_run_id) 
         references colims.analytical_run (id);
 
-    alter table colims.colims_user
+    alter table colims.colims_user 
         add constraint UK_7qy96sq9o6jh5517or8yh758 unique (name);
 
-    alter table colims.colims_user
-        add constraint FKmb059tuvfut3ocw5q05o35njn
-        foreign key (l_institution_id)
+    alter table colims.colims_user 
+        add constraint FKmb059tuvfut3ocw5q05o35njn 
+        foreign key (l_institution_id) 
         references colims.institution (id);
 
-    alter table colims.experiment
-        add constraint FK48dysdsbha1vdr40udltld10v
-        foreign key (l_project_id)
+    alter table colims.experiment 
+        add constraint FK48dysdsbha1vdr40udltld10v 
+        foreign key (l_project_id) 
         references colims.project (id);
 
-    alter table colims.experiment_binary_file
-        add constraint FKaqv506oy06s0geln513eam413
-        foreign key (l_experiment_id)
+    alter table colims.experiment_binary_file 
+        add constraint FKaqv506oy06s0geln513eam413 
+        foreign key (l_experiment_id) 
         references colims.experiment (id);
 
-    alter table colims.fasta_db
-        add constraint FKnbentn9v6kkk4vqurumyu559q
-        foreign key (l_taxonomy_cv_id)
+    alter table colims.fasta_db 
+        add constraint FKnbentn9v6kkk4vqurumyu559q 
+        foreign key (l_taxonomy_cv_id) 
         references colims.taxonomy_cv_param (id);
 
-    alter table colims.group_has_role
-        add constraint FKd4iuk0my83rtlhhulrcrtf76x
-        foreign key (l_role_id)
+    alter table colims.group_has_role 
+        add constraint FKd4iuk0my83rtlhhulrcrtf76x 
+        foreign key (l_role_id) 
         references colims.group_role (id);
 
-    alter table colims.group_has_role
-        add constraint FKd4jnxgpstfi5gntmi4m61ordn
-        foreign key (l_group_id)
+    alter table colims.group_has_role 
+        add constraint FKd4jnxgpstfi5gntmi4m61ordn 
+        foreign key (l_group_id) 
         references colims.user_group (id);
 
-    alter table colims.group_role
+    alter table colims.group_role 
         add constraint UK_7kvrlnisllgg2md5614ywh82g unique (name);
 
-    alter table colims.instrument
+    alter table colims.instrument 
         add constraint UK_11wfouotl7vb11u6ebomnbsrr unique (name);
 
-    alter table colims.instrument
-        add constraint FK1wxnrvqujdygv9ll147322weo
-        foreign key (l_detector_cv_id)
+    alter table colims.instrument 
+        add constraint FK1wxnrvqujdygv9ll147322weo 
+        foreign key (l_detector_cv_id) 
         references colims.instrument_cv_param (id);
 
-    alter table colims.instrument
-        add constraint FKoildeovchu26pb5ewxjaak4hv
-        foreign key (l_source_cv_id)
+    alter table colims.instrument 
+        add constraint FKoildeovchu26pb5ewxjaak4hv 
+        foreign key (l_source_cv_id) 
         references colims.instrument_cv_param (id);
 
-    alter table colims.instrument
-        add constraint FKmihpkan5xf8nt1256tovnqlno
-        foreign key (l_type_cv_id)
+    alter table colims.instrument 
+        add constraint FKmihpkan5xf8nt1256tovnqlno 
+        foreign key (l_type_cv_id) 
         references colims.instrument_cv_param (id);
 
-    alter table colims.instrument_has_analyzer
-        add constraint FKe59386f5p3dnckvgwqtlq0eay
-        foreign key (l_instrument_cv_param_id)
+    alter table colims.instrument_has_analyzer 
+        add constraint FKe59386f5p3dnckvgwqtlq0eay 
+        foreign key (l_instrument_cv_param_id) 
         references colims.instrument_cv_param (id);
 
-    alter table colims.instrument_has_analyzer
-        add constraint FKf70hvf3t0rthby8x7in9gpjc6
-        foreign key (l_instrument_id)
+    alter table colims.instrument_has_analyzer 
+        add constraint FKf70hvf3t0rthby8x7in9gpjc6 
+        foreign key (l_instrument_id) 
         references colims.instrument (id);
 
-    alter table colims.material
-        add constraint FKbn76m95hfcc93i84r7f2jd0fx
-        foreign key (l_cell_type_cv_id)
+    alter table colims.material 
+        add constraint FKbn76m95hfcc93i84r7f2jd0fx 
+        foreign key (l_cell_type_cv_id) 
         references colims.material_cv_param (id);
 
-    alter table colims.material
-        add constraint FKsu9ti70rc3fi9aqdsm9jttdji
-        foreign key (l_compartment_cv_id)
+    alter table colims.material 
+        add constraint FKsu9ti70rc3fi9aqdsm9jttdji 
+        foreign key (l_compartment_cv_id) 
         references colims.material_cv_param (id);
 
-    alter table colims.material
-        add constraint FKly75y5tu933dmvgdeqvffqgvu
-        foreign key (l_species_cv_id)
+    alter table colims.material 
+        add constraint FKly75y5tu933dmvgdeqvffqgvu 
+        foreign key (l_species_cv_id) 
         references colims.material_cv_param (id);
 
-    alter table colims.material
-        add constraint FKc4mhhee3lkceh33p7661vsvc2
-        foreign key (l_tissue_cv_id)
+    alter table colims.material 
+        add constraint FKc4mhhee3lkceh33p7661vsvc2 
+        foreign key (l_tissue_cv_id) 
         references colims.material_cv_param (id);
 
     alter table colims.peptide 
@@ -855,16 +856,6 @@ use colims;
         foreign key (l_search_type_cv_id) 
         references colims.search_cv_param (id);
 
-    alter table colims.search_parameters_has_other_cv_param 
-        add constraint FKbwof864854r0mkmka95lel5u0 
-        foreign key (l_other_search_cv_param_id) 
-        references colims.search_cv_param (id);
-
-    alter table colims.search_parameters_has_other_cv_param 
-        add constraint FKmtlux8vhowxo82xwtewks87vt 
-        foreign key (l_search_parameters_id) 
-        references colims.search_parameters (id);
-
     alter table colims.search_params_has_modification 
         add constraint FK30b5scgrsqdqc9vtlqa9tgay 
         foreign key (l_search_modification_id) 
@@ -873,6 +864,16 @@ use colims;
     alter table colims.search_params_has_modification 
         add constraint FKj9l3us6wasvnnwkgxu631ucqf 
         foreign key (l_search_parameters_id) 
+        references colims.search_parameters (id);
+
+    alter table colims.search_params_has_other_cv_param 
+        add constraint FKswo2824uycevh3hknnvkmjfxo 
+        foreign key (l_other_search_cv_param_id) 
+        references colims.search_cv_param (id);
+
+    alter table colims.search_params_has_other_cv_param 
+        add constraint FKqn6aoilaqjm9g7h2cqflc8is0 
+        foreign key (l_search_params_id) 
         references colims.search_parameters (id);
 
     alter table colims.search_settings_has_fasta_db 

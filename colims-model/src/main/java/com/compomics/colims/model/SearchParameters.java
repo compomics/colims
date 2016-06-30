@@ -102,9 +102,9 @@ public class SearchParameters extends DatabaseEntity {
      * The search parameters other than the modifications searched.
      */
     @ManyToMany
-    @JoinTable(name = "search_parameters_has_other_cv_param",
+    @JoinTable(name = "search_params_has_other_cv_param",
             joinColumns = {
-                    @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")},
+                    @JoinColumn(name = "l_search_params_id", referencedColumnName = "id")},
             inverseJoinColumns = {
                     @JoinColumn(name = "l_other_search_cv_param_id", referencedColumnName = "id")})
     private List<SearchCvParam> additionalCvParams = new ArrayList<>();
