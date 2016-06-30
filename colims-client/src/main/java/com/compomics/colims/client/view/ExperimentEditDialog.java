@@ -27,8 +27,8 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         return attachmentsEditButton;
     }
 
-    public JButton getCancelButton() {
-        return cancelButton;
+    public JButton getCloseButton() {
+        return closeButton;
     }
 
     public JTextArea getDescriptionTextArea() {
@@ -66,7 +66,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
 
         experimentEditPanel = new javax.swing.JPanel();
         saveOrUpdateButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
         detailPanel = new javax.swing.JPanel();
         attachementsLabel = new javax.swing.JLabel();
         numberTextField = new javax.swing.JTextField();
@@ -92,11 +92,11 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
         saveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
         saveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        cancelButton.setText("cancel");
-        cancelButton.setToolTipText("");
-        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeButton.setText("close");
+        closeButton.setToolTipText("");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         detailPanel.setOpaque(false);
 
@@ -193,7 +193,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
                 .addContainerGap(499, Short.MAX_VALUE)
                 .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addComponent(detailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -204,7 +204,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(experimentEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -225,7 +225,7 @@ public class ExperimentEditDialog extends javax.swing.JDialog {
     private javax.swing.JLabel attachementsLabel;
     private javax.swing.JTextField attachementsTextField;
     private javax.swing.JButton attachmentsEditButton;
-    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeButton;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JScrollPane descriptionScrollPanel;
     private javax.swing.JTextArea descriptionTextArea;

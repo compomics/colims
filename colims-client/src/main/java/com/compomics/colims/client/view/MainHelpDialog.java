@@ -61,7 +61,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
             }
         });
 
-        cancelButton.addActionListener(e -> MainHelpDialog.this.dispose());
+        closeButton.addActionListener(e -> MainHelpDialog.this.dispose());
     }
 
     /**
@@ -74,7 +74,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         parentPanel = new javax.swing.JPanel();
-        cancelButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
         helpPanel = new javax.swing.JPanel();
         helpMessageScrollPane = new javax.swing.JScrollPane();
         helpMessageTextArea = new javax.swing.JTextArea();
@@ -85,10 +85,10 @@ public class MainHelpDialog extends javax.swing.JDialog {
 
         parentPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        cancelButton.setText("cancel");
-        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeButton.setText("close");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         helpPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         helpPanel.setOpaque(false);
@@ -143,7 +143,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
             parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parentPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(parentPanelLayout.createSequentialGroup()
                 .addContainerGap()
@@ -156,7 +156,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(helpPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -174,7 +174,7 @@ public class MainHelpDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeButton;
     private javax.swing.JScrollPane helpMessageScrollPane;
     private javax.swing.JTextArea helpMessageTextArea;
     private javax.swing.JPanel helpPanel;

@@ -30,7 +30,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
     public JFileChooser getCombinedFolderChooser() {
         return combinedFolderChooser;
     }
-   
+
     public JFileChooser getPrimaryFastaFileChooser() {
         return primaryFastaFileChooser;
     }
@@ -100,6 +100,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         maxQuantDirectorySelectionLabel = new javax.swing.JLabel();
         selectParameterDirectoryButton = new javax.swing.JButton();
         parameterDirectoryTextField = new javax.swing.JTextField();
+        separator = new javax.swing.JSeparator();
         rightPanel = new javax.swing.JPanel();
         selectPrimaryFastaDbButton = new javax.swing.JButton();
         primaryFastaFileSelectionLabel = new javax.swing.JLabel();
@@ -114,7 +115,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         setOpaque(false);
         setLayout(new java.awt.GridBagLayout());
 
-        combinedFolderDirectorySelectionLabel.setText("Select the Combined folder directory*:");
+        combinedFolderDirectorySelectionLabel.setText("Select the combined folder directory*:");
 
         selectCombinedFolderButton.setText("browse...");
         selectCombinedFolderButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -134,21 +135,23 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         leftPanel.setLayout(leftPanelLayout);
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftPanelLayout.createSequentialGroup()
-                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(combinedFolderDirectoryTextField)
-                    .addComponent(parameterDirectoryTextField))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(selectCombinedFolderButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, leftPanelLayout.createSequentialGroup()
-                        .addComponent(selectParameterDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(3, 3, 3))))
             .addGroup(leftPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(combinedFolderDirectorySelectionLabel)
-                    .addComponent(maxQuantDirectorySelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 232, Short.MAX_VALUE))
+                    .addGroup(leftPanelLayout.createSequentialGroup()
+                        .addComponent(parameterDirectoryTextField)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(selectParameterDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(leftPanelLayout.createSequentialGroup()
+                        .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(combinedFolderDirectorySelectionLabel)
+                            .addComponent(maxQuantDirectorySelectionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 218, Short.MAX_VALUE))
+                    .addGroup(leftPanelLayout.createSequentialGroup()
+                        .addComponent(combinedFolderDirectoryTextField)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(selectCombinedFolderButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         leftPanelLayout.setVerticalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,13 +162,13 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(combinedFolderDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectCombinedFolderButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(maxQuantDirectorySelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(parameterDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectParameterDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addContainerGap(83, Short.MAX_VALUE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -175,6 +178,14 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         add(leftPanel, gridBagConstraints);
+
+        separator.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        add(separator, gridBagConstraints);
 
         rightPanel.setPreferredSize(new java.awt.Dimension(480, 175));
 
@@ -214,12 +225,12 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                             .addComponent(contaminantsFastaDbTextField))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(selectContaminantsFastaDbButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(selectAdditionalFastaDbButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(selectContaminantsFastaDbButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(selectAdditionalFastaDbButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(rightPanelLayout.createSequentialGroup()
                         .addComponent(primaryFastaDbTextField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(selectPrimaryFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(selectPrimaryFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(1, 1, 1))
                     .addGroup(rightPanelLayout.createSequentialGroup()
                         .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -230,7 +241,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
             .addGroup(rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(additionalFastaFileSelectionLabel)
-                .addContainerGap(92, Short.MAX_VALUE))
+                .addContainerGap(37, Short.MAX_VALUE))
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -257,6 +268,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
@@ -283,5 +295,6 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
     private javax.swing.JButton selectContaminantsFastaDbButton;
     private javax.swing.JButton selectParameterDirectoryButton;
     private javax.swing.JButton selectPrimaryFastaDbButton;
+    private javax.swing.JSeparator separator;
     // End of variables declaration//GEN-END:variables
 }

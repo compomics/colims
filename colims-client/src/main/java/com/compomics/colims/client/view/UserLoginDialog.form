@@ -32,7 +32,7 @@
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Component id="loginButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
+                      <Component id="closeButton" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -67,7 +67,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="closeButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="loginButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -104,9 +104,9 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="cancelButton">
+    <Component class="javax.swing.JButton" name="closeButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="cancel"/>
+        <Property name="text" type="java.lang.String" value="close"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[80, 25]"/>
         </Property>

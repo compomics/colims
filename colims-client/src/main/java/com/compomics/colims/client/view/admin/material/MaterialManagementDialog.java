@@ -13,7 +13,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
 
      /**
      * Dialog constructor
-     * 
+     *
      * @param parent the parent frame
      * @param modal the modal boolean
      */
@@ -46,8 +46,8 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         return materialEditButton;
     }
 
-    public JButton getCancelMaterialManagementButton() {
-        return cancelMaterialManagementButton;
+    public JButton getCloseMaterialManagementButton() {
+        return closeMaterialManagementButton;
     }
 
     /**
@@ -69,7 +69,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         materialDetailPanel = new javax.swing.JPanel();
         materialDetailsTableScrollPane = new javax.swing.JScrollPane();
         materialDetailsTable = new javax.swing.JTable();
-        cancelMaterialManagementButton = new javax.swing.JButton();
+        closeMaterialManagementButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("material management overview");
@@ -79,8 +79,6 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         materialOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Overview"));
         materialOverviewPanel.setOpaque(false);
         materialOverviewPanel.setPreferredSize(new java.awt.Dimension(100, 100));
-
-        materialListScrollPane.setOpaque(false);
 
         materialListScrollPane.setViewportView(materialList);
 
@@ -131,8 +129,6 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
         materialDetailPanel.setOpaque(false);
         materialDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
 
-        materialDetailsTableScrollPane.setOpaque(false);
-
         materialDetailsTable.setOpaque(false);
         materialDetailsTableScrollPane.setViewportView(materialDetailsTable);
 
@@ -153,8 +149,8 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        cancelMaterialManagementButton.setText("cancel");
-        cancelMaterialManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeMaterialManagementButton.setText("close");
+        closeMaterialManagementButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout materialCrudPanelLayout = new javax.swing.GroupLayout(materialCrudPanel);
         materialCrudPanel.setLayout(materialCrudPanelLayout);
@@ -163,22 +159,22 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
             .addGroup(materialCrudPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(materialCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(materialOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
-                    .addComponent(materialDetailPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE)
+                    .addComponent(materialOverviewPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)
+                    .addComponent(materialDetailPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 619, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, materialCrudPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(cancelMaterialManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(closeMaterialManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         materialCrudPanelLayout.setVerticalGroup(
             materialCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, materialCrudPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(materialOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                .addComponent(materialOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(materialDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addComponent(materialDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelMaterialManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeMaterialManagementButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -201,7 +197,7 @@ public class MaterialManagementDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addMaterialButton;
-    private javax.swing.JButton cancelMaterialManagementButton;
+    private javax.swing.JButton closeMaterialManagementButton;
     private javax.swing.JButton deleteMaterialButton;
     private javax.swing.JPanel materialCrudPanel;
     private javax.swing.JPanel materialDetailPanel;

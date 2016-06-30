@@ -137,7 +137,7 @@ public class ProjectEditController implements Controllable {
             }
         });
 
-        projectEditDialog.getCancelButton().addActionListener(e -> projectEditDialog.dispose());
+        projectEditDialog.getCloseButton().addActionListener(e -> projectEditDialog.dispose());
     }
 
     @Override

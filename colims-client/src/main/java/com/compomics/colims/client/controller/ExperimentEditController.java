@@ -176,7 +176,7 @@ public class ExperimentEditController implements Controllable {
             experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });
 
-        experimentBinaryFileDialog.getCancelButton().addActionListener(e -> experimentBinaryFileDialog.dispose());
+        experimentBinaryFileDialog.getCloseButton().addActionListener(e -> experimentBinaryFileDialog.dispose());
 
         experimentEditDialog.getAttachmentsEditButton().addActionListener(e -> {
             if (experimentToEdit.getId() != null) {
@@ -190,7 +190,7 @@ public class ExperimentEditController implements Controllable {
             }
         });
 
-        experimentEditDialog.getCancelButton().addActionListener(e -> experimentEditDialog.dispose());
+        experimentEditDialog.getCloseButton().addActionListener(e -> experimentEditDialog.dispose());
 
     }
 

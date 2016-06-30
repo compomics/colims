@@ -276,7 +276,7 @@ public class OlsController implements Controllable {
             }
         });
 
-        olsDialog.getCancelButton().addActionListener(e -> {
+        olsDialog.getCloseButton().addActionListener(e -> {
             clear();
 
             //dereference callback instance

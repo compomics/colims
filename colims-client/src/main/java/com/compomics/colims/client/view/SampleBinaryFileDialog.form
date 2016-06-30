@@ -53,7 +53,7 @@
                       <Component id="binaryFileManagementPanel" pref="372" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="closeButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -66,7 +66,7 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="binaryFileManagementPanel" pref="232" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="closeButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -85,9 +85,9 @@
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;SampleBinaryFile&gt;"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JButton" name="cancelButton">
+        <Component class="javax.swing.JButton" name="closeButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="cancel"/>
+            <Property name="text" type="java.lang.String" value="close"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>

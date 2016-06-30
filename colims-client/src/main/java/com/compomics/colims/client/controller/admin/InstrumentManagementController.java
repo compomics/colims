@@ -208,7 +208,7 @@ public class InstrumentManagementController implements Controllable {
         }
         );
 
-        instrumentManagementDialog.getCancelInstrumentManagementButton().addActionListener(e -> instrumentManagementDialog.dispose()
+        instrumentManagementDialog.getCloseInstrumentManagementButton().addActionListener(e -> instrumentManagementDialog.dispose()
         );
 
     }
@@ -344,7 +344,7 @@ public class InstrumentManagementController implements Controllable {
             }
         });
 
-        instrumentEditDialog.getCancelInstrumentEditButton().addActionListener(e -> {
+        instrumentEditDialog.getCloseInstrumentEditButton().addActionListener(e -> {
             if (instrumentToEdit.getId() != null) {
                 //roll back the changes
                 Instrument rolledBackInstrument = instrumentService.findById(instrumentToEdit.getId());

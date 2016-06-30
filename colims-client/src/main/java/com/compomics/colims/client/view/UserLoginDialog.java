@@ -18,30 +18,30 @@ public class UserLoginDialog extends javax.swing.JDialog {
      * @param modal is the dialog modal
      */
     public UserLoginDialog(final Frame parent, final boolean modal) {
-        super(parent, modal);  
-        
+        super(parent, modal);
+
         initComponents();
-        
+
         this.getContentPane().setBackground(Color.WHITE);
 
         this.getRootPane().setDefaultButton(loginButton);
     }
-    
+
     public JButton getLoginButton() {
         return loginButton;
     }
-    
+
     public JPasswordField getUserPasswordTextField() {
         return userPasswordTextField;
     }
-    
+
     public JTextField getUserNameTextField() {
         return userNameTextField;
     }
 
     public JButton getCancelButton() {
-        return cancelButton;
-    }        
+        return closeButton;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -57,7 +57,7 @@ public class UserLoginDialog extends javax.swing.JDialog {
         userPasswordLabel = new javax.swing.JLabel();
         userPasswordTextField = new javax.swing.JPasswordField();
         loginButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
         loginInfoLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -72,10 +72,10 @@ public class UserLoginDialog extends javax.swing.JDialog {
         loginButton.setMinimumSize(new java.awt.Dimension(80, 25));
         loginButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        cancelButton.setText("cancel");
-        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeButton.setText("close");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         loginInfoLabel.setText("Please provide your colims user login credentials:");
 
@@ -91,7 +91,7 @@ public class UserLoginDialog extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(userPasswordLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -117,7 +117,7 @@ public class UserLoginDialog extends javax.swing.JDialog {
                     .addComponent(userPasswordLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -125,7 +125,7 @@ public class UserLoginDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeButton;
     private javax.swing.JButton loginButton;
     private javax.swing.JLabel loginInfoLabel;
     private javax.swing.JLabel userNameLabel;

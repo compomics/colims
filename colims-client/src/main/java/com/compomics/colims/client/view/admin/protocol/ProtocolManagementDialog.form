@@ -53,9 +53,9 @@
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="protocolOverviewPanel" alignment="1" pref="611" max="32767" attributes="0"/>
-                      <Component id="protocolDetailPanel" alignment="1" pref="611" max="32767" attributes="0"/>
-                      <Component id="cancelProtocolManagementButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="protocolOverviewPanel" alignment="1" pref="619" max="32767" attributes="0"/>
+                      <Component id="protocolDetailPanel" alignment="1" pref="619" max="32767" attributes="0"/>
+                      <Component id="closeProtocolManagementButton" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -65,11 +65,11 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="protocolOverviewPanel" pref="189" max="32767" attributes="0"/>
+                  <Component id="protocolOverviewPanel" pref="194" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                  <Component id="protocolDetailPanel" pref="239" max="32767" attributes="0"/>
+                  <Component id="protocolDetailPanel" pref="243" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="cancelProtocolManagementButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="closeProtocolManagementButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -127,9 +127,6 @@
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="protocolListScrollPane">
-              <Properties>
-                <Property name="opaque" type="boolean" value="false"/>
-              </Properties>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
@@ -219,9 +216,6 @@
           </Layout>
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="protocolDetailsTableScrollPane">
-              <Properties>
-                <Property name="opaque" type="boolean" value="false"/>
-              </Properties>
               <AuxValues>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
@@ -237,9 +231,9 @@
             </Container>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="cancelProtocolManagementButton">
+        <Component class="javax.swing.JButton" name="closeProtocolManagementButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="cancel"/>
+            <Property name="text" type="java.lang.String" value="close"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>

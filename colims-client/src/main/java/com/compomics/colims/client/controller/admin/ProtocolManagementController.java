@@ -208,7 +208,7 @@ public class ProtocolManagementController implements Controllable {
             }
         });
 
-        protocolManagementDialog.getCancelProtocolManagementButton().addActionListener(e -> protocolManagementDialog.dispose());
+        protocolManagementDialog.getCloseProtocolManagementButton().addActionListener(e -> protocolManagementDialog.dispose());
 
     }
 
@@ -355,7 +355,7 @@ public class ProtocolManagementController implements Controllable {
             }
         });
 
-        protocolEditDialog.getCancelProtocolEditButton().addActionListener(e -> {
+        protocolEditDialog.getCloseProtocolEditButton().addActionListener(e -> {
             if (protocolToEdit.getId() != null) {
                 //roll back the changes
                 Protocol rolledBackProtocol = protocolService.findById(protocolToEdit.getId());

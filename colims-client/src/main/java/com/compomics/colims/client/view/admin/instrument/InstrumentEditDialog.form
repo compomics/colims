@@ -62,7 +62,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="instrumentSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="cancelInstrumentEditButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="closeInstrumentEditButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="nameLabel" min="-2" max="-2" attributes="0"/>
@@ -89,7 +89,7 @@
                   <Component id="cvParamsPanel" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="cancelInstrumentEditButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="closeInstrumentEditButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="instrumentSaveOrUpdateButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="instrumentStateInfoLabel" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -126,9 +126,9 @@
         </Component>
         <Component class="javax.swing.JTextField" name="nameTextField">
         </Component>
-        <Component class="javax.swing.JButton" name="cancelInstrumentEditButton">
+        <Component class="javax.swing.JButton" name="closeInstrumentEditButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="cancel"/>
+            <Property name="text" type="java.lang.String" value="close"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>

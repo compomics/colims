@@ -180,7 +180,7 @@ public class InstitutionManagementController implements Controllable {
             }
         });
 
-        institutionManagementDialog.getCancelButton().addActionListener(e -> {
+        institutionManagementDialog.getCloseButton().addActionListener(e -> {
             if (getSelectedInstitution() != null && getSelectedInstitution().getId() != null) {
                 //roll back the changes
                 Institution rolledBackInstitution = institutionService.findById(getSelectedInstitution().getId());

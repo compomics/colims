@@ -40,8 +40,8 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
         return addCvParamButton;
     }
 
-    public JButton getCancelButton() {
-        return cancelButton;
+    public JButton getCloseButton() {
+        return closeButton;
     }
 
     public JLabel getCvParamStateInfoLabel() {
@@ -106,7 +106,7 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         definitionTextArea = new javax.swing.JTextArea();
         editUsingOlsCvParamButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("CV param management");
@@ -281,10 +281,10 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        cancelButton.setText("cancel");
-        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeButton.setText("close");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout cvParamCrudPanelLayout = new javax.swing.GroupLayout(cvParamCrudPanel);
         cvParamCrudPanel.setLayout(cvParamCrudPanelLayout);
@@ -295,7 +295,7 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
                 .addGroup(cvParamCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cvParamCrudPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(cvParamOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
                     .addComponent(cvParamDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE))
                 .addContainerGap())
@@ -308,7 +308,7 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(cvParamDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -330,7 +330,7 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
     private javax.swing.JLabel accessionLabel;
     private javax.swing.JTextField accessionTextField;
     private javax.swing.JButton addCvParamButton;
-    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeButton;
     private javax.swing.JPanel cvParamCrudPanel;
     private javax.swing.JPanel cvParamDetailPanel;
     private javax.swing.JPanel cvParamOverviewPanel;

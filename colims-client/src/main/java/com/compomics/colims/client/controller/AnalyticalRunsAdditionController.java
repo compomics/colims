@@ -208,7 +208,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
             }
         });
 
-        analyticalRunsAdditionDialog.getCancelButton().addActionListener(e -> analyticalRunsAdditionDialog.dispose());
+        analyticalRunsAdditionDialog.getCloseButton().addActionListener(e -> analyticalRunsAdditionDialog.dispose());
     }
 
     @Override

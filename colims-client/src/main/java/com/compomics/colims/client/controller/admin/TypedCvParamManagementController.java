@@ -205,7 +205,7 @@ public class TypedCvParamManagementController implements Controllable {
             }
         });
 
-        cvParamManagementDialog.getCancelButton().addActionListener(e -> cvParamManagementDialog.dispose());
+        cvParamManagementDialog.getCloseButton().addActionListener(e -> cvParamManagementDialog.dispose());
     }
 
     @Override

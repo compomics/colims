@@ -59,7 +59,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="materialSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="cancelMaterialEditButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="closeMaterialEditButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="nameLabel" min="-2" max="-2" attributes="0"/>
@@ -85,7 +85,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="materialSaveOrUpdateButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cancelMaterialEditButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="closeMaterialEditButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="materialStateInfoLabel" min="-2" pref="20" max="-2" attributes="0"/>
                   </Group>
@@ -95,9 +95,9 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="cancelMaterialEditButton">
+        <Component class="javax.swing.JButton" name="closeMaterialEditButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="cancel"/>
+            <Property name="text" type="java.lang.String" value="close"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>

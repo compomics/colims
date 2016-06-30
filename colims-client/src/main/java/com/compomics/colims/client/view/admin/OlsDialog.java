@@ -44,8 +44,8 @@ public class OlsDialog extends javax.swing.JDialog {
         return annotationPropertiesCheckBox;
     }
 
-    public JButton getCancelButton() {
-        return cancelButton;
+    public JButton getCloseButton() {
+        return closeButton;
     }
 
     public JCheckBox getDescriptionCheckBox() {
@@ -179,7 +179,7 @@ public class OlsDialog extends javax.swing.JDialog {
         termAccessionTextField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         termDescriptionTextArea = new javax.swing.JTextArea();
-        cancelButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
         selectButton = new javax.swing.JButton();
         searchSettingsPanel = new javax.swing.JPanel();
         searchOntologiesPanel = new javax.swing.JPanel();
@@ -364,10 +364,10 @@ public class OlsDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        cancelButton.setText("cancel");
-        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeButton.setText("close");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         selectButton.setText("select");
         selectButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -393,7 +393,7 @@ public class OlsDialog extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(selectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         searchPanelLayout.setVerticalGroup(
@@ -410,7 +410,7 @@ public class OlsDialog extends javax.swing.JDialog {
                 .addComponent(termDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(searchPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -579,7 +579,7 @@ public class OlsDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton allOntologiesRadioButton;
     private javax.swing.JCheckBox annotationPropertiesCheckBox;
-    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeButton;
     private javax.swing.JRadioButton customFieldsRadioButton;
     private javax.swing.JRadioButton defaultFieldsRadioButton;
     private javax.swing.JCheckBox descriptionCheckBox;

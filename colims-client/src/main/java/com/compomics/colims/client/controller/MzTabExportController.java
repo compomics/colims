@@ -208,7 +208,7 @@ public class MzTabExportController implements Controllable {
             }
         });
 
-        mzTabExportDialog.getCancelButton().addActionListener(e -> mzTabExportDialog.dispose());
+        mzTabExportDialog.getCloseButton().addActionListener(e -> mzTabExportDialog.dispose());
 
         mzTabExportDialog.getAddStudyVariableButton().addActionListener(e -> {
             if (!mzTabExportDialog.getStudyVariableTextField().getText().isEmpty()) {

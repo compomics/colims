@@ -245,7 +245,7 @@ public class SampleEditController implements Controllable {
             sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });
 
-        sampleBinaryFileDialog.getCancelButton().addActionListener(e -> sampleBinaryFileDialog.dispose());
+        sampleBinaryFileDialog.getCloseButton().addActionListener(e -> sampleBinaryFileDialog.dispose());
 
         sampleEditDialog.getAttachmentsEditButton().addActionListener(e -> {
             if (sampleToEdit.getId() != null) {

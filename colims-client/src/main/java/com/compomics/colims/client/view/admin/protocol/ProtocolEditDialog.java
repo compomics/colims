@@ -30,8 +30,8 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
     }
 
-    public JButton getCancelProtocolEditButton() {
-        return cancelProtocolEditButton;
+    public JButton getCloseProtocolEditButton() {
+        return closeProtocolEditButton;
     }
 
     public DualList<ProtocolCvParam> getCvParamDualList() {
@@ -68,7 +68,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         protocolEditPanel = new javax.swing.JPanel();
-        cancelProtocolEditButton = new javax.swing.JButton();
+        closeProtocolEditButton = new javax.swing.JButton();
         protocolSaveOrUpdateButton = new javax.swing.JButton();
         cvParamsPanel = new javax.swing.JPanel();
         cvParamSummaryScrollPane = new javax.swing.JScrollPane();
@@ -85,10 +85,10 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
 
         protocolEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        cancelProtocolEditButton.setText("cancel");
-        cancelProtocolEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelProtocolEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelProtocolEditButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeProtocolEditButton.setText("close");
+        closeProtocolEditButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeProtocolEditButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeProtocolEditButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         protocolSaveOrUpdateButton.setText("save");
         protocolSaveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -150,7 +150,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(protocolSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(closeProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, protocolEditPanelLayout.createSequentialGroup()
                         .addComponent(nameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -172,7 +172,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
                 .addGroup(protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(protocolEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(protocolSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cancelProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(closeProtocolEditButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(protocolStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -196,7 +196,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton cancelProtocolEditButton;
+    private javax.swing.JButton closeProtocolEditButton;
     private com.compomics.colims.client.compoment.DualList<com.compomics.colims.model.ProtocolCvParam> cvParamDualList;
     private javax.swing.JList cvParamSummaryList;
     private javax.swing.JScrollPane cvParamSummaryScrollPane;

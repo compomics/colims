@@ -23,8 +23,8 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         initComponents();
     }
 
-    public JButton getCancelButton() {
-        return cancelButton;
+    public JButton getCloseButton() {
+        return closeButton;
     }
 
     public DateTimePicker getDateTimePicker() {
@@ -71,7 +71,7 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         instrumentLabel = new javax.swing.JLabel();
         instrumentComboBox = new javax.swing.JComboBox();
         updateButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
         dateTimePicker = new com.compomics.colims.client.compoment.DateTimePicker();
         locationLabel = new javax.swing.JLabel();
         storageLocationTextField = new javax.swing.JTextField();
@@ -96,11 +96,11 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
         updateButton.setMinimumSize(new java.awt.Dimension(80, 25));
         updateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        cancelButton.setText("cancel");
-        cancelButton.setToolTipText("");
-        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeButton.setText("close");
+        closeButton.setToolTipText("");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         dateTimePicker.setMaximumSize(new java.awt.Dimension(104, 27));
         dateTimePicker.setMinimumSize(new java.awt.Dimension(104, 27));
@@ -129,7 +129,7 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(analyticalRunEditPanelLayout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -177,7 +177,7 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
                     .addComponent(attachementsLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(analyticalRunEditPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(updateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -200,7 +200,7 @@ public class AnalyticalRunEditDialog extends javax.swing.JDialog {
     private javax.swing.JLabel attachementsLabel;
     private javax.swing.JTextField attachementsTextField;
     private javax.swing.JButton attachmentsEditButton;
-    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeButton;
     private com.compomics.colims.client.compoment.DateTimePicker dateTimePicker;
     private javax.swing.JComboBox instrumentComboBox;
     private javax.swing.JLabel instrumentLabel;

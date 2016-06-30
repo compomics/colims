@@ -32,8 +32,8 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
         return addButton;
     }
 
-    public JButton getCancelButton() {
-        return cancelButton;
+    public JButton getCloseButton() {
+        return closeButton;
     }
 
     public JTextField getCityTextField() {
@@ -87,7 +87,7 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
         java.awt.GridBagConstraints gridBagConstraints;
 
         institutionManagementParentPanel = new javax.swing.JPanel();
-        cancelButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
         institutionManagementPanel = new javax.swing.JPanel();
         institutionOverviewPanel = new javax.swing.JPanel();
         institutionListScrollPane = new javax.swing.JScrollPane();
@@ -119,10 +119,10 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
 
         institutionManagementParentPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        cancelButton.setText("cancel");
-        cancelButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeButton.setText("close");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         institutionManagementPanel.setOpaque(false);
         institutionManagementPanel.setLayout(new java.awt.GridBagLayout());
@@ -314,7 +314,7 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
             institutionManagementParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, institutionManagementParentPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addComponent(institutionManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 939, Short.MAX_VALUE)
         );
@@ -323,7 +323,7 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
             .addGroup(institutionManagementParentPanelLayout.createSequentialGroup()
                 .addComponent(institutionManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -344,9 +344,9 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
     private javax.swing.JLabel abbreviationLabel;
     private javax.swing.JTextField abbreviationTextField;
     private javax.swing.JButton addButton;
-    private javax.swing.JButton cancelButton;
     private javax.swing.JLabel cityLabel;
     private javax.swing.JTextField cityTextField;
+    private javax.swing.JButton closeButton;
     private javax.swing.JLabel countryLabel;
     private javax.swing.JTextField countryTextField;
     private javax.swing.JButton deleteButton;

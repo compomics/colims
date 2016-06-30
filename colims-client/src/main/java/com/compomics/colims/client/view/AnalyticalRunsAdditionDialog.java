@@ -50,8 +50,8 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
         return infoLabel;
     }
 
-    public JButton getCancelButton() {
-        return cancelButton;
+    public JButton getCloseButton() {
+        return closeButton;
     }
 
     public ButtonGroup getDataTypeButtonGroup() {
@@ -125,7 +125,7 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
         proceedButton = new javax.swing.JButton();
         infoLabel = new javax.swing.JLabel();
         finishButton = new javax.swing.JButton();
-        cancelButton = new javax.swing.JButton();
+        closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Analytical runs addition");
@@ -302,8 +302,8 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
         finishButton.setMinimumSize(new java.awt.Dimension(80, 25));
         finishButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        cancelButton.setText("cancel");
-        cancelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        closeButton.setText("close");
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout bottomPanelLayout = new javax.swing.GroupLayout(bottomPanel);
         bottomPanel.setLayout(bottomPanelLayout);
@@ -319,7 +319,7 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(finishButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         bottomPanelLayout.setVerticalGroup(
@@ -332,7 +332,7 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
                         .addComponent(proceedButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(finishButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -375,7 +375,7 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bottomPanel;
-    private javax.swing.JButton cancelButton;
+    private javax.swing.JButton closeButton;
     private javax.swing.JLabel confirmationLabel;
     private javax.swing.JPanel confirmationPanel;
     private javax.swing.ButtonGroup dataTypeButtonGroup;

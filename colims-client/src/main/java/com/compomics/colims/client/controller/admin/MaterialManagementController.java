@@ -204,7 +204,7 @@ public class MaterialManagementController implements Controllable {
             }
         });
 
-        materialManagementDialog.getCancelMaterialManagementButton().addActionListener(e -> materialManagementDialog.dispose());
+        materialManagementDialog.getCloseMaterialManagementButton().addActionListener(e -> materialManagementDialog.dispose());
 
     }
 
@@ -350,7 +350,7 @@ public class MaterialManagementController implements Controllable {
             }
         });
 
-        materialEditDialog.getCancelMaterialEditButton().addActionListener(e -> {
+        materialEditDialog.getCloseMaterialEditButton().addActionListener(e -> {
             if (materialToEdit.getId() != null) {
                 //roll back the changes
                 Material rolledBackMaterial = materialService.findById(materialToEdit.getId());

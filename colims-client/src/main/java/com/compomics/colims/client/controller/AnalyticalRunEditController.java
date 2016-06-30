@@ -156,7 +156,7 @@ public class AnalyticalRunEditController implements Controllable {
             analyticalRunEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });
 
-        analyticalRunBinaryFileDialog.getCancelButton().addActionListener(e -> analyticalRunBinaryFileDialog.dispose());
+        analyticalRunBinaryFileDialog.getCloseButton().addActionListener(e -> analyticalRunBinaryFileDialog.dispose());
 
         analyticalRunEditDialog.getAttachmentsEditButton().addActionListener(e -> {
             if (analyticalRunToEdit.getId() != null) {
@@ -170,7 +170,7 @@ public class AnalyticalRunEditController implements Controllable {
             }
         });
 
-        analyticalRunEditDialog.getCancelButton().addActionListener(e -> analyticalRunEditDialog.dispose());
+        analyticalRunEditDialog.getCloseButton().addActionListener(e -> analyticalRunEditDialog.dispose());
     }
 
     @Override
