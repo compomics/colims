@@ -29,29 +29,26 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
+              <Group type="102" alignment="1" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="maxQuantDirectorySelectionLabel" min="-2" pref="204" max="-2" attributes="0"/>
-                              <Component id="combinedFolderDirectorySelectionLabel" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="0" pref="265" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="maxQuantDirectoryTextField" max="32767" attributes="0"/>
-                              <Component id="combinedFolderDirectoryTextField" max="32767" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="selectCombinedFolderButton" max="32767" attributes="0"/>
-                              <Component id="selectMaxQuantDirectoryButton" max="32767" attributes="0"/>
-                          </Group>
-                      </Group>
+                      <Component id="combinedFolderDirectoryTextField" max="32767" attributes="0"/>
+                      <Component id="parameterDirectoryTextField" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="selectCombinedFolderButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="selectParameterDirectoryButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="3" pref="3" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+              </Group>
+              <Group type="102" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="combinedFolderDirectorySelectionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="maxQuantDirectorySelectionLabel" min="-2" pref="249" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="0" pref="232" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -59,20 +56,20 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="maxQuantDirectorySelectionLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="maxQuantDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="selectMaxQuantDirectoryButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                   <Component id="combinedFolderDirectorySelectionLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="combinedFolderDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="selectCombinedFolderButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="73" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="maxQuantDirectorySelectionLabel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="parameterDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="selectParameterDirectoryButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="85" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -80,7 +77,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="combinedFolderDirectorySelectionLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Select the Combined files directory*:"/>
+            <Property name="text" type="java.lang.String" value="Select the Combined folder directory*:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="combinedFolderDirectoryTextField">
@@ -101,10 +98,10 @@
         </Component>
         <Component class="javax.swing.JLabel" name="maxQuantDirectorySelectionLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Select the MaxQuant files directory*:"/>
+            <Property name="text" type="java.lang.String" value="Select the parameter file (mqpar) directory*:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="selectMaxQuantDirectoryButton">
+        <Component class="javax.swing.JButton" name="selectParameterDirectoryButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="browse..."/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -118,7 +115,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="maxQuantDirectoryTextField">
+        <Component class="javax.swing.JTextField" name="parameterDirectoryTextField">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>

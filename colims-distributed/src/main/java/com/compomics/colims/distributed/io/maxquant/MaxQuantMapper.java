@@ -63,7 +63,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
     @Override
     public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException, JDOMException{
-        LOGGER.info("started mapping folder: " + maxQuantImport.getMaxQuantDirectory().toFile().getName());
+        LOGGER.info("started mapping folder: " + maxQuantImport.getParameterFilePath().toString());
 
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         Set<ProteinGroup> proteinGroups;
@@ -79,7 +79,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             Path txtDirectory = Paths.get(maxQuantImport.getCombinedFolderDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
             Path andromedaDirectory = Paths.get(maxQuantImport.getCombinedFolderDirectory() + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
             try{
-                maxQuantSearchSettingsParser.parse(maxQuantImport.getMaxQuantDirectory(), fastaDbs, false);
+                maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedFolderDirectory(), maxQuantImport.getParameterFilePath(), fastaDbs, false);
             }catch (JDOMException e){
                 e.printStackTrace();
             }
