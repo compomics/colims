@@ -84,6 +84,10 @@ public class DualList<T> extends javax.swing.JPanel {
         addedItemBindingList.clear();
         addedItemBindingList.addAll(addedItems);
 
+        //sort the available and added items
+        sort(availableItemBindingList);
+        sort(addedItemBindingList);
+
         checkButtonStates();
     }
 
@@ -192,6 +196,7 @@ public class DualList<T> extends javax.swing.JPanel {
                     //remove from addedItemBindingList
                     addedItemBindingList.remove(selectedItem);
                 });
+                
                 //sort
                 sort(availableItemBindingList);
 
