@@ -23,7 +23,7 @@ public interface UserService extends GenericService<User, Long> {
     User findByLoginCredentials(String userName, String password);
 
     /**
-     * Count the number of user by user name.
+     * Count the number of users by user name.
      *
      * @param name the user name
      * @return the number of found users

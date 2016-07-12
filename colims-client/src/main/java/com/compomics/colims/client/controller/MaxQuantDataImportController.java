@@ -7,6 +7,7 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.XmlFileFilter;
 import com.google.common.eventbus.EventBus;
+import java.awt.Dimension;
 import java.io.File;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class MaxQuantDataImportController implements Controllable {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantDataImportController.class);
 
+    private static final String FASTA_DB_MANAGEMENT_PARENT_PANEL = "fastaDbManagementParentPanel";
+    
     //model
     private File parameterFile;
     private Path combinedFolderDirectory;
@@ -93,8 +96,10 @@ public class MaxQuantDataImportController implements Controllable {
         });
         
         maxQuantDataImportPanel.getSelectPrimaryFastaDbButton().addActionListener(e -> {
+            fastaDbManagementController.getCardLayout().show(fastaDbManagementController.getFastaDbManagementDialog().getMainPanel(), FASTA_DB_MANAGEMENT_PARENT_PANEL);
+            fastaDbManagementController.getFastaDbManagementDialog().getMainPanel().setPreferredSize(new Dimension(952,353));
+            fastaDbManagementController.getFastaDbManagementDialog().pack();
             fastaDbManagementController.showView();
-
             primaryFastaDb = fastaDbManagementController.getFastaDb();
 
             if (primaryFastaDb != null) {
@@ -105,8 +110,10 @@ public class MaxQuantDataImportController implements Controllable {
         });
 
         maxQuantDataImportPanel.getSelectAdditionalFastaDbButton().addActionListener(e -> {
+            fastaDbManagementController.getCardLayout().show(fastaDbManagementController.getFastaDbManagementDialog().getMainPanel(), FASTA_DB_MANAGEMENT_PARENT_PANEL);
+            fastaDbManagementController.getFastaDbManagementDialog().getMainPanel().setPreferredSize(new Dimension(952,353));
+            fastaDbManagementController.getFastaDbManagementDialog().pack();
             fastaDbManagementController.showView();
-
             additionalFastaDb = fastaDbManagementController.getFastaDb();
 
             if (additionalFastaDb != null) {
@@ -117,6 +124,9 @@ public class MaxQuantDataImportController implements Controllable {
         });
 
         maxQuantDataImportPanel.getSelectContaminantsFastaDbButton().addActionListener(e -> {
+            fastaDbManagementController.getCardLayout().show(fastaDbManagementController.getFastaDbManagementDialog().getMainPanel(), FASTA_DB_MANAGEMENT_PARENT_PANEL);
+            fastaDbManagementController.getFastaDbManagementDialog().getMainPanel().setPreferredSize(new Dimension(952,353));
+            fastaDbManagementController.getFastaDbManagementDialog().pack();
             fastaDbManagementController.showView();
 
             contaminantsFastaDb = fastaDbManagementController.getFastaDb();

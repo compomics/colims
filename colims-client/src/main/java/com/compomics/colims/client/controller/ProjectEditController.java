@@ -189,7 +189,7 @@ public class ProjectEditController implements Controllable {
      * @param projectChangeEvent the ProjectChangeEvent instance
      */
     @Subscribe
-    public void onExperimentChangeEvent(ProjectChangeEvent projectChangeEvent) {
+    public void onProjectChangeEvent(ProjectChangeEvent projectChangeEvent) {
         if (projectEditDialog.isVisible() && projectToEdit.getId().equals(projectChangeEvent.getProjectId())) {
             if (projectChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
                 JOptionPane.showMessageDialog(projectEditDialog, "Another user removed the project so the project edit dialog will close.", "Project removed", JOptionPane.WARNING_MESSAGE);
