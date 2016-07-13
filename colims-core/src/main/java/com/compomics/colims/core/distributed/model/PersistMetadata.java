@@ -40,9 +40,9 @@ public class PersistMetadata implements Serializable {
     /**
      * Constructor.
      *
-     * @param persistType  the PersistType
-     * @param description  the description string
-     * @param startDate    the start date
+     * @param persistType the PersistType
+     * @param description the description string
+     * @param startDate the start date
      * @param instrumentId the instrument ID
      */
     public PersistMetadata(final PersistType persistType, final String description, final Date startDate, final Long instrumentId) {
@@ -86,14 +86,24 @@ public class PersistMetadata implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         PersistMetadata that = (PersistMetadata) o;
 
-        if (persistType != that.persistType) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (startDate != null ? !startDate.equals(that.startDate) : that.startDate != null) return false;
+        if (persistType != that.persistType) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (startDate != null ? !startDate.equals(that.startDate) : that.startDate != null) {
+            return false;
+        }
         return !(instrumentId != null ? !instrumentId.equals(that.instrumentId) : that.instrumentId != null);
 
     }

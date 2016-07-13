@@ -6,21 +6,16 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import com.compomics.colims.client.controller.AnalyticalRunsAdditionController;
 import com.compomics.colims.client.controller.Controllable;
-import com.compomics.colims.client.event.EntityChangeEvent;
-import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.FastaDbManagementDialog;
-import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.TaxonomyCvParam;
 import com.compomics.colims.model.comparator.IdComparator;
-import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import org.apache.log4j.Logger;
@@ -40,7 +35,6 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.jdesktop.swingbinding.JComboBoxBinding;
 
 /**
  * The FASTA db management view controller.
@@ -64,15 +58,28 @@ public class FastaDbManagementController implements Controllable {
      * The default taxonomy value for the taxonomy combo box.
      */
     private static final TaxonomyCvParam TAXONOMY_CV_PARAM_NONE = new TaxonomyCvParam("none", "none", "none", "none");
+    /**
+     * The overview panel name.
+     */
+    private static final String FASTA_DB_OVERVIEW_PANEL = "fastaDbManagementParentPanel";
+    /**
+     * The save or update panel name.
+     */
+    public static final String FASTA_DB_SAVE_UPDATE_PANEL = "fastaDbSaveUpdatePanel";
+    /**
+     * The overview panel preferred dimension.
+     */
+    private static final Dimension OVERVIEW_PANEL_DIMENSION = new Dimension(952, 353);
+    /**
+     * The overview panel preferred dimension.
+     */
+    private static final Dimension SAVE_OR_UPDATE_PANEL_DIMENSION = new Dimension(542, 311);
 
-    
-    private static final String FASTA_DB_SAVE_UPDATE_PANEL = "fastaDbSaveUpdatePanel";
     //model
     private BindingGroup bindingGroup;
     private ObservableList<FastaDb> fastaDbBindingList;
-    private ObservableList<CvParam> taxonomyBindingList;
-    
     private DefaultEventSelectionModel<FastaDb> fastaDbSelectionModel;
+    private Dimension preferredDimension;
     //view
     private FastaDbManagementDialog fastaDbManagementDialog;
     //parent controller
@@ -82,35 +89,33 @@ public class FastaDbManagementController implements Controllable {
     @Autowired
     private EventBus eventBus;
     @Autowired
-    private CvParamService cvParamService;
-    @Autowired
     private FastaDbService fastaDbService;
     @Autowired
     @Lazy
     private FastaDbSaveUpdateController fastaDbSaveUpdateController;
-    
+
     @Override
     @PostConstruct
     public void init() {
         //init view
         fastaDbManagementDialog = new FastaDbManagementDialog(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), true);
 
-        //register to event bus
-        eventBus.register(this);
-        // init fastaDbSaveUpdate
+        //init fastaDbSaveUpdate
         fastaDbSaveUpdateController.init();
         //init binding
         bindingGroup = new BindingGroup();
 
         fastaDbBindingList = ObservableCollections.observableList(new ArrayList<>());
+        fastaDbBindingList.addAll(fastaDbService.findAll());
+        EventList<FastaDb> fastaDbList = new BasicEventList<>();
+        fastaDbList.addAll(fastaDbBindingList);
+        SortedList<FastaDb> sortedFastaDbList = new SortedList<>(fastaDbList, new IdComparator());
+        fastaDbSelectionModel = new DefaultEventSelectionModel<>(sortedFastaDbList);
+        fastaDbSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        fastaDbManagementDialog.getFastaDbList().setSelectionModel(fastaDbSelectionModel);
+
         JListBinding fastaDbListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbBindingList, fastaDbManagementDialog.getFastaDbList());
         bindingGroup.addBinding(fastaDbListBinding);
-        
-        taxonomyBindingList = ObservableCollections.observableList(new ArrayList<>());
-        taxonomyBindingList.add(TAXONOMY_CV_PARAM_NONE);
-        taxonomyBindingList.addAll(cvParamService.findByCvParamByClass(TaxonomyCvParam.class));
-        JComboBoxBinding taxonomyComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, taxonomyBindingList, fastaDbManagementDialog.getTaxomomyComboBox());
-        bindingGroup.addBinding(taxonomyComboBoxBinding);
 
         //selected fasta database bindings
         Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.name"), fastaDbManagementDialog.getNameTextField(), ELProperty.create("${text}"), "nameBinding");
@@ -125,42 +130,30 @@ public class FastaDbManagementController implements Controllable {
         bindingGroup.addBinding(binding);
 
         bindingGroup.bind();
-        fastaDbBindingList.addAll(fastaDbService.findAll());
-        EventList<FastaDb> fastaDbList = new BasicEventList<>();
-        fastaDbList.addAll(fastaDbBindingList);
-        SortedList<FastaDb> sortedFastaDbList= new SortedList<>(fastaDbList, new IdComparator());
-        fastaDbSelectionModel = new DefaultEventSelectionModel<>(sortedFastaDbList);
-        fastaDbSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        fastaDbManagementDialog.getFastaDbList().setSelectionModel(fastaDbSelectionModel);
 
         fastaDbManagementDialog.getFastaDbList().getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
                     FastaDb fastaDb = getSelectedFastaDb();
+                    //enable update button if necessary
+                    fastaDbManagementDialog.getUpdateButton().setEnabled(fastaDb.getId() != null);
 
-                    if (fastaDb.getTaxonomy() == null) {
-                        fastaDbManagementDialog.getTaxomomyComboBox().setSelectedIndex(0);
-                    } else {
-                        fastaDbManagementDialog.getTaxomomyComboBox().getModel().setSelectedItem(fastaDb.getTaxonomy());
+                    //set "none" taxonomy if necessary
+                    TaxonomyCvParam taxonomy = getSelectedFastaDb().getTaxonomy();
+                    if (taxonomy == null) {
+                        fastaDb.setTaxonomy(TAXONOMY_CV_PARAM_NONE);
                     }
+                    fastaDbManagementDialog.getTaxonomyTextField().setText(fastaDb.getTaxonomy().toString());
 
                     //enable delete button
                     fastaDbManagementDialog.getDeleteButton().setEnabled(true);
-
-                    //check if the FASTA DB has an ID.
-                    //If so, disable the name text field and change the save button label.
-                    if (fastaDb.getId() != null) {
-                        fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
-                    } else {
-
-                        fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("This fasta DB hasn't been stored in the database.");
-                    }
                 } else {
+                    fastaDbManagementDialog.getUpdateButton().setEnabled(false);
                     clearFastaDbDetailFields();
                 }
             }
         });
-    
+
         fastaDbManagementDialog.getAddButton().addActionListener(e -> {
             fastaDbSaveUpdateController.clearFastaDbDetailFields();
             // create new fasta db
@@ -169,25 +162,19 @@ public class FastaDbManagementController implements Controllable {
             // send the new fastaDb to fastaDbSaveUpdateController
             newFastaDb.setTaxonomy(TAXONOMY_CV_PARAM_NONE);
             fastaDbSaveUpdateController.updateView(newFastaDb);
- 
+
             // set panel and its size
-            getCardLayout().show(fastaDbManagementDialog.getMainPanel(), FASTA_DB_SAVE_UPDATE_PANEL);
-            fastaDbManagementDialog.getMainPanel().setPreferredSize(new Dimension(542,311));
-            fastaDbManagementDialog.pack();
+            showSaveOrUpdatePanel();
         });
 
         fastaDbManagementDialog.getUpdateButton().addActionListener(e -> {
             // send the selected fastaDb to fastaDbSaveUpdateController
-            if(getSelectedFastaDb().getTaxonomy() == null){
-                getSelectedFastaDb().setTaxonomy(TAXONOMY_CV_PARAM_NONE);
-            }
             fastaDbSaveUpdateController.updateView(getSelectedFastaDb());
+
             // set panel and its size
-            getCardLayout().show(fastaDbManagementDialog.getMainPanel(), FASTA_DB_SAVE_UPDATE_PANEL);
-            fastaDbManagementDialog.getMainPanel().setPreferredSize(new Dimension(542,311));
-            fastaDbManagementDialog.pack();
+            showSaveOrUpdatePanel();
         });
-        
+
         fastaDbManagementDialog.getDeleteButton().addActionListener(e -> {
             if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
                 FastaDb fastaDbToDelete = getSelectedFastaDb();
@@ -221,16 +208,13 @@ public class FastaDbManagementController implements Controllable {
             }
         });
 
-        fastaDbManagementDialog.getOkButton().addActionListener(e -> {
+        fastaDbManagementDialog.getSelectButton().addActionListener(e -> {
             FastaDb fastaDb = getSelectedFastaDb();
 
             //validate before closing dialog
             List<String> validationMessages = new ArrayList<>();
             if (fastaDb == null) {
                 validationMessages.add("Please select a fasta DB from the list.");
-            } else {
-                //validate user input
-                validationMessages.addAll(validate(fastaDb));
             }
 
             if (validationMessages.isEmpty()) {
@@ -241,7 +225,7 @@ public class FastaDbManagementController implements Controllable {
             }
         });
 
-        fastaDbManagementDialog.getCancelButton().addActionListener(e -> {
+        fastaDbManagementDialog.getCloseButton().addActionListener(e -> {
             //clear the selection
             fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
             fastaDbManagementDialog.dispose();
@@ -260,62 +244,13 @@ public class FastaDbManagementController implements Controllable {
         fastaDbBindingList.clear();
         fastaDbBindingList.addAll(fastaDbService.findAll());
 
-        fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
+        fastaDbManagementDialog.getUpdateButton().setSelected(false);
         clearFastaDbDetailFields();
+
+        showOverviewPanel();
 
         GuiUtils.centerDialogOnComponent(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), fastaDbManagementDialog);
         fastaDbManagementDialog.setVisible(true);
-    }
-
-    /**
-     * Return the selected FASTA DB.
-     *
-     * @return the selected FastaDb instance
-     */
-    public FastaDb getFastaDb() {
-        return getSelectedFastaDb();
-    }
-
-    /**
-     * Listen to a CV param change event posted by the
-     * CvParamManagementController. If the InstrumentManagementDialog is
-     * visible, clear the selection in the CV param summary list.
-     *
-     * @param cvParamChangeEvent the CvParamChangeEvent instance
-     */
-    @Subscribe
-    public void onCvParamChangeEvent(CvParamChangeEvent cvParamChangeEvent) {
-        CvParam cvParam = cvParamChangeEvent.getCvParam();
-        if (cvParam instanceof TaxonomyCvParam) {
-            EntityChangeEvent.Type type = cvParamChangeEvent.getType();
-            switch (type) {
-                case CREATED:
-                    taxonomyBindingList.add(cvParam);
-                    break;
-                case UPDATED:
-                    taxonomyBindingList.set(taxonomyBindingList.indexOf(cvParam), cvParam);
-                    break;
-                case DELETED:
-                    taxonomyBindingList.remove(cvParam);
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Validate the user input and return a list of validation messages.
-     *
-     * @param fastaDb the FastaDb instance
-     * @return the list of validation messages
-     */
-    private List<String> validate(final FastaDb fastaDb) {
-        List<String> validationMessages = new ArrayList();
-
-        if (fastaDb.getId() == null) {
-            validationMessages.add("You need to save the selected fasta DB before using it.");
-        }
-
-        return validationMessages;
     }
 
     /**
@@ -323,13 +258,12 @@ public class FastaDbManagementController implements Controllable {
      *
      * @return the selected FASTA DB
      */
-    private FastaDb getSelectedFastaDb() {
+    public FastaDb getSelectedFastaDb() {
         FastaDb selectedFastaDb = null;
 
         int selectedIndex = fastaDbManagementDialog.getFastaDbList().getSelectedIndex();
         if (selectedIndex != -1) {
             selectedFastaDb = fastaDbBindingList.get(selectedIndex);
-            fastaDbManagementDialog.getUpdateButton().setEnabled(true);
         }
 
         return selectedFastaDb;
@@ -345,7 +279,61 @@ public class FastaDbManagementController implements Controllable {
         fastaDbSelectionModel.setLeadSelectionIndex(index);
     }
 
-    
+    /**
+     * Get the fasta DB list size.
+     *
+     * @return the size of the fasta DB list
+     */
+    public int getFastaDbListSize() {
+        return fastaDbBindingList.size();
+    }
+
+    /**
+     * Add a new fasta db to the fastadb binding list
+     *
+     * @param fastaDb
+     */
+    public void addFastaDb(FastaDb fastaDb) {
+        fastaDbBindingList.add(fastaDb);
+    }
+
+    /**
+     * Get the row index of the selected fastaDB in the fastaDb management
+     * panel.
+     *
+     * @return the row index
+     */
+    public int getSelectedFastaDbIndex() {
+        return fastaDbSelectionModel.getLeadSelectionIndex();
+    }
+
+    /**
+     * Get fastaDb Management Dialog.
+     *
+     * @return fastaDbManagementDialog
+     */
+    public FastaDbManagementDialog getFastaDbManagementDialog() {
+        return fastaDbManagementDialog;
+    }
+
+    /**
+     * Show the fasta DB management overview panel.
+     */
+    public void showOverviewPanel() {
+        getCardLayout().show(fastaDbManagementDialog.getMainPanel(), FASTA_DB_OVERVIEW_PANEL);
+        fastaDbManagementDialog.getMainPanel().setPreferredSize(OVERVIEW_PANEL_DIMENSION);
+        fastaDbManagementDialog.pack();
+    }
+
+    /**
+     * Show the fasta DB save or update panel.
+     */
+    private void showSaveOrUpdatePanel() {
+        getCardLayout().show(fastaDbManagementDialog.getMainPanel(), FASTA_DB_SAVE_UPDATE_PANEL);
+        fastaDbManagementDialog.getMainPanel().setPreferredSize(SAVE_OR_UPDATE_PANEL_DIMENSION);
+        fastaDbManagementDialog.pack();
+    }
+
     /**
      * Clear the FASTA DB detail fields.
      */
@@ -354,8 +342,7 @@ public class FastaDbManagementController implements Controllable {
         fastaDbManagementDialog.getFileNameTextField().setText("");
         fastaDbManagementDialog.getFilePathTextField().setText("");
         fastaDbManagementDialog.getVersionTextField().setText("");
-        fastaDbManagementDialog.getTaxomomyComboBox().setSelectedIndex(0);
-        fastaDbManagementDialog.getFastaDbStateInfoLabel().setText("");
+        fastaDbManagementDialog.getTaxonomyTextField().setText("");
     }
 
     /**
@@ -391,49 +378,14 @@ public class FastaDbManagementController implements Controllable {
             fastaDbBindingList.addAll(fastaDbService.findByFastaDbType(fastaDbTypes));
         }
     }
-    
-    /**
-     * Get fastaDb Management Dialog
-     * 
-     * @return  fastaDbManagementDialog
-     */
-    public FastaDbManagementDialog getFastaDbManagementDialog() {
-        return fastaDbManagementDialog;
-    }
 
-     /**
+    /**
      * Get the card layout.
      *
      * @return the CardLayout
      */
-    public CardLayout getCardLayout() {
+    private CardLayout getCardLayout() {
         return (CardLayout) fastaDbManagementDialog.getMainPanel().getLayout();
     }
 
-    /**
-     * Get FastaDb Binding List
-     * 
-     * @return fastaDbBindingList
-     */
-    public ObservableList<FastaDb> getFastaDbBindingList() {
-        return fastaDbBindingList;
-    }
-    
-    /**
-     * Add a new fasta db to the fastadb binding list
-     * 
-     * @param fastaDb 
-     */
-    public void addFastaDb(FastaDb fastaDb){
-        getFastaDbBindingList().add(fastaDb);
-    }
-    
-    /**
-     * Get the row index of the selected fastaDB in the fastaDb management panel.
-     *
-     * @return the row index
-     */
-    public int getSelectedFastaDbIndex() {
-        return fastaDbSelectionModel.getLeadSelectionIndex();
-    }
 }
