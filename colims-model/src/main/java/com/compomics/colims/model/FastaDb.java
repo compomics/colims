@@ -143,9 +143,8 @@ public class FastaDb extends DatabaseEntity {
 
     @Override
     public String toString() {
-        String taxonomyAccession = (taxonomy != null) ? taxonomy.getAccession() : "";
-        String taxonomyLabel = (taxonomy != null) ? taxonomy.getLabel() : "";;
-        return name + ", accession: " + taxonomyAccession + ", species: " + taxonomyLabel + ", version: " + version;
+        String taxonomyAccession = (taxonomy != null) ? taxonomy.getAccession() : "none";
+        return name + ", accession: " + taxonomyAccession + ", version: " + version;
     }
 
     @Override

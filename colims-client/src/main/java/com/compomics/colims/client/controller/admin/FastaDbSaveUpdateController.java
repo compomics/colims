@@ -19,7 +19,6 @@ import com.compomics.colims.model.cv.CvParam;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -142,8 +141,7 @@ public class FastaDbSaveUpdateController implements Controllable {
                 } else {
                     fastaDbService.persist(fastaDbToEdit);
                     //add to fasta db list
-                    fastaDbManagementController.addFastaDb(fastaDbToEdit);
-                    index = fastaDbManagementController.getFastaDbListSize() - 1;
+                    index = fastaDbManagementController.addFastaDb(fastaDbToEdit);
                 }
                 fastaDbManagementController.setSelectedFasta(index);
                 fastaDbSaveUpdatePanel.getNameTextField().setEnabled(false);
@@ -153,6 +151,8 @@ public class FastaDbSaveUpdateController implements Controllable {
                 saveUpdate = true;
                 MessageEvent messageEvent = new MessageEvent("Fasta DB store confirmation", "Fasta DB " + fastaDbToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                 eventBus.post(messageEvent);
+
+                fastaDbManagementController.showOverviewPanel();
             } else {
                 MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);

@@ -23,8 +23,6 @@ import java.awt.Dimension;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.*;
-import org.jdesktop.swingbinding.JListBinding;
-import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -34,6 +32,7 @@ import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -50,10 +49,6 @@ public class FastaDbManagementController implements Controllable {
      */
     private static final Logger LOGGER = Logger.getLogger(FastaDbManagementController.class);
 
-    /**
-     * The preselected ontology namespaces.
-     */
-    private static final List<String> PRESELECTED_ONTOLOGY_NAMESPACES = Arrays.asList("ncbitaxon");
     /**
      * The default taxonomy value for the taxonomy combo box.
      */
@@ -78,6 +73,7 @@ public class FastaDbManagementController implements Controllable {
     //model
     private BindingGroup bindingGroup;
     private final EventList<FastaDb> fastaDbs = new BasicEventList<>();
+    private SortedList<FastaDb> sortedFastaDbs;
     DefaultEventListModel<FastaDb> fastaDbListModel;
     private DefaultEventSelectionModel<FastaDb> fastaDbSelectionModel;
     //view
@@ -106,10 +102,10 @@ public class FastaDbManagementController implements Controllable {
         bindingGroup = new BindingGroup();
 
         fastaDbs.addAll(fastaDbService.findAll());
-        SortedList<FastaDb> sortedFastaDbList = new SortedList<>(fastaDbs, new IdComparator());
-        fastaDbListModel = GlazedListsSwing.eventListModel(sortedFastaDbList);
+        sortedFastaDbs = new SortedList<>(fastaDbs, (FastaDb o1, FastaDb o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
+        fastaDbListModel = GlazedListsSwing.eventListModel(sortedFastaDbs);
         fastaDbManagementDialog.getFastaDbList().setModel(fastaDbListModel);
-        fastaDbSelectionModel = new DefaultEventSelectionModel<>(sortedFastaDbList);
+        fastaDbSelectionModel = new DefaultEventSelectionModel<>(sortedFastaDbs);
         fastaDbSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         fastaDbManagementDialog.getFastaDbList().setSelectionModel(fastaDbSelectionModel);
 
@@ -181,7 +177,7 @@ public class FastaDbManagementController implements Controllable {
                     try {
                         fastaDbService.remove(fastaDbToDelete);
 
-                        fastaDbs.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
+                        fastaDbs.remove(fastaDbToDelete);
                         fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
                     } catch (DataIntegrityViolationException dive) {
                         //check if the instrument type can be deleted without breaking existing database relations,
@@ -257,9 +253,9 @@ public class FastaDbManagementController implements Controllable {
     public FastaDb getSelectedFastaDb() {
         FastaDb selectedFastaDb = null;
 
-        int selectedIndex = fastaDbManagementDialog.getFastaDbList().getSelectedIndex();
+        int selectedIndex = fastaDbSelectionModel.getLeadSelectionIndex();
         if (selectedIndex != -1) {
-            selectedFastaDb = fastaDbs.get(selectedIndex);
+            selectedFastaDb = sortedFastaDbs.get(selectedIndex);
         }
 
         return selectedFastaDb;
@@ -288,10 +284,12 @@ public class FastaDbManagementController implements Controllable {
      * Add a new fasta db to the fastadb binding list
      *
      * @param fastaDb
+     * @return the index of the added FastaDb instance
      */
-    public void addFastaDb(FastaDb fastaDb) {
+    public int addFastaDb(FastaDb fastaDb) {
         fastaDbs.add(fastaDb);
-
+        fastaDbManagementDialog.getFastaDbList().updateUI();
+        return sortedFastaDbs.indexOf(fastaDb);
     }
 
     /**
