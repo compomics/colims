@@ -226,8 +226,6 @@ public class FastaDbManagementController implements Controllable {
         });
 
         fastaDbManagementDialog.getCloseButton().addActionListener(e -> {
-            //clear the selection
-            fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
             fastaDbManagementDialog.dispose();
         });
 
@@ -244,12 +242,14 @@ public class FastaDbManagementController implements Controllable {
         fastaDbBindingList.clear();
         fastaDbBindingList.addAll(fastaDbService.findAll());
 
+        //clear the selection
+        fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
+
         fastaDbManagementDialog.getUpdateButton().setSelected(false);
         clearFastaDbDetailFields();
 
         showOverviewPanel();
 
-        GuiUtils.centerDialogOnComponent(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), fastaDbManagementDialog);
         fastaDbManagementDialog.setVisible(true);
     }
 
@@ -323,6 +323,8 @@ public class FastaDbManagementController implements Controllable {
         getCardLayout().show(fastaDbManagementDialog.getMainPanel(), FASTA_DB_OVERVIEW_PANEL);
         fastaDbManagementDialog.getMainPanel().setPreferredSize(OVERVIEW_PANEL_DIMENSION);
         fastaDbManagementDialog.pack();
+
+        GuiUtils.centerDialogOnComponent(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), fastaDbManagementDialog);
     }
 
     /**
@@ -332,6 +334,8 @@ public class FastaDbManagementController implements Controllable {
         getCardLayout().show(fastaDbManagementDialog.getMainPanel(), FASTA_DB_SAVE_UPDATE_PANEL);
         fastaDbManagementDialog.getMainPanel().setPreferredSize(SAVE_OR_UPDATE_PANEL_DIMENSION);
         fastaDbManagementDialog.pack();
+
+        GuiUtils.centerDialogOnComponent(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), fastaDbManagementDialog);
     }
 
     /**

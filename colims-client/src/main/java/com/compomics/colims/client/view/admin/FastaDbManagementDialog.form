@@ -421,6 +421,9 @@
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JTextField" name="nameTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nameTextFieldActionPerformed"/>
                           </Events>
@@ -439,6 +442,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="fileNameTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="filePathLabel">
                           <Properties>
@@ -446,6 +452,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="filePathTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="versionLabel">
                           <Properties>
@@ -456,6 +465,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="versionTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="taxonomyLabel">
                           <Properties>
@@ -463,6 +475,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="headerParseRuleTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="HeaderParseRuleLabel">
                           <Properties>
@@ -470,6 +485,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="taxonomyTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                       </SubComponents>
                     </Container>

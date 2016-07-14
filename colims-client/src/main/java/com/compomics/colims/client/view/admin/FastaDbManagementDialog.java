@@ -279,6 +279,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         fastaDbDetailPanel.setOpaque(false);
         fastaDbDetailPanel.setPreferredSize(new java.awt.Dimension(40, 40));
 
+        nameTextField.setEnabled(false);
         nameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nameTextFieldActionPerformed(evt);
@@ -290,14 +291,24 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
 
         fileNameLabel.setText("File Name*");
 
+        fileNameTextField.setEnabled(false);
+
         filePathLabel.setText("File Path*");
+
+        filePathTextField.setEnabled(false);
 
         versionLabel.setText("Version*");
         versionLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
+        versionTextField.setEnabled(false);
+
         taxonomyLabel.setText("Taxonomy");
 
+        headerParseRuleTextField.setEnabled(false);
+
         HeaderParseRuleLabel.setText("Parse rule");
+
+        taxonomyTextField.setEnabled(false);
 
         javax.swing.GroupLayout fastaDbDetailPanelLayout = new javax.swing.GroupLayout(fastaDbDetailPanel);
         fastaDbDetailPanel.setLayout(fastaDbDetailPanelLayout);

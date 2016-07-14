@@ -174,8 +174,8 @@ public class FastaDbSaveUpdateController implements Controllable {
     }
 
     /**
-     * Update the fasta save update panel with the selected fasta in the fastaDb
-     * management dialog.
+     * Update the fasta save update panel with the selected fasta in the fasta
+     * DB management dialog.
      *
      * @param fastaDb the FastaDb instance
      */
@@ -184,15 +184,14 @@ public class FastaDbSaveUpdateController implements Controllable {
 
         if (fastaDb.getId() != null) {
             fastaDbSaveUpdatePanel.getNameTextField().setEnabled(false);
-            fastaDbSaveUpdatePanel.getTaxomomyComboBox().setSelectedIndex(0);
             fastaDbSaveUpdatePanel.getSaveOrUpdateButton().setText("update");
             fastaDbSaveUpdatePanel.getFastaDbStateInfoLabel().setText("");
         } else {
             fastaDbSaveUpdatePanel.getNameTextField().setEnabled(true);
-            fastaDbSaveUpdatePanel.getTaxomomyComboBox().getModel().setSelectedItem(fastaDb.getTaxonomy());
             fastaDbSaveUpdatePanel.getSaveOrUpdateButton().setText("save");
             fastaDbSaveUpdatePanel.getFastaDbStateInfoLabel().setText("");
         }
+        fastaDbSaveUpdatePanel.getTaxomomyComboBox().getModel().setSelectedItem(fastaDb.getTaxonomy());
 
         fastaDbSaveUpdatePanel.getNameTextField().setText(fastaDbToEdit.getName());
         fastaDbSaveUpdatePanel.getFileNameTextField().setText(fastaDbToEdit.getFileName());
@@ -236,7 +235,6 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbToEdit.setFileName(fastaDbSaveUpdatePanel.getFileNameTextField().getText());
         fastaDbToEdit.setFilePath(fastaDbSaveUpdatePanel.getFilePathTextField().getText());
         fastaDbToEdit.setVersion(fastaDbSaveUpdatePanel.getVersionTextField().getText());
-
         fastaDbToEdit.setHeaderParseRule(fastaDbSaveUpdatePanel.getHeaderParseRuleTextField().getText());
 
         int taxonomyIndex = fastaDbSaveUpdatePanel.getTaxomomyComboBox().getSelectedIndex();
