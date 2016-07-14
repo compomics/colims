@@ -142,7 +142,6 @@ public class PeptideShakerDataImportController implements Controllable {
 
     public void showEditView(PeptideShakerImport peptideShakerImport){
         showView();
-        // TODO ask if peptide shaker uses primary fasta file and what is cpsTextField
         if(peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY) != null){
             fastaDb = fastaDbService.findById(peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY));
             peptideShakerDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());

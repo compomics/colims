@@ -1,21 +1,24 @@
 package com.compomics.colims.client.controller;
 
-import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.event.NotificationEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.factory.PsmPanelGenerator;
 import com.compomics.colims.client.model.table.model.CompletedDbTaskQueueTableModel;
 import com.compomics.colims.client.model.table.model.DbTaskErrorQueueTableModel;
 import com.compomics.colims.client.model.table.model.DbTaskQueueTableModel;
 import com.compomics.colims.client.view.MainFrame;
+import com.compomics.colims.client.view.SpectrumPopupDialog;
 import com.compomics.colims.client.view.TaskManagementPanel;
 import com.compomics.colims.core.distributed.model.*;
 import com.compomics.colims.core.distributed.model.enums.NotificationType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -146,24 +149,21 @@ public class TaskManagementController implements Controllable {
                 eventBus.post(new MessageEvent("Task selection", "Please select a task to remove.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
-
-        taskManagementPanel.getTaskErrorQueueTable().getSelectionModel().addListSelectionListener(lse -> {
-            if (!lse.getValueIsAdjusting()) {
+        taskManagementPanel.getTaskErrorQueueTable().addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
                 int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                     DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
-
-                    if (storageError.getErrorDescription() != null) {
-                        taskManagementPanel.getErrorDetailTextArea().setText(storageError.getErrorDescription());
-                    } else {
-                        taskManagementPanel.getErrorDetailTextArea().setText(ERROR_DETAIL_NOT_AVAILABLE);
+                    
+                    if (e.getClickCount() == 2 && storageError != null) {
+                        showMessageDialog("Error Detail", storageError.getErrorDescription());
+              //          JOptionPane.showMessageDialog(null, storageError.getErrorDescription(), "InfoBox: " + "Error Detail", JOptionPane.INFORMATION_MESSAGE);
                     }
-                } else {
-                    taskManagementPanel.getErrorDetailTextArea().setText("");
                 }
+                
             }
         });
-
         taskManagementPanel.getResendTaskErrorButton().addActionListener(e -> {
             int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
             if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
@@ -280,6 +280,27 @@ public class TaskManagementController implements Controllable {
         }
     }
 
+        /**
+     * Shows a message dialog.
+     *
+     * @param title the dialog title
+     * @param message the dialog message
+     */
+    private void showMessageDialog(final String title, final String message) {
+
+        //add message to JTextArea
+        JTextArea textArea = new JTextArea(message);
+        //put JTextArea in JScrollPane
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(600, 200));
+        scrollPane.getViewport().setOpaque(false);
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+
+        JOptionPane.showMessageDialog(null, scrollPane, title, JOptionPane.INFORMATION_MESSAGE);
+
+    }
     /**
      * Listen to a NotificationEvent.
      *
@@ -312,7 +333,7 @@ public class TaskManagementController implements Controllable {
         eventBus.post(new MessageEvent("Connection error", "The storage module cannot be reached:"
                 + System.lineSeparator() + System.lineSeparator() + message, JOptionPane.ERROR_MESSAGE));
     }
-
+    
      /**
      * Inner class for listening to other sample actions pop up menu items.
      */
