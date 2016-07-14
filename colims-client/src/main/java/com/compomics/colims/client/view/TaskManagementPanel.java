@@ -67,6 +67,10 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         return resendTaskErrorButton;
     }
 
+    public JButton getUpdateTaskErrorButton() {
+        return updateTaskErrorButton;
+    }
+
     public JTable getTaskErrorQueueTable() {
         return taskErrorQueueTable;
     }
@@ -111,6 +115,7 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         deleteTaskErrorButton = new javax.swing.JButton();
         resendTaskErrorButton = new javax.swing.JButton();
         purgeTaskErrorsButton = new javax.swing.JButton();
+        updateTaskErrorButton = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(0, 0));
         setLayout(new java.awt.GridBagLayout());
@@ -146,7 +151,7 @@ public class TaskManagementPanel extends javax.swing.JPanel {
             notificationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notificationPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(notificationScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                .addComponent(notificationScrollPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(clearNotificationsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -199,7 +204,7 @@ public class TaskManagementPanel extends javax.swing.JPanel {
             taskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(taskQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(taskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                .addComponent(taskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(deleteDbTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -262,7 +267,7 @@ public class TaskManagementPanel extends javax.swing.JPanel {
             completedTaskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(completedTaskQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(completedTaskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                .addComponent(completedTaskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(completedTaskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteCompletedTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -280,6 +285,7 @@ public class TaskManagementPanel extends javax.swing.JPanel {
 
         taskErrorQueuePanel.setBackground(java.awt.Color.white);
         taskErrorQueuePanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Errors"));
+        taskErrorQueuePanel.setPreferredSize(new java.awt.Dimension(300, 254));
 
         taskErrorQueueTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -323,6 +329,12 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         purgeTaskErrorsButton.setMinimumSize(new java.awt.Dimension(80, 25));
         purgeTaskErrorsButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        updateTaskErrorButton.setText("update");
+        updateTaskErrorButton.setToolTipText("resend the storage error as a storage task");
+        updateTaskErrorButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        updateTaskErrorButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        updateTaskErrorButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
         javax.swing.GroupLayout taskErrorQueuePanelLayout = new javax.swing.GroupLayout(taskErrorQueuePanel);
         taskErrorQueuePanel.setLayout(taskErrorQueuePanelLayout);
         taskErrorQueuePanelLayout.setHorizontalGroup(
@@ -337,6 +349,8 @@ public class TaskManagementPanel extends javax.swing.JPanel {
                     .addComponent(errorDetailTextAreaScrollPane)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, taskErrorQueuePanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(updateTaskErrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(resendTaskErrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteTaskErrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -348,7 +362,7 @@ public class TaskManagementPanel extends javax.swing.JPanel {
             taskErrorQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(taskErrorQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(taskErrorQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                .addComponent(taskErrorQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(errorDetailLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -357,7 +371,8 @@ public class TaskManagementPanel extends javax.swing.JPanel {
                 .addGroup(taskErrorQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteTaskErrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(resendTaskErrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(purgeTaskErrorsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(purgeTaskErrorsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(updateTaskErrorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -394,5 +409,6 @@ public class TaskManagementPanel extends javax.swing.JPanel {
     private javax.swing.JPanel taskQueuePanel;
     private javax.swing.JScrollPane taskQueueScrollPane;
     private javax.swing.JTable taskQueueTable;
+    private javax.swing.JButton updateTaskErrorButton;
     // End of variables declaration//GEN-END:variables
 }

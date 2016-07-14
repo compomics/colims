@@ -1,5 +1,7 @@
 package com.compomics.colims.client.controller;
 
+import ca.odell.glazedlists.EventList;
+import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.event.NotificationEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
@@ -12,6 +14,8 @@ import com.compomics.colims.core.distributed.model.*;
 import com.compomics.colims.core.distributed.model.enums.NotificationType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +26,7 @@ import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import org.springframework.context.annotation.Lazy;
 
 /**
  * The task management view controller.
@@ -61,7 +66,9 @@ public class TaskManagementController implements Controllable {
     private QueueManager queueManager;
     @Autowired
     private EventBus eventBus;
-
+    @Autowired
+    @Lazy
+    private AnalyticalRunsAdditionController analyticalRunsAdditionController;
     /**
      * Get the view of this controller.
      *
@@ -175,6 +182,9 @@ public class TaskManagementController implements Controllable {
             }
         });
 
+        TaskPopupMenuActionListener taskPopupMenuActionListener = new TaskPopupMenuActionListener();
+        taskManagementPanel.getUpdateTaskErrorButton().addActionListener(taskPopupMenuActionListener);
+        
         taskManagementPanel.getDeleteTaskErrorButton().addActionListener(e -> {
             int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
             if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
@@ -303,4 +313,36 @@ public class TaskManagementController implements Controllable {
                 + System.lineSeparator() + System.lineSeparator() + message, JOptionPane.ERROR_MESSAGE));
     }
 
+     /**
+     * Inner class for listening to other sample actions pop up menu items.
+     */
+    private class TaskPopupMenuActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+            int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
+            if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0){
+                try {
+                    DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
+                    if(storageError.getDbTask()instanceof PersistDbTask){
+                        
+                        if (storageError.getDbTask() != null) {
+                            analyticalRunsAdditionController.showEditView(((PersistDbTask) storageError.getDbTask()).getDataImport(), ((PersistDbTask) storageError.getDbTask()).getPersistMetadata());
+                        } else {
+                            eventBus.post(new MessageEvent("Analytical run addition", "Please select one and only one task to edit.", JOptionPane.INFORMATION_MESSAGE));
+                        }
+                    }
+                    queueManager.deleteMessage(errorQueueName, storageError.getMessageId());
+
+                    updateMonitoringTables();
+                } catch (Exception ex) {
+                    LOGGER.error(ex.getMessage(), ex);
+                    postConnectionErrorMessage(ex.getMessage());
+                }
+            }else {
+                eventBus.post(new MessageEvent("Task error selection", "Please select a task to resend.", JOptionPane.INFORMATION_MESSAGE));
+            }
+        }
+    }    
 }

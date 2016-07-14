@@ -4,10 +4,12 @@ import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.model.filter.CpsFileFilter;
 import com.compomics.colims.client.view.PeptideShakerDataImportPanel;
 import com.compomics.colims.core.io.PeptideShakerImport;
+import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.MgfFileFilter;
 import com.google.common.eventbus.EventBus;
+import com.sun.xml.bind.v2.TODO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -49,6 +51,9 @@ public class PeptideShakerDataImportController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    @Autowired
+    private FastaDbService fastaDbService;
+    
     @Override
     public void init() {
         //get view from parent controller
@@ -135,6 +140,20 @@ public class PeptideShakerDataImportController implements Controllable {
         mgfFileListModel.clear();
     }
 
+    public void showEditView(PeptideShakerImport peptideShakerImport){
+        showView();
+        // TODO ask if peptide shaker uses primary fasta file and what is cpsTextField
+        if(peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY) != null){
+            fastaDb = fastaDbService.findById(peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY));
+            peptideShakerDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
+        }else{
+            fastaDb = null;
+            peptideShakerDataImportPanel.getFastaDbTextField().setText("");
+        }
+        peptideShakerDataImportPanel.getCpsTextField().setText(peptideShakerImport.getPeptideShakerCpsArchive().getPath());
+        
+        peptideShakerImport.getMgfFiles().forEach(mgfFile -> mgfFileListModel.addElement(mgfFile)); 
+    }
     /**
      * Validate the user input before unpacking the cps archive. Returns an
      * empty list if no validation errors were encountered.

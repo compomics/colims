@@ -3,6 +3,7 @@ package com.compomics.colims.client.controller;
 import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.view.MaxQuantDataImportPanel;
 import com.compomics.colims.core.io.MaxQuantImport;
+import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.XmlFileFilter;
@@ -54,6 +55,9 @@ public class MaxQuantDataImportController implements Controllable {
     @Autowired
     private EventBus eventBus;
 
+    @Autowired
+    private FastaDbService fastaDbService;
+    
     @Override
     public void init() {
         //get view from parent controller
@@ -152,6 +156,34 @@ public class MaxQuantDataImportController implements Controllable {
         maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
         maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
     }
+    
+    public void showEditView(MaxQuantImport maxQuantImport){
+        showView();
+        maxQuantDataImportPanel.getParameterDirectoryTextField().setText(maxQuantImport.getParameterFilePath().toString());
+        maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(maxQuantImport.getCombinedFolderDirectory().toString());
+        if(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY) != null){
+            primaryFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY));
+            maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText(primaryFastaDb.getFilePath());
+        }else{
+            primaryFastaDb = null;
+            maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText("");
+        }
+        if(maxQuantImport.getFastaDbIds().get(FastaDbType.ADDITIONAL) != null){
+            additionalFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.ADDITIONAL));
+            maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText(additionalFastaDb.getFilePath());
+        }else{
+            additionalFastaDb = null;
+            maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
+        }
+        if(maxQuantImport.getFastaDbIds().get(FastaDbType.CONTAMINANTS) != null){
+            contaminantsFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.CONTAMINANTS));
+            maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText(contaminantsFastaDb.getFilePath());
+        }else{
+            contaminantsFastaDb = null;
+            maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
+        }
+        
+    }
 
     /**
      * Validate the user input. Returns an empty list if no validation errors
@@ -194,4 +226,23 @@ public class MaxQuantDataImportController implements Controllable {
         return new MaxQuantImport(parameterFile.toPath(), combinedFolderDirectory, fastaDbIds);
     }
 
+    public void setParameterFile(File parameterFile) {
+        this.parameterFile = parameterFile;
+    }
+
+    public void setCombinedFolderDirectory(Path combinedFolderDirectory) {
+        this.combinedFolderDirectory = combinedFolderDirectory;
+    }
+
+    
+
+    public void setAdditionalFastaDb(FastaDb additionalFastaDb) {
+        this.additionalFastaDb = additionalFastaDb;
+    }
+
+    public void setContaminantsFastaDb(FastaDb contaminantsFastaDb) {
+        this.contaminantsFastaDb = contaminantsFastaDb;
+    }
+
+    
 }
