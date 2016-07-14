@@ -13,6 +13,8 @@ import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.distributed.model.PersistMetadata;
 import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.core.io.DataImport;
+import com.compomics.colims.core.io.MaxQuantImport;
+import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
@@ -20,6 +22,7 @@ import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.model.UserBean;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -40,6 +43,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -242,6 +246,37 @@ public class AnalyticalRunsAdditionController implements Controllable {
         }
     }
 
+    public void showEditView(DataImport dataImport,PersistMetadata persistMetaData){
+        //check if the user has the rights to add a run
+        if (userBean.getDefaultPermissions().get(DefaultPermission.CREATE)){
+            //check connection to distributed queues
+            if (queueManager.isReachable()){
+                Instrument instrumentToEdit = instrumentService.findById(persistMetaData.getInstrumentId());
+                analyticalRunsAdditionDialog.getInstrumentComboBox().setSelectedItem(instrumentToEdit);
+                
+                analyticalRunsAdditionDialog.getStorageDescriptionTextField().setText(persistMetaData.getDescription());
+                
+                analyticalRunsAdditionDialog.getDateTimePicker().setDate(persistMetaData.getStartDate());
+                if(dataImport instanceof MaxQuantImport){
+                     maxQuantDataImportController.showEditView((MaxQuantImport)dataImport);
+                }else if(dataImport instanceof PeptideShakerImport){
+                    peptideShakerDataImportController.showEditView((PeptideShakerImport)dataImport);
+                }
+
+                //show first card
+                getCardLayout().first(analyticalRunsAdditionDialog.getTopPanel());
+                onCardSwitch();
+
+                GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), analyticalRunsAdditionDialog);
+                analyticalRunsAdditionDialog.setVisible(true);
+            }else {
+                eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
+            }
+        }else {
+            eventBus.post(new MessageEvent("Authorization problem", "User " + userBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
+        }
+    }
+    
     /**
      * Listen to an InstrumentChangeEvent.
      *
@@ -375,4 +410,17 @@ public class AnalyticalRunsAdditionController implements Controllable {
         return selectedInstrument;
     }
 
+    /**
+     * set the instrument
+     * @param instrument 
+     */
+    public void setInstrument(Instrument instrument) {
+        this.instrument = instrument;
+    }
+
+    public MaxQuantDataImportController getMaxQuantDataImportController() {
+        return maxQuantDataImportController;
+    }
+
+    
 }
