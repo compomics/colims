@@ -168,7 +168,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         fastaDbListScrollPane.setViewportView(fastaDbList);
 
         addButton.setText("add");
-        addButton.setToolTipText("add a new fasta db (edit the fields of the new entry in the detail panel and save it) ");
+        addButton.setToolTipText("add a new fasta db");
         addButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -223,6 +223,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         );
 
         updateButton.setText("update");
+        updateButton.setToolTipText("update the selected fasta db");
         updateButton.setEnabled(false);
 
         javax.swing.GroupLayout fastaDbOverviewPanelLayout = new javax.swing.GroupLayout(fastaDbOverviewPanel);

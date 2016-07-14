@@ -141,7 +141,7 @@ public class FastaDbSaveUpdateController implements Controllable {
                     index = fastaDbManagementController.getSelectedFastaDbIndex();
                 } else {
                     fastaDbService.persist(fastaDbToEdit);
-                    //refresh fasta DB list
+                    //add to fasta db list
                     fastaDbManagementController.addFastaDb(fastaDbToEdit);
                     index = fastaDbManagementController.getFastaDbListSize() - 1;
                 }
