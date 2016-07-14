@@ -23,15 +23,15 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
      */
     private final JFileChooser fastaFileChooser = new JFileChooser();
 
-    
-   
+
+
     /**
      * Creates new form FastaDbSaveUpdate
      */
     public FastaDbSaveUpdatePanel() {
         initComponents();
     }
-    
+
     public JFileChooser getFastaFileChooser() {
         return fastaFileChooser;
     }
@@ -87,9 +87,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
-        fastaDbDetailParentPanel = new javax.swing.JPanel();
         fastaDbDetailPanel = new javax.swing.JPanel();
         nameTextField = new javax.swing.JTextField();
         nameLabel = new javax.swing.JLabel();
@@ -109,11 +107,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         taxomomyComboBox = new javax.swing.JComboBox<>();
         saveOrUpdateButton = new javax.swing.JButton();
 
-        fastaDbDetailParentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        fastaDbDetailParentPanel.setOpaque(false);
-        fastaDbDetailParentPanel.setPreferredSize(new java.awt.Dimension(100, 100));
-        fastaDbDetailParentPanel.setLayout(new java.awt.GridBagLayout());
-
+        fastaDbDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         fastaDbDetailPanel.setOpaque(false);
         fastaDbDetailPanel.setPreferredSize(new java.awt.Dimension(40, 40));
 
@@ -174,37 +168,37 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
                         .addComponent(fastaDbStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 343, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, fastaDbDetailPanelLayout.createSequentialGroup()
                         .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(taxonomyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(versionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(HeaderParseRuleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE))
-                        .addGap(6, 6, 6)
+                            .addComponent(versionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(taxonomyLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(HeaderParseRuleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
-                                .addComponent(taxomomyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(taxomomyComboBox, 0, 360, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(browseTaxonomyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(versionTextField)
                             .addComponent(headerParseRuleTextField)))
                     .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
-                        .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(fileNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(nameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(fileNameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
                             .addComponent(filePathLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(filePathTextField)
                             .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
                                 .addComponent(fileNameTextField)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(browseFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap())
+                                .addComponent(browseFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(nameTextField)
+                            .addComponent(filePathTextField))))
+                .addGap(0, 0, 0))
         );
         fastaDbDetailPanelLayout.setVerticalGroup(
             fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,13 +212,11 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
                     .addComponent(fileNameLabel)
                     .addComponent(fileNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(browseFastaButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(filePathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(filePathLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(12, 12, 12)
+                .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(filePathLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filePathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(versionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(versionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -246,33 +238,25 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        fastaDbDetailParentPanel.add(fastaDbDetailPanel, gridBagConstraints);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 542, Short.MAX_VALUE)
+            .addGap(0, 564, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(fastaDbDetailParentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(fastaDbDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 311, Short.MAX_VALUE)
+            .addGap(0, 295, Short.MAX_VALUE)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(fastaDbDetailParentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+                    .addContainerGap()
+                    .addComponent(fastaDbDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                    .addContainerGap()))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -283,7 +267,6 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
     private javax.swing.JButton browseFastaButton;
     private javax.swing.JButton browseTaxonomyButton;
     private javax.swing.JPanel fastaDbDetailPanel;
-    private javax.swing.JPanel fastaDbDetailParentPanel;
     private javax.swing.JLabel fastaDbStateInfoLabel;
     private javax.swing.JLabel fileNameLabel;
     private javax.swing.JTextField fileNameTextField;

@@ -22,7 +22,7 @@ public abstract class DbTask extends QueueMessage {
     private static final long serialVersionUID = -3571758804390850866L;
 
     /**
-     * The datatase entity class of the task.
+     * The database entity class of the task.
      */
     protected Class dbEntityClass;
     /**

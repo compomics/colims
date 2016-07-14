@@ -82,7 +82,7 @@ public class PeptideShakerDataImportController implements Controllable {
         peptideShakerDataImportPanel.getSelectFastaButton().addActionListener(e -> {
             fastaDbManagementController.showView();
 
-            fastaDb = fastaDbManagementController.getFastaDb();
+            fastaDb = fastaDbManagementController.getSelectedFastaDb();
 
             if (fastaDb != null) {
                 peptideShakerDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());

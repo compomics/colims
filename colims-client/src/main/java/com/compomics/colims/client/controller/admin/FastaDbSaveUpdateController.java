@@ -6,6 +6,8 @@
 package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.controller.Controllable;
+import com.compomics.colims.client.event.EntityChangeEvent;
+import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.FastaDbSaveUpdatePanel;
@@ -16,6 +18,7 @@ import com.compomics.colims.model.TaxonomyCvParam;
 import com.compomics.colims.model.cv.CvParam;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
@@ -41,7 +44,7 @@ import org.springframework.stereotype.Component;
  */
 @Component("fastaDbSaveUpdateController")
 @Lazy
-public class FastaDbSaveUpdateController implements Controllable{
+public class FastaDbSaveUpdateController implements Controllable {
 
     /**
      * Logger instance.
@@ -57,13 +60,12 @@ public class FastaDbSaveUpdateController implements Controllable{
      */
     private static final TaxonomyCvParam TAXONOMY_CV_PARAM_NONE = new TaxonomyCvParam("none", "none", "none", "none");
 
-    private static final String FASTA_DB_MANAGEMENT_PARENT_PANEL = "fastaDbManagementParentPanel";
     //model
     private BindingGroup bindingGroup;
     private ObservableList<CvParam> taxonomyBindingList;
     //view
     private FastaDbSaveUpdatePanel fastaDbSaveUpdatePanel;
-  
+
     private boolean saveUpdate = false;
     private FastaDb fastaDbToEdit;
     //services
@@ -79,31 +81,33 @@ public class FastaDbSaveUpdateController implements Controllable{
     @Autowired
     @Lazy
     private CvParamManagementController cvParamManagementController;
-    
+
     @Override
-    @PostConstruct 
+    @PostConstruct
     public void init() {
-       //register to event bus
+        //register to event bus
         eventBus.register(this);
 
-        //init binding
-        bindingGroup = new BindingGroup();
-        
         fastaDbSaveUpdatePanel = fastaDbManagementController.getFastaDbManagementDialog().getFastaDbSaveUpdatePanel();
+
         taxonomyBindingList = ObservableCollections.observableList(new ArrayList<>());
         taxonomyBindingList.add(TAXONOMY_CV_PARAM_NONE);
         taxonomyBindingList.addAll(cvParamService.findByCvParamByClass(TaxonomyCvParam.class));
+
+        //init binding
+        bindingGroup = new BindingGroup();
+
         JComboBoxBinding taxonomyComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, taxonomyBindingList, fastaDbSaveUpdatePanel.getTaxomomyComboBox());
         bindingGroup.addBinding(taxonomyComboBoxBinding);
-  
+
         bindingGroup.bind();
-        
+
         //init FASTA file selection
         //disable select multiple files
         fastaDbSaveUpdatePanel.getFastaFileChooser().setMultiSelectionEnabled(false);
         //set FASTA file filter
         fastaDbSaveUpdatePanel.getFastaFileChooser().setFileFilter(new FastaFileFilter());
-        
+
         //add listeners
         fastaDbSaveUpdatePanel.getBrowseTaxonomyButton().addActionListener(e -> {
             List<CvParam> cvParams = cvParamService.findByCvParamByClass(TaxonomyCvParam.class);
@@ -112,7 +116,7 @@ public class FastaDbSaveUpdateController implements Controllable{
 
             cvParamManagementController.showView();
         });
-        
+
         fastaDbSaveUpdatePanel.getBrowseFastaButton().addActionListener(e -> {
             //in response to the button click, show open dialog
             int returnVal = fastaDbSaveUpdatePanel.getFastaFileChooser().showOpenDialog(fastaDbSaveUpdatePanel);
@@ -125,12 +129,12 @@ public class FastaDbSaveUpdateController implements Controllable{
             }
         });
 
-        fastaDbSaveUpdatePanel.getSaveOrUpdateButton().addActionListener(e -> {         
+        fastaDbSaveUpdatePanel.getSaveOrUpdateButton().addActionListener(e -> {
             //validate FASTA DB
             updateFastaToEdit();
             List<String> validationMessages = GuiUtils.validateEntity(fastaDbToEdit);
             if (validationMessages.isEmpty()) {
-                    
+
                 int index;
                 if (fastaDbToEdit.getId() != null) {
                     fastaDbToEdit = fastaDbService.merge(fastaDbToEdit);
@@ -139,7 +143,7 @@ public class FastaDbSaveUpdateController implements Controllable{
                     fastaDbService.persist(fastaDbToEdit);
                     //refresh fasta DB list
                     fastaDbManagementController.addFastaDb(fastaDbToEdit);
-                    index = fastaDbManagementController.getFastaDbBindingList().size() - 1;
+                    index = fastaDbManagementController.getFastaDbListSize() - 1;
                 }
                 fastaDbManagementController.setSelectedFasta(index);
                 fastaDbSaveUpdatePanel.getNameTextField().setEnabled(false);
@@ -149,31 +153,29 @@ public class FastaDbSaveUpdateController implements Controllable{
                 saveUpdate = true;
                 MessageEvent messageEvent = new MessageEvent("Fasta DB store confirmation", "Fasta DB " + fastaDbToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                 eventBus.post(messageEvent);
-
             } else {
                 MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);
             }
         });
-        
-        fastaDbSaveUpdatePanel.getBackButton().addActionListener(e ->{
-            if(!saveUpdate){
+
+        fastaDbSaveUpdatePanel.getBackButton().addActionListener(e -> {
+            if (!saveUpdate) {
                 fastaDbManagementController.setSelectedFasta(-1);
             }
             saveUpdate = false;
-            fastaDbManagementController.getCardLayout().show(fastaDbManagementController.getFastaDbManagementDialog().getMainPanel(), FASTA_DB_MANAGEMENT_PARENT_PANEL);
-            fastaDbManagementController.getFastaDbManagementDialog().getMainPanel().setPreferredSize(new Dimension(952,353));
-            fastaDbManagementController.getFastaDbManagementDialog().pack();
+            fastaDbManagementController.showOverviewPanel();
         });
     }
 
     @Override
     public void showView() {
-        
+        //do nothing
     }
 
-     /**
-     * Update the fasta save update panel with the selected fasta in the fastaDb management dialog.
+    /**
+     * Update the fasta save update panel with the selected fasta in the fastaDb
+     * management dialog.
      *
      * @param fastaDb the FastaDb instance
      */
@@ -182,10 +184,12 @@ public class FastaDbSaveUpdateController implements Controllable{
 
         if (fastaDb.getId() != null) {
             fastaDbSaveUpdatePanel.getNameTextField().setEnabled(false);
+            fastaDbSaveUpdatePanel.getTaxomomyComboBox().setSelectedIndex(0);
             fastaDbSaveUpdatePanel.getSaveOrUpdateButton().setText("update");
             fastaDbSaveUpdatePanel.getFastaDbStateInfoLabel().setText("");
         } else {
             fastaDbSaveUpdatePanel.getNameTextField().setEnabled(true);
+            fastaDbSaveUpdatePanel.getTaxomomyComboBox().getModel().setSelectedItem(fastaDb.getTaxonomy());
             fastaDbSaveUpdatePanel.getSaveOrUpdateButton().setText("save");
             fastaDbSaveUpdatePanel.getFastaDbStateInfoLabel().setText("");
         }
@@ -195,21 +199,46 @@ public class FastaDbSaveUpdateController implements Controllable{
         fastaDbSaveUpdatePanel.getFilePathTextField().setText(fastaDbToEdit.getFilePath());
         fastaDbSaveUpdatePanel.getVersionTextField().setText(fastaDbToEdit.getVersion());
         fastaDbSaveUpdatePanel.getHeaderParseRuleTextField().setText(fastaDbToEdit.getHeaderParseRule());
-        //set the selected item in the taxonomy combobox
-        fastaDbSaveUpdatePanel.getTaxomomyComboBox().getModel().setSelectedItem(fastaDbToEdit.getTaxonomy());
     }
-    
+
     /**
-     * Update the instance fields of the selected fastaDb in the fastaDb management dialog.
+     * Listen to a CV param change event posted by the
+     * CvParamManagementController. If the InstrumentManagementDialog is
+     * visible, clear the selection in the CV param summary list.
+     *
+     * @param cvParamChangeEvent the CvParamChangeEvent instance
+     */
+    @Subscribe
+    public void onCvParamChangeEvent(CvParamChangeEvent cvParamChangeEvent) {
+        CvParam cvParam = cvParamChangeEvent.getCvParam();
+        if (cvParam instanceof TaxonomyCvParam) {
+            EntityChangeEvent.Type type = cvParamChangeEvent.getType();
+            switch (type) {
+                case CREATED:
+                    taxonomyBindingList.add(cvParam);
+                    break;
+                case UPDATED:
+                    taxonomyBindingList.set(taxonomyBindingList.indexOf(cvParam), cvParam);
+                    break;
+                case DELETED:
+                    taxonomyBindingList.remove(cvParam);
+                    break;
+            }
+        }
+    }
+
+    /**
+     * Update the instance fields of the selected fastaDb in the fastaDb
+     * management dialog.
      */
     private void updateFastaToEdit() {
         fastaDbToEdit.setName(fastaDbSaveUpdatePanel.getNameTextField().getText());
         fastaDbToEdit.setFileName(fastaDbSaveUpdatePanel.getFileNameTextField().getText());
         fastaDbToEdit.setFilePath(fastaDbSaveUpdatePanel.getFilePathTextField().getText());
         fastaDbToEdit.setVersion(fastaDbSaveUpdatePanel.getVersionTextField().getText());
-       
+
         fastaDbToEdit.setHeaderParseRule(fastaDbSaveUpdatePanel.getHeaderParseRuleTextField().getText());
-    
+
         int taxonomyIndex = fastaDbSaveUpdatePanel.getTaxomomyComboBox().getSelectedIndex();
         if (taxonomyIndex == 0) {
             fastaDbToEdit.setTaxonomy(null);
@@ -217,7 +246,7 @@ public class FastaDbSaveUpdateController implements Controllable{
             fastaDbToEdit.setTaxonomy((TaxonomyCvParam) taxonomyBindingList.get(taxonomyIndex));
         }
     }
-    
+
     /**
      * Clear the FASTA DB detail fields.
      */
@@ -230,5 +259,5 @@ public class FastaDbSaveUpdateController implements Controllable{
         fastaDbSaveUpdatePanel.getTaxomomyComboBox().setSelectedIndex(0);
         fastaDbSaveUpdatePanel.getFastaDbStateInfoLabel().setText("");
     }
-    
+
 }
