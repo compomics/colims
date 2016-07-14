@@ -22,7 +22,6 @@ import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.model.UserBean;
-import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -43,7 +42,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -253,9 +251,9 @@ public class AnalyticalRunsAdditionController implements Controllable {
             if (queueManager.isReachable()){
                 Instrument instrumentToEdit = instrumentService.findById(persistMetaData.getInstrumentId());
                 analyticalRunsAdditionDialog.getInstrumentComboBox().setSelectedItem(instrumentToEdit);
-                
+
                 analyticalRunsAdditionDialog.getStorageDescriptionTextField().setText(persistMetaData.getDescription());
-                
+
                 analyticalRunsAdditionDialog.getDateTimePicker().setDate(persistMetaData.getStartDate());
                 if(dataImport instanceof MaxQuantImport){
                      maxQuantDataImportController.showEditView((MaxQuantImport)dataImport);
@@ -276,7 +274,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
             eventBus.post(new MessageEvent("Authorization problem", "User " + userBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
         }
     }
-    
+
     /**
      * Listen to an InstrumentChangeEvent.
      *
@@ -412,7 +410,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
 
     /**
      * set the instrument
-     * @param instrument 
+     * @param instrument
      */
     public void setInstrument(Instrument instrument) {
         this.instrument = instrument;
@@ -422,5 +420,5 @@ public class AnalyticalRunsAdditionController implements Controllable {
         return maxQuantDataImportController;
     }
 
-    
+
 }

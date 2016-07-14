@@ -203,7 +203,7 @@ public class ProjectManagementController implements Controllable {
         //add action listeners
         //add action listeners to other sample actions popup menu items
         SamplePopupMenuActionListener samplePopupMenuActionListener = new SamplePopupMenuActionListener();
-        projectManagementPanel.getAddRunMenuItem().addActionListener(samplePopupMenuActionListener);
+        projectManagementPanel.getAddRunsMenuItem().addActionListener(samplePopupMenuActionListener);
         projectManagementPanel.getMzTabExportMenuItem().addActionListener(samplePopupMenuActionListener);
 
         projectsSelectionModel.addListSelectionListener(lse -> {
@@ -672,7 +672,7 @@ public class ProjectManagementController implements Controllable {
             String menuItemLabel = e.getActionCommand();
 
             EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();
-            if (menuItemLabel.equals(projectManagementPanel.getAddRunMenuItem().getText())) {
+            if (menuItemLabel.equals(projectManagementPanel.getAddRunsMenuItem().getText())) {
                 if (selectedSamples.size() == 1) {
                     analyticalRunsAdditionController.showView();
                 } else {
