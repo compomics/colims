@@ -203,7 +203,7 @@
                     <Component class="javax.swing.JButton" name="addButton">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="add"/>
-                        <Property name="toolTipText" type="java.lang.String" value="add a new fasta db (edit the fields of the new entry in the detail panel and save it) "/>
+                        <Property name="toolTipText" type="java.lang.String" value="add a new fasta db"/>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[80, 25]"/>
                         </Property>
@@ -303,6 +303,7 @@
                     <Component class="javax.swing.JButton" name="updateButton">
                       <Properties>
                         <Property name="text" type="java.lang.String" value="update"/>
+                        <Property name="toolTipText" type="java.lang.String" value="update the selected fasta db"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>
                     </Component>
@@ -421,6 +422,9 @@
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JTextField" name="nameTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                           <Events>
                             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nameTextFieldActionPerformed"/>
                           </Events>
@@ -439,6 +443,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="fileNameTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="filePathLabel">
                           <Properties>
@@ -446,6 +453,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="filePathTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="versionLabel">
                           <Properties>
@@ -456,6 +466,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="versionTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="taxonomyLabel">
                           <Properties>
@@ -463,6 +476,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="headerParseRuleTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="HeaderParseRuleLabel">
                           <Properties>
@@ -470,6 +486,9 @@
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JTextField" name="taxonomyTextField">
+                          <Properties>
+                            <Property name="enabled" type="boolean" value="false"/>
+                          </Properties>
                         </Component>
                       </SubComponents>
                     </Container>

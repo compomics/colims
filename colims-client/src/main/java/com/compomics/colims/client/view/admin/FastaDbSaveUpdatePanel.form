@@ -247,7 +247,7 @@
         <Component class="javax.swing.JButton" name="backButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="back"/>
-            <Property name="toolTipText" type="java.lang.String" value="save a new fasta db or update an existing one"/>
+            <Property name="toolTipText" type="java.lang.String" value="go back to the fasta database overview panel"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>

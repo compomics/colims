@@ -168,7 +168,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         fastaDbListScrollPane.setViewportView(fastaDbList);
 
         addButton.setText("add");
-        addButton.setToolTipText("add a new fasta db (edit the fields of the new entry in the detail panel and save it) ");
+        addButton.setToolTipText("add a new fasta db");
         addButton.setMaximumSize(new java.awt.Dimension(80, 25));
         addButton.setMinimumSize(new java.awt.Dimension(80, 25));
         addButton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -223,6 +223,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         );
 
         updateButton.setText("update");
+        updateButton.setToolTipText("update the selected fasta db");
         updateButton.setEnabled(false);
 
         javax.swing.GroupLayout fastaDbOverviewPanelLayout = new javax.swing.GroupLayout(fastaDbOverviewPanel);
@@ -279,6 +280,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         fastaDbDetailPanel.setOpaque(false);
         fastaDbDetailPanel.setPreferredSize(new java.awt.Dimension(40, 40));
 
+        nameTextField.setEnabled(false);
         nameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nameTextFieldActionPerformed(evt);
@@ -290,14 +292,24 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
 
         fileNameLabel.setText("File Name*");
 
+        fileNameTextField.setEnabled(false);
+
         filePathLabel.setText("File Path*");
+
+        filePathTextField.setEnabled(false);
 
         versionLabel.setText("Version*");
         versionLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
+        versionTextField.setEnabled(false);
+
         taxonomyLabel.setText("Taxonomy");
 
+        headerParseRuleTextField.setEnabled(false);
+
         HeaderParseRuleLabel.setText("Parse rule");
+
+        taxonomyTextField.setEnabled(false);
 
         javax.swing.GroupLayout fastaDbDetailPanelLayout = new javax.swing.GroupLayout(fastaDbDetailPanel);
         fastaDbDetailPanel.setLayout(fastaDbDetailPanelLayout);

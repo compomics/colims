@@ -144,7 +144,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         fastaDbStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
         backButton.setText("back");
-        backButton.setToolTipText("save a new fasta db or update an existing one");
+        backButton.setToolTipText("go back to the fasta database overview panel");
         backButton.setMaximumSize(new java.awt.Dimension(80, 25));
         backButton.setMinimumSize(new java.awt.Dimension(80, 25));
         backButton.setPreferredSize(new java.awt.Dimension(80, 25));

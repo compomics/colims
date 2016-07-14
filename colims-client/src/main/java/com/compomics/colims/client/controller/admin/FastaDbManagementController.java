@@ -3,7 +3,9 @@ package com.compomics.colims.client.controller.admin;
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.SortedList;
+import ca.odell.glazedlists.swing.DefaultEventListModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
+import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.controller.AnalyticalRunsAdditionController;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
@@ -21,8 +23,6 @@ import java.awt.Dimension;
 import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.*;
-import org.jdesktop.observablecollections.ObservableCollections;
-import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,9 +77,9 @@ public class FastaDbManagementController implements Controllable {
 
     //model
     private BindingGroup bindingGroup;
-    private ObservableList<FastaDb> fastaDbBindingList;
+    private final EventList<FastaDb> fastaDbs = new BasicEventList<>();
+    DefaultEventListModel<FastaDb> fastaDbListModel;
     private DefaultEventSelectionModel<FastaDb> fastaDbSelectionModel;
-    private Dimension preferredDimension;
     //view
     private FastaDbManagementDialog fastaDbManagementDialog;
     //parent controller
@@ -105,17 +105,13 @@ public class FastaDbManagementController implements Controllable {
         //init binding
         bindingGroup = new BindingGroup();
 
-        fastaDbBindingList = ObservableCollections.observableList(new ArrayList<>());
-        fastaDbBindingList.addAll(fastaDbService.findAll());
-        EventList<FastaDb> fastaDbList = new BasicEventList<>();
-        fastaDbList.addAll(fastaDbBindingList);
-        SortedList<FastaDb> sortedFastaDbList = new SortedList<>(fastaDbList, new IdComparator());
+        fastaDbs.addAll(fastaDbService.findAll());
+        SortedList<FastaDb> sortedFastaDbList = new SortedList<>(fastaDbs, new IdComparator());
+        fastaDbListModel = GlazedListsSwing.eventListModel(sortedFastaDbList);
+        fastaDbManagementDialog.getFastaDbList().setModel(fastaDbListModel);
         fastaDbSelectionModel = new DefaultEventSelectionModel<>(sortedFastaDbList);
         fastaDbSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         fastaDbManagementDialog.getFastaDbList().setSelectionModel(fastaDbSelectionModel);
-
-        JListBinding fastaDbListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbBindingList, fastaDbManagementDialog.getFastaDbList());
-        bindingGroup.addBinding(fastaDbListBinding);
 
         //selected fasta database bindings
         Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.name"), fastaDbManagementDialog.getNameTextField(), ELProperty.create("${text}"), "nameBinding");
@@ -185,7 +181,7 @@ public class FastaDbManagementController implements Controllable {
                     try {
                         fastaDbService.remove(fastaDbToDelete);
 
-                        fastaDbBindingList.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
+                        fastaDbs.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
                         fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
                     } catch (DataIntegrityViolationException dive) {
                         //check if the instrument type can be deleted without breaking existing database relations,
@@ -199,7 +195,7 @@ public class FastaDbManagementController implements Controllable {
                         }
                     }
                 } else {
-                    fastaDbBindingList.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
+                    fastaDbs.remove(fastaDbManagementDialog.getFastaDbList().getSelectedIndex());
                     fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
                     clearFastaDbDetailFields();
                 }
@@ -226,8 +222,6 @@ public class FastaDbManagementController implements Controllable {
         });
 
         fastaDbManagementDialog.getCloseButton().addActionListener(e -> {
-            //clear the selection
-            fastaDbManagementDialog.getFastaDbList().getSelectionModel().clearSelection();
             fastaDbManagementDialog.dispose();
         });
 
@@ -241,15 +235,17 @@ public class FastaDbManagementController implements Controllable {
     @Override
     public void showView() {
         //refresh FASTA DB list
-        fastaDbBindingList.clear();
-        fastaDbBindingList.addAll(fastaDbService.findAll());
+        fastaDbs.clear();
+        fastaDbs.addAll(fastaDbService.findAll());
+
+        //clear the selection
+        fastaDbSelectionModel.clearSelection();
 
         fastaDbManagementDialog.getUpdateButton().setSelected(false);
         clearFastaDbDetailFields();
 
         showOverviewPanel();
 
-        GuiUtils.centerDialogOnComponent(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), fastaDbManagementDialog);
         fastaDbManagementDialog.setVisible(true);
     }
 
@@ -263,7 +259,7 @@ public class FastaDbManagementController implements Controllable {
 
         int selectedIndex = fastaDbManagementDialog.getFastaDbList().getSelectedIndex();
         if (selectedIndex != -1) {
-            selectedFastaDb = fastaDbBindingList.get(selectedIndex);
+            selectedFastaDb = fastaDbs.get(selectedIndex);
         }
 
         return selectedFastaDb;
@@ -285,7 +281,7 @@ public class FastaDbManagementController implements Controllable {
      * @return the size of the fasta DB list
      */
     public int getFastaDbListSize() {
-        return fastaDbBindingList.size();
+        return fastaDbs.size();
     }
 
     /**
@@ -294,7 +290,8 @@ public class FastaDbManagementController implements Controllable {
      * @param fastaDb
      */
     public void addFastaDb(FastaDb fastaDb) {
-        fastaDbBindingList.add(fastaDb);
+        fastaDbs.add(fastaDb);
+
     }
 
     /**
@@ -323,6 +320,8 @@ public class FastaDbManagementController implements Controllable {
         getCardLayout().show(fastaDbManagementDialog.getMainPanel(), FASTA_DB_OVERVIEW_PANEL);
         fastaDbManagementDialog.getMainPanel().setPreferredSize(OVERVIEW_PANEL_DIMENSION);
         fastaDbManagementDialog.pack();
+
+        GuiUtils.centerDialogOnComponent(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), fastaDbManagementDialog);
     }
 
     /**
@@ -332,6 +331,8 @@ public class FastaDbManagementController implements Controllable {
         getCardLayout().show(fastaDbManagementDialog.getMainPanel(), FASTA_DB_SAVE_UPDATE_PANEL);
         fastaDbManagementDialog.getMainPanel().setPreferredSize(SAVE_OR_UPDATE_PANEL_DIMENSION);
         fastaDbManagementDialog.pack();
+
+        GuiUtils.centerDialogOnComponent(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), fastaDbManagementDialog);
     }
 
     /**
@@ -371,11 +372,11 @@ public class FastaDbManagementController implements Controllable {
 
         if (fastaDbTypes.isEmpty()) {
             //find them all
-            fastaDbBindingList.clear();
-            fastaDbBindingList.addAll(fastaDbService.findAll());
+            fastaDbs.clear();
+            fastaDbs.addAll(fastaDbService.findAll());
         } else {
-            fastaDbBindingList.clear();
-            fastaDbBindingList.addAll(fastaDbService.findByFastaDbType(fastaDbTypes));
+            fastaDbs.clear();
+            fastaDbs.addAll(fastaDbService.findByFastaDbType(fastaDbTypes));
         }
     }
 
