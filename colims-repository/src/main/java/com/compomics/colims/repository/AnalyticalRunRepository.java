@@ -1,6 +1,9 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.AnalyticalRunBinaryFile;
+import com.compomics.colims.model.Experiment;
+import com.compomics.colims.model.ExperimentBinaryFile;
 
 import java.util.List;
 
@@ -27,4 +30,12 @@ public interface AnalyticalRunRepository extends GenericRepository<AnalyticalRun
      */
     void saveOrUpdate(final AnalyticalRun analyticalRun);
 
+    
+    /**
+     * Fetch the binary files for the given analyticalRun.
+     *
+     * @param analyticalRunId the analyticalRun ID
+     * @return the analyticalRun binary files
+     */
+    List<AnalyticalRunBinaryFile> fetchBinaryFiles(Long analyticalRunId);
 }

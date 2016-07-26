@@ -78,6 +78,9 @@ public class ProjectManagementController implements Controllable {
     private SampleEditController sampleEditController;
     @Autowired
     @Lazy
+    private AnalyticalRunsSearchSettingsController analyticalRunsSearchSettingsController;
+    @Autowired
+    @Lazy
     private AnalyticalRunsAdditionController analyticalRunsAdditionController;
     @Autowired
     @Lazy
@@ -313,7 +316,14 @@ public class ProjectManagementController implements Controllable {
                 eventBus.post(new MessageEvent("Sample selection", "Please select a sample to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
-
+        projectManagementPanel.getViewRunsButton().addActionListener(e -> {
+            Sample selectedSample = getSelectedSample();
+            if (selectedSample != null) {
+                analyticalRunsSearchSettingsController.updateView(selectedSample);
+            } else {
+                eventBus.post(new MessageEvent("Sample selection", "Please select a sample to view runs.", JOptionPane.INFORMATION_MESSAGE));
+            }
+        });
         projectManagementPanel.getDeleteSampleButton().addActionListener(e -> {
             Sample sampleToDelete = getSelectedSample();
 

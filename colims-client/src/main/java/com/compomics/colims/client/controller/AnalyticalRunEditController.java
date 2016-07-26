@@ -54,7 +54,7 @@ public class AnalyticalRunEditController implements Controllable {
     private AnalyticalRunBinaryFileDialog analyticalRunBinaryFileDialog;
     //parent controller
     @Autowired
-    private SampleEditController sampleEditController;
+    private AnalyticalRunsSearchSettingsController analyticalRunsSearchSettingsController;
     //services
     @Autowired
     private AnalyticalRunService analyticalRunService;
@@ -81,7 +81,7 @@ public class AnalyticalRunEditController implements Controllable {
         eventBus.register(this);
 
         //init view
-        analyticalRunEditDialog = new AnalyticalRunEditDialog(sampleEditController.getSampleEditDialog(), true);
+        analyticalRunEditDialog = new AnalyticalRunEditDialog(analyticalRunsSearchSettingsController.getAnalyticalRunsSearchSettingsDialog(), true);
         analyticalRunBinaryFileDialog = new AnalyticalRunBinaryFileDialog(analyticalRunEditDialog, true);
         analyticalRunBinaryFileDialog.getBinaryFileManagementPanel().init(AnalyticalRunBinaryFile.class);
 
@@ -108,13 +108,13 @@ public class AnalyticalRunEditController implements Controllable {
 
             if (validationMessages.isEmpty()) {
                 analyticalRunToEdit = analyticalRunService.merge(analyticalRunToEdit);
-                int index = sampleEditController.getSelectedAnalyticalRunIndex();
+                int index = analyticalRunsSearchSettingsController.getSelectedAnalyticalRunIndex();
 
                 MessageEvent messageEvent = new MessageEvent("Analytical run store confirmation", "Analytical run " + analyticalRunToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
                 eventBus.post(messageEvent);
 
                 //refresh selection in analytical list in sample edit dialog
-                sampleEditController.setSelectedAnalyticalRun(index);
+                analyticalRunsSearchSettingsController.setSelectedAnalyticalRun(index);
             } else {
                 MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);
@@ -175,7 +175,7 @@ public class AnalyticalRunEditController implements Controllable {
 
     @Override
     public void showView() {
-        GuiUtils.centerDialogOnComponent(sampleEditController.getSampleEditDialog(), analyticalRunEditDialog);
+        GuiUtils.centerDialogOnComponent(analyticalRunsSearchSettingsController.getAnalyticalRunsSearchSettingsDialog(), analyticalRunEditDialog);
         analyticalRunEditDialog.setVisible(true);
     }
 

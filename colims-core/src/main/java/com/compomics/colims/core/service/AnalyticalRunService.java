@@ -1,6 +1,7 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Experiment;
 
 import java.util.List;
 
@@ -26,4 +27,10 @@ public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long
      */
     void fetchInstrument(AnalyticalRun analyticalRun);
 
+    /**
+     * Fetch the analytical run binary files.
+     *
+     * @param analyticalRun the AnalyticalRun instance
+     */
+    void fetchBinaryFiles(AnalyticalRun analyticalRun);
 }

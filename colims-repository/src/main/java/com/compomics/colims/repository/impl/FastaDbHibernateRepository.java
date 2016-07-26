@@ -4,12 +4,8 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.repository.FastaDbRepository;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import org.hibernate.Query;
-import org.hibernate.type.EnumType;
 import org.springframework.stereotype.Repository;
 
 /**

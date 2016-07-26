@@ -30,7 +30,6 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
-import com.google.common.base.Joiner;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -68,8 +67,6 @@ public class SampleEditController implements Controllable {
     private BindingGroup bindingGroup;
     private ObservableList<Protocol> protocolBindingList;
     private final EventList<AnalyticalRun> analyticalRuns = new BasicEventList<>();
-    private AdvancedTableModel<AnalyticalRun> analyticalRunsTableModel;
-    private DefaultEventSelectionModel<AnalyticalRun> analyticalRunsSelectionModel;
     private Sample sampleToEdit;
     private List<Material> materials;
     @Autowired
@@ -82,10 +79,6 @@ public class SampleEditController implements Controllable {
     private MainController mainController;
     @Autowired
     private ProjectManagementController projectManagementController;
-    //child controller
-    @Autowired
-    @Lazy
-    private AnalyticalRunEditController analyticalRunEditController;
     //services
     @Autowired
     private SampleService sampleService;
@@ -126,29 +119,6 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getMaterialDualList().init(new MaterialNameComparator());
 
         materials = materialService.findAll();
-
-        //init sample analytical runs table
-        SortedList<AnalyticalRun> sortedAnalyticalRuns = new SortedList<>(analyticalRuns, new IdComparator());
-        analyticalRunsTableModel = GlazedListsSwing.eventTableModel(sortedAnalyticalRuns, new AnalyticalRunManagementTableFormat());
-        sampleEditDialog.getAnalyticalRunsTable().setModel(analyticalRunsTableModel);
-        analyticalRunsSelectionModel = new DefaultEventSelectionModel<>(sortedAnalyticalRuns);
-        analyticalRunsSelectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        sampleEditDialog.getAnalyticalRunsTable().setSelectionModel(analyticalRunsSelectionModel);
-
-        //set column widths
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setPreferredWidth(35);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setMaxWidth(35);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setMinWidth(35);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NAME).setPreferredWidth(200);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setPreferredWidth(80);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setMaxWidth(80);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setMinWidth(80);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setPreferredWidth(80);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setMaxWidth(80);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setMinWidth(80);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(80);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(80);
-        sampleEditDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setMinWidth(80);
 
         //add binding
         bindingGroup = new BindingGroup();
@@ -194,7 +164,6 @@ public class SampleEditController implements Controllable {
                     projectManagementController.addSample(sampleToEdit);
 
                     sampleEditDialog.getSaveOrUpdateButton().setText("update");
-                    updateAnalyticalRunButtonsState(true);
                 }
                 SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, sampleToEdit.getId());
                 eventBus.post(sampleChangeEvent);
@@ -273,39 +242,6 @@ public class SampleEditController implements Controllable {
 
             sampleEditDialog.dispose();
         });
-
-        sampleEditDialog.getEditAnalyticalRunButton().addActionListener(e -> {
-            EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
-
-            if (selectedAnalyticalRuns.size() == 1) {
-                analyticalRunEditController.updateView(selectedAnalyticalRuns.get(0));
-            } else {
-                eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to edit.", JOptionPane.INFORMATION_MESSAGE));
-            }
-        });
-
-        sampleEditDialog.getDeleteAnalyticalRunButton().addActionListener(e -> {
-            EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
-
-            if (selectedAnalyticalRuns.size() == 1) {
-                boolean deleteConfirmation = deleteEntity(selectedAnalyticalRuns.get(0), AnalyticalRun.class);
-                if (deleteConfirmation) {
-                    AnalyticalRun selectedAnalyticalRun = selectedAnalyticalRuns.get(0);
-
-                    //remove from overview table and clear selection
-                    analyticalRuns.remove(selectedAnalyticalRun);
-                    analyticalRunsSelectionModel.clearSelection();
-
-                    eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRun.getId(), sampleToEdit.getId()));
-
-                    //remove analytical run from the selected sample and update the table
-                    sampleToEdit.getAnalyticalRuns().remove(selectedAnalyticalRun);
-                    sampleEditDialog.getAnalyticalRunsTable().updateUI();
-                }
-            } else {
-                eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
-            }
-        });
     }
 
     @Override
@@ -325,12 +261,10 @@ public class SampleEditController implements Controllable {
 
         if (sampleToEdit.getId() != null) {
             sampleEditDialog.getSaveOrUpdateButton().setText("update");
-            updateAnalyticalRunButtonsState(true);
             //fetch sample binary files
             sampleService.fetchMaterialsAndBinaryFiles(sampleToEdit);
         } else {
             sampleEditDialog.getSaveOrUpdateButton().setText("save");
-            updateAnalyticalRunButtonsState(false);
         }
 
         sampleEditDialog.getNameTextField().setText(sampleToEdit.getName());
@@ -342,33 +276,9 @@ public class SampleEditController implements Controllable {
 
         //populate user dual list
         sampleEditDialog.getMaterialDualList().populateLists(materials, sampleToEdit.getMaterials());
-
-        //fill analytical runs table
-        GlazedLists.replaceAll(analyticalRuns, sampleToEdit.getAnalyticalRuns(), false);
-
         showView();
     }
-
-    /**
-     * Get the row index of the selected analytical run in the analytical runs
-     * table.
-     *
-     * @return the selected analytical run index
-     */
-    public int getSelectedAnalyticalRunIndex() {
-        return analyticalRunsSelectionModel.getLeadSelectionIndex();
-    }
-
-    /**
-     * Set the selected analytical run in the analytical runs table.
-     *
-     * @param index the selected analytical run index
-     */
-    public void setSelectedAnalyticalRun(final int index) {
-        analyticalRunsSelectionModel.clearSelection();
-        analyticalRunsSelectionModel.setLeadSelectionIndex(index);
-    }
-
+    
     /**
      * Listen to a ProtocolChangeEvent.
      *
@@ -390,21 +300,6 @@ public class SampleEditController implements Controllable {
         materials = materialService.findAll();
     }
 
-    /**
-     * Listen to a AnalyticalRunChangeEvent and update the runs table if
-     * necessary.
-     *
-     * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent instance
-     */
-    @Subscribe
-    public void onAnalyticalChangeEvent(AnalyticalRunChangeEvent analyticalRunChangeEvent) {
-        if (sampleEditDialog.isVisible() && sampleToEdit.getId().equals(analyticalRunChangeEvent.getParentSampleId())) {
-            if (analyticalRunChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
-                //remove deleted analytical run
-                analyticalRuns.removeIf(analyticalRun -> analyticalRun.getId().equals(analyticalRunChangeEvent.getAnalyticalRunId()));
-            }
-        }
-    }
 
     /**
      * Listen to a SampleChangeEvent.
@@ -516,16 +411,4 @@ public class SampleEditController implements Controllable {
     private String getAttachmentsAsString() {
         return sampleToEdit.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", "));
     }
-
-    /**
-     * Update the state (enables/disabled) of the analytical run related
-     * buttons.
-     *
-     * @param enable the enable the buttons boolean
-     */
-    private void updateAnalyticalRunButtonsState(final boolean enable) {
-        sampleEditDialog.getEditAnalyticalRunButton().setEnabled(enable);
-        sampleEditDialog.getDeleteAnalyticalRunButton().setEnabled(enable);
-    }
-
 }

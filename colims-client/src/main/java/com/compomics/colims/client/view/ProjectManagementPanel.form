@@ -319,6 +319,8 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="otherSampleActionsButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
+                          <Component id="viewRunsButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="addSampleButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="editSampleButton" min="-2" max="-2" attributes="0"/>
@@ -335,13 +337,14 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="samplesTableScrollPane" pref="140" max="32767" attributes="0"/>
+                  <Component id="samplesTableScrollPane" pref="139" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="addSampleButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="editSampleButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="deleteSampleButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="otherSampleActionsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="viewRunsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -420,6 +423,21 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="other..."/>
             <Property name="toolTipText" type="java.lang.String" value="other sample actions"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[80, 25]"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="viewRunsButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="view runs"/>
+            <Property name="toolTipText" type="java.lang.String" value="add a new sample"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>

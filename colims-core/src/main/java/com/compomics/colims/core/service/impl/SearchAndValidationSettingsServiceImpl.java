@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import org.hibernate.LazyInitializationException;
 
 /**
  * @author Niels Hulstaert
@@ -27,6 +28,7 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
     private SearchEngineRepository searchEngineRepository;
     @Autowired
     private SearchParametersRepository searchParametersRepository;
+    
 
     @Override
     public SearchAndValidationSettings findById(final Long id) {
@@ -90,6 +92,18 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
             //persist the given instance
             searchParameters = searchParametersRepository.merge(searchParameters);
             return searchParameters;
+        }
+    }
+
+    @Override
+    public void fetchSearchSettingsHasFastaDb(SearchAndValidationSettings searchAndValidationSettings) {
+        try{
+            searchAndValidationSettings.getSearchSettingsHasFastaDbs().size();
+        } catch (LazyInitializationException e) {
+            // merge the searchAndValidationSettings
+            SearchAndValidationSettings merge = searchAndValidationSettingsRepository.merge(searchAndValidationSettings);
+            merge.getSearchSettingsHasFastaDbs().size();
+            searchAndValidationSettings.setSearchSettingsHasFastaDbs(merge.getSearchSettingsHasFastaDbs());
         }
     }
 

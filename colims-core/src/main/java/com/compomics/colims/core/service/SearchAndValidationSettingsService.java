@@ -32,5 +32,6 @@ public interface SearchAndValidationSettingsService extends GenericService<Searc
      * @return the found SearchParameters
      */
     SearchParameters getSearchParameters(SearchParameters searchParameters);
-
+    
+    void fetchSearchSettingsHasFastaDb(SearchAndValidationSettings searchAndValidationSettings);
 }

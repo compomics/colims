@@ -2,6 +2,7 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.AnalyticalRunBinaryFile;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import com.compomics.colims.repository.InstrumentRepository;
@@ -69,6 +70,17 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
             if (instrument != null) {
                 analyticalRun.setInstrument(instrument);
             }
+        }
+    }
+
+    @Override
+    public void fetchBinaryFiles(AnalyticalRun analyticalRun) {
+        try {
+            analyticalRun.getBinaryFiles().size();
+        } catch (LazyInitializationException e) {
+            //fetch the binary files
+            List<AnalyticalRunBinaryFile> binaryFiles = analyticalRunRepository.fetchBinaryFiles(analyticalRun.getId());
+            analyticalRun.setBinaryFiles(binaryFiles);
         }
     }
 }
