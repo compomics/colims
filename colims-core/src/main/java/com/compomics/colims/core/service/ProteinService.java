@@ -2,7 +2,6 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.Protein;
 
-
 /**
  * This interface provides service methods for the Protein class.
  *
@@ -24,5 +23,20 @@ public interface ProteinService extends GenericService<Protein, Long> {
      * @param protein the Protein instance
      */
     void fetchAccessions(Protein protein);
+
+    /**
+     * Get the Colims protein by accession and sequence. This method
+     * looks for the protein in the cache first before querying the database.
+     *
+     * @param sequence the protein sequence
+     * @param accession the protein accession
+     * @return the found Protein instance
+     */
+    Protein getProtein(String sequence, String accession);
+
+    /**
+     * Clear the resources used by this resource.
+     */
+    void clear();
 
 }

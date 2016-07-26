@@ -257,7 +257,7 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
         confirmationPanel.setName("confirmationPanel"); // NOI18N
         confirmationPanel.setOpaque(false);
 
-        confirmationLabel.setText("The runs were sent successfully to the storage unit. Please go to the \"storage monitoring\" menu to view the storage state.");
+        confirmationLabel.setText("The runs were sent successfully to the storage unit. Please go to the \"Tasks\" tab to view the storage state.");
 
         javax.swing.GroupLayout confirmationPanelLayout = new javax.swing.GroupLayout(confirmationPanel);
         confirmationPanel.setLayout(confirmationPanelLayout);

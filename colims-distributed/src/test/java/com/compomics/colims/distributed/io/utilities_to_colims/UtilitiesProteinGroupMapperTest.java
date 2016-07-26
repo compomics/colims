@@ -24,10 +24,10 @@ import java.sql.SQLException;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
-public class UtilitiesProteinMapperTest {
+public class UtilitiesProteinGroupMapperTest {
 
     @Autowired
-    private UtilitiesProteinMapper utilitiesProteinMapper;
+    private UtilitiesProteinGroupMapper utilitiesProteinGroupMapper;
 
     @BeforeClass
     public static void setupOnce() throws IOException, ClassNotFoundException {
@@ -60,7 +60,7 @@ public class UtilitiesProteinMapperTest {
         proteinGroupScore.setProteinProbabilityScore(0.45);
         proteinGroupScore.setProteinProbability(0.77);
 
-        utilitiesProteinMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
+        utilitiesProteinGroupMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
 
         Assert.assertNotNull(proteinGroup.getProteinGroupHasProteins());
         Assert.assertEquals(1, proteinGroup.getProteinGroupHasProteins().size());
@@ -102,7 +102,7 @@ public class UtilitiesProteinMapperTest {
         proteinGroupScore.setProteinProbabilityScore(0.45);
         proteinGroupScore.setProteinProbability(0.77);
 
-        utilitiesProteinMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
+        utilitiesProteinGroupMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
 
         Assert.assertNotNull(proteinGroup.getProteinGroupHasProteins());
         Assert.assertEquals(3, proteinGroup.getProteinGroupHasProteins().size());

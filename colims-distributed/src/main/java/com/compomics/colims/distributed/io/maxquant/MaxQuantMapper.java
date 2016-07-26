@@ -40,17 +40,10 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantMapper.class);
 
-    /**
-     * The quantification file name.
-     */
-    private static final String QUANT_FILE = "msms.txt";
-
     @Autowired
     private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
     @Autowired
     private MaxQuantParser maxQuantParser;
-    @Autowired
-    private MaxQuantAndromedaParser maxQuantAndromedaParser;
     @Autowired
     private QuantificationSettingsMapper quantificationSettingsMapper;
     @Autowired
@@ -59,10 +52,11 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     @Override
     public void clear() {
         maxQuantSearchSettingsParser.clear();
+        maxQuantParser.clear();
     }
 
     @Override
-    public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException, JDOMException{
+    public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException, JDOMException {
         LOGGER.info("started mapping folder: " + maxQuantImport.getParameterFilePath().toString());
 
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
@@ -78,9 +72,9 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             });
             Path txtDirectory = Paths.get(maxQuantImport.getCombinedFolderDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
             Path andromedaDirectory = Paths.get(maxQuantImport.getCombinedFolderDirectory() + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
-            try{
+            try {
                 maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedFolderDirectory(), maxQuantImport.getParameterFilePath(), fastaDbs, false);
-            }catch (JDOMException e){
+            } catch (JDOMException e) {
                 e.printStackTrace();
             }
 
@@ -88,7 +82,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
             proteinGroups = maxQuantParser.getProteinGroupSet();
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
-                if(maxQuantSearchSettingsParser.getRunSettings().containsKey(analyticalRun.getName())){
+                if (maxQuantSearchSettingsParser.getRunSettings().containsKey(analyticalRun.getName())) {
                     analyticalRun.setStorageLocation(maxQuantImport.getCombinedFolderDirectory().toString());
                     SearchAndValidationSettings searchAndValidationSettings = maxQuantSearchSettingsParser.getRunSettings().get(analyticalRun.getName());
                     //set search and validation settings-run entity associations
@@ -151,8 +145,9 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     /**
      * Map the quantification settings.
      *
-     * @param quantFile     The file containing quant data
-     * @param analyticalRun the AnalyticalRun instance onto the quantification settings will be mapped
+     * @param quantFile The file containing quant data
+     * @param analyticalRun the AnalyticalRun instance onto the quantification
+     * settings will be mapped
      * @return the imported QuantificationSettings instance
      * @throws IOException thrown in case of an I/O related problem
      */

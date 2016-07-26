@@ -8,9 +8,9 @@
         <Property name="useNullLayout" type="boolean" value="true"/>
       </Layout>
       <SubComponents>
-        <MenuItem class="javax.swing.JMenuItem" name="addRunMenuItem">
+        <MenuItem class="javax.swing.JMenuItem" name="addRunsMenuItem">
           <Properties>
-            <Property name="text" type="java.lang.String" value="add run..."/>
+            <Property name="text" type="java.lang.String" value="add run(s)..."/>
           </Properties>
         </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="mzTabExportMenuItem">

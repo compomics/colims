@@ -31,6 +31,9 @@
             <TitledBorder title="Activity"/>
           </Border>
         </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[400, 100]"/>
+        </Property>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -58,7 +61,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="notificationScrollPanel" pref="60" max="32767" attributes="0"/>
+                  <Component id="notificationScrollPanel" pref="72" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="clearNotificationsButton" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -109,6 +112,9 @@
             <TitledBorder title="Pending"/>
           </Border>
         </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[400, 100]"/>
+        </Property>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -136,7 +142,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="taskQueueScrollPane" pref="64" max="32767" attributes="0"/>
+                  <Component id="taskQueueScrollPane" pref="66" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="deleteDbTaskButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -197,6 +203,9 @@
             <TitledBorder title="Completed"/>
           </Border>
         </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[400, 100]"/>
+        </Property>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
@@ -226,7 +235,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="completedTaskQueueScrollPane" pref="64" max="32767" attributes="0"/>
+                  <Component id="completedTaskQueueScrollPane" pref="66" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="deleteCompletedTaskButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -304,7 +313,7 @@
           </Border>
         </Property>
         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[300, 254]"/>
+          <Dimension value="[400, 100]"/>
         </Property>
       </Properties>
       <Constraints>
@@ -322,7 +331,7 @@
                       <Component id="taskErrorQueueScrollPane" alignment="0" pref="560" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="updateTaskErrorButton" min="-2" max="-2" attributes="0"/>
+                          <Component id="updateTaskErrorButton" min="-2" pref="90" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="resendTaskErrorButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -339,7 +348,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="taskErrorQueueScrollPane" pref="64" max="32767" attributes="0"/>
+                  <Component id="taskErrorQueueScrollPane" pref="54" max="32767" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="deleteTaskErrorButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -381,13 +390,13 @@
             <Property name="text" type="java.lang.String" value="delete"/>
             <Property name="toolTipText" type="java.lang.String" value="remove the selected task error"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>
@@ -396,13 +405,13 @@
             <Property name="text" type="java.lang.String" value="resend"/>
             <Property name="toolTipText" type="java.lang.String" value="resend the storage error as a storage task"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>
@@ -411,28 +420,28 @@
             <Property name="text" type="java.lang.String" value="purge"/>
             <Property name="toolTipText" type="java.lang.String" value="remove all taks errors"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="updateTaskErrorButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="update"/>
-            <Property name="toolTipText" type="java.lang.String" value="resend the storage error as a storage task"/>
+            <Property name="text" type="java.lang.String" value="update..."/>
+            <Property name="toolTipText" type="java.lang.String" value="update the storage task that caused the error and resend it"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>

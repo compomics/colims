@@ -4,7 +4,7 @@ import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchSe
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.distributed.io.unimod.UnimodMarshallerTest;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapperTest;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinMapperTest;
+import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinGroupMapperTest;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchParametersMapperTest;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSpectrumMapperTest;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({UtilitiesSpectrumMapperTest.class,
         UtilitiesPeptideMapperTest.class,
-        UtilitiesProteinMapperTest.class,
+        UtilitiesProteinGroupMapperTest.class,
         UtilitiesSearchParametersMapperTest.class,
         UtilitiesSpectrumMapperTest.class,
         UtilitiesSearchSettingsMapperTest.class,

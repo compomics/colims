@@ -318,7 +318,7 @@
               <SubComponents>
                 <Component class="javax.swing.JLabel" name="confirmationLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="The runs were sent successfully to the storage unit. Please go to the &quot;storage monitoring&quot; menu to view the storage state."/>
+                    <Property name="text" type="java.lang.String" value="The runs were sent successfully to the storage unit. Please go to the &quot;Tasks&quot; tab to view the storage state."/>
                   </Properties>
                 </Component>
               </SubComponents>

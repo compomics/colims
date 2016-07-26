@@ -79,8 +79,8 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         return otherSampleActionsButton;
     }
 
-    public JMenuItem getAddRunMenuItem() {
-        return addRunMenuItem;
+    public JMenuItem getAddRunsMenuItem() {
+        return addRunsMenuItem;
     }
 
     public JMenuItem getMzTabExportMenuItem() {
@@ -106,7 +106,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         samplePopupMenu = new javax.swing.JPopupMenu();
-        addRunMenuItem = new javax.swing.JMenuItem();
+        addRunsMenuItem = new javax.swing.JMenuItem();
         mzTabExportMenuItem = new javax.swing.JMenuItem();
         projectsOverviewPanel = new javax.swing.JPanel();
         editProjectButton = new javax.swing.JButton();
@@ -129,8 +129,8 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         otherSampleActionsButton = new javax.swing.JButton();
         viewRunsButton = new javax.swing.JButton();
 
-        addRunMenuItem.setText("add run...");
-        samplePopupMenu.add(addRunMenuItem);
+        addRunsMenuItem.setText("add run(s)...");
+        samplePopupMenu.add(addRunsMenuItem);
 
         mzTabExportMenuItem.setText("export to mzTab...");
         samplePopupMenu.add(mzTabExportMenuItem);
@@ -381,7 +381,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addExperimentButton;
     private javax.swing.JButton addProjectButton;
-    private javax.swing.JMenuItem addRunMenuItem;
+    private javax.swing.JMenuItem addRunsMenuItem;
     private javax.swing.JButton addSampleButton;
     private javax.swing.JButton deleteExperimentButton;
     private javax.swing.JButton deleteProjectButton;

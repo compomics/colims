@@ -31,7 +31,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * This class handles a PersistDbTask: map the DataImport en store it in the database.
+ * This class handles a PersistDbTask: map the DataImport en store it in the
+ * database.
  *
  * @author Niels Hulstaert
  */
@@ -138,13 +139,14 @@ public class PersistDbTaskHandler {
      *
      * @param persistDbTask the persist task containing the DataImport object
      * @return the MappedDataImport instance
-     * @throws MappingException                                       thrown in case of a mapping exception
-     * @throws java.io.IOException                                    thrown in case of an IO related problem
-     * @throws org.apache.commons.compress.archivers.ArchiveException thrown in case of an Archiver exception
-     * @throws java.lang.ClassNotFoundException                       thrown in case of a failure to load a class by
-     *                                                                it's string name
-     * @throws java.sql.SQLException                                  thrown in case of an SQL related problem
-     * @throws InterruptedException                                   thrown in case a thread is interrupted
+     * @throws MappingException thrown in case of a mapping exception
+     * @throws java.io.IOException thrown in case of an IO related problem
+     * @throws org.apache.commons.compress.archivers.ArchiveException thrown in
+     * case of an Archiver exception
+     * @throws java.lang.ClassNotFoundException thrown in case of a failure to
+     * load a class by it's string name
+     * @throws java.sql.SQLException thrown in case of an SQL related problem
+     * @throws InterruptedException thrown in case a thread is interrupted
      */
     private MappedData mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException, JDOMException {
         MappedData mappedData = null;
@@ -154,10 +156,10 @@ public class PersistDbTaskHandler {
                 //unpack .cps archive
                 UnpackedPeptideShakerImport unpackedPeptideShakerImport = peptideShakerIO.unpackPeptideShakerImport((PeptideShakerImport) (persistDbTask.getDataImport()));
 
-                //clear resources before mapping
-                peptideShakerMapper.clear();
-
                 mappedData = peptideShakerMapper.mapData(unpackedPeptideShakerImport);
+
+                //clear resources after mapping
+                peptideShakerMapper.clear();
 
                 //try to delete the temporary directory with the unpacked .cps file
                 try {
@@ -174,9 +176,10 @@ public class PersistDbTaskHandler {
                 //// TODO: 6/1/2016 change this to inline calls parser and mapper instead of mapper calling parser
                 //mappedData = maxQuantMapper.mapData(maxQuantParser.parseData((MaxQuantImport) (persistDbTask.getDataImport())))
 
-                maxQuantMapper.clear();
-
                 mappedData = maxQuantMapper.mapData((MaxQuantImport) (persistDbTask.getDataImport()));
+
+                //clear resources after mapping
+                maxQuantMapper.clear();
 
                 break;
             default:
