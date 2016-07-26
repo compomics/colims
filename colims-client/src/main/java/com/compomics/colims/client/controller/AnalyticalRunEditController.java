@@ -15,6 +15,7 @@ import com.compomics.colims.model.AnalyticalRunBinaryFile;
 import com.compomics.colims.model.Instrument;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.mysql.jdbc.PacketTooBigException;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -32,6 +33,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.persistence.PersistenceException;
+import org.apache.poi.hssf.record.PageBreakRecord;
+import org.hibernate.exception.GenericJDBCException;
 
 /**
  * @author Niels Hulstaert
@@ -123,15 +127,22 @@ public class AnalyticalRunEditController implements Controllable {
 
         analyticalRunBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.ADD, evt -> {
             AnalyticalRunBinaryFile binaryFileToAdd = (AnalyticalRunBinaryFile) evt.getNewValue();
-
             //set experiment in binary file
             binaryFileToAdd.setAnalyticalRun(analyticalRunToEdit);
-
-            //save binary file
-            binaryFileService.persist(binaryFileToAdd);
-
-            analyticalRunToEdit.getBinaryFiles().add(binaryFileToAdd);
-            analyticalRunEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+            try{
+                //save binary file
+                binaryFileService.persist(binaryFileToAdd);
+                analyticalRunToEdit.getBinaryFiles().add(binaryFileToAdd);
+                analyticalRunEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
+            }catch(PersistenceException e){
+                MessageEvent messageEvent ;
+                if(e.getCause().getClass() == GenericJDBCException.class){
+                    messageEvent = new MessageEvent("Analytical run attachments", "Please set the MySQL packet size to a larger value.", JOptionPane.WARNING_MESSAGE);
+                }else{
+                    messageEvent = new MessageEvent("Analytical run attachments", "Unexpected error occurred.", JOptionPane.ERROR_MESSAGE);
+                }
+                eventBus.post(messageEvent);
+            }
         });
 
         analyticalRunBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, evt -> {
@@ -201,6 +212,13 @@ public class AnalyticalRunEditController implements Controllable {
 
         analyticalRunEditDialog.getStorageLocationTextField().setText(analyticalRunToEdit.getStorageLocation());
 
+        if(analyticalRun.getId() != null){
+            // fetch binary files if analytical run Id is not null
+            analyticalRunService.fetchBinaryFiles(analyticalRun);
+            analyticalRunEditDialog.getAttachementsTextField().setText(analyticalRun.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", ")));
+        }else{
+            analyticalRunEditDialog.getAttachementsTextField().setText("");
+        }
         showView();
     }
 
