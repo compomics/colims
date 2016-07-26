@@ -244,21 +244,30 @@ public class AnalyticalRunsAdditionController implements Controllable {
         }
     }
 
-    public void showEditView(DataImport dataImport,PersistMetadata persistMetaData){
+    /**
+     * Show the view with the given DataImport en PersistMetadata instances for
+     * updating a runs addition task.
+     *
+     * @param dataImport the DataImport instance
+     * @param persistMetaData the PersistMetadata instance
+     */
+    public void showEditView(DataImport dataImport, PersistMetadata persistMetaData) {
         //check if the user has the rights to add a run
-        if (userBean.getDefaultPermissions().get(DefaultPermission.CREATE)){
+        if (userBean.getDefaultPermissions().get(DefaultPermission.CREATE)) {
             //check connection to distributed queues
-            if (queueManager.isReachable()){
+            if (queueManager.isReachable()) {
                 Instrument instrumentToEdit = instrumentService.findById(persistMetaData.getInstrumentId());
                 analyticalRunsAdditionDialog.getInstrumentComboBox().setSelectedItem(instrumentToEdit);
 
                 analyticalRunsAdditionDialog.getStorageDescriptionTextField().setText(persistMetaData.getDescription());
 
                 analyticalRunsAdditionDialog.getDateTimePicker().setDate(persistMetaData.getStartDate());
-                if(dataImport instanceof MaxQuantImport){
-                     maxQuantDataImportController.showEditView((MaxQuantImport)dataImport);
-                }else if(dataImport instanceof PeptideShakerImport){
-                    peptideShakerDataImportController.showEditView((PeptideShakerImport)dataImport);
+                if (dataImport instanceof MaxQuantImport) {
+                    analyticalRunsAdditionDialog.getMaxQuantRadioButton().setSelected(true);
+                    maxQuantDataImportController.showEditView((MaxQuantImport) dataImport);
+                } else if (dataImport instanceof PeptideShakerImport) {
+                    analyticalRunsAdditionDialog.getPeptideShakerRadioButton().setSelected(true);
+                    peptideShakerDataImportController.showEditView((PeptideShakerImport) dataImport);
                 }
 
                 //show first card
@@ -267,10 +276,10 @@ public class AnalyticalRunsAdditionController implements Controllable {
 
                 GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), analyticalRunsAdditionDialog);
                 analyticalRunsAdditionDialog.setVisible(true);
-            }else {
+            } else {
                 eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
             }
-        }else {
+        } else {
             eventBus.post(new MessageEvent("Authorization problem", "User " + userBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
         }
     }
@@ -410,6 +419,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
 
     /**
      * set the instrument
+     *
      * @param instrument
      */
     public void setInstrument(Instrument instrument) {
@@ -419,6 +429,5 @@ public class AnalyticalRunsAdditionController implements Controllable {
     public MaxQuantDataImportController getMaxQuantDataImportController() {
         return maxQuantDataImportController;
     }
-
 
 }

@@ -99,7 +99,7 @@ public class MaxQuantParser {
      */
     public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity) throws IOException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
-        // TODO: 6/8/2016 write a method for unidentified spectra 
+        // TODO: 6/8/2016 write a method for unidentified spectra
         maxQuantSpectraParser.parse(maxQuantDirectory, false);
 
         //look for the MaxQuant txt directory
@@ -278,6 +278,7 @@ public class MaxQuantParser {
         proteinGroups.clear();
         analyticalRuns.clear();
         maxQuantSpectraParser.clear();
+        maxQuantProteinGroupParser.clear();
         parsed = false;
     }
 }

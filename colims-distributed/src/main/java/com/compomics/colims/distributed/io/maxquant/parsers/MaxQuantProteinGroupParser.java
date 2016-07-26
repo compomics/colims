@@ -5,7 +5,6 @@ import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterato
 import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantProteinGroupHeaders;
 import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +28,24 @@ public class MaxQuantProteinGroupParser {
     @Autowired
     private ProteinService proteinService;
 
-    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
-            MaxQuantProteinGroupHeaders.ACCESSION,
-            MaxQuantProteinGroupHeaders.EVIDENCEIDS,
-            MaxQuantProteinGroupHeaders.ID,
-            MaxQuantProteinGroupHeaders.PEP
+    private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
+        MaxQuantProteinGroupHeaders.ACCESSION,
+        MaxQuantProteinGroupHeaders.EVIDENCEIDS,
+        MaxQuantProteinGroupHeaders.ID,
+        MaxQuantProteinGroupHeaders.PEP
     };
 
     /**
      * Parse a data file and return grouped proteins.
      *
      * @param proteinGroupsFile MaxQuant protein groups file
-     * @param parsedFastas      FASTA files parsed into header/sequence pairs
+     * @param parsedFastas FASTA files parsed into header/sequence pairs
      * @return Protein groups indexed by id
      * @throws IOException
      */
     public Map<Integer, ProteinGroup> parse(File proteinGroupsFile, Map<String, String> parsedFastas) throws IOException {
         Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
-        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(proteinGroupsFile, mandatoryHeaders);
+        TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(proteinGroupsFile, MANDATORY_HEADERS);
 
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
@@ -62,9 +61,16 @@ public class MaxQuantProteinGroupParser {
     }
 
     /**
+     * Clear resources.
+     */
+    public void clear() {
+        proteinService.clear();
+    }
+
+    /**
      * Construct a group of proteins.
      *
-     * @param values       A row of values
+     * @param values A row of values
      * @param parsedFastas the parsed FASTA files
      * @return A protein group
      */
@@ -91,14 +97,14 @@ public class MaxQuantProteinGroupParser {
 
             for (String accession : filteredAccessions) {
                 String sequence = "";
-                for(String key : parsedFastas.keySet()) {
-                    if(key.contains(accession)){
+                for (String key : parsedFastas.keySet()) {
+                    if (key.contains(accession)) {
                         sequence = parsedFastas.get(key);
                         break;
                     }
                 }
-                if(sequence.equals("")){
-                    throw new IllegalArgumentException("Protein has no sequence in Fasta File!");
+                if (sequence.equals("")) {
+                    throw new IllegalArgumentException("Protein has no sequence in Fasta file!");
                 }
                 proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequence, accession, isMainGroup, proteinGroup));
 
@@ -114,31 +120,28 @@ public class MaxQuantProteinGroupParser {
     }
 
     /**
-     * Create a protein and it's relation to a protein group
+     * Create a protein and it's relation to a protein group.
      *
-     * @param sequence  The sequence of the protein
+     * @param sequence The sequence of the protein
      * @param accession The accession of the protein
      * @param mainGroup Whether this is the main protein of the group
      * @return A ProteinGroupHasProtein object
      */
     private ProteinGroupHasProtein createProteinGroupHasProtein(String sequence, String accession, boolean mainGroup, ProteinGroup proteinGroup) {
-        Protein protein = proteinService.findBySequence(sequence);
-
-        if (protein == null) {
-            protein = new Protein(sequence);
-        }
-
-        ProteinAccession proteinAccession = new ProteinAccession(accession);
-
         ProteinGroupHasProtein proteinGroupHasProtein = new ProteinGroupHasProtein();
         proteinGroupHasProtein.setIsMainGroupProtein(mainGroup);
 
-        proteinAccession.setProtein(protein);
-        protein.getProteinAccessions().add(proteinAccession);
-        //protein.getProteinGroupHasProteins().add(proteinGroupHasProtein);
-        proteinGroupHasProtein.setProtein(protein);
+        //get protein
+        Protein protein = proteinService.getProtein(sequence, accession);
+
+        //set protein accession
         proteinGroupHasProtein.setProteinAccession(accession);
+
+        //set entity associations
+        proteinGroupHasProtein.setProtein(protein);
         proteinGroupHasProtein.setProteinGroup(proteinGroup);
+
+        proteinGroup.getProteinGroupHasProteins().add(proteinGroupHasProtein);
 
         return proteinGroupHasProtein;
     }

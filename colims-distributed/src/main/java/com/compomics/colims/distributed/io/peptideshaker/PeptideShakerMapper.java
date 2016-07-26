@@ -7,7 +7,7 @@ import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchSettingsMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapper;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinMapper;
+import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinGroupMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
@@ -70,17 +70,17 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
     @Autowired
     private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     /**
-     * The Compomics Utilities to Colims protein mapper.
+     * The Compomics Utilities to Colims protein group mapper.
      */
     @Autowired
-    private UtilitiesProteinMapper utilitiesProteinMapper;
+    private UtilitiesProteinGroupMapper utilitiesProteinGroupMapper;
     /**
      * The Compomics Utilities to Colims peptide mapper.
      */
     @Autowired
     private UtilitiesPeptideMapper utilitiesPeptideMapper;
     /**
-     * The fasta db servicice instance.
+     * The fasta db service instance.
      */
     @Autowired
     private FastaDbService fastaDbService;
@@ -97,7 +97,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
         sequenceFactory.clearFactory();
         //call clear methods on child mappers
         utilitiesPeptideMapper.clear();
-        utilitiesProteinMapper.clear();
+        utilitiesProteinGroupMapper.clear();
     }
 
     @Override
@@ -160,7 +160,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
                     ProteinGroup proteinGroup = new ProteinGroup();
 
                     //map the Utilities ProteinMatch instance onto the ProteinGroup instance
-                    utilitiesProteinMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
+                    utilitiesProteinGroupMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
 
                     //add the protein group to the map
                     proteinGroups.add(proteinGroup);

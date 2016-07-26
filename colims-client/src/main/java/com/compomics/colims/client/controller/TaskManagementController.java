@@ -3,12 +3,10 @@ package com.compomics.colims.client.controller;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.event.NotificationEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.factory.PsmPanelGenerator;
 import com.compomics.colims.client.model.table.model.CompletedDbTaskQueueTableModel;
 import com.compomics.colims.client.model.table.model.DbTaskErrorQueueTableModel;
 import com.compomics.colims.client.model.table.model.DbTaskQueueTableModel;
 import com.compomics.colims.client.view.MainFrame;
-import com.compomics.colims.client.view.SpectrumPopupDialog;
 import com.compomics.colims.client.view.TaskManagementPanel;
 import com.compomics.colims.core.distributed.model.*;
 import com.compomics.colims.core.distributed.model.enums.NotificationType;
@@ -44,7 +42,6 @@ public class TaskManagementController implements Controllable {
      */
     private static final Logger LOGGER = Logger.getLogger(TaskManagementController.class);
 
-    private static final String ERROR_DETAIL_NOT_AVAILABLE = "not available";
     private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
     private static final String STARTED_MESSAGE = "started processing task ";
     private static final String FINISHED_MESSAGE = "finished processing task ";
@@ -72,6 +69,7 @@ public class TaskManagementController implements Controllable {
     @Autowired
     @Lazy
     private AnalyticalRunsAdditionController analyticalRunsAdditionController;
+
     /**
      * Get the view of this controller.
      *
@@ -149,21 +147,22 @@ public class TaskManagementController implements Controllable {
                 eventBus.post(new MessageEvent("Task selection", "Please select a task to remove.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
+
         taskManagementPanel.getTaskErrorQueueTable().addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
                 if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                     DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
-                    
+
                     if (e.getClickCount() == 2 && storageError != null) {
                         showMessageDialog("Error Detail", storageError.getErrorDescription());
-              //          JOptionPane.showMessageDialog(null, storageError.getErrorDescription(), "InfoBox: " + "Error Detail", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
-                
+
             }
         });
+
         taskManagementPanel.getResendTaskErrorButton().addActionListener(e -> {
             int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
             if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
@@ -184,7 +183,7 @@ public class TaskManagementController implements Controllable {
 
         TaskPopupMenuActionListener taskPopupMenuActionListener = new TaskPopupMenuActionListener();
         taskManagementPanel.getUpdateTaskErrorButton().addActionListener(taskPopupMenuActionListener);
-        
+
         taskManagementPanel.getDeleteTaskErrorButton().addActionListener(e -> {
             int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
             if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
@@ -257,7 +256,8 @@ public class TaskManagementController implements Controllable {
     }
 
     /**
-     * Update the monitoring tables; fetch the messages currently residing on the queues.
+     * Update the monitoring tables; fetch the messages currently residing on
+     * the queues.
      */
     public void updateMonitoringTables() {
         try {
@@ -280,7 +280,7 @@ public class TaskManagementController implements Controllable {
         }
     }
 
-        /**
+    /**
      * Shows a message dialog.
      *
      * @param title the dialog title
@@ -301,6 +301,7 @@ public class TaskManagementController implements Controllable {
         JOptionPane.showMessageDialog(null, scrollPane, title, JOptionPane.INFORMATION_MESSAGE);
 
     }
+
     /**
      * Listen to a NotificationEvent.
      *
@@ -333,21 +334,21 @@ public class TaskManagementController implements Controllable {
         eventBus.post(new MessageEvent("Connection error", "The storage module cannot be reached:"
                 + System.lineSeparator() + System.lineSeparator() + message, JOptionPane.ERROR_MESSAGE));
     }
-    
-     /**
+
+    /**
      * Inner class for listening to other sample actions pop up menu items.
      */
     private class TaskPopupMenuActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+
             int selectedRowIndex = taskManagementPanel.getTaskErrorQueueTable().getSelectedRow();
-            if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0){
+            if (selectedRowIndex != -1 && dbTaskErrorQueueTableModel.getRowCount() != 0) {
                 try {
                     DbTaskError storageError = dbTaskErrorQueueTableModel.getMessages().get(selectedRowIndex);
-                    if(storageError.getDbTask()instanceof PersistDbTask){
-                        
+                    if (storageError.getDbTask() instanceof PersistDbTask) {
+
                         if (storageError.getDbTask() != null) {
                             analyticalRunsAdditionController.showEditView(((PersistDbTask) storageError.getDbTask()).getDataImport(), ((PersistDbTask) storageError.getDbTask()).getPersistMetadata());
                         } else {
@@ -361,9 +362,9 @@ public class TaskManagementController implements Controllable {
                     LOGGER.error(ex.getMessage(), ex);
                     postConnectionErrorMessage(ex.getMessage());
                 }
-            }else {
+            } else {
                 eventBus.post(new MessageEvent("Task error selection", "Please select a task to resend.", JOptionPane.INFORMATION_MESSAGE));
             }
         }
-    }    
+    }
 }
