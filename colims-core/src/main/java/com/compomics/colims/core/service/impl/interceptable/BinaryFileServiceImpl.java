@@ -2,6 +2,7 @@ package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.model.BinaryFile;
+import com.compomics.colims.model.SampleBinaryFile;
 import com.compomics.colims.repository.BinaryFileRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,8 @@ public class BinaryFileServiceImpl implements BinaryFileService {
 
     @Override
     public void remove(BinaryFile entity) {
-        binaryFileRepository.remove(entity);
+        BinaryFile merge = binaryFileRepository.merge(entity);
+        binaryFileRepository.remove(merge);
     }
 
 }

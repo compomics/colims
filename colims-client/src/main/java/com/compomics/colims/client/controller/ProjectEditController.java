@@ -109,7 +109,7 @@ public class ProjectEditController implements Controllable {
                 EntityChangeEvent.Type type;
 
                 if (projectToEdit.getId() != null) {
-                    projectService.merge(projectToEdit);
+                    projectToEdit = projectService.merge(projectToEdit);
 
                     index = projectManagementController.getSelectedProjectIndex();
                     type = EntityChangeEvent.Type.UPDATED;

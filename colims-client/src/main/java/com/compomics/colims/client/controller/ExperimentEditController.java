@@ -109,7 +109,7 @@ public class ExperimentEditController implements Controllable {
                 EntityChangeEvent.Type type;
 
                 if (experimentToEdit.getId() != null) {
-                    experimentService.merge(experimentToEdit);
+                    experimentToEdit = experimentService.merge(experimentToEdit);
 
                     index = projectManagementController.getSelectedExperimentIndex();
                     type = EntityChangeEvent.Type.UPDATED;
@@ -161,8 +161,8 @@ public class ExperimentEditController implements Controllable {
                 experimentToEdit.getBinaryFiles().remove(binaryFileToRemove);
             }
 
-            //remove binary file
-            binaryFileService.remove(binaryFileToRemove);
+            //update the experiment
+            experimentToEdit = experimentService.merge(experimentToEdit);
 
             experimentEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });
@@ -258,7 +258,8 @@ public class ExperimentEditController implements Controllable {
     }
 
     /**
-     * Update the instance fields of the selected experiment in the experiments table.
+     * Update the instance fields of the selected experiment in the experiments
+     * table.
      */
     private void updateExperimentToEdit() {
         experimentToEdit.setTitle(experimentEditDialog.getTitleTextField().getText());
@@ -268,7 +269,8 @@ public class ExperimentEditController implements Controllable {
     }
 
     /**
-     * Check if a experiment with the given experiment title exists in the database.
+     * Check if a experiment with the given experiment title exists in the
+     * database.
      *
      * @param experiment the experiment
      * @return does the experiment title exist

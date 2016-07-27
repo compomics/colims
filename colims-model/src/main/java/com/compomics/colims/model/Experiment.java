@@ -59,7 +59,7 @@ public class Experiment extends AuditableDatabaseEntity {
     /**
      * The experiment attachments. These are stored as lob's in the database.
      */
-    @OneToMany(mappedBy = "experiment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "experiment", cascade = CascadeType.ALL, orphanRemoval = true)
     List<ExperimentBinaryFile> binaryFiles = new ArrayList<>();
 
     public Project getProject() {

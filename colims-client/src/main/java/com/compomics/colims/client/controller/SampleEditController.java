@@ -2,11 +2,6 @@ package com.compomics.colims.client.controller;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
-import ca.odell.glazedlists.GlazedLists;
-import ca.odell.glazedlists.SortedList;
-import ca.odell.glazedlists.swing.AdvancedTableModel;
-import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
-import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.compoment.BinaryFileManagementPanel;
 import com.compomics.colims.client.compoment.DualList;
 import com.compomics.colims.client.distributed.QueueManager;
@@ -17,7 +12,6 @@ import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
-import com.compomics.colims.client.model.table.format.AnalyticalRunManagementTableFormat;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
@@ -27,7 +21,6 @@ import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.model.*;
-import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.google.common.eventbus.EventBus;
@@ -189,6 +182,7 @@ public class SampleEditController implements Controllable {
             binaryFileService.persist(binaryFileToAdd);
 
             sampleToEdit.getBinaryFiles().add(binaryFileToAdd);
+
             sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });
 
@@ -199,8 +193,8 @@ public class SampleEditController implements Controllable {
                 sampleToEdit.getBinaryFiles().remove(binaryFileToRemove);
             }
 
-            //remove binary file
-            binaryFileService.remove(binaryFileToRemove);
+            //update the sample
+            sampleToEdit = sampleService.merge(sampleToEdit);
 
             sampleEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });
@@ -278,7 +272,7 @@ public class SampleEditController implements Controllable {
         sampleEditDialog.getMaterialDualList().populateLists(materials, sampleToEdit.getMaterials());
         showView();
     }
-    
+
     /**
      * Listen to a ProtocolChangeEvent.
      *
@@ -299,7 +293,6 @@ public class SampleEditController implements Controllable {
     public void onMaterialChangeEvent(final MaterialChangeEvent materialChangeEvent) {
         materials = materialService.findAll();
     }
-
 
     /**
      * Listen to a SampleChangeEvent.

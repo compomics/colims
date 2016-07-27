@@ -141,8 +141,8 @@ public class AnalyticalRunEditController implements Controllable {
                 analyticalRunToEdit.getBinaryFiles().remove(binaryFileToRemove);
             }
 
-            //remove binary file
-            binaryFileService.remove(binaryFileToRemove);
+            //update the analytical run
+            analyticalRunToEdit = analyticalRunService.merge(analyticalRunToEdit);
 
             analyticalRunEditDialog.getAttachementsTextField().setText(getAttachmentsAsString());
         });

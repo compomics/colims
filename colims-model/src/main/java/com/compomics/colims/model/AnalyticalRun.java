@@ -47,7 +47,8 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Instrument instrument;
     /**
-     * The storage location of the run, for example the file path of the imported data. This is a free text field.
+     * The storage location of the run, for example the file path of the
+     * imported data. This is a free text field.
      */
     @Basic(optional = true)
     @Column(name = "storage_location", nullable = true)
@@ -58,9 +59,10 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
     @OneToMany(mappedBy = "analyticalRun", cascade = CascadeType.ALL)
     private List<Spectrum> spectrums = new ArrayList<>();
     /**
-     * The analytical run attachments. These are stored as lob's in the database.
+     * The analytical run attachments. These are stored as lob's in the
+     * database.
      */
-    @OneToMany(mappedBy = "analyticalRun", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "analyticalRun", cascade = CascadeType.ALL, orphanRemoval = true)
     List<AnalyticalRunBinaryFile> binaryFiles = new ArrayList<>();
     /**
      * The search and validation settings for this run.
@@ -152,12 +154,18 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         AnalyticalRun that = (AnalyticalRun) o;
 
-        if (!name.equals(that.name)) return false;
+        if (!name.equals(that.name)) {
+            return false;
+        }
         return !(startDate != null ? !startDate.equals(that.startDate) : that.startDate != null);
 
     }

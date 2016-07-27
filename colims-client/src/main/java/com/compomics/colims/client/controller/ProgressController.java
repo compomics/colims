@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
  *
  * @author Niels Hulstaert
  */
-@Component("progressController")
+//@Component("progressController")
 public class ProgressController implements Controllable {
 
     //model
