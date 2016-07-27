@@ -108,6 +108,7 @@ public class MaxQuantAplParser {
                                 bw.write(line.replace(MaxQuantConstants.PARAM_TAB_DELIMITER.value(), " "));
                                 line = bufferedReader.readLine();
                             }
+                            bw.newLine();
                             bw.write(MGF_SPECTRUM_END);
                             bw.flush();
 
