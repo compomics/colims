@@ -1,6 +1,6 @@
 package com.compomics.colims.core;
 
-import com.compomics.colims.core.authorization.AuthorizationInterceptorTest;
+import com.compomics.colims.core.permission.PermissionInterceptorTest;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapperTest;
 import com.compomics.colims.core.io.mzidentml.MzIdentMLExporterTest;
 import com.compomics.colims.core.io.mzml.MzMLParserTest;
@@ -13,7 +13,7 @@ import org.junit.runners.Suite;
  * Created by Niels Hulstaert on 20/05/15.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AuthorizationInterceptorTest.class,
+@Suite.SuiteClasses({PermissionInterceptorTest.class,
         ColimsSpectrumMapperTest.class,
         MzMLParserTest.class,
         MzIdentMLExporterTest.class,

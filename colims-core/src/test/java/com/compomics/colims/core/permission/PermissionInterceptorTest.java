@@ -1,5 +1,5 @@
 
-package com.compomics.colims.core.authorization;
+package com.compomics.colims.core.permission;
 
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 @Rollback
 @Transactional
-public class AuthorizationInterceptorTest {
+public class PermissionInterceptorTest {
 
     @Autowired
     private UserService userService;

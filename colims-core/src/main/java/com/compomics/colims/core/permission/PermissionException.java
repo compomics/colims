@@ -1,4 +1,4 @@
-package com.compomics.colims.core.authorization;
+package com.compomics.colims.core.permission;
 
 /**
  * @author Niels Hulstaert

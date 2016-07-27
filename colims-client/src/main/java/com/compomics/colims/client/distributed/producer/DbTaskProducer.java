@@ -26,7 +26,7 @@ public class DbTaskProducer {
     /**
      * Mapper for converting a DbTask object to the matching JSON construct.
      */
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     /**
      * The JMS template instance.
      */
