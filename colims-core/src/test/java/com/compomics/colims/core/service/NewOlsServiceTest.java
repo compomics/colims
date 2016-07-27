@@ -47,7 +47,6 @@ public class NewOlsServiceTest {
         List<Ontology> allOntologies = newOlsService.getAllOntologies();
 
         Assert.assertFalse(allOntologies.isEmpty());
-        Assert.assertEquals(149, allOntologies.size());
     }
 
     @Test
