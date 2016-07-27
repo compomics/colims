@@ -122,7 +122,6 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Analytical Runs and Search Settings");
-        setPreferredSize(new java.awt.Dimension(695, 691));
 
         analyticalRunsSearchSettingsParentPanel.setBackground(new java.awt.Color(255, 255, 255));
         analyticalRunsSearchSettingsParentPanel.setPreferredSize(new java.awt.Dimension(695, 691));

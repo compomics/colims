@@ -2,6 +2,7 @@ package com.compomics.colims.distributed.consumer;
 
 import com.compomics.colims.core.distributed.model.CompletedDbTask;
 import com.compomics.colims.core.distributed.model.DbTaskError;
+import com.compomics.colims.core.distributed.model.Notification;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
@@ -17,6 +18,7 @@ import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerMapper;
 import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerImport;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
+import com.compomics.colims.distributed.producer.NotificationProducer;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
@@ -44,6 +46,8 @@ public class PersistDbTaskHandler {
      */
     private static final Logger LOGGER = Logger.getLogger(PersistDbTaskHandler.class);
 
+    private static final String STARTED_MESSAGE = "started parsing  ";
+    private static final String FINISHED_MESSAGE = "finished parsing ";
     /**
      * The CompletedDbTask sender.
      */
@@ -89,6 +93,11 @@ public class PersistDbTaskHandler {
      */
     @Autowired
     private PersistService persistService;
+     /**
+     * The Notification message sender.
+     */
+    @Autowired
+    private NotificationProducer notificationProducer;
 
     public void handlePersistDbTask(PersistDbTask persistDbTask) {
         Long started = System.currentTimeMillis();
@@ -150,6 +159,7 @@ public class PersistDbTaskHandler {
      */
     private MappedData mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException, JDOMException {
         MappedData mappedData = null;
+        notificationProducer.sendNotification(new Notification(STARTED_MESSAGE, ""));
 
         switch (persistDbTask.getPersistMetadata().getPersistType()) {
             case PEPTIDESHAKER:
@@ -185,7 +195,7 @@ public class PersistDbTaskHandler {
             default:
                 break;
         }
-
+        notificationProducer.sendNotification(new Notification(FINISHED_MESSAGE, ""));
         return mappedData;
     }
 }

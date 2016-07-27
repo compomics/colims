@@ -4,7 +4,6 @@ import com.compomics.colims.core.distributed.model.DbTask;
 import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.distributed.model.Notification;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
-import com.compomics.colims.core.distributed.model.enums.NotificationType;
 import com.compomics.colims.distributed.producer.NotificationProducer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
@@ -30,6 +29,8 @@ public class DbTaskConsumer implements MessageListener {
      */
     private static final Logger LOGGER = Logger.getLogger(DbTaskConsumer.class);
 
+    private static final String STARTED_MESSAGE = "started processing task ";
+    private static final String FINISHED_MESSAGE = "finished processing task ";
     /**
      * Mapper for converting JSON constructs from the queue to corresponding java objects.
      */
@@ -71,7 +72,7 @@ public class DbTaskConsumer implements MessageListener {
             //set JMS message ID for correlation purposes
             dbTask.setMessageId(jmsMessageID);
 
-            notificationProducer.sendNotification(new Notification(NotificationType.STARTED, jmsMessageID));
+            notificationProducer.sendNotification(new Notification(STARTED_MESSAGE, jmsMessageID));
 
             if (dbTask instanceof PersistDbTask) {
                 LOGGER.info("Received persist db task message of type " + ((PersistDbTask) dbTask).getPersistMetadata().getPersistType().userFriendlyName());
@@ -81,7 +82,7 @@ public class DbTaskConsumer implements MessageListener {
                 deleteDbTaskHandler.handleDeleteDbTask((DeleteDbTask) dbTask);
             }
 
-            notificationProducer.sendNotification(new Notification(NotificationType.FINISHED, jmsMessageID));
+            notificationProducer.sendNotification(new Notification(FINISHED_MESSAGE, jmsMessageID));
         } catch (IOException | JMSException e) {
             LOGGER.error(e.getMessage(), e);
         }

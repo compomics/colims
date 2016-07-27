@@ -161,11 +161,11 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
                 }
             }
             if (binaryFileToAdd != null) {
+                binaryFileToAdd.setBinaryFileType((BinaryFileType) binaryFileTypeComboBox.getSelectedItem());
                 binaryFileBindingList.add(binaryFileToAdd);
 
                 //set selected index
                 binaryFileList.setSelectedIndex(binaryFileBindingList.size() - 1);
-
                 BinaryFileManagementPanel.this.firePropertyChange(ADD, null, binaryFileToAdd);
             }
         });
