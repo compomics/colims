@@ -24,18 +24,27 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="32767" attributes="0"/>
-              <Component id="analyticalRunsSearchSettingsParentPanel" min="-2" pref="679" max="-2" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="analyticalRunsSearchSettingsParentPanel" alignment="0" pref="589" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="closeButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="analyticalRunsSearchSettingsParentPanel" pref="609" max="32767" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="analyticalRunsSearchSettingsParentPanel" pref="607" max="32767" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="closeButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -54,23 +63,16 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="analyticalRunsPanel" max="32767" attributes="0"/>
-                      <Component id="SearchSettingsAndRunDetails" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="32767" attributes="0"/>
-              </Group>
+              <Component id="analyticalRunsPanel" alignment="0" max="32767" attributes="0"/>
+              <Component id="SearchSettingsAndRunDetails" alignment="1" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="analyticalRunsPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="SearchSettingsAndRunDetails" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="analyticalRunsPanel" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Component id="SearchSettingsAndRunDetails" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -92,7 +94,7 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="analyticalRunsTableScrollPane" alignment="1" pref="627" max="32767" attributes="0"/>
+                          <Component id="analyticalRunsTableScrollPane" alignment="1" pref="549" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               <Component id="editAnalyticalRunButton" min="-2" max="-2" attributes="0"/>
@@ -180,9 +182,7 @@
             </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Analytical Run Details And Search Settings">
-                  <Color PropertyName="color" blue="ff" green="ff" red="ff" type="rgb"/>
-                </TitledBorder>
+                <TitledBorder title="Details &amp; search settings"/>
               </Border>
             </Property>
           </Properties>
@@ -194,40 +194,40 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="attachmentsLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="locationLabel" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="attachmentsLabel" pref="139" max="32767" attributes="0"/>
+                                  <Component id="locationLabel" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="attachmentsTextField" max="32767" attributes="0"/>
                                   <Component id="locationTextField" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="startDateLabel" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
-                                  <Component id="instrumentLabel" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
-                                  <Component id="nameLabel" alignment="0" min="-2" pref="66" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="startDateLabel" max="32767" attributes="0"/>
+                                  <Component id="instrumentLabel" pref="139" max="32767" attributes="0"/>
+                                  <Component id="nameLabel" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="startDateTextField" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="startDateTextField" max="32767" attributes="0"/>
                                   <Component id="instrumentTextField" max="32767" attributes="0"/>
                                   <Component id="nameTextField" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="searchEngineLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="fastaNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="enzymeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="fastaNameLabel" max="32767" attributes="0"/>
+                                  <Component id="enzymeLabel" max="32767" attributes="0"/>
+                                  <Component id="searchEngineLabel" pref="139" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="enzymeTextField" alignment="1" max="32767" attributes="0"/>
                                   <Component id="fastaNameTextField" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="enzymeTextField" max="32767" attributes="0"/>
-                                  <Component id="searchEngineTextField" max="32767" attributes="0"/>
+                                  <Component id="searchEngineTextField" alignment="1" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -237,8 +237,8 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="preMasTolTextField" max="32767" attributes="0"/>
                                   <Component id="maxMissedCleTextField" max="32767" attributes="0"/>
+                                  <Component id="preMasTolTextField" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -316,7 +316,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="startDateLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Start Date"/>
+                <Property name="text" type="java.lang.String" value="Start date"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="startDateTextField">
@@ -356,7 +356,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="searchEngineLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Search Engine Type"/>
+                <Property name="text" type="java.lang.String" value="Search engine"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="searchEngineTextField">
@@ -366,7 +366,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="fastaNameLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Fasta Name"/>
+                <Property name="text" type="java.lang.String" value="Fasta DB name"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="fastaNameTextField">
@@ -396,7 +396,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="preMasTolLabel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Pre. mass Tolerance"/>
+                <Property name="text" type="java.lang.String" value="Pre. mass tolerance"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="preMasTolTextField">
@@ -408,5 +408,19 @@
         </Container>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JButton" name="closeButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="close"/>
+        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[80, 25]"/>
+        </Property>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[80, 25]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[80, 25]"/>
+        </Property>
+      </Properties>
+    </Component>
   </SubComponents>
 </Form>

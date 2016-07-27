@@ -24,7 +24,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
     public AnalyticalRunsSearchSettingsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
+
         analyticalRunsTableScrollPane.getViewport().setOpaque(false);
         analyticalRunsTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     }
@@ -81,8 +81,10 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
         return startDateTextField;
     }
 
-    
-    
+    public JButton getCloseButton() {
+        return closeButton;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -119,6 +121,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
         maxMissedCleTextField = new javax.swing.JTextField();
         preMasTolLabel = new javax.swing.JLabel();
         preMasTolTextField = new javax.swing.JTextField();
+        closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Analytical Runs and Search Settings");
@@ -161,7 +164,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, analyticalRunsPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(analyticalRunsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
+                    .addComponent(analyticalRunsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
                     .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -182,7 +185,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
         );
 
         SearchSettingsAndRunDetails.setBackground(new java.awt.Color(255, 255, 255));
-        SearchSettingsAndRunDetails.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Analytical Run Details And Search Settings", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("sansserif", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        SearchSettingsAndRunDetails.setBorder(javax.swing.BorderFactory.createTitledBorder("Details & search settings"));
 
         nameLabel.setText("Name");
 
@@ -192,7 +195,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
             }
         });
 
-        startDateLabel.setText("Start Date");
+        startDateLabel.setText("Start date");
 
         startDateTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -224,7 +227,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
             }
         });
 
-        searchEngineLabel.setText("Search Engine Type");
+        searchEngineLabel.setText("Search engine");
 
         searchEngineTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -232,7 +235,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
             }
         });
 
-        fastaNameLabel.setText("Fasta Name");
+        fastaNameLabel.setText("Fasta DB name");
 
         fastaNameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -256,7 +259,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
             }
         });
 
-        preMasTolLabel.setText("Pre. mass Tolerance");
+        preMasTolLabel.setText("Pre. mass tolerance");
 
         preMasTolTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -272,41 +275,41 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(SearchSettingsAndRunDetailsLayout.createSequentialGroup()
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(attachmentsLabel)
-                            .addComponent(locationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(63, 63, 63)
+                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(attachmentsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                            .addComponent(locationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(6, 6, 6)
                         .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(attachmentsTextField)
                             .addComponent(locationTextField)))
                     .addGroup(SearchSettingsAndRunDetailsLayout.createSequentialGroup()
+                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(startDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(instrumentLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                            .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(6, 6, 6)
                         .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(startDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(instrumentLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(65, 65, 65)
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(startDateTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(startDateTextField)
                             .addComponent(instrumentTextField)
                             .addComponent(nameTextField)))
                     .addGroup(SearchSettingsAndRunDetailsLayout.createSequentialGroup()
+                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(fastaNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(enzymeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(searchEngineLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
+                        .addGap(6, 6, 6)
                         .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(searchEngineLabel)
-                            .addComponent(fastaNameLabel)
-                            .addComponent(enzymeLabel))
-                        .addGap(21, 21, 21)
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(enzymeTextField, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(fastaNameTextField, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(enzymeTextField)
-                            .addComponent(searchEngineTextField)))
+                            .addComponent(searchEngineTextField, javax.swing.GroupLayout.Alignment.TRAILING)))
                     .addGroup(SearchSettingsAndRunDetailsLayout.createSequentialGroup()
                         .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(maxMissedCleLabel)
                             .addComponent(preMasTolLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(preMasTolTextField)
-                            .addComponent(maxMissedCleTextField))))
+                            .addComponent(maxMissedCleTextField)
+                            .addComponent(preMasTolTextField))))
                 .addContainerGap())
         );
         SearchSettingsAndRunDetailsLayout.setVerticalGroup(
@@ -358,36 +361,43 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
         analyticalRunsSearchSettingsParentPanel.setLayout(analyticalRunsSearchSettingsParentPanelLayout);
         analyticalRunsSearchSettingsParentPanelLayout.setHorizontalGroup(
             analyticalRunsSearchSettingsParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(analyticalRunsSearchSettingsParentPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(analyticalRunsSearchSettingsParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(SearchSettingsAndRunDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(SearchSettingsAndRunDetails, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         analyticalRunsSearchSettingsParentPanelLayout.setVerticalGroup(
             analyticalRunsSearchSettingsParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(analyticalRunsSearchSettingsParentPanelLayout.createSequentialGroup()
-                .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(SearchSettingsAndRunDetails, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(SearchSettingsAndRunDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        closeButton.setText("close");
+        closeButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(analyticalRunsSearchSettingsParentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 679, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(analyticalRunsSearchSettingsParentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(analyticalRunsSearchSettingsParentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 609, Short.MAX_VALUE))
+                .addComponent(analyticalRunsSearchSettingsParentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -440,7 +450,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -483,6 +493,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane analyticalRunsTableScrollPane;
     private javax.swing.JLabel attachmentsLabel;
     private javax.swing.JTextField attachmentsTextField;
+    private javax.swing.JButton closeButton;
     private javax.swing.JButton deleteAnalyticalRunButton;
     private javax.swing.JButton editAnalyticalRunButton;
     private javax.swing.JLabel enzymeLabel;

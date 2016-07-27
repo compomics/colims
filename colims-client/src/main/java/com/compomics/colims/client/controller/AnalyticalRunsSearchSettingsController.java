@@ -27,17 +27,14 @@ import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.AnalyticalRunBinaryFile;
 import com.compomics.colims.model.DatabaseEntity;
 import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.SearchSettingsHasFastaDb;
 import com.compomics.colims.model.UserBean;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.eventbus.EventBus;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
@@ -49,13 +46,13 @@ import org.springframework.stereotype.Component;
 
 /**
  * Analytical Runs and Search Settings controller
- * 
+ *
  * @author demet
  */
 @Component("analyticalRunsSearchSettingsController")
 @Lazy
-public class AnalyticalRunsSearchSettingsController implements Controllable{
-    
+public class AnalyticalRunsSearchSettingsController implements Controllable {
+
     /**
      * Logger instance.
      */
@@ -67,7 +64,7 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
     private AdvancedTableModel<AnalyticalRun> analyticalRunsTableModel;
     private DefaultEventSelectionModel<AnalyticalRun> analyticalRunsSelectionModel;
     private Sample sampleToEdit;
-    
+
     @Autowired
     private UserBean userBean;
     @Autowired
@@ -77,12 +74,12 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
     private MainController mainController;
     @Autowired
     private ProjectManagementController projectManagementController;
-    
+
     //child controller
     @Autowired
     @Lazy
     private AnalyticalRunEditController analyticalRunEditController;
-    
+
     //services
     @Autowired
     private QueueManager queueManager;
@@ -94,15 +91,15 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
     private BinaryFileService binaryFileService;
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
-    
+
     @Override
     @PostConstruct
     public void init() {
         //register to event bus
         eventBus.register(this);
-        
+
         analyticalRunsSearchSettingsDialog = new AnalyticalRunsSearchSettingsDialog(mainController.getMainFrame(), true);
-        
+
         //init sample analytical runs table
         SortedList<AnalyticalRun> sortedAnalyticalRuns = new SortedList<>(analyticalRuns, new IdComparator());
         analyticalRunsTableModel = GlazedListsSwing.eventTableModel(sortedAnalyticalRuns, new AnalyticalRunManagementTableFormat());
@@ -110,7 +107,7 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
         analyticalRunsSelectionModel = new DefaultEventSelectionModel<>(sortedAnalyticalRuns);
         analyticalRunsSelectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().setSelectionModel(analyticalRunsSelectionModel);
-        
+
         //set column widths
         analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setPreferredWidth(35);
         analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setMaxWidth(35);
@@ -125,7 +122,7 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
         analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(80);
         analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(80);
         analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setMinWidth(80);
-        
+
         analyticalRunsSearchSettingsDialog.getEditAnalyticalRunButton().addActionListener(e -> {
             EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
 
@@ -157,12 +154,15 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
                 eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
+
         analyticalRunsSelectionModel.addListSelectionListener(lse -> {
             if (!lse.getValueIsAdjusting()) {
                 AnalyticalRun analyticalRun = getSelectedAnalyticalRun();
                 setAnalyticalRunDetailsSearchSettings(analyticalRun);
             }
         });
+
+        analyticalRunsSearchSettingsDialog.getCloseButton().addActionListener(e -> analyticalRunsSearchSettingsDialog.dispose());
     }
 
     @Override
@@ -170,10 +170,10 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
         GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), analyticalRunsSearchSettingsDialog);
         analyticalRunsSearchSettingsDialog.setVisible(true);
     }
-    
-     /**
-     * Update the Analytical runs and Search settings dialog with the selected sample in the sample
-     * overview table.
+
+    /**
+     * Update the Analytical runs and Search settings dialog with the selected
+     * sample in the sample overview table.
      *
      * @param sample the Sample
      */
@@ -192,8 +192,8 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
 
         showView();
     }
-    
-     /**
+
+    /**
      * Delete the database entity (project, experiment, analytical runs) from
      * the database. Shows a confirmation dialog first. When confirmed, a
      * DeleteDbTask message is sent to the DB task queue. A message dialog is
@@ -233,7 +233,7 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
         return deleteConfirmation;
     }
 
-     /**
+    /**
      * Get the selected analytical run from the analytical runs table.
      *
      * @return the selected run, null if no run is selected
@@ -248,45 +248,44 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
 
         return selectedAnalyticalRun;
     }
-    
+
     /**
-     * Set the analytical run details and search settings by given analytical run
-     * Set empty if run is null
-     * 
-     * @param analyticalRun 
+     * Set the analytical run details and search settings by given analytical
+     * run Set empty if run is null
+     *
+     * @param analyticalRun
      */
-    public void setAnalyticalRunDetailsSearchSettings(AnalyticalRun analyticalRun){
-        if(analyticalRun != null){
+    public void setAnalyticalRunDetailsSearchSettings(AnalyticalRun analyticalRun) {
+        if (analyticalRun != null) {
             // fetch all needed fields
             fetchAnalyticalRun(analyticalRun);
             analyticalRunsSearchSettingsDialog.getNameTextField().setText(analyticalRun.getName());
             analyticalRunsSearchSettingsDialog.getStartDateTextField().setText(analyticalRun.getStartDate().toString());
 
-            
             analyticalRunsSearchSettingsDialog.getInstrumentTextField().setText(analyticalRun.getInstrument().getName());
 
-            if(analyticalRun.getStorageLocation() != null){
+            if (analyticalRun.getStorageLocation() != null) {
                 analyticalRunsSearchSettingsDialog.getLocationTextField().setText(analyticalRun.getStorageLocation());
-            }else{
+            } else {
                 analyticalRunsSearchSettingsDialog.getLocationTextField().setText("");
             }
 
-            if(analyticalRun.getId() != null){
+            if (analyticalRun.getId() != null) {
                 analyticalRunsSearchSettingsDialog.getAttachmentsTextField().setText(analyticalRun.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", ")));
-            }else{
+            } else {
                 analyticalRunsSearchSettingsDialog.getAttachmentsTextField().setText("");
             }
-            
+
             analyticalRunsSearchSettingsDialog.getSearchEngineTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchEngine().toString());
             analyticalRun.getSearchAndValidationSettings().getSearchSettingsHasFastaDbs().forEach(fastaDb -> {
-                if(fastaDb.getFastaDbType().equals(FastaDbType.PRIMARY)){
+                if (fastaDb.getFastaDbType().equals(FastaDbType.PRIMARY)) {
                     analyticalRunsSearchSettingsDialog.getFastaNameTextField().setText(fastaDb.getFastaDb().getFileName());
                 }
             });
             analyticalRunsSearchSettingsDialog.getEnzymeTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getEnzyme().getName());
             analyticalRunsSearchSettingsDialog.getMaxMissedCleTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getNumberOfMissedCleavages().toString());
             analyticalRunsSearchSettingsDialog.getPreMasTolTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance().toString());
-        }else{
+        } else {
             analyticalRunsSearchSettingsDialog.getNameTextField().setText("");
             analyticalRunsSearchSettingsDialog.getStartDateTextField().setText("");
             analyticalRunsSearchSettingsDialog.getInstrumentTextField().setText("");
@@ -299,16 +298,17 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
             analyticalRunsSearchSettingsDialog.getPreMasTolTextField().setText("");
         }
     }
-    
+
     /**
      * Fetch all needed fields.
-     * @param analyticalRun 
+     *
+     * @param analyticalRun
      */
-    public void fetchAnalyticalRun(AnalyticalRun analyticalRun){
+    public void fetchAnalyticalRun(AnalyticalRun analyticalRun) {
         //fetch the instrument if necessary
         analyticalRunService.fetchInstrument(analyticalRun);
         // fetch binary files if analytical run Id is not null
-        if(analyticalRun.getId() != null){
+        if (analyticalRun.getId() != null) {
             analyticalRunService.fetchBinaryFiles(analyticalRun);
         }
         // fetch search settings has fasta db
@@ -317,13 +317,14 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
 
     /**
      * Get analyticalRunsSearchSettingsDialog
-     * @return  analyticalRunsSearchSettingsDialog
+     *
+     * @return analyticalRunsSearchSettingsDialog
      */
     public AnalyticalRunsSearchSettingsDialog getAnalyticalRunsSearchSettingsDialog() {
         return analyticalRunsSearchSettingsDialog;
     }
-    
-     /**
+
+    /**
      * Get the row index of the selected analytical run in the analytical runs
      * table.
      *
@@ -332,8 +333,8 @@ public class AnalyticalRunsSearchSettingsController implements Controllable{
     public int getSelectedAnalyticalRunIndex() {
         return analyticalRunsSelectionModel.getLeadSelectionIndex();
     }
-    
-     /**
+
+    /**
      * Set the selected analytical run in the analytical runs table.
      *
      * @param index the selected analytical run index

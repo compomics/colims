@@ -330,7 +330,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         otherSampleActionsButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         viewRunsButton.setText("view runs");
-        viewRunsButton.setToolTipText("add a new sample");
+        viewRunsButton.setToolTipText("look at the runs associated with this sample");
         viewRunsButton.setMaximumSize(new java.awt.Dimension(80, 25));
         viewRunsButton.setMinimumSize(new java.awt.Dimension(80, 25));
         viewRunsButton.setPreferredSize(new java.awt.Dimension(80, 25));

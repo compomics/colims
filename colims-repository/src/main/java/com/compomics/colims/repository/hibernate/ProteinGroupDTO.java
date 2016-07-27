@@ -1,8 +1,8 @@
 package com.compomics.colims.repository.hibernate;
 
 /**
- * This class represents a protein group data transfer object that holds some additional information about a protein
- * group (for a given run).
+ * This class represents a protein group data transfer object that holds some
+ * additional information about a protein group (for a given run).
  * <p/>
  * Created by Niels Hulstaert on 14/10/15.
  */
@@ -29,8 +29,8 @@ public class ProteinGroupDTO {
      */
     private String mainSequence;
     /**
-     * The number of distinct peptides (distinct peptide sequence, modifications not taken into account!) linked to the
-     * group.
+     * The number of distinct peptides (distinct peptide sequence, modifications
+     * not taken into account!) linked to the group.
      */
     private long distinctPeptideSequenceCount;
     /**
@@ -101,14 +101,19 @@ public class ProteinGroupDTO {
     }
 
     /**
-     * Calculate the protein confidence based on the proteinPostErrorProbability.
+     * Calculate the protein confidence based on the
+     * proteinPostErrorProbability.
      *
      * @return the protein confidence
      */
     public double getProteinConfidence() {
-        double confidence = 100.0 * (1 - proteinPostErrorProbability);
-        if (confidence <= 0) {
-            confidence = 0;
+        double confidence = 0.0;
+
+        if (proteinPostErrorProbability != null) {
+            confidence = 100.0 * (1 - proteinPostErrorProbability);
+            if (confidence <= 0) {
+                confidence = 0;
+            }
         }
 
         return confidence;
@@ -116,8 +121,12 @@ public class ProteinGroupDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ProteinGroupDTO that = (ProteinGroupDTO) o;
 
