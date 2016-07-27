@@ -311,17 +311,20 @@ public class TaskManagementController implements Controllable {
     public void onNotificationEvent(final NotificationEvent notificationEvent) {
         Notification notification = notificationEvent.getNotification();
         String activityMessage = System.lineSeparator() + new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date()) + ": ";
-        if (notification.getType().equals(NotificationType.STARTED)) {
-            activityMessage += STARTED_MESSAGE;
-        } else if (notification.getType().equals(NotificationType.FINISHED)) {
-            activityMessage += FINISHED_MESSAGE;
+  //      if (notification.getType().equals(NotificationType.STARTED)) {
+ //           activityMessage += STARTED_MESSAGE;
+ //       } else if (notification.getType().equals(NotificationType.FINISHED)) {
+ //           activityMessage += FINISHED_MESSAGE;
 
+            
+   //     }
+        if(notification.getMessage().equals(FINISHED_MESSAGE)){
             //update tables if the task management tab is visible
             if (mainController.getSelectedTabTitle().equals(MainFrame.TASKS_TAB_TITLE)) {
                 updateMonitoringTables();
             }
         }
-        activityMessage += notification.getDbTaskMessageId();
+        activityMessage += notification.getMessage() + " " + notification.getDbTaskMessageId();
         taskManagementPanel.getNotificationTextArea().append(activityMessage);
     }
 

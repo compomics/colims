@@ -5,8 +5,6 @@
  */
 package com.compomics.colims.core.distributed.model;
 
-import com.compomics.colims.core.distributed.model.enums.NotificationType;
-
 import java.util.Objects;
 
 /**
@@ -19,9 +17,9 @@ public class Notification extends QueueMessage {
     private static final long serialVersionUID = 2770398844385424822L;
 
     /**
-     * The notification type.
+     * The message.
      */
-    private NotificationType type;
+    private String message;
     /**
      * The message ID of the db task.
      */
@@ -36,20 +34,20 @@ public class Notification extends QueueMessage {
     /**
      * Constructor.
      *
-     * @param type            the notification type
+     * @param message            the message
      * @param dbTaskMessageId the message ID string
      */
-    public Notification(NotificationType type, String dbTaskMessageId) {
-        this.type = type;
+    public Notification(String message, String dbTaskMessageId) {
+        this.message = message;
         this.dbTaskMessageId = dbTaskMessageId;
     }
 
-    public NotificationType getType() {
-        return type;
+    public String getMessage() {
+        return message;
     }
 
-    public void setType(NotificationType type) {
-        this.type = type;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getDbTaskMessageId() {
@@ -63,7 +61,7 @@ public class Notification extends QueueMessage {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 83 * hash + Objects.hashCode(this.type);
+        hash = 83 * hash + Objects.hashCode(this.message);
         hash = 83 * hash + Objects.hashCode(this.dbTaskMessageId);
         return hash;
     }
@@ -77,7 +75,7 @@ public class Notification extends QueueMessage {
             return false;
         }
         final Notification other = (Notification) obj;
-        if (this.type != other.type) {
+        if (!this.message.equals(other.message)) {
             return false;
         }
         return Objects.equals(this.dbTaskMessageId, other.dbTaskMessageId);
