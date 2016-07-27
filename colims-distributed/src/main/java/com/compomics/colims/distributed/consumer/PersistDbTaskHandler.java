@@ -46,8 +46,9 @@ public class PersistDbTaskHandler {
      */
     private static final Logger LOGGER = Logger.getLogger(PersistDbTaskHandler.class);
 
-    private static final String STARTED_MESSAGE = "started parsing  ";
+    private static final String STARTED_MESSAGE = "started parsing...  ";
     private static final String FINISHED_MESSAGE = "finished parsing ";
+    private static final String DB_STARTED_MESSAGE = "saving to database...";
     /**
      * The CompletedDbTask sender.
      */
@@ -127,7 +128,7 @@ public class PersistDbTaskHandler {
 
             //map the task
             MappedData mappedData = mapDataImport(persistDbTask);
-
+            notificationProducer.sendNotification(new Notification(DB_STARTED_MESSAGE, ""));
             persistService.persist(mappedData, sample, instrument, userName, persistDbTask.getPersistMetadata().getStartDate());
 
             //wrap the PersistDbTask in a CompletedTask and send it to the completed task queue
