@@ -42,6 +42,6 @@ Colims has been developed as part of the [ProteomeXchange](http://www.proteomexc
 
 | IntelliJ | Netbeans | Java | Maven |
 |:--:|:--:|:--:|:--:|
-| [![intellij](https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](https://www.jetbrains.com/idea/) | [![netbeans](https://netbeans.org/images_www/visual-guidelines/NB-logo-single.jpg)](https://netbeans.org/) | [![java](http://genesis.ugent.be/uvpublicdata/image/java.png)](http://java.com/en/) | [![maven](http://genesis.ugent.be/uvpublicdata/image/maven.png)](http://maven.apache.org/) |
+| [![intellij](http://genesis.ugent.be/uvpublicdata/image/icon_IntelliJIDEA.png)](https://www.jetbrains.com/idea/) | [![netbeans](https://netbeans.org/images_www/visual-guidelines/NB-logo-single.jpg)](https://netbeans.org/) | [![java](http://genesis.ugent.be/uvpublicdata/image/java.png)](http://java.com/en/) | [![maven](http://genesis.ugent.be/uvpublicdata/image/maven.png)](http://maven.apache.org/) |
 
 [Go to top of page](#colims)
