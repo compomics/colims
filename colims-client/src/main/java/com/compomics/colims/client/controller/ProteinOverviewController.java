@@ -59,6 +59,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 /**
  * Created by Iain on 19/06/2015.
@@ -92,6 +96,7 @@ public class ProteinOverviewController implements Controllable {
     private double maximumMzRatio;
     private int minimumCharge;
     private int maximumCharge;
+    List<Long> analyticalRunIds = new ArrayList<>();
     /**
      * The utilities user preferences.
      */
@@ -136,6 +141,7 @@ public class ProteinOverviewController implements Controllable {
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
         projectTreeModel = new DefaultTreeModel(projectsNode);
         proteinOverviewPanel.getProjectTree().setModel(projectTreeModel);
+        proteinOverviewPanel.getProjectTree().getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
         populateProjectTree();
 
         //init protein group table
@@ -221,42 +227,47 @@ public class ProteinOverviewController implements Controllable {
 
 //        setProteinGroupTableCellRenderers();
         //Listeners
-        proteinOverviewPanel.getProjectTree().addTreeSelectionListener(e -> {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) proteinOverviewPanel.getProjectTree().getLastSelectedPathComponent();
+        proteinOverviewPanel.getProjectTree().addTreeSelectionListener((TreeSelectionEvent e) -> {
+            analyticalRunIds.clear();
+            TreePath[] treePaths = proteinOverviewPanel.getProjectTree().getSelectionPaths();
+            
+            for(TreePath treePath : treePaths){
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+                if (node != null && node.isLeaf() && node.getUserObject() instanceof AnalyticalRun) {
+                    selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
 
-            if (node != null && node.isLeaf() && node.getUserObject() instanceof AnalyticalRun) {
-                selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
+                    //load search settings for the run
+                    psmPanelGenerator.loadSettingsForRun(selectedAnalyticalRun);
+                    //set search parameters in PSM table formatter
+                    psmTableFormat.setSearchParameters(selectedAnalyticalRun.getSearchAndValidationSettings().getSearchParameters());
 
-                //load search settings for the run
-                psmPanelGenerator.loadSettingsForRun(selectedAnalyticalRun);
-                //set search parameters in PSM table formatter
-                psmTableFormat.setSearchParameters(selectedAnalyticalRun.getSearchAndValidationSettings().getSearchParameters());
-
-                //get minimum and maximum projections for SparkLines rendering
-                Object[] spectraProjections = spectrumService.getSpectraProjections(selectedAnalyticalRun);
-                minimumRetentionTime = (double) spectraProjections[0];
-                maximumRetentionTime = (double) spectraProjections[1];
-                minimumMzRatio = (double) spectraProjections[2];
-                maximumMzRatio = (double) spectraProjections[3];
-                minimumCharge = (int) spectraProjections[4];
-                maximumCharge = (int) spectraProjections[5];
-
-                setPsmTableCellRenderers();
-
-                proteinGroupTableModel.reset(selectedAnalyticalRun);
-                updateProteinGroupTable();
-
-                //Set scrollpane to match row count (TODO: doesn't work!)
-                proteinOverviewPanel.getProteinGroupTableScrollPane().setPreferredSize(new Dimension(
-                        proteinOverviewPanel.getProteinGroupTable().getPreferredSize().width,
-                        proteinOverviewPanel.getProteinGroupTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
-                ));
-
-                minimumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
-                maximumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
-                minimumCharge = spectrumService.getMinimumCharge(selectedAnalyticalRun);
-                maximumCharge = spectrumService.getMaximumCharge(selectedAnalyticalRun);
+                    analyticalRunIds.add(selectedAnalyticalRun.getId());
+                    
+                    setPsmTableCellRenderers();
+                    // todo maybe we don't need this part
+                    minimumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
+                    maximumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
+                    minimumCharge = spectrumService.getMinimumCharge(selectedAnalyticalRun);
+                    maximumCharge = spectrumService.getMaximumCharge(selectedAnalyticalRun);
+                }
             }
+            proteinGroupTableModel.reset(analyticalRunIds);
+            updateProteinGroupTable();
+
+            //Set scrollpane to match row count (TODO: doesn't work!)
+            proteinOverviewPanel.getProteinGroupTableScrollPane().setPreferredSize(new Dimension(
+                proteinOverviewPanel.getProteinGroupTable().getPreferredSize().width,
+                proteinOverviewPanel.getProteinGroupTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
+            ));
+            
+            //get minimum and maximum projections for SparkLines rendering
+            Object[] spectraProjections = spectrumService.getSpectraProjections(analyticalRunIds);
+            minimumRetentionTime = (double) spectraProjections[0];
+            maximumRetentionTime = (double) spectraProjections[1];
+            minimumMzRatio = (double) spectraProjections[2];
+            maximumMzRatio = (double) spectraProjections[3];
+            minimumCharge = (int) spectraProjections[4];
+            maximumCharge = (int) spectraProjections[5];   
         });
 
         proteinGroupSelectionModel.addListSelectionListener(lse -> {
@@ -265,7 +276,7 @@ public class ProteinOverviewController implements Controllable {
                     ProteinGroupDTO selectedProteinGroupDTO = proteinGroupSelectionModel.getSelected().get(0);
 
                     //get the PeptideDTO instances for the selected protein group
-                    List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOByProteinGroupId(selectedProteinGroupDTO.getId());
+                    List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOByProteinGroupIdAnalyticalRunId(selectedProteinGroupDTO.getId(),analyticalRunIds);
 
                     //map to PeptideTableRow objects
                     List<PeptideTableRow> mappedPeptideTableRows = mapPeptideDTOs(peptideDTOs);
@@ -447,7 +458,7 @@ public class ProteinOverviewController implements Controllable {
                 EventList<ProteinGroupDTO> exportProteinGroupDTOs = new BasicEventList<>();
                 ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteinGroupDTOs, null), new ProteinGroupTableFormat(), 20, ProteinGroupTableFormat.ID);
                 exportModel.setPerPage(0);
-                GlazedLists.replaceAll(exportProteinGroupDTOs, exportModel.getRows(selectedAnalyticalRun), false);
+                GlazedLists.replaceAll(exportProteinGroupDTOs, exportModel.getRows(analyticalRunIds), false);
 
                 exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
 
@@ -580,7 +591,7 @@ public class ProteinOverviewController implements Controllable {
      */
     private void updateProteinGroupTable() {
         if (selectedAnalyticalRun != null) {
-            GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(selectedAnalyticalRun), false);
+            GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(analyticalRunIds), false);
             proteinOverviewPanel.getProteinGroupPageLabel().setText(proteinGroupTableModel.getPageIndicator());
         } else {
             GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);

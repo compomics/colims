@@ -70,6 +70,7 @@
         left join fetch peptideHasModification.modification as modification
         join fetch peptide.spectrum as spectrum
         where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
+        and spectrum.analyticalRun.id in (:analyticalRunId)
     </query>
 
     <query name="ProteinGroup.getProteinGroupsProjections">

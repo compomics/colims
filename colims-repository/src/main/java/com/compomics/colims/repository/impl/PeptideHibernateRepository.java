@@ -28,9 +28,10 @@ import java.util.Set;
 public class PeptideHibernateRepository extends GenericHibernateRepository<Peptide, Long> implements PeptideRepository {
 
     @Override
-    public List<PeptideDTO> getPeptideDTOByProteinGroupId(Long proteinGroupId) {
+    public List<PeptideDTO> getPeptideDTOByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds) {
         Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideDTOByProteinGroupId");
         query.setLong("proteinGroupId", proteinGroupId);
+        query.setParameterList("analyticalRunId", analyticalRunIds);
 
         List list = query.list();
 

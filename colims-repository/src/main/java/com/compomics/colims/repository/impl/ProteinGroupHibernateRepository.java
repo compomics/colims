@@ -22,7 +22,7 @@ import java.util.List;
 public class ProteinGroupHibernateRepository extends GenericHibernateRepository<ProteinGroup, Long> implements ProteinGroupRepository {
 
     @Override
-    public List<ProteinGroupDTO> getPagedProteinGroupsForRun(AnalyticalRun analyticalRun, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
+    public List<ProteinGroupDTO> getPagedProteinGroupsForRun(List<Long> analyticalRunIds, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
         //joins
@@ -34,7 +34,8 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         criteria.createAlias("protein.proteinAccessions", "proteinAccession");
 
         //restrictions
-        criteria.add(Restrictions.eq("spectrum.analyticalRun.id", analyticalRun.getId()));
+        // if list size = 1 use eq
+        criteria.add(Restrictions.in("spectrum.analyticalRun.id", analyticalRunIds));
         criteria.add(Restrictions.eq("proteinGroupHasProtein.isMainGroupProtein", true));
 
         //projections
@@ -70,12 +71,13 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
             filter = "%" + filter + "%";
             criteria.add(Restrictions.or(Restrictions.ilike("protein.sequence", filter), Restrictions.ilike("proteinGroupHasProtein.proteinAccession", filter)));
         }
-
+        List<ProteinGroupDTO> cr = criteria.list();
         return criteria.list();
+        
     }
 
     @Override
-    public long getProteinGroupCountForRun(AnalyticalRun analyticalRun, String filter) {
+    public long getProteinGroupCountForRun(List<Long> analyticalRunIds, String filter) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
         //joins
@@ -84,7 +86,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         criteria.createAlias("peptide.spectrum", "spectrum");
 
         //restrictions
-        criteria.add(Restrictions.eq("spectrum.analyticalRun.id", analyticalRun.getId()));
+        criteria.add(Restrictions.in("spectrum.analyticalRun.id", analyticalRunIds));
 
         //projections
         criteria.setProjection(Projections.countDistinct("id"));

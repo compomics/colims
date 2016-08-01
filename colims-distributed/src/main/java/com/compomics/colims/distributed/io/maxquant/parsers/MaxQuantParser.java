@@ -99,14 +99,19 @@ public class MaxQuantParser {
      */
     public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity) throws IOException, UnparseableException, MappingException {
         LOGGER.debug("parsing MSMS");
-        // TODO: 6/8/2016 write a method for unidentified spectra
-        maxQuantSpectraParser.parse(maxQuantDirectory, false);
-
+        
         //look for the MaxQuant txt directory
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         if (!txtDirectory.toFile().exists()) {
             throw new FileNotFoundException("The MaxQuant txt directory was not found.");
         }
+        
+        LOGGER.debug("parsing protein groups");
+        proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()));
+
+       
+        // TODO: 6/8/2016 write a method for unidentified spectra
+        maxQuantSpectraParser.parse(maxQuantDirectory, false,  maxQuantProteinGroupParser.getRemovedProteinGroupIds());
 
         getSpectra().forEach( (k,v) -> {
             String rawFile = k.getTitle().split("--")[0];
@@ -124,13 +129,11 @@ public class MaxQuantParser {
         if (analyticalRuns.isEmpty()) {
             throw new UnparseableException("could not connect spectra to any run");
         }
-
+        
         LOGGER.debug("parsing evidence");
-        maxQuantEvidenceParser.parse(txtDirectory.toFile(), multiplicity);
+        maxQuantEvidenceParser.parse(txtDirectory.toFile(), multiplicity, maxQuantProteinGroupParser.getRemovedProteinGroupIds());
 
-        LOGGER.debug("parsing protein groups");
-        proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()));
-
+        
         if (getSpectra().isEmpty() || maxQuantEvidenceParser.getPeptides().isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");
         } else {

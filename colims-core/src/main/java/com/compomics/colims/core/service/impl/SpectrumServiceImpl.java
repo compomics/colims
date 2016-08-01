@@ -178,7 +178,7 @@ public class SpectrumServiceImpl implements SpectrumService {
     }
 
     @Override
-    public Object[] getSpectraProjections(AnalyticalRun analyticalRun) {
-        return spectrumRepository.getSpectraProjections(analyticalRun);
+    public Object[] getSpectraProjections(List<Long> analyticalRunIds) {
+        return spectrumRepository.getSpectraProjections(analyticalRunIds);
     }
 }

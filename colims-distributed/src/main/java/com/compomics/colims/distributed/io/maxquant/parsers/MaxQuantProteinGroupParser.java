@@ -27,6 +27,8 @@ public class MaxQuantProteinGroupParser {
 
     @Autowired
     private ProteinService proteinService;
+    
+    private List<String> removedProteinGroupIds = new ArrayList<>();
 
     private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
         MaxQuantProteinGroupHeaders.ACCESSION,
@@ -90,6 +92,8 @@ public class MaxQuantProteinGroupParser {
             for (String accession : accessions) {
                 if (!accession.contains("REV") && !accession.contains("CON")) {
                     filteredAccessions.add(accession);
+                }else{
+                    removedProteinGroupIds.add(values.get(MaxQuantProteinGroupHeaders.ID.getValue()));
                 }
             }
 
@@ -114,6 +118,8 @@ public class MaxQuantProteinGroupParser {
             }
         } else if (!parsedAccession.contains("REV") && !parsedAccession.contains("CON")) {
             proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFastas.get(parsedAccession), parsedAccession, true, proteinGroup));
+        }else{
+            removedProteinGroupIds.add(values.get(MaxQuantProteinGroupHeaders.ID.getValue()));
         }
 
         return proteinGroup;
@@ -145,4 +151,14 @@ public class MaxQuantProteinGroupParser {
 
         return proteinGroupHasProtein;
     }
+
+    /**
+     * Getter for removedProteinGroupIds
+     * @return removedProteinGroupIds
+     */
+    public List<String> getRemovedProteinGroupIds() {
+        return removedProteinGroupIds;
+    }
+    
+    
 }

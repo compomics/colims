@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.repository.hibernate.PeptideDTO;
+import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,9 @@ public class PeptideRepositoryTest {
 
     @Test
     public void testGetPeptideDTOByProteinGroupId() {
-        List<PeptideDTO> peptideDTOs = peptideRepository.getPeptideDTOByProteinGroupId(2L);
+        List<Long> analyticalRunIDs = new ArrayList<>();
+        analyticalRunIDs.add(1L);
+        List<PeptideDTO> peptideDTOs = peptideRepository.getPeptideDTOByProteinGroupIdAnalyticalRunId(2L,analyticalRunIDs);
 
         Assert.assertFalse(peptideDTOs.isEmpty());
         Assert.assertEquals(2, peptideDTOs.size());

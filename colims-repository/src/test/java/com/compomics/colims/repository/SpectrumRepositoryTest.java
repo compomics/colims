@@ -2,6 +2,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Spectrum;
+import java.util.ArrayList;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
@@ -60,8 +61,10 @@ public class SpectrumRepositoryTest extends TestCase {
 
     @Test
     public void testGetSpectraProjections() {
-        Object[] spectraProjections = spectrumRepository.getSpectraProjections(analyticalRun);
-
+        List<Long> analyticalRunIds = new ArrayList<>();
+        analyticalRunIds.add(1L);
+        Object[] spectraProjections = spectrumRepository.getSpectraProjections(analyticalRunIds);
+        
         Assert.assertEquals(6, spectraProjections.length);
         Assert.assertEquals(24.3, (Double) spectraProjections[0], 0.01);
         Assert.assertEquals(26.0, (Double) spectraProjections[1], 0.01);
