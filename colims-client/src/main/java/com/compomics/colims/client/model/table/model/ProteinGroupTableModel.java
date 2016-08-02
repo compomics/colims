@@ -5,9 +5,7 @@ import ca.odell.glazedlists.gui.TableFormat;
 import com.compomics.colims.client.model.table.format.ProteinGroupTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProteinGroupService;
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
-import com.sun.xml.bind.v2.TODO;
 
 import java.util.List;
 
@@ -78,15 +76,8 @@ public class ProteinGroupTableModel extends AdvancedPagingTableModel {
      * @param analyticalRunIds the run IDs where the protein groups are associated with
      */
     public void reset(final List<Long> analyticalRunIds) {
-     //   TODO ask here!
-   //     analyticalRunIds.forEach(analyticalRun ->{
-     //       if (analyticalRun == null) {
-       //         super.reset(0);
-     //       } 
-     //   });
-        Long size = proteinGroupService.getProteinGroupCountForRun(analyticalRunIds, filter);
-        super.reset(proteinGroupService.getProteinGroupCountForRun(analyticalRunIds, filter));
-        
-        
+        if(analyticalRunIds.size() > 0){
+            super.reset(proteinGroupService.getProteinGroupCountForRun(analyticalRunIds, filter));
+        }
     }
 }

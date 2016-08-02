@@ -60,7 +60,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -251,23 +250,26 @@ public class ProteinOverviewController implements Controllable {
                     maximumCharge = spectrumService.getMaximumCharge(selectedAnalyticalRun);
                 }
             }
-            proteinGroupTableModel.reset(analyticalRunIds);
-            updateProteinGroupTable();
+            if(analyticalRunIds.size() > 0){
+                proteinGroupTableModel.reset(analyticalRunIds);
+                updateProteinGroupTable();
 
-            //Set scrollpane to match row count (TODO: doesn't work!)
-            proteinOverviewPanel.getProteinGroupTableScrollPane().setPreferredSize(new Dimension(
-                proteinOverviewPanel.getProteinGroupTable().getPreferredSize().width,
-                proteinOverviewPanel.getProteinGroupTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
-            ));
+                //Set scrollpane to match row count (TODO: doesn't work!)
+                proteinOverviewPanel.getProteinGroupTableScrollPane().setPreferredSize(new Dimension(
+                    proteinOverviewPanel.getProteinGroupTable().getPreferredSize().width,
+                    proteinOverviewPanel.getProteinGroupTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
+                ));
             
-            //get minimum and maximum projections for SparkLines rendering
-            Object[] spectraProjections = spectrumService.getSpectraProjections(analyticalRunIds);
-            minimumRetentionTime = (double) spectraProjections[0];
-            maximumRetentionTime = (double) spectraProjections[1];
-            minimumMzRatio = (double) spectraProjections[2];
-            maximumMzRatio = (double) spectraProjections[3];
-            minimumCharge = (int) spectraProjections[4];
-            maximumCharge = (int) spectraProjections[5];   
+                //get minimum and maximum projections for SparkLines rendering
+                Object[] spectraProjections = spectrumService.getSpectraProjections(analyticalRunIds);
+                minimumRetentionTime = (double) spectraProjections[0];
+                maximumRetentionTime = (double) spectraProjections[1];
+                minimumMzRatio = (double) spectraProjections[2];
+                maximumMzRatio = (double) spectraProjections[3];
+                minimumCharge = (int) spectraProjections[4];
+                maximumCharge = (int) spectraProjections[5];   
+            }
+            
         });
 
         proteinGroupSelectionModel.addListSelectionListener(lse -> {
@@ -590,13 +592,12 @@ public class ProteinOverviewController implements Controllable {
      * Update the protein group table contents and label.
      */
     private void updateProteinGroupTable() {
+        GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);
+        proteinOverviewPanel.getProteinGroupPageLabel().setText("");
         if (selectedAnalyticalRun != null) {
             GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(analyticalRunIds), false);
             proteinOverviewPanel.getProteinGroupPageLabel().setText(proteinGroupTableModel.getPageIndicator());
-        } else {
-            GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);
-            proteinOverviewPanel.getProteinGroupPageLabel().setText("");
-        }
+        } 
     }
 
     /**

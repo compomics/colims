@@ -41,11 +41,12 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         //projections
         ProjectionList projectionList = Projections.projectionList();
         projectionList.add(Projections.groupProperty("id").as("id"));
+        projectionList.add(Projections.groupProperty("proteinAccession.accession").as("mainAccession"));
         projectionList.add(Projections.count("spectrum.id").as("spectrumCount"));
         projectionList.add(Projections.countDistinct("peptide.sequence").as("distinctPeptideSequenceCount"));
         projectionList.add(Projections.property("proteinGroup.proteinProbability").as("proteinProbability"));
         projectionList.add(Projections.property("proteinGroup.proteinPostErrorProbability").as("proteinPostErrorProbability"));
-        projectionList.add(Projections.property("proteinGroupHasProtein.proteinAccession").as("mainAccession"));
+      //  projectionList.add(Projections.property("proteinAccession.accession").as("mainAccession"));
         projectionList.add(Projections.property("protein.sequence").as("mainSequence"));
         criteria.setProjection(projectionList);
 
@@ -71,7 +72,6 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
             filter = "%" + filter + "%";
             criteria.add(Restrictions.or(Restrictions.ilike("protein.sequence", filter), Restrictions.ilike("proteinGroupHasProtein.proteinAccession", filter)));
         }
-        List<ProteinGroupDTO> cr = criteria.list();
         return criteria.list();
         
     }
