@@ -96,7 +96,11 @@ public class MaxQuantSpectraParser {
         maxQuantAndromedaParser.parseSpectra(maxQuantSpectra, includeUnidentifiedSpectra);
 
     }
-
+    // only parse msms file
+    public void parseMSMSTest(Path msmsFile) throws IOException{
+        List<String> removedProteinGroupIds = new ArrayList<>();
+        parse(msmsFile,maxQuantSpectra, removedProteinGroupIds );
+    }
 
     /**
      * Parse the msms.txt file. This method returns a map with a String instance as key and the partially mapped
