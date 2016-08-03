@@ -99,10 +99,10 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
      * Get the spectra projections for the given run (Min and max retention time values, min en max M/Z values, min and
      * max charge values).
      *
-     * @param analyticalRun the AnalyticalRun instance
+     * @param analyticalRunIds the list of AnalyticalRun IDs
      * @return the spectra projection values for the given run
      */
-    Object[] getSpectraProjections(final AnalyticalRun analyticalRun);
+    Object[] getSpectraProjections(final List<Long> analyticalRunIds);
 
     /**
      * Fetch the spectrum files for the given spectrum.

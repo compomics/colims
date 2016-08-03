@@ -145,10 +145,10 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     }
 
     @Override
-    public Object[] getSpectraProjections(AnalyticalRun analyticalRun) {
+    public Object[] getSpectraProjections(List<Long> analyticalRunIds) {
         Criteria criteria = getCurrentSession().createCriteria(Spectrum.class);
 
-        criteria.add(Restrictions.eq("analyticalRun.id", analyticalRun.getId()));
+        criteria.add(Restrictions.in("analyticalRun.id", analyticalRunIds));
 
         ProjectionList projectionList = Projections.projectionList();
         projectionList.add(Projections.min("retentionTime"));

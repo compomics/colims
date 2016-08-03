@@ -5,7 +5,6 @@ import ca.odell.glazedlists.gui.TableFormat;
 import com.compomics.colims.client.model.table.format.ProteinGroupTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.service.ProteinGroupService;
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 
 import java.util.List;
@@ -58,29 +57,27 @@ public class ProteinGroupTableModel extends AdvancedPagingTableModel {
     /**
      * Updates the row count and returns a list of protein groups for the given search criteria.
      *
-     * @param analyticalRun the run where the protein groups are associated with
+     * @param analyticalRunIds the run IDs where the protein groups are associated with
      * @return the list of ProteinGroup instances
      */
-    public List<ProteinGroupDTO> getRows(AnalyticalRun analyticalRun) {
-        rowCount = proteinGroupService.getProteinGroupCountForRun(analyticalRun, filter);
+    public List<ProteinGroupDTO> getRows(List<Long> analyticalRunIds) {
+        rowCount = proteinGroupService.getProteinGroupCountForRun(analyticalRunIds, filter);
 
         if (rowCount < page * perPage) {
             page = getMaxPage();
         }
 
-        return proteinGroupService.getPagedProteinGroupsForRun(analyticalRun, page * perPage, perPage, getColumnDbName(sortColumnIndex), sortDirection, filter);
+        return proteinGroupService.getPagedProteinGroupsForRun(analyticalRunIds, page * perPage, perPage, getColumnDbName(sortColumnIndex), sortDirection, filter);
     }
 
     /**
      * Reset the table model with the protein groups associated with the specified analytical run.
      *
-     * @param analyticalRun the run where the protein groups are associated with
+     * @param analyticalRunIds the run IDs where the protein groups are associated with
      */
-    public void reset(final AnalyticalRun analyticalRun) {
-        if (analyticalRun == null) {
-            super.reset(0);
-        } else {
-            super.reset(proteinGroupService.getProteinGroupCountForRun(analyticalRun, filter));
+    public void reset(final List<Long> analyticalRunIds) {
+        if(analyticalRunIds.size() > 0){
+            super.reset(proteinGroupService.getProteinGroupCountForRun(analyticalRunIds, filter));
         }
     }
 }

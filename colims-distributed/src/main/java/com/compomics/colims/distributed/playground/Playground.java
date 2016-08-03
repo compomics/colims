@@ -14,6 +14,7 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantAndromedaParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSpectraParser;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.math.DoubleMath;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -33,33 +35,47 @@ public class Playground {
 
     @Autowired
     static MaxQuantMapper maxQuantMapper;
+    
+    @Autowired
+    static MaxQuantSpectraParser maxQuantSpectraParser;
 
-    public static void main(String[] args) throws MappingException, JDOMException {
+    public static void main(String[] args) throws MappingException, JDOMException, IOException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
 
         MaxQuantMapper maxQuantMapper = applicationContext.getBean("maxQuantMapper", MaxQuantMapper.class);
+        MaxQuantSpectraParser maxQuantSpectraParser = applicationContext.getBean("maxQuantSpectraParser", MaxQuantSpectraParser.class);
         UserBean userBean = applicationContext.getBean("userBean", UserBean.class);
         UserService userService = applicationContext.getBean("userService", UserService.class);
         FastaDbService fastaDbService = applicationContext.getBean("fastaDbService", FastaDbService.class);
 
         //set admin user in authentication bean
         User adminUser = userService.findByName("admin");
+        userService.fetchAuthenticationRelations(adminUser);
         userBean.setCurrentUser(adminUser);
 
-        String maxquantPath = "C:/Users/demet/projects/colims/colims-distributed/src/test/resources/data/maxquant_1.5.2.8";
-        String txtDirectory = maxquantPath + File.separator + MaxQuantConstants.TXT_DIRECTORY.value();
+        String maxquantPath = "C:/Users/demet/projects/colims/colims-distributed/src/test/resources/data/maxquant_1528";
+        String parameterPath =  maxquantPath + File.separator + MaxQuantConstants.PARAMETER_FILE.value();
+        String combinedDirectory = maxquantPath + File.separator + MaxQuantConstants.COMBINED_DIRECTORY.value();
+        String txtDirectory = combinedDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value();
         FastaDb testFastaDb = new FastaDb();
         testFastaDb.setName("test fasta");
-        testFastaDb.setFileName("uniprot-taxonomy%3A10090.fasta");
-        testFastaDb.setFilePath(txtDirectory +  "uniprot-taxonomy%3A10090.fasta");
+        testFastaDb.setFileName("uniprot-mouse.fasta");
+        testFastaDb.setFilePath(txtDirectory + File.separator +  "uniprot-mouse.fasta");
+        testFastaDb.setHeaderParseRule("&gt;([^ ]*)");
         fastaDbService.persist(testFastaDb);
 
         EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, testFastaDb.getId());
 
-   //     MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(maxquantPath), fastaDbIds);
-  //      MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
-   //     List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
+        // to parse everything
+        /*MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds);
+        MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
+        List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();*/
+        
+        String msmsFileDirectory = txtDirectory + File.separator + MaxQuantConstants.MSMS_FILE.value();
+        
+        maxQuantSpectraParser.parseMSMSTest(Paths.get(msmsFileDirectory));
+        
         System.out.println("Everything is parsed!");
 
 

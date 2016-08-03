@@ -93,11 +93,12 @@ public class MaxQuantEvidenceParser {
      *
      * @param quantFolder  Evidence text file from MQ output
      * @param multiplicity
+     * @param removedProteinGroupIds removed protein group IDs.
      * @throws IOException                                                       in case of an I/O related problem
      * @throws com.compomics.colims.distributed.io.maxquant.UnparseableException
      * @throws com.compomics.colims.core.io.MappingException                     in case of a mapping problem
      */
-    public void parse(File quantFolder, String multiplicity) throws IOException, UnparseableException, MappingException {
+    public void parse(File quantFolder, String multiplicity, List<String> removedProteinGroupIds) throws IOException, UnparseableException, MappingException {
         TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, MaxQuantConstants.EVIDENCE_FILE.value()), MANDATORY_HEADERS);
 
         Map<String, String> values;
@@ -111,48 +112,51 @@ public class MaxQuantEvidenceParser {
         while (evidenceIterator.hasNext()) {
             values = evidenceIterator.next();
 
-            double[] intensities = new double[intensityCount];
+            if(!removedProteinGroupIds.contains(values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()))){
+                double[] intensities = new double[intensityCount];
 
-            int i = 0;
-            for (String header : intensityColumns) {
-                intensities[i] = parseIntensity(values.get(header));
-                ++i;
-            }
+                int i = 0;
+                for (String header : intensityColumns) {
+                    intensities[i] = parseIntensity(values.get(header));
+                    ++i;
+                }
+                
+                if (values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()) != null) {
+                    String[] msmsIds = values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()).split(";");
+                    for (String msmsId : msmsIds) {
+                        if (!msmsId.isEmpty()) {
+                            Integer spectrumID = Integer.parseInt(msmsId);
+                            Peptide peptide = createPeptide(values);
 
-            if (values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()) != null) {
-                String[] msmsIds = values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()).split(";");
-                for (String msmsId : msmsIds) {
-                    if (!msmsId.isEmpty()) {
-                        Integer spectrumID = Integer.parseInt(msmsId);
-                        Peptide peptide = createPeptide(values);
+                            if (!peptides.containsKey(spectrumID)) {
+                                peptides.put(spectrumID, Arrays.asList(new Peptide[]{peptide}));
+                            } else {
+                                peptides.get(spectrumID).add(peptide);
+                            }
 
-                        if (!peptides.containsKey(spectrumID)) {
-                            peptides.put(spectrumID, Arrays.asList(new Peptide[]{peptide}));
-                        } else {
-                            peptides.get(spectrumID).add(peptide);
-                        }
+                            List<Quantification> spectrumQuantList = new ArrayList<>();
+                            for (int j = 0; j < intensityCount; ++j) {
+                                Quantification quant = new Quantification();
+                                quant.setIntensity(intensities[j]);
+                                quant.setWeight(weights[j]);
 
-                        List<Quantification> spectrumQuantList = new ArrayList<>();
-                        for (int j = 0; j < intensityCount; ++j) {
-                            Quantification quant = new Quantification();
-                            quant.setIntensity(intensities[j]);
-                            quant.setWeight(weights[j]);
+                                spectrumQuantList.add(quant);
 
-                            spectrumQuantList.add(quant);
+                                QuantificationGroup quantGroup = new QuantificationGroup();
+                                quantGroup.setQuantification(quant);
+                                quantGroup.setPeptide(peptide);
+                            }
 
-                            QuantificationGroup quantGroup = new QuantificationGroup();
-                            quantGroup.setQuantification(quant);
-                            quantGroup.setPeptide(peptide);
-                        }
-
-                        if (quantifications.containsKey(spectrumID)) {
-                            quantifications.get(spectrumID).addAll(spectrumQuantList);
-                        } else {
-                            quantifications.put(spectrumID, spectrumQuantList);
+                            if (quantifications.containsKey(spectrumID)) {
+                                quantifications.get(spectrumID).addAll(spectrumQuantList);
+                            } else {
+                                quantifications.put(spectrumID, spectrumQuantList);
+                            }   
                         }
                     }
                 }
             }
+            
         }
     }
 
@@ -333,4 +337,5 @@ public class MaxQuantEvidenceParser {
 
         return phModification;
     }
+    
 }

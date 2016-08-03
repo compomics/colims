@@ -5,6 +5,7 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.enums.QuantificationWeight;
+import java.util.ArrayList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -31,7 +33,10 @@ public class MaxQuantEvidenceParserTest {
     @Test
     public void testParse() throws Exception {
         maxQuantEvidenceParser.clear();
-        maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextDirectory.toFile(), "1");
+        List<String> removedProteinIds = new ArrayList<>();
+        removedProteinIds.add("0");
+        removedProteinIds.add("1");
+        maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextDirectory.toFile(), "1", removedProteinIds);
 
         assertThat(maxQuantEvidenceParser.getPeptides().size(), not(0));
         assertThat(maxQuantEvidenceParser.getQuantifications().size(), not(0));

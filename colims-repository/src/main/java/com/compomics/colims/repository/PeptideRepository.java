@@ -14,12 +14,13 @@ import java.util.List;
 public interface PeptideRepository extends GenericRepository<Peptide, Long> {
 
     /**
-     * Fetch the (distinct) PeptideDTO instances associated with the given protein group.
+     * Fetch the (distinct) PeptideDTO instances associated with the given protein group and analyticalRun.
      *
      * @param proteinGroupId the protein group ID
+     * @param analyticalRunIds the list of anayicalRun IDs
      * @return the list of PeptideDTO objects
      */
-    List<PeptideDTO> getPeptideDTOByProteinGroupId(Long proteinGroupId);
+    List<PeptideDTO> getPeptideDTOByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds);
 
     /**
      * Fetch the PeptideHasModification join entities.
