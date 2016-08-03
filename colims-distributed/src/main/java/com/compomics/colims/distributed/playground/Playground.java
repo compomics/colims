@@ -1,30 +1,20 @@
 
 package com.compomics.colims.distributed.playground;
 
-import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.MaxQuantImport;
-import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.core.service.FastaDbService;
-import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantMapper;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantAndromedaParser;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSpectraParser;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
-import com.google.common.math.DoubleMath;
 import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -38,12 +28,16 @@ public class Playground {
     
     @Autowired
     static MaxQuantSpectraParser maxQuantSpectraParser;
+    
+    @Autowired
+    static AnnotatedSpectraParser annotatedSpectraParser;
 
     public static void main(String[] args) throws MappingException, JDOMException, IOException {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
 
         MaxQuantMapper maxQuantMapper = applicationContext.getBean("maxQuantMapper", MaxQuantMapper.class);
         MaxQuantSpectraParser maxQuantSpectraParser = applicationContext.getBean("maxQuantSpectraParser", MaxQuantSpectraParser.class);
+        AnnotatedSpectraParser annotatedSpectraParser = applicationContext.getBean("annotatedSpectraParser", AnnotatedSpectraParser.class);
         UserBean userBean = applicationContext.getBean("userBean", UserBean.class);
         UserService userService = applicationContext.getBean("userService", UserService.class);
         FastaDbService fastaDbService = applicationContext.getBean("fastaDbService", FastaDbService.class);
@@ -73,10 +67,19 @@ public class Playground {
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();*/
         
         String msmsFileDirectory = txtDirectory + File.separator + MaxQuantConstants.MSMS_FILE.value();
+        String andromedaDirectory = combinedDirectory + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value();
+
+        List<String> msmsIDs = new ArrayList<>();
+    //    msmsIDs.add("0");
+    //    msmsIDs.add("1");
+        msmsIDs.add("2");
+        msmsIDs.add("3");
+        annotatedSpectraParser.parseSpectra(Paths.get(msmsFileDirectory), Paths.get(andromedaDirectory), msmsIDs);
         
-        maxQuantSpectraParser.parseMSMSTest(Paths.get(msmsFileDirectory));
+        
         
         System.out.println("Everything is parsed!");
+        
 
 
         //  MaxQuantSearchSettingsParser maxQuantSearchSettingsParser = applicationContext.getBean("maxQuantSearchSettingsParser", MaxQuantSearchSettingsParser.class);

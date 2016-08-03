@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -132,7 +131,7 @@ public class MaxQuantAndromedaParser {
      * Parse the spectrum files and map them onto {@link SpectrumFile} instances. Parse also unidentified spectra if
      * specified.
      *
-     * @param spectra                    the map of spectra (key: String apl header for linking purposes; value: the
+     * @param maxQuantSpectra                    the map of spectra (key: String apl header for linking purposes; value: the
      *                                   Colims Spectrum instance)
      * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
      */
@@ -144,7 +143,7 @@ public class MaxQuantAndromedaParser {
             maxQuantAplParser.parseAplFile(aplFilePath, maxQuantSpectra, includeUnidentifiedSpectra);
         }
     }
-
+    
     /**
      * Parse the mass analyzer and fragmentation type.
      *

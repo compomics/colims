@@ -73,6 +73,7 @@ public class MaxQuantSpectraParser {
         return maxQuantSpectra;
     }
 
+
     /**
      * This method parses the msms.txt and .apl spectrum files and returns the result in a map.
      *
@@ -95,11 +96,6 @@ public class MaxQuantSpectraParser {
         //parse the apl files containing the spectrum peak lists
         maxQuantAndromedaParser.parseSpectra(maxQuantSpectra, includeUnidentifiedSpectra);
 
-    }
-    // only parse msms file
-    public void parseMSMSTest(Path msmsFile) throws IOException{
-        List<String> removedProteinGroupIds = new ArrayList<>();
-        parse(msmsFile,maxQuantSpectra, removedProteinGroupIds );
     }
 
     /**
