@@ -11,7 +11,6 @@ import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantMSMSHeaders;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantAplParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.ParseUtils;
-import com.compomics.colims.model.Spectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -40,13 +39,13 @@ public class AnnotatedSpectraParser {
     private static final Logger LOGGER = Logger.getLogger(MaxQuantAplParser.class);
     
     /**
-     * Spectrum peaks from APL files.
+     * Spectrum peaks from APL files. key: APL key of the spectrum, value :list of peaks.
      */
     private Map<String, List<Peak>> spectrumPeaks = new HashMap<>();
     
     /**
      * Annotations from MSMS file
-     * key : Peak that keeps mass and intensity, value : match
+     * key:APL key of the spectrum, value map( key : Peak that keeps mass and intensity, value : match)
      */
     private Map<String, Map<Peak, String>> annotations  = new HashMap<>();
     
