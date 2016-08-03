@@ -1,9 +1,11 @@
 package com.compomics.colims.repository.hibernate;
 
+import java.util.EnumSet;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.jpa.internal.EntityManagerFactoryImpl;
 import org.hibernate.service.internal.SessionFactoryServiceRegistryImpl;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.schema.TargetType;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -23,11 +25,12 @@ public class DatabaseSchemaExporter {
         SessionFactoryImplementor sf = emf.getSessionFactory();
         SessionFactoryServiceRegistryImpl serviceRegistry = (SessionFactoryServiceRegistryImpl) sf.getServiceRegistry();
 
-        SchemaExport schemaExport = new SchemaExport(serviceRegistry, MetadataProvider.getMetadata());
+        SchemaExport schemaExport = new SchemaExport();
         schemaExport.setOutputFile("/home/niels/Desktop/colims_export.sql");
         schemaExport.setDelimiter(";");
         schemaExport.setFormat(true);
-        schemaExport.execute(false, false, false, true);
+        EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.SCRIPT);
+        schemaExport.createOnly(targetTypes, MetadataProvider.getMetadata());
     }
 
 }

@@ -1,7 +1,7 @@
 <project
-        xmlns="http://maven.apache.org/POM/4.0.0"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.compomics.colims</groupId>
     <artifactId>colims</artifactId>
@@ -61,6 +61,14 @@
             </organization>
         </developer>
         <developer>
+            <name>Demet Turan</name>
+            <id>demet</id>
+            <email>demet.turan AT ugent.be</email>
+            <organization>Computational Omics and Systems Biology Group, VIB Department of Medical Protein Research,
+                UGent, Belgium
+            </organization>
+        </developer>
+        <developer>
             <name>Kenneth Verheggen</name>
             <id>kenneth</id>
             <email>kenneth.verheggen AT ugent.be</email>
@@ -81,14 +89,14 @@
             <id>harald</id>
             <email>harald.barsnes AT biomed.uib.no</email>
             <organization>Department of Biomedicine, University of Bergen, Norway</organization>
-        </developer>
+        </developer>        
     </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<org.springframework.version>3.2.5.RELEASE</org.springframework.version>-->
-        <org.springframework.version>4.2.2.RELEASE</org.springframework.version>
-        <org.hibernate.version>5.0.3.Final</org.hibernate.version>
+        <org.springframework.version>4.3.1.RELEASE</org.springframework.version>
+        <org.hibernate.version>5.1.0.Final</org.hibernate.version>
         <!--<sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>-->
         <!--<sonar.jacoco.itReportPath>target/jacoco-it.exec</sonar.jacoco.itReportPath>-->
     </properties>
