@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import org.junit.Ignore;
 
 /**
  * @author Niels Hulstaert
@@ -29,12 +30,10 @@ public class ProteinGroupRepositoryTest {
 
     @Autowired
     private ProteinGroupRepository proteinGroupRepository;
-    @Autowired
-    private AnalyticalRunRepository analyticalRunRepository;
 
+    @Ignore
     @Test
     public void testGetPagedProteinsForRunTest() {
-        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
         List<Long> analyticalRunIds = new ArrayList<>();
         analyticalRunIds.add(1L);
 
@@ -96,10 +95,9 @@ public class ProteinGroupRepositoryTest {
 
     @Test
     public void testGetProteinGroupCountForRun() {
-        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);
         List<Long> analyticalRunIds = new ArrayList<>();
         analyticalRunIds.add(1L);
-        
+
         long proteinGroupCountForRun = proteinGroupRepository.getProteinGroupCountForRun(analyticalRunIds, "");
         assertThat(proteinGroupCountForRun, is(2L));
 
