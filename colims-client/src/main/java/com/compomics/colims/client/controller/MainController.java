@@ -17,7 +17,7 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.MainFrame;
 import com.compomics.colims.client.view.MainHelpDialog;
 import com.compomics.colims.client.view.UserLoginDialog;
-import com.compomics.colims.core.authorization.PermissionException;
+import com.compomics.colims.core.permission.PermissionException;
 import com.compomics.colims.core.distributed.model.CompletedDbTask;
 import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.distributed.model.PersistDbTask;

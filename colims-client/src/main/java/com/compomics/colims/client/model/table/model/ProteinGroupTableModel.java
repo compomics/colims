@@ -24,9 +24,9 @@ public class ProteinGroupTableModel extends AdvancedPagingTableModel {
     /**
      * Constructor.
      *
-     * @param source                 the EventList that holds the table data
-     * @param tableFormat            the TableFormat instance of the table
-     * @param perPage                the number of rows per page
+     * @param source the EventList that holds the table data
+     * @param tableFormat the TableFormat instance of the table
+     * @param perPage the number of rows per page
      * @param defaultSortColumnIndex the default sort column
      */
     public ProteinGroupTableModel(EventList source, TableFormat tableFormat, int perPage, int defaultSortColumnIndex) {
@@ -55,29 +55,33 @@ public class ProteinGroupTableModel extends AdvancedPagingTableModel {
     }
 
     /**
-     * Updates the row count and returns a list of protein groups for the given search criteria.
+     * Updates the row count and returns a list of protein groups for the given
+     * search criteria.
      *
-     * @param analyticalRunIds the run IDs where the protein groups are associated with
+     * @param analyticalRunIds the run IDs where the protein groups are
+     * associated with
      * @return the list of ProteinGroup instances
      */
     public List<ProteinGroupDTO> getRows(List<Long> analyticalRunIds) {
-        rowCount = proteinGroupService.getProteinGroupCountForRun(analyticalRunIds, filter);
+        rowCount = proteinGroupService.getProteinGroupCountForRuns(analyticalRunIds, filter);
 
         if (rowCount < page * perPage) {
             page = getMaxPage();
         }
 
-        return proteinGroupService.getPagedProteinGroupsForRun(analyticalRunIds, page * perPage, perPage, getColumnDbName(sortColumnIndex), sortDirection, filter);
+        return proteinGroupService.getPagedProteinGroupsForRuns(analyticalRunIds, page * perPage, perPage, getColumnDbName(sortColumnIndex), sortDirection, filter);
     }
 
     /**
-     * Reset the table model with the protein groups associated with the specified analytical run.
+     * Reset the table model with the protein groups associated with the
+     * specified analytical run.
      *
-     * @param analyticalRunIds the run IDs where the protein groups are associated with
+     * @param analyticalRunIds the run IDs where the protein groups are
+     * associated with
      */
     public void reset(final List<Long> analyticalRunIds) {
-        if(analyticalRunIds.size() > 0){
-            super.reset(proteinGroupService.getProteinGroupCountForRun(analyticalRunIds, filter));
+        if (analyticalRunIds.size() > 0) {
+            super.reset(proteinGroupService.getProteinGroupCountForRuns(analyticalRunIds, filter));
         }
     }
 }

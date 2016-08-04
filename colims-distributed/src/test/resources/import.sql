@@ -79,8 +79,11 @@ INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (5, 'PROT_ACC
 INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (1,'N/A','N/A','PeptideShaker','N/A','PEPTIDESHAKER','0.35.0-beta');
 INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (2,'MS:1001583','MS','MaxQuant','PSI Mass Spectrometry Ontology [MS]','MAXQUANT','0.0.0');
 
+-- insert test taxonomy cv param
+INSERT INTO taxonomy_cv_param (id, accession, label, name, ontology) VALUES (1,'ncbi:9606','ncbiTaxon','Homo sapiens', 'NCBI taxonomy');
+
 -- insert test fasta db
-INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, species, taxonomy_accession, version) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', 'Homo sapiens (Human)', '9606', '1.2.3');
+INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_taxonomy_cv_id) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', '1.2.3', 1);
 
 -- insert test search parameter cv params
 INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) VALUES (1, 'MS:1001251', 'PSI-MS', 'Trypsin', 'PSI-MS', 'SEARCH_PARAM_ENZYME');

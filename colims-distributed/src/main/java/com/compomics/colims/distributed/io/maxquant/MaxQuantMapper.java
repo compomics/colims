@@ -6,7 +6,6 @@ import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.QuantificationSettingsMapper;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantAndromedaParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
 import com.compomics.colims.model.*;
@@ -70,12 +69,11 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             maxQuantImport.getFastaDbIds().forEach((fastaDbType, fastaDbId) -> {
                 fastaDbs.put(fastaDbType, fastaDbService.findById(fastaDbId));
             });
-            Path txtDirectory = Paths.get(maxQuantImport.getCombinedFolderDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
-            Path andromedaDirectory = Paths.get(maxQuantImport.getCombinedFolderDirectory() + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
+
             try {
                 maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedFolderDirectory(), maxQuantImport.getParameterFilePath(), fastaDbs, false);
             } catch (JDOMException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage(), e);
             }
 
             maxQuantParser.parse(maxQuantImport.getCombinedFolderDirectory(), fastaDbs, maxQuantSearchSettingsParser.getMultiplicity());

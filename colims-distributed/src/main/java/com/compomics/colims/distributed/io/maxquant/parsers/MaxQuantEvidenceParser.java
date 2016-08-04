@@ -30,18 +30,17 @@ public class MaxQuantEvidenceParser {
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
     private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
-            MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
-            MaxQuantEvidenceHeaders.CHARGE,
-            MaxQuantEvidenceHeaders.DELTA_SCORE,
-            MaxQuantEvidenceHeaders.MASS,
-            MaxQuantEvidenceHeaders.MODIFICATIONS,
-            MaxQuantEvidenceHeaders.MS_MS_IDS,
-            MaxQuantEvidenceHeaders.OXIDATION_M,
-            MaxQuantEvidenceHeaders.PEP,
-            MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
-            MaxQuantEvidenceHeaders.SCORE,
-            MaxQuantEvidenceHeaders.SEQUENCE,
-    };
+        MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
+        MaxQuantEvidenceHeaders.CHARGE,
+        MaxQuantEvidenceHeaders.DELTA_SCORE,
+        MaxQuantEvidenceHeaders.MASS,
+        MaxQuantEvidenceHeaders.MODIFICATIONS,
+        MaxQuantEvidenceHeaders.MS_MS_IDS,
+        MaxQuantEvidenceHeaders.OXIDATION_M,
+        MaxQuantEvidenceHeaders.PEP,
+        MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
+        MaxQuantEvidenceHeaders.SCORE,
+        MaxQuantEvidenceHeaders.SEQUENCE,};
 
     /**
      * Iterable intensity headers, based on number of labels chosen.
@@ -54,15 +53,15 @@ public class MaxQuantEvidenceParser {
     /**
      * Spectrum IDs and associated quantifications.
      */
-    private Map<Integer, List<Quantification>> quantifications = new HashMap<>();
+    private final Map<Integer, List<Quantification>> quantifications = new HashMap<>();
     /**
      * Spectrum IDs and peptides.
      */
-    private Map<Integer, List<Peptide>> peptides = new HashMap<>();
+    private final Map<Integer, List<Peptide>> peptides = new HashMap<>();
     /**
      * Peptides and associated protein group IDs.
      */
-    private Map<Peptide, List<Integer>> peptideProteins = new HashMap<>();
+    private final Map<Peptide, List<Integer>> peptideProteins = new HashMap<>();
 
     static {
         INTENSITY_HEADERS.put(1, new String[]{"intensity"});
@@ -89,14 +88,16 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * Parse an evidence file for peptides and quantifications, also create groups for these.
+     * Parse an evidence file for peptides and quantifications, also create
+     * groups for these.
      *
-     * @param quantFolder  Evidence text file from MQ output
+     * @param quantFolder Evidence text file from MQ output
      * @param multiplicity
      * @param removedProteinGroupIds removed protein group IDs.
-     * @throws IOException                                                       in case of an I/O related problem
+     * @throws IOException in case of an I/O related problem
      * @throws com.compomics.colims.distributed.io.maxquant.UnparseableException
-     * @throws com.compomics.colims.core.io.MappingException                     in case of a mapping problem
+     * @throws com.compomics.colims.core.io.MappingException in case of a
+     * mapping problem
      */
     public void parse(File quantFolder, String multiplicity, List<String> removedProteinGroupIds) throws IOException, UnparseableException, MappingException {
         TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, MaxQuantConstants.EVIDENCE_FILE.value()), MANDATORY_HEADERS);
@@ -112,7 +113,7 @@ public class MaxQuantEvidenceParser {
         while (evidenceIterator.hasNext()) {
             values = evidenceIterator.next();
 
-            if(!removedProteinGroupIds.contains(values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()))){
+            if (!removedProteinGroupIds.contains(values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()))) {
                 double[] intensities = new double[intensityCount];
 
                 int i = 0;
@@ -120,7 +121,7 @@ public class MaxQuantEvidenceParser {
                     intensities[i] = parseIntensity(values.get(header));
                     ++i;
                 }
-                
+
                 if (values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()) != null) {
                     String[] msmsIds = values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()).split(";");
                     for (String msmsId : msmsIds) {
@@ -151,12 +152,12 @@ public class MaxQuantEvidenceParser {
                                 quantifications.get(spectrumID).addAll(spectrumQuantList);
                             } else {
                                 quantifications.put(spectrumID, spectrumQuantList);
-                            }   
+                            }
                         }
                     }
                 }
             }
-            
+
         }
     }
 
@@ -181,7 +182,8 @@ public class MaxQuantEvidenceParser {
      *
      * @param values Set of values from a line in the file
      * @return Peptide object
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case
+     * of a modification mapping problem
      */
     public Peptide createPeptide(Map<String, String> values) throws ModificationMappingException {
         Peptide peptide = new Peptide();
@@ -222,7 +224,7 @@ public class MaxQuantEvidenceParser {
      * Create modifications for a given peptide
      *
      * @param peptide Peptide to associate with modifications
-     * @param values  Row of data from evidence file
+     * @param values Row of data from evidence file
      * @return List of PeptideHasModification objects
      */
     private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) throws ModificationMappingException {
@@ -255,7 +257,6 @@ public class MaxQuantEvidenceParser {
                         Modification modification = utilitiesModificationMapper.mapByName(modificationHeader[0].split(" ")[0]);
 
                         //modification.getPeptideHasModifications().add(phModification);
-
                         phModification.setModification(modification);
                         peptideHasModifications.add(phModification);
                     }
@@ -337,5 +338,5 @@ public class MaxQuantEvidenceParser {
 
         return phModification;
     }
-    
+
 }

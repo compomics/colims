@@ -1,4 +1,4 @@
-package com.compomics.colims.core.authorization;
+package com.compomics.colims.core.permission;
 
 import com.compomics.colims.model.UserBean;
 import com.compomics.colims.model.enums.DefaultPermission;
@@ -12,20 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Niels Hulstaert
  */
 @Aspect
-public class AuthorizationInterceptor {
+public class PermissionInterceptor {
 
     /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(AuthorizationInterceptor.class);
-    /**
-     * The Colims authentication bean containing the logged in user and his/her credentials.
+     * The Colims user bean containing the logged in user and his/her
+     * credentials.
      */
     @Autowired
     private UserBean userBean;
 
     /**
-     * This method is triggered by a save method call from an interceptable service.
+     * This method is triggered by a save method call from an interceptable
+     * service.
      *
      * @param joinPoint the JoinPoint
      */
@@ -37,7 +35,8 @@ public class AuthorizationInterceptor {
     }
 
     /**
-     * This method is triggered by an update method call from an interceptable service.
+     * This method is triggered by an update method call from an interceptable
+     * service.
      *
      * @param joinPoint the JoinPoint
      */
@@ -49,7 +48,8 @@ public class AuthorizationInterceptor {
     }
 
     /**
-     * This method is triggered by a delete method call from an interceptable service.
+     * This method is triggered by a delete method call from an interceptable
+     * service.
      *
      * @param joinPoint the JoinPoint
      */

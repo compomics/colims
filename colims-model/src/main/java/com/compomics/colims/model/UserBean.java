@@ -15,6 +15,8 @@ import java.util.Map;
 @Component("userBean")
 public class UserBean {
 
+    public static final String USER_NOT_AVAILABLE = "N/A";
+
     /**
      * The logged in user.
      */
@@ -29,7 +31,7 @@ public class UserBean {
      */
     public UserBean() {
         //set a default user
-        currentUser = new User("N/A");
+        currentUser = new User(USER_NOT_AVAILABLE);
 
         resetDefaultPermissions();
     }

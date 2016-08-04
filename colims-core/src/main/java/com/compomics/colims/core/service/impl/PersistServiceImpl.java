@@ -36,21 +36,16 @@ public class PersistServiceImpl implements PersistService {
     @Override
     public void persist(MappedData mappedData, Sample sample, Instrument instrument, String userName, Date startDate) {
         mappedData.getAnalyticalRuns().stream().forEach(analyticalRun -> {
-            Date auditDate = new Date();
 
             SearchAndValidationSettings searchAndValidationSettings = analyticalRun.getSearchAndValidationSettings();
             if (searchAndValidationSettings != null) {
-                //set the audit fields for the SearchAndValidationSettings
-                searchAndValidationSettings.setCreationDate(auditDate);
-                searchAndValidationSettings.setModificationDate(auditDate);
+                //set the audit user name for the SearchAndValidationSettings
                 searchAndValidationSettings.setUserName(userName);
             }
 
             QuantificationSettings quantificationSettings = analyticalRun.getQuantificationSettings();
             if (quantificationSettings != null) {
-                //set the audit fields for the QuantificationSettings
-                quantificationSettings.setCreationDate(auditDate);
-                quantificationSettings.setModificationDate(auditDate);
+                //set the audit user name for the QuantificationSettings
                 quantificationSettings.setUserName(userName);
             }
 
@@ -58,8 +53,6 @@ public class PersistServiceImpl implements PersistService {
             mappedData.getProteinGroups().stream().forEach(proteinGroupRepository::saveOrUpdate);
 
             //second,  cascade save or update the analytical run
-            analyticalRun.setCreationDate(auditDate);
-            analyticalRun.setModificationDate(auditDate);
             analyticalRun.setUserName(userName);
             analyticalRun.setStartDate(startDate);
             analyticalRun.setSample(sample);

@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Parser for the MaxQuant andromeda directory; the apl summary file, the actual apl files containing the spectra and
- * the spectrum parameter file (.apar).
+ * Parser for the MaxQuant andromeda directory; the apl summary file, the actual
+ * apl files containing the spectra and the spectrum parameter file (.apar).
  * <p/>
  *
  * @author Niels Hulstaert
@@ -43,7 +43,8 @@ public class MaxQuantAndromedaParser {
      */
     private Path andromedaDirectory;
     /**
-     * The apl spectrum file paths map (key: apl file path; value: apl param file path);
+     * The apl spectrum file paths map (key: apl file path; value: apl param
+     * file path);
      */
     private Map<Path, Path> aplFilePaths = new HashMap<>();
     /**
@@ -88,16 +89,18 @@ public class MaxQuantAndromedaParser {
     }
 
     /**
-     * Parse the parameter related files of the andromeda directory. This method parses the apl summary file and the
-     * .apar file.
+     * Parse the parameter related files of the andromeda directory. This method
+     * parses the apl summary file and the .apar file.
      *
      * @param andromedaDirectory the MaxQuant andromeda directory
      * @throws IOException thrown in case of an I/O related problem
      */
     public void parseParameters(final Path andromedaDirectory) throws IOException {
+
         /**
-         * Parse the apl summary file 'aplfiles.txt' to extract the apl spectrum file paths, the spectrum parameter file paths
-         * and the mass analyzer and fragmentation type.
+         * Parse the apl summary file 'aplfiles.txt' to extract the apl spectrum
+         * file paths, the spectrum parameter file paths and the mass analyzer
+         * and fragmentation type.
          */
         if (!Files.exists(andromedaDirectory)) {
             throw new FileNotFoundException("The andromeda directory " + andromedaDirectory.toString() + " could not be found.");
@@ -128,12 +131,13 @@ public class MaxQuantAndromedaParser {
     }
 
     /**
-     * Parse the spectrum files and map them onto {@link SpectrumFile} instances. Parse also unidentified spectra if
-     * specified.
+     * Parse the spectrum files and map them onto {@link SpectrumFile}
+     * instances. Parse also unidentified spectra if specified.
      *
-     * @param maxQuantSpectra                    the map of spectra (key: String apl header for linking purposes; value: the
-     *                                   Colims Spectrum instance)
-     * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
+     * @param spectra the map of spectra (key: String apl header for linking
+     * purposes; value: the Colims Spectrum instance)
+     * @param includeUnidentifiedSpectra whether or not to include the
+     * unidentified spectra
      */
     public void parseSpectra(MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
         for (Path aplFilePath : aplFilePaths.keySet()) {
@@ -154,7 +158,7 @@ public class MaxQuantAndromedaParser {
         massAnalyzerType = MaxQuantConstants.Analyzer.UNKNOWN;
 
         String aplFilePathString = aplFilesPath.toString();
-     //   String analyzerAndType = aplFilePathString.substring(aplFilePathString.lastIndexOf(ALL_SPECTRA) + ALL_SPECTRA.length(), aplFilePathString.lastIndexOf(ISO));
+        //   String analyzerAndType = aplFilePathString.substring(aplFilePathString.lastIndexOf(ALL_SPECTRA) + ALL_SPECTRA.length(), aplFilePathString.lastIndexOf(ISO));
         String analyzerAndType = org.apache.commons.lang3.StringUtils.substringAfter(aplFilePathString, ALL_SPECTRA);
         System.out.println(analyzerAndType);
         //get the fragmentation type
@@ -172,7 +176,7 @@ public class MaxQuantAndromedaParser {
     /**
      * Clear run data from parser.
      */
-    public void clear(){
+    public void clear() {
         aplFilePaths.clear();
     }
 }

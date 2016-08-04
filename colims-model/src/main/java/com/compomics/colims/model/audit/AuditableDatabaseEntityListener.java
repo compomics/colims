@@ -10,8 +10,10 @@ import javax.persistence.PreUpdate;
 import java.util.Date;
 
 /**
- * Entity listener class for providing audit fields content for AuditableDatabaseEntity subclasses before persisting or
- * updating. This listener is managed by JPA, so we needed some way to wire the user bean into it.
+ * Entity listener class for providing audit fields content for
+ * AuditableDatabaseEntity subclasses before persisting or updating. This
+ * listener is managed by JPA, so we needed some way to wire the user bean into
+ * it.
  * <p/>
  * Created by Niels Hulstaert on 19/11/15.
  */
@@ -29,7 +31,9 @@ public class AuditableDatabaseEntityListener {
         if (userBean == null) {
             loadUserBean();
         }
-        auditableDatabaseEntity.setUserName(userBean.getCurrentUser().getName());
+        if (auditableDatabaseEntity.getUserName() == null) {
+            auditableDatabaseEntity.setUserName(userBean.getCurrentUser().getName());
+        }
     }
 
     @PreUpdate
@@ -38,7 +42,9 @@ public class AuditableDatabaseEntityListener {
         if (userBean == null) {
             loadUserBean();
         }
-        auditableDatabaseEntity.setUserName(userBean.getCurrentUser().getName());
+        if (auditableDatabaseEntity.getUserName() == null) {
+            auditableDatabaseEntity.setUserName(userBean.getCurrentUser().getName());
+        }
     }
 
     /**
