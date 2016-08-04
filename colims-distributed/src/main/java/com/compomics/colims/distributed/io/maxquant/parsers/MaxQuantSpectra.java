@@ -37,7 +37,12 @@ public class MaxQuantSpectra {
      */
     private List<Spectrum> unidentifiedSpectra = new ArrayList<>();
 
-
+    /**
+     * ommittedSpectraKeys to avoid keeping them as unidentified spectra
+     */
+    private List<String> ommittedSpectraKeys = new ArrayList<>();
+    
+  
     public MaxQuantSpectra() {
     }
 
@@ -67,6 +72,14 @@ public class MaxQuantSpectra {
         return unidentifiedSpectra;
     }
 
+    /**
+     * Get ommittedSpectraKeys
+     * @return ommittedSpectraKeys
+     */
+    public List<String> getOmmittedSpectraKeys() {
+        return ommittedSpectraKeys;
+    }
+    
     /**
      * Clear max quant spectra.
      */

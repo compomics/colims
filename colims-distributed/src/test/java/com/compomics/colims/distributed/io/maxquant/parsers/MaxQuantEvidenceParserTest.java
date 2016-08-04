@@ -19,6 +19,9 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Iain on 19/05/2015.
@@ -33,10 +36,10 @@ public class MaxQuantEvidenceParserTest {
     @Test
     public void testParse() throws Exception {
         maxQuantEvidenceParser.clear();
-        List<String> removedProteinIds = new ArrayList<>();
-        removedProteinIds.add("0");
-        removedProteinIds.add("1");
-        maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextDirectory.toFile(), "1", removedProteinIds);
+        List<String> ommittedProteinIds = new ArrayList<>();
+        ommittedProteinIds.add("0");
+        ommittedProteinIds.add("1");
+        maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextDirectory.toFile(), "1", ommittedProteinIds);
 
         assertThat(maxQuantEvidenceParser.getPeptides().size(), not(0));
         assertThat(maxQuantEvidenceParser.getQuantifications().size(), not(0));

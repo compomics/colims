@@ -42,6 +42,7 @@ public class MaxQuantEvidenceParser {
         MaxQuantEvidenceHeaders.SCORE,
         MaxQuantEvidenceHeaders.SEQUENCE,};
 
+    private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
     /**
      * Iterable intensity headers, based on number of labels chosen.
      */
@@ -93,13 +94,13 @@ public class MaxQuantEvidenceParser {
      *
      * @param quantFolder Evidence text file from MQ output
      * @param multiplicity
-     * @param removedProteinGroupIds removed protein group IDs.
+     * @param omittedProteinGroupIds removed protein group IDs.
      * @throws IOException in case of an I/O related problem
      * @throws com.compomics.colims.distributed.io.maxquant.UnparseableException
      * @throws com.compomics.colims.core.io.MappingException in case of a
      * mapping problem
      */
-    public void parse(File quantFolder, String multiplicity, List<String> removedProteinGroupIds) throws IOException, UnparseableException, MappingException {
+    public void parse(File quantFolder, String multiplicity, List<String> omittedProteinGroupIds) throws IOException, UnparseableException, MappingException {
         TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, MaxQuantConstants.EVIDENCE_FILE.value()), MANDATORY_HEADERS);
 
         Map<String, String> values;
@@ -112,8 +113,14 @@ public class MaxQuantEvidenceParser {
 
         while (evidenceIterator.hasNext()) {
             values = evidenceIterator.next();
-
-            if (!removedProteinGroupIds.contains(values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()))) {
+            String[] split = values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()).split(PROTEIN_GROUP_ID_DELIMITER);
+            boolean ommittedPeptide = true;
+            for(String proteinGroupID : split){
+                if(!omittedProteinGroupIds.contains(proteinGroupID)){
+                    ommittedPeptide = false;
+                }
+            }
+            if (!ommittedPeptide) {
                 double[] intensities = new double[intensityCount];
 
                 int i = 0;
