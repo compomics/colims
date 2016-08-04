@@ -83,6 +83,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="combinedFolderDirectoryTextField">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="selectCombinedFolderButton">
           <Properties>
@@ -246,6 +249,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="contaminantsFastaDbTextField">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="selectContaminantsFastaDbButton">
           <Properties>
@@ -267,6 +273,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="additionalFastaDbTextField">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="selectAdditionalFastaDbButton">
           <Properties>

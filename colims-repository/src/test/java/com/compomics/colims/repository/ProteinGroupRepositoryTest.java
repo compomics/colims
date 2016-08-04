@@ -1,6 +1,5 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import java.util.ArrayList;
@@ -31,7 +30,6 @@ public class ProteinGroupRepositoryTest {
     @Autowired
     private ProteinGroupRepository proteinGroupRepository;
 
-    @Ignore
     @Test
     public void testGetPagedProteinsForRunTest() {
         List<Long> analyticalRunIds = new ArrayList<>();

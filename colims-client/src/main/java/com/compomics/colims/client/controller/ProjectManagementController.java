@@ -208,6 +208,7 @@ public class ProjectManagementController implements Controllable {
         SamplePopupMenuActionListener samplePopupMenuActionListener = new SamplePopupMenuActionListener();
         projectManagementPanel.getAddRunsMenuItem().addActionListener(samplePopupMenuActionListener);
         projectManagementPanel.getMzTabExportMenuItem().addActionListener(samplePopupMenuActionListener);
+        projectManagementPanel.getViewRunsMenuItem().addActionListener(samplePopupMenuActionListener);
 
         projectsSelectionModel.addListSelectionListener(lse -> {
             if (!lse.getValueIsAdjusting()) {
@@ -316,14 +317,7 @@ public class ProjectManagementController implements Controllable {
                 eventBus.post(new MessageEvent("Sample selection", "Please select a sample to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
-        projectManagementPanel.getViewRunsButton().addActionListener(e -> {
-            Sample selectedSample = getSelectedSample();
-            if (selectedSample != null) {
-                analyticalRunsSearchSettingsController.updateView(selectedSample);
-            } else {
-                eventBus.post(new MessageEvent("Sample selection", "Please select a sample to view runs.", JOptionPane.INFORMATION_MESSAGE));
-            }
-        });
+
         projectManagementPanel.getDeleteSampleButton().addActionListener(e -> {
             Sample sampleToDelete = getSelectedSample();
 
@@ -469,7 +463,8 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Listen to a ExperimentChangeEvent and update the experiments table if necessary.
+     * Listen to a ExperimentChangeEvent and update the experiments table if
+     * necessary.
      *
      * @param experimentChangeEvent the ExperimentChangeEvent instance
      */
@@ -565,7 +560,8 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Listen to a AnalyticalRunChangeEvent and update the samples table if necessary.
+     * Listen to a AnalyticalRunChangeEvent and update the samples table if
+     * necessary.
      *
      * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent instance
      */
@@ -582,11 +578,13 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Delete the database entity (project, experiment, samples) from the database. Shows a confirmation dialog first.
-     * When confirmed, a DeleteDbTask JSON message is sent to the DB task queue. A message dialog is shown in case the
-     * queue cannot be reached or in case of an IOException thrown by the sendDbTask method.
+     * Delete the database entity (project, experiment, samples) from the
+     * database. Shows a confirmation dialog first. When confirmed, a
+     * DeleteDbTask JSON message is sent to the DB task queue. A message dialog
+     * is shown in case the queue cannot be reached or in case of an IOException
+     * thrown by the sendDbTask method.
      *
-     * @param entity        the database entity to delete
+     * @param entity the database entity to delete
      * @param dbEntityClass the database entity class
      * @return true if the delete task is confirmed.
      */
@@ -695,6 +693,13 @@ public class ProjectManagementController implements Controllable {
                     mzTabExportController.showView();
                 } else {
                     eventBus.post(new MessageEvent("MzTab export", validationMessages, JOptionPane.INFORMATION_MESSAGE));
+                }
+            } else if (menuItemLabel.equals(projectManagementPanel.getViewRunsMenuItem().getText())) {
+                Sample selectedSample = getSelectedSample();
+                if (selectedSample != null) {
+                    analyticalRunsSearchSettingsController.updateView(selectedSample);
+                } else {
+                    eventBus.post(new MessageEvent("Sample selection", "Please select a sample to view runs.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         }

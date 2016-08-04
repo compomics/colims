@@ -21,13 +21,14 @@ public class CompareUtils {
     }
 
     /**
-     * Check whether the two Double values are the same, with the DOUBLE_EPSILON value used as maximum difference.
+     * Check whether the two Double values are the same, with the DOUBLE_EPSILON
+     * value used as maximum difference.
      *
      * @param one the first Double
      * @param two the second Double
      * @return equals or not
      */
-    public static boolean equals(Double one, Double two){
+    public static boolean equals(Double one, Double two) {
         return MathUtils.equals(one, two, DOUBLE_EPSILON);
     }
 }

@@ -189,6 +189,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         nameLabel.setText("Name");
 
+        nameTextField.setEditable(false);
         nameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nameTextFieldActionPerformed(evt);
@@ -197,6 +198,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         startDateLabel.setText("Start date");
 
+        startDateTextField.setEditable(false);
         startDateTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startDateTextFieldActionPerformed(evt);
@@ -205,6 +207,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         instrumentLabel.setText("Instrument");
 
+        instrumentTextField.setEditable(false);
         instrumentTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 instrumentTextFieldActionPerformed(evt);
@@ -213,6 +216,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         locationLabel.setText("Location");
 
+        locationTextField.setEditable(false);
         locationTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 locationTextFieldActionPerformed(evt);
@@ -221,6 +225,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         attachmentsLabel.setText("Attachments");
 
+        attachmentsTextField.setEditable(false);
         attachmentsTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 attachmentsTextFieldActionPerformed(evt);
@@ -229,6 +234,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         searchEngineLabel.setText("Search engine");
 
+        searchEngineTextField.setEditable(false);
         searchEngineTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchEngineTextFieldActionPerformed(evt);
@@ -237,6 +243,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         fastaNameLabel.setText("Fasta DB name");
 
+        fastaNameTextField.setEditable(false);
         fastaNameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fastaNameTextFieldActionPerformed(evt);
@@ -245,6 +252,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         enzymeLabel.setText("Enzyme");
 
+        enzymeTextField.setEditable(false);
         enzymeTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 enzymeTextFieldActionPerformed(evt);
@@ -253,6 +261,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         maxMissedCleLabel.setText("Max missed cleavages");
 
+        maxMissedCleTextField.setEditable(false);
         maxMissedCleTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 maxMissedCleTextFieldActionPerformed(evt);
@@ -261,6 +270,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
         preMasTolLabel.setText("Pre. mass tolerance");
 
+        preMasTolTextField.setEditable(false);
         preMasTolTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 preMasTolTextFieldActionPerformed(evt);

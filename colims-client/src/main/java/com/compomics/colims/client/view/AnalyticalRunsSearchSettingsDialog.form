@@ -310,6 +310,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="nameTextField">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nameTextFieldActionPerformed"/>
               </Events>
@@ -320,6 +323,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="startDateTextField">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startDateTextFieldActionPerformed"/>
               </Events>
@@ -330,6 +336,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="instrumentTextField">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="instrumentTextFieldActionPerformed"/>
               </Events>
@@ -340,6 +349,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="locationTextField">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="locationTextFieldActionPerformed"/>
               </Events>
@@ -350,6 +362,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="attachmentsTextField">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="attachmentsTextFieldActionPerformed"/>
               </Events>
@@ -360,6 +375,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="searchEngineTextField">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchEngineTextFieldActionPerformed"/>
               </Events>
@@ -370,6 +388,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="fastaNameTextField">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fastaNameTextFieldActionPerformed"/>
               </Events>
@@ -380,6 +401,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="enzymeTextField">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enzymeTextFieldActionPerformed"/>
               </Events>
@@ -390,6 +414,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="maxMissedCleTextField">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="maxMissedCleTextFieldActionPerformed"/>
               </Events>
@@ -400,6 +427,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="preMasTolTextField">
+              <Properties>
+                <Property name="editable" type="boolean" value="false"/>
+              </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="preMasTolTextFieldActionPerformed"/>
               </Events>

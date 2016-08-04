@@ -117,6 +117,8 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         combinedFolderDirectorySelectionLabel.setText("Select the combined folder directory*:");
 
+        combinedFolderDirectoryTextField.setEditable(false);
+
         selectCombinedFolderButton.setText("browse...");
         selectCombinedFolderButton.setMaximumSize(new java.awt.Dimension(80, 25));
         selectCombinedFolderButton.setMinimumSize(new java.awt.Dimension(80, 25));
@@ -200,12 +202,16 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         contaminantsFastaFileSelectionLabel.setText("Select a contaminants FASTA file*:");
 
+        contaminantsFastaDbTextField.setEditable(false);
+
         selectContaminantsFastaDbButton.setText("browse...");
         selectContaminantsFastaDbButton.setMaximumSize(new java.awt.Dimension(80, 25));
         selectContaminantsFastaDbButton.setMinimumSize(new java.awt.Dimension(80, 25));
         selectContaminantsFastaDbButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         additionalFastaFileSelectionLabel.setText("Select an additional FASTA file (with e.g. some additional sequences):");
+
+        additionalFastaDbTextField.setEditable(false);
 
         selectAdditionalFastaDbButton.setText("browse...");
         selectAdditionalFastaDbButton.setMaximumSize(new java.awt.Dimension(80, 25));

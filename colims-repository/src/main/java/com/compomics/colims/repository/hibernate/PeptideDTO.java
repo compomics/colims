@@ -4,7 +4,8 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.util.CompareUtils;
 
 /**
- * This class represents a peptide data transfer object that holds some additional information about a peptide.
+ * This class represents a peptide data transfer object that holds some
+ * additional information about a peptide.
  * <p/>
  * Created by Niels Hulstaert on 14/10/15.
  */
@@ -67,17 +68,24 @@ public class PeptideDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         PeptideDTO that = (PeptideDTO) o;
-
-        if (proteinGroupCount != that.proteinGroupCount) return false;
-        if (peptideProbability != null ? !CompareUtils.equals(peptideProbability, that.peptideProbability) : that.peptideProbability != null)
+        if (proteinGroupCount != that.proteinGroupCount) {
             return false;
+        }
+        if (peptideProbability != null ? !CompareUtils.equals(peptideProbability, that.peptideProbability) : that.peptideProbability != null) {
+            return false;
+        }
         if (peptidePostErrorProbability != null ? !CompareUtils.equals(peptidePostErrorProbability, that.peptidePostErrorProbability) : that.peptidePostErrorProbability != null) {
             return false;
         }
+
         return peptide.representsSamePeptide(that.getPeptide());
     }
 
@@ -88,4 +96,5 @@ public class PeptideDTO {
         result = 31 * result + (int) (proteinGroupCount ^ (proteinGroupCount >>> 32));
         return result;
     }
+
 }
