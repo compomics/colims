@@ -20,12 +20,13 @@ public interface PeptideService extends GenericService<Peptide, Long> {
     void fetchPeptideHasModifications(Peptide peptide);
 
     /**
-     * Fetch the (distinct) PeptideDTO instances associated with the given protein group.
+     * Fetch the (distinct) PeptideDTO instances associated for the given
+     * protein group and runs.
      *
      * @param proteinGroupId the protein group ID
-     * @param analyticalRunIds the list of analytical Run IDs
+     * @param analyticalRunIds the list of analytical run IDs
      * @return the list of PeptideDTO objects
      */
-    List<PeptideDTO> getPeptideDTOByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds);
+    List<PeptideDTO> getPeptideDTO(Long proteinGroupId, List<Long> analyticalRunIds);
 
 }

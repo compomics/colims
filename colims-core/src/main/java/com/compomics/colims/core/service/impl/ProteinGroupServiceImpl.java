@@ -23,12 +23,12 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     ProteinGroupRepository proteinGroupRepository;
 
     @Override
-    public List<ProteinGroupDTO> getPagedProteinGroupsForRun(List<Long> analyticalRunIds, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
+    public List<ProteinGroupDTO> getPagedProteinGroupsForRuns(List<Long> analyticalRunIds, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
         return proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRunIds, start, length, orderBy, sortDirection, filter);
     }
 
     @Override
-    public long getProteinGroupCountForRun(List<Long> analyticalRunIds, String filter) {
+    public long getProteinGroupCountForRuns(List<Long> analyticalRunIds, String filter) {
         return proteinGroupRepository.getProteinGroupCountForRun(analyticalRunIds, filter);
     }
 

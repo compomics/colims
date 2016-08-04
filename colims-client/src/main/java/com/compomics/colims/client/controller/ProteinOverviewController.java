@@ -229,8 +229,8 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener((TreeSelectionEvent e) -> {
             analyticalRunIds.clear();
             TreePath[] treePaths = proteinOverviewPanel.getProjectTree().getSelectionPaths();
-            
-            for(TreePath treePath : treePaths){
+
+            for (TreePath treePath : treePaths) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
                 if (node != null && node.isLeaf() && node.getUserObject() instanceof AnalyticalRun) {
                     selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
@@ -241,7 +241,7 @@ public class ProteinOverviewController implements Controllable {
                     psmTableFormat.setSearchParameters(selectedAnalyticalRun.getSearchAndValidationSettings().getSearchParameters());
 
                     analyticalRunIds.add(selectedAnalyticalRun.getId());
-                    
+
                     setPsmTableCellRenderers();
                     // todo maybe we don't need this part
                     minimumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
@@ -250,16 +250,16 @@ public class ProteinOverviewController implements Controllable {
                     maximumCharge = spectrumService.getMaximumCharge(selectedAnalyticalRun);
                 }
             }
-            if(analyticalRunIds.size() > 0){
+            if (analyticalRunIds.size() > 0) {
                 proteinGroupTableModel.reset(analyticalRunIds);
                 updateProteinGroupTable();
 
                 //Set scrollpane to match row count (TODO: doesn't work!)
                 proteinOverviewPanel.getProteinGroupTableScrollPane().setPreferredSize(new Dimension(
-                    proteinOverviewPanel.getProteinGroupTable().getPreferredSize().width,
-                    proteinOverviewPanel.getProteinGroupTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
+                        proteinOverviewPanel.getProteinGroupTable().getPreferredSize().width,
+                        proteinOverviewPanel.getProteinGroupTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
                 ));
-            
+
                 //get minimum and maximum projections for SparkLines rendering
                 Object[] spectraProjections = spectrumService.getSpectraProjections(analyticalRunIds);
                 minimumRetentionTime = (double) spectraProjections[0];
@@ -267,9 +267,9 @@ public class ProteinOverviewController implements Controllable {
                 minimumMzRatio = (double) spectraProjections[2];
                 maximumMzRatio = (double) spectraProjections[3];
                 minimumCharge = (int) spectraProjections[4];
-                maximumCharge = (int) spectraProjections[5];   
+                maximumCharge = (int) spectraProjections[5];
             }
-            
+
         });
 
         proteinGroupSelectionModel.addListSelectionListener(lse -> {
@@ -278,7 +278,7 @@ public class ProteinOverviewController implements Controllable {
                     ProteinGroupDTO selectedProteinGroupDTO = proteinGroupSelectionModel.getSelected().get(0);
 
                     //get the PeptideDTO instances for the selected protein group
-                    List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOByProteinGroupIdAnalyticalRunId(selectedProteinGroupDTO.getId(),analyticalRunIds);
+                    List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTO(selectedProteinGroupDTO.getId(), analyticalRunIds);
 
                     //map to PeptideTableRow objects
                     List<PeptideTableRow> mappedPeptideTableRows = mapPeptideDTOs(peptideDTOs);
@@ -558,7 +558,8 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Build a node tree for a given project consisting of experiments, samples and runs.
+     * Build a node tree for a given project consisting of experiments, samples
+     * and runs.
      *
      * @param project A project to represent
      * @return A node of nodes
@@ -597,7 +598,7 @@ public class ProteinOverviewController implements Controllable {
         if (selectedAnalyticalRun != null) {
             GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(analyticalRunIds), false);
             proteinOverviewPanel.getProteinGroupPageLabel().setText(proteinGroupTableModel.getPageIndicator());
-        } 
+        }
     }
 
     /**
@@ -623,9 +624,9 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename   File to be saved as [filename].tsv
+     * @param filename File to be saved as [filename].tsv
      * @param tableModel A table model to retrieve data from
-     * @param <T>        Class extending TableModel
+     * @param <T> Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel) {
         exportTable(filename, tableModel, new HashMap<>());
@@ -634,10 +635,10 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename      File to be saved as [filename].tsv
-     * @param tableModel    A table model to retrieve data from
+     * @param filename File to be saved as [filename].tsv
+     * @param tableModel A table model to retrieve data from
      * @param columnFilters Patterns to match and filter values
-     * @param <T>           Class extending TableModel
+     * @param <T> Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel, Map<Integer, Pattern> columnFilters) {
         try (FileWriter fileWriter = new FileWriter(filename + ".tsv")) {
@@ -685,8 +686,8 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Map the list of PeptideDTO instances associated with the given protein group to a list of PeptideTableRow
-     * instances.
+     * Map the list of PeptideDTO instances associated with the given protein
+     * group to a list of PeptideTableRow instances.
      *
      * @param peptideDTOs the set of PeptideDTO instances
      * @return a list of PeptideTableRow instances
@@ -766,10 +767,10 @@ public class ProteinOverviewController implements Controllable {
                 .getColumnModel()
                 .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR)
                 .setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                                -selectedAnalyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
-                                selectedAnalyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
-                                utilitiesUserPreferences.getSparklineColor(),
-                                utilitiesUserPreferences.getSparklineColor())
+                        -selectedAnalyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
+                        selectedAnalyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
+                        utilitiesUserPreferences.getSparklineColor(),
+                        utilitiesUserPreferences.getSparklineColor())
                 );
 
         ((JSparklinesBarChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
@@ -798,11 +799,11 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getPsmTable()
                 .getColumnModel().getColumn(ProteinPanelPsmTableFormat.RETENTION_TIME)
                 .setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                                minimumRetentionTime,
-                                maximumRetentionTime,
-                                maximumRetentionTime / 50,
-                                utilitiesUserPreferences.getSparklineColor(),
-                                utilitiesUserPreferences.getSparklineColor())
+                        minimumRetentionTime,
+                        maximumRetentionTime,
+                        maximumRetentionTime / 50,
+                        utilitiesUserPreferences.getSparklineColor(),
+                        utilitiesUserPreferences.getSparklineColor())
                 );
 
         ((JSparklinesIntervalChartTableCellRenderer) proteinOverviewPanel.getPsmTable()

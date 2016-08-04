@@ -70,7 +70,7 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public List<PeptideDTO> getPeptideDTOByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds) {
+    public List<PeptideDTO> getPeptideDTO(Long proteinGroupId, List<Long> analyticalRunIds) {
         return peptideRepository.getPeptideDTOByProteinGroupIdAnalyticalRunId(proteinGroupId, analyticalRunIds);
     }
 }

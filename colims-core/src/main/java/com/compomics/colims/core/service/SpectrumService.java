@@ -82,11 +82,11 @@ public interface SpectrumService extends GenericService<Spectrum, Long> {
     Integer getMaximumCharge(final AnalyticalRun analyticalRun);
 
     /**
-     * Get the spectra projections for the given run (Min and max retention time values, min en max M/Z values, min and
+     * Get the spectra projections for the given runs (Min and max retention time values, min en max M/Z values, min and
      * max charge values).
      *
-     * @param analyticalRunIds the list of AnalyticalRun IDs
-     * @return the spectra projection values for the given run
+     * @param analyticalRunIds the list of run IDs
+     * @return the spectra projection values for the given runs
      */
     Object[] getSpectraProjections(final List<Long> analyticalRunIds);
 

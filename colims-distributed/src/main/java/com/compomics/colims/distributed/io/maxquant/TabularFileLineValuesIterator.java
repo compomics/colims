@@ -62,6 +62,8 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
     public TabularFileLineValuesIterator(final File tsvFile, HeaderEnum[] headerEnumeration) throws IOException {
         fileReader = new FileReader(tsvFile);
         lineReader = new LineReader(fileReader);
+
+        //read the first line
         String firstLine = lineReader.readLine();
 
         if (firstLine == null || firstLine.isEmpty()) {
@@ -71,7 +73,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
         }
 
         List<String> firstLineList = Arrays.asList(firstLine.split(String.valueOf(DELIMITER)));
-
+        //check if each of the given header enum values is present in the file header
         for (HeaderEnum headerEnum : headerEnumeration) {
             Optional<String> header = headerEnum.getPossibleValues()
                     .stream()

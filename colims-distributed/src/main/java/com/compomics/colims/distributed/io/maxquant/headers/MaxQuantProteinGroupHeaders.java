@@ -26,9 +26,9 @@ public enum MaxQuantProteinGroupHeaders implements HeaderEnum {
      */
     private List<String> headerValues;
     /**
-     * The default header value index.
+     * The header value index.
      */
-    private int defaultHeaderValueIndex = 0;
+    private int headerValueIndex = 0;
 
     /**
      * Constructor.
@@ -47,11 +47,11 @@ public enum MaxQuantProteinGroupHeaders implements HeaderEnum {
 
     @Override
     public void setParsedValue(int index) {
-        defaultHeaderValueIndex = index;
+        headerValueIndex = index;
     }
 
     @Override
     public String getValue() {
-        return headerValues.get(defaultHeaderValueIndex);
+        return headerValues.get(headerValueIndex);
     }
 }
