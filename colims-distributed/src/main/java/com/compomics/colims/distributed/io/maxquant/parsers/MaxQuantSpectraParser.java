@@ -42,7 +42,8 @@ public class MaxQuantSpectraParser {
     private static final String TITLE_DELIMITER = "--";
     private static final String NOT_A_NUMBER = "nan";
     private static final String NO_INTENSITY = "-1";
-
+    private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
+    
     private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
         MaxQuantMSMSHeaders.ID,
         MaxQuantMSMSHeaders.MATCHES,
@@ -62,7 +63,7 @@ public class MaxQuantSpectraParser {
      * MaxQuantSpectra object to store identified and unidentified spectra
      */
     private final MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
-
+    
     /**
      * Get maxQuantSpectra
      *
@@ -113,12 +114,18 @@ public class MaxQuantSpectraParser {
         TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile.toFile(), MANDATORY_HEADERS);
         Spectrum spectrum;
         for (Map<String, String> spectrumValues : valuesIterator) {
-            if (!omittedProteinGroupIds.contains(spectrumValues.get(MaxQuantMSMSHeaders.PROTEIN_GROUP_IDS.getValue()))) {
-                //concatenate the RAW file name and scan index
-                String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getValue())
-                        + KEY_MIDDLE
-                        + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getValue());
-
+            String[] split = spectrumValues.get(MaxQuantMSMSHeaders.PROTEIN_GROUP_IDS.getValue()).split(PROTEIN_GROUP_ID_DELIMITER);
+            boolean ommittedSpectrum = true;
+            for(String proteinGroupID : split){
+                if(!omittedProteinGroupIds.contains(proteinGroupID)){
+                    ommittedSpectrum = false;
+                }
+            }
+            //concatenate the RAW file name and scan index
+            String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getValue())
+                + KEY_MIDDLE
+                + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getValue());
+            if (!ommittedSpectrum) {
                 //map the spectrum
                 if (!maxQuantSpectra.getAplSpectra().containsKey(aplKey)) {
                     spectrum = mapMsmsSpectrum(aplKey, spectrumValues);
@@ -130,6 +137,8 @@ public class MaxQuantSpectraParser {
                     // get the spectrum from aplSpectra and find that spectrum instance from spectrumIDs and add id to the list
                     maxQuantSpectra.getSpectrumIDs().get(maxQuantSpectra.getAplSpectra().get(aplKey)).add(Integer.parseInt(spectrumValues.get(MaxQuantMSMSHeaders.ID.getValue())));
                 }
+            }else{
+                maxQuantSpectra.getOmmittedSpectraKeys().add(aplKey);
             }
         }
     }

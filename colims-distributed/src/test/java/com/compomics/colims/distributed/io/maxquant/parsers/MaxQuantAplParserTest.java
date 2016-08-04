@@ -105,6 +105,8 @@ public class MaxQuantAplParserTest {
         spectrum.setAccession("acc_1");
         spectrum.setRetentionTime(123.45);
         maxQuantSpectra.getAplSpectra().put(spectrumKey, spectrum);
+        maxQuantSpectra.getOmmittedSpectraKeys().add("RawFile: V20263_3910_Eik_red_12 Index: 1986");
+        maxQuantSpectra.getOmmittedSpectraKeys().add("RawFile: V20263_3910_Eik_red_12 Index: 1975");
 
         maxQuantAplParser.parseAplFile(testAplFile, maxQuantSpectra, true);
 
@@ -112,7 +114,7 @@ public class MaxQuantAplParserTest {
         //one identified
         Assert.assertEquals(1, maxQuantSpectra.getAplSpectra().size());
         //6 unidentified
-        Assert.assertEquals(15959, maxQuantSpectra.getUnidentifiedSpectra().size());
+        Assert.assertEquals(15957, maxQuantSpectra.getUnidentifiedSpectra().size());
 
         //some additional testing
         byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getUnidentifiedSpectra().get(0).getSpectrumFiles().get(0).getContent());
