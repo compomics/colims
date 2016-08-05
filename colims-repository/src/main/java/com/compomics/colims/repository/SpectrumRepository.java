@@ -47,55 +47,55 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
 
     /**
      * Get the minimum retention time of spectra associated to the given
-     * analytical run.
+     * analytical runs.
      *
-     * @param analyticalRun the AnalyticalRun instance
+     * @param analyticalRunIds the list of run IDs
      * @return the minimum retention time value
      */
-    Double getMinimumRetentionTime(final AnalyticalRun analyticalRun);
+    Double getMinimumRetentionTime(final List<Long> analyticalRunIds);
 
     /**
      * Get the maximum retention time of spectra associated to the given
-     * analytical run.
+     * analytical runs.
      *
-     * @param analyticalRun the AnalyticalRun instance
+     * @param analyticalRunIds the list of run IDs
      * @return the maximum retention time value
      */
-    Double getMaximumRetentionTime(final AnalyticalRun analyticalRun);
+    Double getMaximumRetentionTime(final List<Long> analyticalRunIds);
 
     /**
      * Get the minimum M/Z ratio of spectra associated to the given analytical
-     * run.
+     * runs.
      *
-     * @param analyticalRun the AnalyticalRun instance
+     * @param analyticalRunIds the list of run IDs
      * @return the minimum M/Z ratio value
      */
-    Double getMinimumMzRatio(final AnalyticalRun analyticalRun);
+    Double getMinimumMzRatio(final List<Long> analyticalRunIds);
 
     /**
      * Get the maximum M/Z ratio of spectra associated to the given analytical
-     * run.
+     * runs.
      *
-     * @param analyticalRun the AnalyticalRun instance
+     * @param analyticalRunIds the list of run IDs
      * @return the maximum M/Z ratio value
      */
-    Double getMaximumMzRatio(final AnalyticalRun analyticalRun);
+    Double getMaximumMzRatio(final List<Long> analyticalRunIds);
 
     /**
-     * Get the minimum charge of spectra associated to the given analytical run.
+     * Get the minimum charge of spectra associated to the given analytical runs.
      *
-     * @param analyticalRun the AnalyticalRun instance
+     * @param analyticalRunIds the list of run IDs
      * @return the minimum charge value
      */
-    Integer getMinimumCharge(final AnalyticalRun analyticalRun);
+    Integer getMinimumCharge(final List<Long> analyticalRunIds);
 
     /**
-     * Get the maximum charge of spectra associated to the given analytical run.
+     * Get the maximum charge of spectra associated to the given analytical runs.
      *
-     * @param analyticalRun the AnalyticalRun instance
+     * @param analyticalRunIds the list of run IDs
      * @return the maximum charge value
      */
-    Integer getMaximumCharge(final AnalyticalRun analyticalRun);
+    Integer getMaximumCharge(final List<Long> analyticalRunIds);
 
     Peptide getRepresentativePeptide(final Spectrum spectrum);
 

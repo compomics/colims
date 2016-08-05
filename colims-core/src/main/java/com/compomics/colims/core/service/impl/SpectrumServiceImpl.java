@@ -122,33 +122,33 @@ public class SpectrumServiceImpl implements SpectrumService {
     }
 
     @Override
-    public Double getMinimumRetentionTime(AnalyticalRun analyticalRun) {
-        return spectrumRepository.getMinimumRetentionTime(analyticalRun);
+    public Double getMinimumRetentionTime(List<Long> analyticalRunIds) {
+        return spectrumRepository.getMinimumRetentionTime(analyticalRunIds);
     }
 
     @Override
-    public Double getMaximumRetentionTime(AnalyticalRun analyticalRun) {
-        return spectrumRepository.getMaximumRetentionTime(analyticalRun);
+    public Double getMaximumRetentionTime(List<Long> analyticalRunIds) {
+        return spectrumRepository.getMaximumRetentionTime(analyticalRunIds);
     }
 
     @Override
-    public Double getMinimumMzRatio(AnalyticalRun analyticalRun) {
-        return spectrumRepository.getMinimumMzRatio(analyticalRun);
+    public Double getMinimumMzRatio(List<Long> analyticalRunIds) {
+        return spectrumRepository.getMinimumMzRatio(analyticalRunIds);
     }
 
     @Override
-    public Double getMaximumMzRatio(AnalyticalRun analyticalRun) {
-        return spectrumRepository.getMaximumMzRatio(analyticalRun);
+    public Double getMaximumMzRatio(List<Long> analyticalRunIds) {
+        return spectrumRepository.getMaximumMzRatio(analyticalRunIds);
     }
 
     @Override
-    public Integer getMinimumCharge(AnalyticalRun analyticalRun) {
-        return spectrumRepository.getMinimumCharge(analyticalRun);
+    public Integer getMinimumCharge(List<Long> analyticalRunIds) {
+        return spectrumRepository.getMinimumCharge(analyticalRunIds);
     }
 
     @Override
-    public Integer getMaximumCharge(AnalyticalRun analyticalRun) {
-        return spectrumRepository.getMaximumCharge(analyticalRun);
+    public Integer getMaximumCharge(List<Long> analyticalRunIds) {
+        return spectrumRepository.getMaximumCharge(analyticalRunIds);
     }
 
     @Override

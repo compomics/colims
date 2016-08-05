@@ -9,7 +9,6 @@ import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
-import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.factory.PsmPanelGenerator;
@@ -30,7 +29,6 @@ import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import org.apache.log4j.Logger;
 import org.jfree.chart.plot.PlotOrientation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -138,7 +136,8 @@ public class ProjectOverviewController implements Controllable {
         projectOverviewPanel.getProjectsTable().getColumnModel().getColumn(ProjectSimpleTableFormat.NUMBER_OF_EXPERIMENTS).setMinWidth(65);
 
         //set sorting
-        @SuppressWarnings("UnusedAssignment") TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
+        @SuppressWarnings("UnusedAssignment")
+        TableComparatorChooser projectsTableSorter = TableComparatorChooser.install(
                 projectOverviewPanel.getProjectsTable(), sortedProjects, TableComparatorChooser.SINGLE_COLUMN);
 
         //init projects experiment table
@@ -356,7 +355,9 @@ public class ProjectOverviewController implements Controllable {
 
         projectOverviewPanel.getFilterSpectra().addKeyListener(new KeyAdapter() {
             /**
-             * Listener for PSM table filter, only responds to alphanumeric characters
+             * Listener for PSM table filter, only responds to alphanumeric
+             * characters
+             *
              * @param e The KeyEvent
              */
             @Override
@@ -396,7 +397,8 @@ public class ProjectOverviewController implements Controllable {
     }
 
     /**
-     * Listen to a ExperimentChangeEvent and update the experiments table if necessary.
+     * Listen to a ExperimentChangeEvent and update the experiments table if
+     * necessary.
      *
      * @param experimentChangeEvent the experimentChangeEvent
      */
@@ -437,7 +439,8 @@ public class ProjectOverviewController implements Controllable {
     }
 
     /**
-     * Listen to a AnalyticalRunChangeEvent and update the analytical runs table if necessary.
+     * Listen to a AnalyticalRunChangeEvent and update the analytical runs table
+     * if necessary.
      *
      * @param analyticalRunChangeEvent the AnalyticalRunChangeEvent
      */
@@ -577,7 +580,8 @@ public class ProjectOverviewController implements Controllable {
     /**
      * Get the selected analytical run from the analytical run table.
      *
-     * @return the selected analytical run, null if no analytical run is selected
+     * @return the selected analytical run, null if no analytical run is
+     * selected
      */
     private AnalyticalRun getSelectedAnalyticalRun() {
         AnalyticalRun selectedAnalyticalRun = null;
@@ -626,15 +630,16 @@ public class ProjectOverviewController implements Controllable {
      * Set the PSM table cell renderers.
      */
     private void setPsmTableCellRenderers() {
-        AnalyticalRun analyticalRun = getSelectedAnalyticalRun();
+        java.util.List<Long> analyticalRunIds = new ArrayList<>();
+        analyticalRunIds.add(getSelectedAnalyticalRun().getId());
 
         projectOverviewPanel.getPsmTable().getColumnModel().getColumn(PsmTableFormat.RETENTION_TIME)
                 .setCellRenderer(new JSparklinesIntervalChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                                spectrumService.getMinimumRetentionTime(analyticalRun),
-                                spectrumService.getMaximumRetentionTime(analyticalRun),
-                                50d,
-                                utilitiesUserPreferences.getSparklineColor(),
-                                utilitiesUserPreferences.getSparklineColor())
+                        spectrumService.getMinimumRetentionTime(analyticalRunIds),
+                        spectrumService.getMaximumRetentionTime(analyticalRunIds),
+                        50d,
+                        utilitiesUserPreferences.getSparklineColor(),
+                        utilitiesUserPreferences.getSparklineColor())
                 );
 
         ((JSparklinesIntervalChartTableCellRenderer) projectOverviewPanel.getPsmTable()
