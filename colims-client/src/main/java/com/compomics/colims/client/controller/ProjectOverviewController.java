@@ -11,10 +11,12 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
-import com.compomics.colims.client.factory.PsmPanelGenerator;
+import com.compomics.colims.client.factory.SpectrumPanelGenerator;
 import com.compomics.colims.client.model.table.format.*;
 import com.compomics.colims.client.model.table.model.PsmTableModel;
+import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProjectOverviewPanel;
+import com.compomics.colims.client.view.SpectrumDialog;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.service.PeptideService;
@@ -98,7 +100,7 @@ public class ProjectOverviewController implements Controllable {
     @Autowired
     private EventBus eventBus;
     @Autowired
-    private PsmPanelGenerator psmPanelGenerator;
+    private SpectrumPanelGenerator psmPanelGenerator;
 
     /**
      * Get the view of this controller.
@@ -469,7 +471,10 @@ public class ProjectOverviewController implements Controllable {
             mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
             try {
-                psmPanelGenerator.addPsm(selectedPsm, projectOverviewPanel.getSpectrumJPanel(), projectOverviewPanel.getSecondarySpectrumPlotsJPanel());
+                SpectrumDialog spectrumDialog = psmPanelGenerator.generateSpectrumDialog(mainController.getMainFrame(), selectedPsm);
+
+                GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), spectrumDialog);
+                spectrumDialog.setVisible(true);
             } catch (MappingException | InterruptedException | SQLException | ClassNotFoundException | IOException e) {
                 LOGGER.error(e);
             }

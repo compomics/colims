@@ -8,7 +8,6 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.XmlFileFilter;
 import com.google.common.eventbus.EventBus;
-import java.awt.Dimension;
 import java.io.File;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +54,7 @@ public class MaxQuantDataImportController implements Controllable {
 
     @Autowired
     private FastaDbService fastaDbService;
-    
+
     @Override
     public void init() {
         //get view from parent controller
@@ -144,7 +143,7 @@ public class MaxQuantDataImportController implements Controllable {
         maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
         maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
     }
-    
+
     public void showEditView(MaxQuantImport maxQuantImport){
         showView();
         maxQuantDataImportPanel.getParameterDirectoryTextField().setText(maxQuantImport.getParameterFilePath().toString());
@@ -170,7 +169,7 @@ public class MaxQuantDataImportController implements Controllable {
             contaminantsFastaDb = null;
             maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
         }
-        
+
     }
 
     /**
@@ -222,7 +221,7 @@ public class MaxQuantDataImportController implements Controllable {
         this.combinedFolderDirectory = combinedFolderDirectory;
     }
 
-    
+
 
     public void setAdditionalFastaDb(FastaDb additionalFastaDb) {
         this.additionalFastaDb = additionalFastaDb;
@@ -232,5 +231,5 @@ public class MaxQuantDataImportController implements Controllable {
         this.contaminantsFastaDb = contaminantsFastaDb;
     }
 
-    
+
 }

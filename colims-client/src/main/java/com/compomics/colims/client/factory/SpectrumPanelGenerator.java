@@ -1,5 +1,6 @@
 package com.compomics.colims.client.factory;
 
+import com.compomics.colims.client.view.SpectrumDialog;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsPeptideMapper;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSearchParametersMapper;
@@ -27,8 +28,6 @@ import com.compomics.util.preferences.SequenceMatchingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -43,14 +42,13 @@ import java.util.HashMap;
  *
  * @author Niels Hulstaert
  */
-@Component("psmPanelGenerator")
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class PsmPanelGenerator {
+@Component("spectrumPanelGenerator")
+public class SpectrumPanelGenerator {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(PsmPanelGenerator.class);
+    private static final Logger LOGGER = Logger.getLogger(SpectrumPanelGenerator.class);
 
     @Autowired
     private SpectrumService spectrumService;
@@ -68,7 +66,7 @@ public class PsmPanelGenerator {
     private SearchParameters utilitiesSearchParameters;
     private AnnotationSettings annotationSettings;
     private final UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private final PTMFactory ptmFactory = PTMFactory.getInstance();
 
     /**
      * Load the search settings for the given run and map them to the
@@ -90,6 +88,29 @@ public class PsmPanelGenerator {
     }
 
     /**
+     * Generate a spectrum dialog for the given peptide to spectrum match (PSM).
+     *
+     * @param parent the parent JFrame component
+     * @param peptide the Peptide instance
+     * @return the generated SpectrumDialog instance
+     * @throws MappingException
+     * @throws ClassNotFoundException
+     * @throws InterruptedException
+     * @throws SQLException
+     * @throws IOException
+     */
+    public SpectrumDialog generateSpectrumDialog(JFrame parent, Peptide peptide) throws MappingException, ClassNotFoundException, InterruptedException, SQLException, IOException {
+        SpectrumDialog spectrumDialog = new SpectrumDialog(parent, false, peptide);
+
+        JPanel spectrumJPanel = spectrumDialog.getSpectrumPanel();
+        JPanel secondarySpectrumPlotsJPanel = spectrumDialog.getSecondarySpectrumPlotsPanel();
+
+        addPsm(peptide, spectrumJPanel, secondarySpectrumPlotsJPanel);
+
+        return spectrumDialog;
+    }
+
+    /**
      * Add the Utilities SpectrumPanel for the given PSM to the given JPanel.
      *
      * @param peptide the Peptide instance
@@ -97,8 +118,13 @@ public class PsmPanelGenerator {
      * added to
      * @param secondarySpectrumPlotsParentPanel the parent panel were the
      * secondary spectrum plots will be added to
+     * @throws com.compomics.colims.core.io.MappingException
+     * @throws java.lang.InterruptedException
+     * @throws java.lang.ClassNotFoundException
+     * @throws java.sql.SQLException
+     * @throws java.io.IOException
      */
-    public void addPsm(Peptide peptide, JPanel spectrumParentPanel, JPanel secondarySpectrumPlotsParentPanel) throws MappingException, InterruptedException, ClassNotFoundException, SQLException, IOException {
+    private void addPsm(Peptide peptide, JPanel spectrumParentPanel, JPanel secondarySpectrumPlotsParentPanel) throws MappingException, InterruptedException, ClassNotFoundException, SQLException, IOException {
         Spectrum spectrum = peptide.getSpectrum();
 
         //fetch the spectrum files associated with this spectrum

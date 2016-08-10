@@ -13,7 +13,7 @@ import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.factory.PsmPanelGenerator;
+import com.compomics.colims.client.factory.SpectrumPanelGenerator;
 import com.compomics.colims.client.model.table.format.PeptideTableFormat;
 import com.compomics.colims.client.model.table.format.ProteinGroupTableFormat;
 import com.compomics.colims.client.model.table.format.ProteinPanelPsmTableFormat;
@@ -23,7 +23,7 @@ import com.compomics.colims.client.model.table.model.ProteinGroupTableModel;
 import com.compomics.colims.client.renderer.PeptideSequenceRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProteinOverviewPanel;
-import com.compomics.colims.client.view.SpectrumPopupDialog;
+import com.compomics.colims.client.view.SpectrumDialog;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
@@ -102,8 +102,6 @@ public class ProteinOverviewController implements Controllable {
     private final UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     //view
     private ProteinOverviewPanel proteinOverviewPanel;
-    //child view
-    private SpectrumPopupDialog psmPopupDialog;
 
     //parent controller
     @Autowired
@@ -116,7 +114,7 @@ public class ProteinOverviewController implements Controllable {
     @Autowired
     private SpectrumService spectrumService;
     @Autowired
-    private PsmPanelGenerator psmPanelGenerator;
+    private SpectrumPanelGenerator spectrumPanelGenerator;
 
     /**
      * Get the panel associated with this controller.
@@ -134,7 +132,6 @@ public class ProteinOverviewController implements Controllable {
 
         //init views
         proteinOverviewPanel = new ProteinOverviewPanel();
-        psmPopupDialog = new SpectrumPopupDialog(mainController.getMainFrame(), true);
 
         //init and populate project tree
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
@@ -242,7 +239,7 @@ public class ProteinOverviewController implements Controllable {
                 if (selectedAnalyticalRuns.size() > 0) {
                     //for the moment, take the search settings from the first selected run
                     //load search settings for the run
-                    psmPanelGenerator.loadSettingsForRun(selectedAnalyticalRuns.get(0));
+                    spectrumPanelGenerator.loadSettingsForRun(selectedAnalyticalRuns.get(0));
                     //set search parameters in PSM table formatter
                     psmTableFormat.setSearchParameters(selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters());
 
@@ -266,8 +263,7 @@ public class ProteinOverviewController implements Controllable {
                     minimumCharge = (int) spectraProjections[4];
                     maximumCharge = (int) spectraProjections[5];
                 }
-            }
-            else {
+            } else {
                 //clear the selection
                 GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);
             }
@@ -604,22 +600,19 @@ public class ProteinOverviewController implements Controllable {
     }
 
     /**
-     * Show the given PSM in the spectrum popup dialog.
+     * Show the given PSM in the spectrum dialog.
      *
      * @param peptide the Peptide instance
      */
     private void showPsmPopDialog(Peptide peptide) {
         try {
-            JPanel spectrumJPanel = psmPopupDialog.getSpectrumJPanel();
-            JPanel secondarySpectrumPlotsJPanel = psmPopupDialog.getSecondarySpectrumPlotsJPanel();
+            SpectrumDialog spectrumDialog = spectrumPanelGenerator.generateSpectrumDialog(mainController.getMainFrame(), peptide);
 
-            psmPanelGenerator.addPsm(peptide, spectrumJPanel, secondarySpectrumPlotsJPanel);
-
-            GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), psmPopupDialog);
-            psmPopupDialog.setVisible(true);
+            GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), spectrumDialog);
+            spectrumDialog.setVisible(true);
         } catch (MappingException | InterruptedException | SQLException | IOException | ClassNotFoundException e) {
             LOGGER.error(e, e.getCause());
-            eventBus.post(new MessageEvent("Spectrum popup dialog problem", "The spectrum cannot be shown", JOptionPane.ERROR_MESSAGE));
+            eventBus.post(new MessageEvent("Spectrum dialog problem", "The spectrum cannot be shown", JOptionPane.ERROR_MESSAGE));
         }
     }
 
