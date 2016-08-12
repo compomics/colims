@@ -144,31 +144,27 @@ public class SpectrumDialog extends javax.swing.JDialog implements ActionListene
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Spectrum dialog");
+        setMinimumSize(new java.awt.Dimension(400, 400));
 
         spectrumMainPanel.setBackground(new java.awt.Color(255, 255, 255));
-        spectrumMainPanel.setBorder(null);
         spectrumMainPanel.setOpaque(false);
         spectrumMainPanel.setPreferredSize(new java.awt.Dimension(600, 400));
 
         spectrumParentPanel.setBackground(new java.awt.Color(255, 255, 255));
-        spectrumParentPanel.setBorder(null);
 
         spectrumSplitPane.setBackground(new java.awt.Color(255, 255, 255));
-        spectrumSplitPane.setBorder(null);
         spectrumSplitPane.setDividerLocation(80);
-        spectrumSplitPane.setDividerSize(4);
+        spectrumSplitPane.setDividerSize(0);
         spectrumSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        spectrumSplitPane.setPreferredSize(new java.awt.Dimension(800, 500));
 
-        secondarySpectrumPlotsPanel.setBorder(null);
         secondarySpectrumPlotsPanel.setOpaque(false);
         secondarySpectrumPlotsPanel.setLayout(new javax.swing.BoxLayout(secondarySpectrumPlotsPanel, javax.swing.BoxLayout.LINE_AXIS));
         spectrumSplitPane.setTopComponent(secondarySpectrumPlotsPanel);
 
         spectrumOuterPanel.setBackground(new java.awt.Color(255, 255, 255));
-        spectrumOuterPanel.setBorder(null);
 
         spectrumPaddingPanel.setBackground(new java.awt.Color(255, 255, 255));
-        spectrumPaddingPanel.setBorder(null);
 
         javax.swing.GroupLayout spectrumPaddingPanelLayout = new javax.swing.GroupLayout(spectrumPaddingPanel);
         spectrumPaddingPanel.setLayout(spectrumPaddingPanelLayout);
@@ -182,7 +178,6 @@ public class SpectrumDialog extends javax.swing.JDialog implements ActionListene
         );
 
         spectrumPanel.setBackground(new java.awt.Color(255, 255, 255));
-        spectrumPanel.setBorder(null);
         spectrumPanel.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout spectrumOuterPanelLayout = new javax.swing.GroupLayout(spectrumOuterPanel);
@@ -197,7 +192,7 @@ public class SpectrumDialog extends javax.swing.JDialog implements ActionListene
             .addGroup(spectrumOuterPanelLayout.createSequentialGroup()
                 .addComponent(spectrumPaddingPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(spectrumPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE))
+                .addComponent(spectrumPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE))
         );
 
         spectrumSplitPane.setRightComponent(spectrumOuterPanel);
@@ -206,13 +201,13 @@ public class SpectrumDialog extends javax.swing.JDialog implements ActionListene
         spectrumParentPanel.setLayout(spectrumParentPanelLayout);
         spectrumParentPanelLayout.setHorizontalGroup(
             spectrumParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(spectrumSplitPane)
+            .addComponent(spectrumSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
         );
         spectrumParentPanelLayout.setVerticalGroup(
             spectrumParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(spectrumParentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(spectrumSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE))
+                .addComponent(spectrumSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout spectrumMainPanelLayout = new javax.swing.GroupLayout(spectrumMainPanel);

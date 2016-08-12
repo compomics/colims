@@ -8,6 +8,7 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.comparator.PeptideStartIndexComparator;
 import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.ProjectChangeEvent;
@@ -150,7 +151,8 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinGroupTable().setSelectionModel(proteinGroupSelectionModel);
 
         //init peptide table
-        SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, (o1, o2) -> o2.getPeptides().size() - (o1.getPeptides().size()));
+        //SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, (o1, o2) -> o2.getPeptides().size() - (o1.getPeptides().size()));
+        SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, new PeptideStartIndexComparator());
 
         peptideTableModel = GlazedListsSwing.eventTableModel(sortedPeptides, new PeptideTableFormat());
         proteinOverviewPanel.getPeptideTable().setModel(peptideTableModel);
@@ -179,8 +181,8 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setPreferredWidth(70);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMaxWidth(150);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMinWidth(50);
-        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setPreferredWidth(120);
-        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMaxWidth(150);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setPreferredWidth(150);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMaxWidth(250);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMinWidth(50);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.SEQUENCE).setMinWidth(50);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setPreferredWidth(145);
