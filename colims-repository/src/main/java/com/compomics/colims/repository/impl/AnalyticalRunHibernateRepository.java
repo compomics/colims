@@ -2,7 +2,6 @@ package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.AnalyticalRunBinaryFile;
-import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;

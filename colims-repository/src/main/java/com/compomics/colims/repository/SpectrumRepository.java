@@ -115,4 +115,13 @@ public interface SpectrumRepository extends GenericRepository<Spectrum, Long> {
      * @return the associated spectrum files
      */
     List<SpectrumFile> fetchSpectrumFiles(Long spectrumId);
+    
+    /**
+     * Cascade save or update the given spectrum. We don't use the JPA merge method because of consistency with
+     * saveOrUpdate the protein groups in the PersistService.
+     *
+     * @param spectrum the spectrum instance to save or update
+     */
+    void saveOrUpdate(final Spectrum spectrum);
+
 }

@@ -1,7 +1,9 @@
 
 package com.compomics.colims.distributed.playground;
 
+import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
@@ -47,24 +49,32 @@ public class Playground {
         userService.fetchAuthenticationRelations(adminUser);
         userBean.setCurrentUser(adminUser);
 
-        String maxquantPath = "C:/Users/demet/projects/colims/colims-distributed/src/test/resources/data/maxquant_1528";
+        String maxquantPath = "C:/Users/demet/Desktop/6453";
         String parameterPath =  maxquantPath + File.separator + MaxQuantConstants.PARAMETER_FILE.value();
         String combinedDirectory = maxquantPath + File.separator + MaxQuantConstants.COMBINED_DIRECTORY.value();
         String txtDirectory = combinedDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value();
         FastaDb testFastaDb = new FastaDb();
         testFastaDb.setName("test fasta");
-        testFastaDb.setFileName("uniprot-mouse.fasta");
-        testFastaDb.setFilePath(txtDirectory + File.separator +  "uniprot-mouse.fasta");
-        testFastaDb.setHeaderParseRule("&gt;([^ ]*)");
+        testFastaDb.setFileName("SP_human");
+        testFastaDb.setFilePath(txtDirectory + File.separator +  "SP_human.fasta");
+        testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
         fastaDbService.persist(testFastaDb);
 
+        FastaDb contFastaDb = new FastaDb();
+        contFastaDb.setName("cont fasta");
+        contFastaDb.setFileName("contaminants");
+        contFastaDb.setFilePath(txtDirectory + File.separator +  "contaminants.fasta");
+        contFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+        fastaDbService.persist(contFastaDb);
+        
         EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, testFastaDb.getId());
+        fastaDbIds.put(FastaDbType.CONTAMINANTS, contFastaDb.getId());
 
         // to parse everything
-        /*MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds);
         MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
-        List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();*/
+        List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
         
         String msmsFileDirectory = txtDirectory + File.separator + MaxQuantConstants.MSMS_FILE.value();
         String andromedaDirectory = combinedDirectory + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value();
@@ -74,7 +84,7 @@ public class Playground {
     //    msmsIDs.add("1");
         msmsIDs.add("2");
         msmsIDs.add("3");
-        annotatedSpectraParser.parseSpectra(Paths.get(msmsFileDirectory), Paths.get(andromedaDirectory), msmsIDs);
+   //     annotatedSpectraParser.parseSpectra(Paths.get(msmsFileDirectory), Paths.get(andromedaDirectory), msmsIDs);
         
         
         

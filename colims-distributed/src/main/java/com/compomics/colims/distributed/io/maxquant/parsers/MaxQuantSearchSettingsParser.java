@@ -85,6 +85,10 @@ public class MaxQuantSearchSettingsParser {
      * The spectrum parameters with raw file name (key: raw file name; value: enum map of spectrum parameters).
      */
     private Map<String, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithRawFile = new HashMap<>();
+    /**
+     * The analytical run name with experiment name(key: analyticalRun ; value: experiment name).
+     */
+    private Map<AnalyticalRun, String> analyticalRuns = new HashMap<>();
 
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
@@ -272,6 +276,15 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
+     * Get analytical runs name (experiment name) which have link with analytical runs.
+     * 
+     * @return analyticalRuns
+     */
+    public Map<AnalyticalRun, String> getAnalyticalRuns() {
+        return analyticalRuns;
+    }
+
+    /**
      * Map the given MaxQuant Enzyme instance to a TypedCvParam instance. Returns null if no mapping was possible.
      *
      * @param maxQuantEnzyme the MaxQuant enzyme
@@ -385,7 +398,9 @@ public class MaxQuantSearchSettingsParser {
         Map<Integer, Integer> rawFileGroup = new HashMap<>();
         //create a map to hold enum map of spectrum parameters and their group(key: group number; value: enumMAp of spectrum parameters).
         Map<Integer, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithGroup = new HashMap<>();
-
+        // create a map to hold experiment names for each run (key: group index; value: experiment name).
+        Map<Integer, String> experimentsName = new HashMap<>();
+        
         Resource spectrumParameterResource = new FileSystemResource(spectrumParametersPath.toFile());
 
         SAXBuilder builder = new SAXBuilder();
@@ -406,11 +421,22 @@ public class MaxQuantSearchSettingsParser {
                 counter++;
             }
 
+            Element analyticalRunNamesElement = getChildByName(root, "experiments");
+            counter = 0 ;
+            for(Element analyticalRunNameElement : analyticalRunNamesElement.getChildren()){
+                if(!analyticalRunNameElement.getContent().isEmpty()){
+                    experimentsName.put(counter, analyticalRunNameElement.getContent().get(0).getValue());
+                    counter++;
+                }else{
+                    throw new IllegalStateException("Experiment name in mqpar file is empty.");
+                }
+            }
+
             // keep each raw file group number in a map (key: int, value: group number).
             Element rawFileGroupsElement = getChildByName(root, "paramgroupindices");
             counter = 0;
             for (Element rawFileGroupElement : rawFileGroupsElement.getChildren()) {
-                int groupNo = Integer.parseInt(rawFileGroupElement.getContent().get(0).getValue().toString());
+                int groupNo = Integer.parseInt(rawFileGroupElement.getContent().get(0).getValue());
                 rawFileGroup.put(counter, groupNo);
                 counter++;
             }
@@ -428,19 +454,21 @@ public class MaxQuantSearchSettingsParser {
                     spectrumParameterHeader.setParsedValue(spectrumParameterHeader.getPossibleValues().indexOf(header.get()));
                     if (header.isPresent()) {
                         if (header.get().equals(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS.getValue()) || header.get().equals(MaxQuantSpectrumParameterHeaders.ENZYMES.getValue())) {
-                            StringBuilder stringBuilder = new StringBuilder();
+                            StringBuilder variableModification = new StringBuilder();
                             for (Element variableModifications : getChildByName(parameterGroupElement, header.get()).getChildren()) {
-                                stringBuilder.append("," + variableModifications.getContent().get(0).getValue().toString());
+                                variableModification.append(",");
+                                variableModification.append(variableModifications.getContent().get(0).getValue());
                             }
-                            spectrumParameters.put(spectrumParameterHeader, org.apache.commons.lang3.StringUtils.substringAfter(stringBuilder.toString(), ","));
+                            spectrumParameters.put(spectrumParameterHeader, org.apache.commons.lang3.StringUtils.substringAfter(variableModification.toString(), ","));
                         } else if (header.get().equals(MaxQuantSpectrumParameterHeaders.FIXED_MODIFICATIONS.getValue())) {
                             StringBuilder fixedModification = new StringBuilder();
                             for (Element fixedModifications : getChildByName(root, header.get()).getChildren()) {
-                                fixedModification.append("," + fixedModifications.getContent().get(0).getValue().toString());
+                                fixedModification.append(",");
+                                fixedModification.append(fixedModifications.getContent().get(0).getValue());
                             }
                             spectrumParameters.put(spectrumParameterHeader, org.apache.commons.lang3.StringUtils.substringAfter(fixedModification.toString(), ","));
                         } else {
-                            spectrumParameters.put(spectrumParameterHeader, getChildByName(parameterGroupElement, header.get()).getContent().get(0).getValue().toString());
+                            spectrumParameters.put(spectrumParameterHeader, getChildByName(parameterGroupElement, header.get()).getContent().get(0).getValue());
                         }
                     }
                 }
@@ -451,9 +479,14 @@ public class MaxQuantSearchSettingsParser {
             LOGGER.error(e.getMessage(), e);
         }
         // match all maps and put them in spectrumParamsWithRawFile map
+        // also put raw file name and experiment name in analyticalRuns
         rawFilePath.entrySet().stream().forEach(entry -> {
             // find group number of each file name and using group number find the enumMap of spectrum parameters. Then put them in the map.
             spectrumParamsWithRawFile.put(entry.getValue(), spectrumParamsWithGroup.get(rawFileGroup.get(entry.getKey())));
+            // fill analyticalRuns
+            AnalyticalRun analyticalRun = new AnalyticalRun();
+            analyticalRun.setName(entry.getValue());
+            analyticalRuns.put(analyticalRun, experimentsName.get(entry.getKey()));
         });
     }
 

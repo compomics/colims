@@ -262,6 +262,26 @@ use colims;
         primary key (id)
     );
 
+    create table colims.protein_group_quant (
+        id bigint not null auto_increment,
+        ibaq double precision,
+        intensity double precision,
+        lfq_intensity double precision,
+        msms_count integer,
+        l_analytical_run_id bigint,
+        l_protein_group_id bigint,
+        primary key (id)
+    );
+
+    create table colims.protein_group_quant_labeled (
+        id bigint not null auto_increment,
+        label varchar(255),
+        label_value double precision,
+        l_analytical_run_id bigint,
+        l_protein_group_id bigint,
+        primary key (id)
+    );
+
     create table colims.protocol (
         id bigint not null auto_increment,
         creation_date datetime not null,

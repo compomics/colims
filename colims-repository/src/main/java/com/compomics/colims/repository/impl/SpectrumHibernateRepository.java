@@ -170,4 +170,9 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
 
         return criteria.list();
     }
+
+    @Override
+    public void saveOrUpdate(Spectrum spectrum) {
+        getCurrentSession().saveOrUpdate(spectrum);
+    }
 }
