@@ -9,7 +9,6 @@ import com.compomics.colims.client.model.table.model.DbTaskQueueTableModel;
 import com.compomics.colims.client.view.MainFrame;
 import com.compomics.colims.client.view.TaskManagementPanel;
 import com.compomics.colims.core.distributed.model.*;
-import com.compomics.colims.core.distributed.model.enums.NotificationType;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.awt.Dimension;

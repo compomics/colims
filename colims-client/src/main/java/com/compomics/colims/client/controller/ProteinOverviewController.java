@@ -31,6 +31,7 @@ import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.Sample;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.util.gui.TableProperties;
@@ -66,7 +67,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
- * Created by Iain on 19/06/2015.
+ * The protein(group) overview controller.
  */
 @Component("proteinOverviewController")
 public class ProteinOverviewController implements Controllable {
@@ -224,52 +225,61 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getExportFileChooser().setApproveButtonText("Save");
 
         //setProteinGroupTableCellRenderers();
-        //Listeners
+        //add action listeners
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener((TreeSelectionEvent e) -> {
-            selectedAnalyticalRuns.clear();
-
-            TreePath[] treePaths = proteinOverviewPanel.getProjectTree().getSelectionPaths();
-            if (treePaths != null) {
-                for (TreePath treePath : treePaths) {
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
-                    if (node != null && node.isLeaf() && node.getUserObject() instanceof AnalyticalRun) {
+            TreePath[] treePaths = e.getPaths();
+            for (int i = 0; i < treePaths.length; i++) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePaths[i].getLastPathComponent();
+                //check whether the path was added or removed
+                if (e.isAddedPath(i)) {
+                    if (node.getUserObject() instanceof AnalyticalRun) {
                         AnalyticalRun selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
                         selectedAnalyticalRuns.add(selectedAnalyticalRun);
+                    } else if (node.getUserObject() instanceof Sample) {
+                        Sample selectedSample = (Sample) node.getUserObject();
+                        selectedAnalyticalRuns.addAll(selectedSample.getAnalyticalRuns());
                     }
+                } else if (node.getUserObject() instanceof AnalyticalRun) {
+                    AnalyticalRun selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
+                    selectedAnalyticalRuns.remove(selectedAnalyticalRun);
+                } else if (node.getUserObject() instanceof Sample) {
+                    Sample selectedSample = (Sample) node.getUserObject();
+                    selectedAnalyticalRuns.removeAll(selectedSample.getAnalyticalRuns());
                 }
-
-                if (selectedAnalyticalRuns.size() > 0) {
-                    //for the moment, take the search settings from the first selected run
-                    //load search settings for the run
-                    spectrumPanelGenerator.loadSettingsForRun(selectedAnalyticalRuns.get(0));
-                    //set search parameters in PSM table formatter
-                    psmTableFormat.setSearchParameters(selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters());
-
-                    setPsmTableCellRenderers();
-
-                    proteinGroupTableModel.reset(getSelectedAnalyticalRunIds());
-                    updateProteinGroupTable();
-
-                    //Set scrollpane to match row count (TODO: doesn't work!)
-                    proteinOverviewPanel.getProteinGroupTableScrollPane().setPreferredSize(new Dimension(
-                            proteinOverviewPanel.getProteinGroupTable().getPreferredSize().width,
-                            proteinOverviewPanel.getProteinGroupTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
-                    ));
-
-                    //get minimum and maximum projections for SparkLines rendering
-                    Object[] spectraProjections = spectrumService.getSpectraProjections(getSelectedAnalyticalRunIds());
-                    minimumRetentionTime = (double) spectraProjections[0];
-                    maximumRetentionTime = (double) spectraProjections[1];
-                    minimumMzRatio = (double) spectraProjections[2];
-                    maximumMzRatio = (double) spectraProjections[3];
-                    minimumCharge = (int) spectraProjections[4];
-                    maximumCharge = (int) spectraProjections[5];
-                }
-            } else {
-                //clear the selection
-                GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);
             }
 
+            if (selectedAnalyticalRuns.size() > 0) {
+                //for the moment, take the search settings from the first selected run
+                //@TODO think about how to handle runs with different search settings
+                //load search settings for the first run
+                spectrumPanelGenerator.loadSettingsForRun(selectedAnalyticalRuns.get(0));
+                //set search parameters in PSM table formatter
+                psmTableFormat.setSearchParameters(selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters());
+
+                setPsmTableCellRenderers();
+
+                proteinGroupTableModel.reset(getSelectedAnalyticalRunIds());
+                updateProteinGroupTable();
+
+                //Set scrollpane to match row count (TODO: doesn't work!)
+                proteinOverviewPanel.getProteinGroupTableScrollPane().setPreferredSize(new Dimension(
+                        proteinOverviewPanel.getProteinGroupTable().getPreferredSize().width,
+                        proteinOverviewPanel.getProteinGroupTable().getRowHeight() * proteinGroupTableModel.getPerPage() + 1
+                ));
+
+                //get minimum and maximum projections for SparkLines rendering
+                Object[] spectraProjections = spectrumService.getSpectraProjections(getSelectedAnalyticalRunIds());
+                minimumRetentionTime = (double) spectraProjections[0];
+                maximumRetentionTime = (double) spectraProjections[1];
+                minimumMzRatio = (double) spectraProjections[2];
+                maximumMzRatio = (double) spectraProjections[3];
+                minimumCharge = (int) spectraProjections[4];
+                maximumCharge = (int) spectraProjections[5];
+            } else {
+                //clear the selection
+                selectedAnalyticalRuns.clear();
+                GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);
+            }
         });
 
         proteinGroupSelectionModel.addListSelectionListener(lse -> {
@@ -277,6 +287,7 @@ public class ProteinOverviewController implements Controllable {
                 if (!proteinGroupSelectionModel.getSelected().isEmpty()) {
                     ProteinGroupDTO selectedProteinGroupDTO = proteinGroupSelectionModel.getSelected().get(0);
 
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
                     //get the PeptideDTO instances for the selected protein group
                     List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTO(selectedProteinGroupDTO.getId(), getSelectedAnalyticalRunIds());
 
@@ -286,6 +297,7 @@ public class ProteinOverviewController implements Controllable {
                     setPeptideTableCellRenderers();
 
                     GlazedLists.replaceAll(peptideTableRows, mappedPeptideTableRows, false);
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 } else {
                     GlazedLists.replaceAll(peptideTableRows, new ArrayList<>(), false);
                 }
@@ -452,51 +464,63 @@ public class ProteinOverviewController implements Controllable {
         });
 
         proteinOverviewPanel.getExportProteinGroupsButton().addActionListener(e -> {
-            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein data");
+            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein groups");
 
-            if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            if (!proteinGroupDTOs.isEmpty()) {
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                EventList<ProteinGroupDTO> exportProteinGroupDTOs = new BasicEventList<>();
-                ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteinGroupDTOs, null), new ProteinGroupTableFormat(), 20, ProteinGroupTableFormat.ID);
-                exportModel.setPerPage(0);
-                GlazedLists.replaceAll(exportProteinGroupDTOs, exportModel.getRows(getSelectedAnalyticalRunIds()), false);
+                    EventList<ProteinGroupDTO> exportProteinGroupDTOs = new BasicEventList<>();
+                    ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteinGroupDTOs, null), new ProteinGroupTableFormat(), 20, ProteinGroupTableFormat.ID);
+                    exportModel.setPerPage(0);
+                    GlazedLists.replaceAll(exportProteinGroupDTOs, exportModel.getRows(getSelectedAnalyticalRunIds()), false);
 
-                exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
 
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            } else {
+                eventBus.post(new MessageEvent("Export protein groups problem", "Please select one or more runs to export the protein groups for.", JOptionPane.WARNING_MESSAGE));
             }
         });
 
         proteinOverviewPanel.getExportPeptidesButton().addActionListener(e -> {
-            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export peptide data");
+            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein group peptides");
 
-            if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            if (!sortedPeptides.isEmpty()) {
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                Map<Integer, Pattern> columnFilter = new HashMap<>();
-                columnFilter.put(0, HTML_TAGS);
+                    Map<Integer, Pattern> columnFilter = new HashMap<>();
+                    columnFilter.put(0, HTML_TAGS);
 
-                //need a new model... or table format?
-                //could potentially lose the filtering if its only on this model
-                PeptideExportModel exportModel = new PeptideExportModel();
-                exportModel.setPeptideTableRows(sortedPeptides);
+                    //need a new model... or table format?
+                    //could potentially lose the filtering if its only on this model
+                    PeptideExportModel exportModel = new PeptideExportModel();
+                    exportModel.setPeptideTableRows(sortedPeptides);
 
-                exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
 
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            } else {
+                eventBus.post(new MessageEvent("Export peptides problem", "Please select a protein group to export the peptides for.", JOptionPane.WARNING_MESSAGE));
             }
         });
 
         proteinOverviewPanel.getExportPsmsButton().addActionListener(e -> {
-            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export PSM data");
+            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export PSMs");
 
-            if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            if (!psms.isEmpty()) {
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), psmTableModel);
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), psmTableModel);
 
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            } else {
+                eventBus.post(new MessageEvent("Export PSMs problem", "Please select a peptide to export the PSMs for.", JOptionPane.WARNING_MESSAGE));
             }
         });
     }
@@ -572,7 +596,7 @@ public class ProteinOverviewController implements Controllable {
                 DefaultMutableTreeNode experimentNode = new DefaultMutableTreeNode(experiment.getTitle());
                 if (experiment.getSamples().size() > 0) {
                     experiment.getSamples().stream().forEach(sample -> {
-                        DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample.getName());
+                        DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample);
                         if (sample.getAnalyticalRuns().size() > 0) {
                             sample.getAnalyticalRuns().stream().forEach(analyticalRun -> {
                                 DefaultMutableTreeNode runNode = new DefaultMutableTreeNode(analyticalRun);

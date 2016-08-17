@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Representation of a row in the peptides for the protein group table. One row represents a distinct peptide sequence +
- * modifications entity for a given protein group.
+ * Representation of a row in the peptides for the protein group table. One row
+ * represents a distinct peptide sequence + unique modifications entity for a
+ * given protein group.
  * <p/>
  * Created by Iain on 08/07/2015.
  */
@@ -32,7 +33,7 @@ public class PeptideTableRow {
     /**
      * Constructor.
      *
-     * @param peptideDTO      the PeptideDTO instance
+     * @param peptideDTO the PeptideDTO instance
      * @param proteinSequence the main group protein sequence
      */
     public PeptideTableRow(PeptideDTO peptideDTO, String proteinSequence) {
@@ -78,7 +79,8 @@ public class PeptideTableRow {
     }
 
     /**
-     * Calculate the peptide confidence based on the peptidePostErrorProbability.
+     * Calculate the peptide confidence based on the
+     * peptidePostErrorProbability.
      *
      * @return the peptide confidence
      */
@@ -113,10 +115,12 @@ public class PeptideTableRow {
     }
 
     /**
-     * Return the list of PeptideHasModification instances associated with the first peptide(DTO) in the peptideDTOs
-     * list, assuming that all peptides have the same modifications.
+     * Return the list of PeptideHasModification instances associated with the
+     * first peptide(DTO) in the peptideDTOs list, assuming that all peptides
+     * have the same modifications.
      *
-     * @return the list of PeptideHasModification instances, can be an empty list if the peptide has no modifications.
+     * @return the list of PeptideHasModification instances, can be an empty
+     * list if the peptide has no modifications.
      */
     public List<PeptideHasModification> getPeptideHasModifications() {
         return peptideDTOs.get(0).getPeptide().getPeptideHasModifications();
