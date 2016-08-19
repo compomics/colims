@@ -9,7 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
@@ -55,10 +55,6 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         return filePathTextField;
     }
 
-    public JTextField getHeaderParseRuleTextField() {
-        return headerParseRuleTextField;
-    }
-
     public JTextField getNameTextField() {
         return nameTextField;
     }
@@ -77,6 +73,14 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
 
     public JLabel getFastaDbStateInfoLabel() {
         return fastaDbStateInfoLabel;
+    }
+
+    public JComboBox<String> getHeaderParseRuleComboBox() {
+        return headerParseRuleComboBox;
+    }
+
+    public JButton getBrowseHeaderParseRuleButtton() {
+        return browseHeaderParseRuleButtton;
     }
 
     /**
@@ -102,14 +106,17 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         browseTaxonomyButton = new javax.swing.JButton();
         fastaDbStateInfoLabel = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
-        headerParseRuleTextField = new javax.swing.JTextField();
         HeaderParseRuleLabel = new javax.swing.JLabel();
         taxomomyComboBox = new javax.swing.JComboBox<>();
         saveOrUpdateButton = new javax.swing.JButton();
+        headerParseRuleComboBox = new javax.swing.JComboBox<>();
+        browseHeaderParseRuleButtton = new javax.swing.JButton();
+
+        setPreferredSize(new java.awt.Dimension(564, 311));
 
         fastaDbDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         fastaDbDetailPanel.setOpaque(false);
-        fastaDbDetailPanel.setPreferredSize(new java.awt.Dimension(40, 40));
+        fastaDbDetailPanel.setPreferredSize(new java.awt.Dimension(564, 311));
 
         nameLabel.setText("Name*");
         nameLabel.setPreferredSize(new java.awt.Dimension(48, 14));
@@ -134,6 +141,11 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         browseTaxonomyButton.setMaximumSize(new java.awt.Dimension(80, 25));
         browseTaxonomyButton.setMinimumSize(new java.awt.Dimension(80, 25));
         browseTaxonomyButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        browseTaxonomyButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                browseTaxonomyButtonActionPerformed(evt);
+            }
+        });
 
         fastaDbStateInfoLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         fastaDbStateInfoLabel.setForeground(new java.awt.Color(255, 0, 0));
@@ -159,6 +171,13 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         saveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
         saveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        headerParseRuleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        browseHeaderParseRuleButtton.setText("browse");
+        browseHeaderParseRuleButtton.setMaximumSize(new java.awt.Dimension(80, 25));
+        browseHeaderParseRuleButtton.setMinimumSize(new java.awt.Dimension(80, 25));
+        browseHeaderParseRuleButtton.setPreferredSize(new java.awt.Dimension(80, 25));
+
         javax.swing.GroupLayout fastaDbDetailPanelLayout = new javax.swing.GroupLayout(fastaDbDetailPanel);
         fastaDbDetailPanel.setLayout(fastaDbDetailPanelLayout);
         fastaDbDetailPanelLayout.setHorizontalGroup(
@@ -180,11 +199,14 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
-                                .addComponent(taxomomyComboBox, 0, 360, Short.MAX_VALUE)
+                                .addComponent(taxomomyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(browseTaxonomyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(versionTextField)
-                            .addComponent(headerParseRuleTextField)))
+                            .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
+                                .addComponent(headerParseRuleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(browseHeaderParseRuleButtton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
                         .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(nameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -228,7 +250,8 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(HeaderParseRuleLabel)
-                    .addComponent(headerParseRuleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(headerParseRuleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(browseHeaderParseRuleButtton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -255,16 +278,21 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(fastaDbDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)
+                    .addComponent(fastaDbDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 283, Short.MAX_VALUE)
                     .addContainerGap()))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void browseTaxonomyButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseTaxonomyButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_browseTaxonomyButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel HeaderParseRuleLabel;
     private javax.swing.JButton backButton;
     private javax.swing.JButton browseFastaButton;
+    private javax.swing.JButton browseHeaderParseRuleButtton;
     private javax.swing.JButton browseTaxonomyButton;
     private javax.swing.JPanel fastaDbDetailPanel;
     private javax.swing.JLabel fastaDbStateInfoLabel;
@@ -272,7 +300,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
     private javax.swing.JTextField fileNameTextField;
     private javax.swing.JLabel filePathLabel;
     private javax.swing.JTextField filePathTextField;
-    private javax.swing.JTextField headerParseRuleTextField;
+    private javax.swing.JComboBox<String> headerParseRuleComboBox;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
     private javax.swing.JButton saveOrUpdateButton;

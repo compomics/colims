@@ -87,6 +87,7 @@ public class MaxQuantSpectra {
         aplSpectra.clear();
         spectrumIDs.clear();
         unidentifiedSpectra.clear();
+        ommittedSpectraKeys.clear();
     }
 
 }

@@ -5,7 +5,9 @@ import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.repository.FastaDbRepository;
 
 import java.util.List;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Projections;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -22,6 +24,15 @@ public class FastaDbHibernateRepository extends GenericHibernateRepository<Fasta
         query.setParameterList("fastaDbTypeOrdinals", fastaDbTypes);
 
         return query.list();
+    }
+
+    @Override
+    public List<String> getAllParseRules() {
+        Criteria criteria = getCurrentSession().createCriteria(FastaDb.class, "fastaDb");
+        
+        criteria.setProjection(Projections.distinct(Projections.property("headerParseRule")));
+        
+        return criteria.list();
     }
 
 }

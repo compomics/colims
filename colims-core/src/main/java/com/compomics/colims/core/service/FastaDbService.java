@@ -23,5 +23,11 @@ public interface FastaDbService extends GenericService<FastaDb, Long> {
      * @return the found FastaDb instances
      */
     List<FastaDb> findByFastaDbType(List<FastaDbType> fastaDbTypes);
+    
+    /**
+     * Get all distinct parse rules stored in the database.
+     * @return list of distinct parse rules
+     */
+    List<String> getAllParseRules();
 
 }

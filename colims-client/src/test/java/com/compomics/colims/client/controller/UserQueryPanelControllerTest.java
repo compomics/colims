@@ -1,5 +1,6 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.controller.admin.FastaDbSaveUpdateController;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.table.model.QueryResultsTableModel;
 import com.compomics.colims.core.service.UserService;
@@ -7,7 +8,9 @@ import com.compomics.colims.model.User;
 import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import java.io.IOException;
 import junit.framework.TestCase;
+import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

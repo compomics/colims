@@ -57,7 +57,8 @@ public class MaxQuantParser {
     private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
     @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
-
+    @Autowired
+    private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
     /**
      * An extra method for fun testing times. @TODO do we still need this
      * method?
@@ -100,18 +101,22 @@ public class MaxQuantParser {
      * @throws MappingException thrown in case of a mapping related problem
      */
     public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity) throws IOException, UnparseableException, MappingException {
-        LOGGER.debug("parsing MSMS");
-
         //look for the MaxQuant txt directory
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         if (!txtDirectory.toFile().exists()) {
             throw new FileNotFoundException("The MaxQuant txt directory was not found.");
         }
-
+    //    analyticalRuns.clear(); check if analytical run map is empty?
+        maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> {
+            analyticalRuns.put(k.getName(), k);
+        });
+        
         //first, parse the protein groups file
         LOGGER.debug("parsing protein groups");
         proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()));
 
+        LOGGER.debug("parsing MSMS");
+        
         // TODO: 6/8/2016 write a method for unidentified spectra
         maxQuantSpectraParser.parse(maxQuantDirectory, false, maxQuantProteinGroupParser.getOmittedProteinGroupIds());
 

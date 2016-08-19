@@ -256,6 +256,15 @@ SET search_path TO colims;
         primary key (id)
     );
 
+    create table colims.protein_group_quant (
+        id bigint not null auto_increment,
+        intensity_type integer not null,
+        intensity_value double precision not null,
+        l_analytical_run_id bigint,
+        l_protein_group_id bigint,
+        primary key (id)
+    );
+
     create table colims.protocol (
         id  bigserial not null,
         creation_date timestamp not null,

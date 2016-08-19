@@ -2,8 +2,6 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.AnalyticalRunBinaryFile;
-import com.compomics.colims.model.Experiment;
-import com.compomics.colims.model.ExperimentBinaryFile;
 
 import java.util.List;
 

@@ -19,7 +19,13 @@ public enum MaxQuantProteinGroupHeaders implements HeaderEnum {
     MSMSIDS(new String[]{"MS/MS IDs"}),
     PEP(new String[]{"PEP"}),
     PEPTIDEIDS(new String[]{"Peptide IDs"}),
-    REVERSE(new String[]{"Reverse"});
+    REVERSE(new String[]{"Reverse"}),
+    IBAQ(new String[]{"iBAQ"}),
+    LFQ_INTENSITY(new String[]{"LFQ intensity"}),
+    INTENSITY(new String[]{"Intensity"}),
+    MSMS_COUNT(new String[]{"MS/MS Count"}),
+    REPORTER_INTENSITY_CORRECTED(new String[]{"Reporter intensity corrected"});
+    
 
     /**
      * The list of header values for the enum value.

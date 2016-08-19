@@ -53,7 +53,7 @@ public class MaxQuantProteinGroupParserTest {
         assertFalse(proteinGroup.getMainProtein().getSequence().contains("CON"));
         assertFalse(proteinGroup.getMainProtein().getSequence().contains("REV"));
         assertThat(proteinGroup.getPeptideHasProteinGroups().size(), is(0));
-
+        assertThat(proteinGroup.getProteinGroupQuantsLabeled().size(), is(0));
         // TODO: more relevant tests
     }
 }

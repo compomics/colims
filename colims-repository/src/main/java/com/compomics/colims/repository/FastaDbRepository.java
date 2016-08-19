@@ -19,5 +19,11 @@ public interface FastaDbRepository extends GenericRepository<FastaDb, Long> {
      * @return the found FastaDb instances
      */
     List<FastaDb> findByFastaDbType(List<FastaDbType> fastaDbTypes);
+    
+    /**
+     * Get all distinct parse rules stored in the database.
+     * @return list of distinct parse rules
+     */
+    List<String> getAllParseRules();
 
 }
