@@ -26,6 +26,12 @@ public class PeptideSequenceRenderer {
     private static final String LINE_BREAK = "<br>";
 
     /**
+     * Private constructor to prevent instantiation.
+     */
+    private PeptideSequenceRenderer() {
+    }
+
+    /**
      * Get the annotated peptide sequence in HTML format. Amino acids that carry
      * modifications are colored and bold.
      *

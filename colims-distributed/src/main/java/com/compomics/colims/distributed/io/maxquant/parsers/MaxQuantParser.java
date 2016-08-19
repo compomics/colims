@@ -11,7 +11,6 @@ import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jms.IllegalStateException;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -60,7 +59,8 @@ public class MaxQuantParser {
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
 
     /**
-     * An extra constructor for fun testing times.
+     * An extra method for fun testing times. @TODO do we still need this
+     * method?
      *
      * @param maxQuantDirectory File pointer to MaxQuant directory
      * @param fastaDbs the FASTA databases

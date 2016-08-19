@@ -41,7 +41,7 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
     public Class getColumnClass(int column) {
         switch (column) {
             case SPECTRUM_ID:
-                return Long.class;
+                return String.class;
             case SEQUENCE:
                 return String.class;
             case PRECURSOR_CHARGE:
@@ -85,7 +85,7 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
 
         switch (column) {
             case SPECTRUM_ID:
-                return spectrum.getId();
+                return spectrum.getTitle() + spectrum.getId();
             case SEQUENCE:
                 return PeptideSequenceRenderer.getAnnotatedHtmlSequence(peptide.getSequence(), peptide.getPeptideHasModifications());
             case PRECURSOR_CHARGE:

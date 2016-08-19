@@ -171,9 +171,9 @@ public class Peptide extends DatabaseEntity {
         if (!sequence.equals(peptide.sequence)) {
             return false;
         }
-        if (theoreticalMass != null ? !CompareUtils.equals(theoreticalMass, peptide.theoreticalMass) : peptide.theoreticalMass != null) {
-            return false;
-        }
+//        if (theoreticalMass != null ? !CompareUtils.equals(theoreticalMass, peptide.theoreticalMass) : peptide.theoreticalMass != null) {
+//            return false;
+//        }
         if (peptideHasModifications.size() != peptide.peptideHasModifications.size()) {
             return false;
         }
