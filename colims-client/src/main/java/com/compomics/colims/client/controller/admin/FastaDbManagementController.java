@@ -68,7 +68,7 @@ public class FastaDbManagementController implements Controllable {
     /**
      * The overview panel preferred dimension.
      */
-    private static final Dimension SAVE_OR_UPDATE_PANEL_DIMENSION = new Dimension(542, 311);
+    private static final Dimension SAVE_OR_UPDATE_PANEL_DIMENSION = new Dimension(564, 311);
 
     //model
     private BindingGroup bindingGroup;

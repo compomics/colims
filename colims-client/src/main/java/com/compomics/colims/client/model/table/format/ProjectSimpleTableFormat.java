@@ -3,7 +3,6 @@ package com.compomics.colims.client.model.table.format;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.model.Project;
-import java.text.SimpleDateFormat;
 import java.util.Comparator;
 
 /**

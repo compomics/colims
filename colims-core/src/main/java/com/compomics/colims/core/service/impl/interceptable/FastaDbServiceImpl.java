@@ -57,4 +57,9 @@ public class FastaDbServiceImpl implements FastaDbService {
         return fastaDbRepository.findByFastaDbType(fastaDbTypes);
     }
 
+    @Override
+    public List<String> getAllParseRules() {
+        return fastaDbRepository.getAllParseRules();
+    }
+
 }
