@@ -49,7 +49,7 @@ public class Playground {
         userService.fetchAuthenticationRelations(adminUser);
         userBean.setCurrentUser(adminUser);
 
-        String maxquantPath = "C:/Users/demet/Desktop/6453";
+        String maxquantPath = "C:/Users/demet/Documents/6453";
         String parameterPath =  maxquantPath + File.separator + MaxQuantConstants.PARAMETER_FILE.value();
         String combinedDirectory = maxquantPath + File.separator + MaxQuantConstants.COMBINED_DIRECTORY.value();
         String txtDirectory = combinedDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value();
@@ -72,7 +72,7 @@ public class Playground {
         fastaDbIds.put(FastaDbType.CONTAMINANTS, contFastaDb.getId());
 
         // to parse everything
-        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds, false);
         MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
         

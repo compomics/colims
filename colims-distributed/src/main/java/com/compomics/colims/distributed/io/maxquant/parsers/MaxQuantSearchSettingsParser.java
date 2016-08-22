@@ -89,6 +89,14 @@ public class MaxQuantSearchSettingsParser {
      * The analytical run name with experiment name(key: analyticalRun ; value: experiment name).
      */
     private Map<AnalyticalRun, String> analyticalRuns = new HashMap<>();
+    /**
+     * Isobaric labels for labeled quantification.(key: index , value : isobaric label)
+     */
+    private Map<Integer, String> isobaricLabels = new HashMap<>();
+    /**
+     * label mods for SILAC experiments.(key: index , value : isobaric label)
+     */
+    private Map<Integer, String> labelMods = new HashMap<>();
 
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
@@ -285,6 +293,22 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
+     * Get isobaric label for labeled quantification
+     * @return isobaricLabels map
+     */
+    public Map<Integer, String> getIsobaricLabels() {
+        return isobaricLabels;
+    }
+
+    /**
+     * Get label modifications for SILAC experiments.
+     * @return labelMods
+     */
+    public Map<Integer, String> getLabelMods() {
+        return labelMods;
+    }
+
+    /**
      * Map the given MaxQuant Enzyme instance to a TypedCvParam instance. Returns null if no mapping was possible.
      *
      * @param maxQuantEnzyme the MaxQuant enzyme
@@ -474,6 +498,30 @@ public class MaxQuantSearchSettingsParser {
                 }
                 spectrumParamsWithGroup.put(counter, spectrumParameters);
                 counter++;
+                
+                Element isobaricLabelsElement = getChildByName(parameterGroupElement, "isobaricLabels");
+                int labelCounter = 0;
+                for(Element isobaricLabelElement : isobaricLabelsElement.getChildren()){
+                    if(!isobaricLabelElement.getContent().isEmpty()){
+                        isobaricLabels.put(labelCounter, isobaricLabelElement.getContent().get(0).getValue());
+                    }else{
+                        isobaricLabels.put(labelCounter, null);
+                    }
+                    
+                    labelCounter++;
+                }
+                
+                Element labelModsElement = getChildByName(parameterGroupElement, "labelMods");
+                labelCounter = 0;
+                for(Element labelModElement : labelModsElement.getChildren()){
+                    if(!labelModElement.getContent().isEmpty()){
+                        labelMods.put(labelCounter, labelModElement.getContent().get(0).getValue());
+                    }else{
+                        labelMods.put(labelCounter, null);
+                    }
+                    
+                    labelCounter++;
+                }
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

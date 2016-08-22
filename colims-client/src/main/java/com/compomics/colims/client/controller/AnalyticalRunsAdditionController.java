@@ -17,6 +17,7 @@ import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
