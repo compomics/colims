@@ -282,7 +282,7 @@ public class MaxQuantEvidenceParser {
                     // TODO: find some test data for this
                     if ((modificationString = values.get(modificationHeader[1] + " probabilities")) != null && modificationString.contains("(")) {
                         modificationString = modificationString.replaceAll("_", "");
-                        int location = -1;
+                        int location = 0;
                         int previousLocation = 0;
                         String[] modificationLocations = modificationString.split("\\(");
                         String[] modificationDeltaScores = null;
@@ -310,18 +310,21 @@ public class MaxQuantEvidenceParser {
                                 phModification.setProbabilityScore(Double.parseDouble(modificationLocations[i].substring(0, modificationLocations[i].indexOf(")"))));
 
                                 modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
-                                phModification.setLocation(modificationLocations[i - 1].length());
+                                if (i != 0) {
+                                    location = modificationLocations[i - 1].length() + previousLocation;
 
-                                peptideHasModifications.add(phModification);
+                                    phModification.setLocation(location);
+
+                                    peptideHasModifications.add(phModification);
+                                }
+
+                                previousLocation = location;
                             }
-
-                            previousLocation = location + previousLocation;
                         }
                     }
                 }
             }
         }
-
         return peptideHasModifications;
     }
 
