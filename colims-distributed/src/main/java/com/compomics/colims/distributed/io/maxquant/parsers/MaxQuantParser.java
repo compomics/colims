@@ -59,7 +59,7 @@ public class MaxQuantParser {
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
     @Autowired
     private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
-    
+
     /**
      * An extra method for fun testing times. @TODO do we still need this
      * method?
@@ -114,7 +114,7 @@ public class MaxQuantParser {
 
         //first, parse the protein groups file
         LOGGER.debug("parsing protein groups");
-        proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(), 
+        proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(),
                 MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()), includeContaminants);
 
         LOGGER.debug("parsing MSMS");
@@ -140,7 +140,7 @@ public class MaxQuantParser {
         }
 
         LOGGER.debug("parsing evidence");
-        maxQuantEvidenceParser.parse(txtDirectory.toFile(), multiplicity, maxQuantProteinGroupParser.getOmittedProteinGroupIds());
+        maxQuantEvidenceParser.parse(txtDirectory.toFile(), maxQuantProteinGroupParser.getOmittedProteinGroupIds());
 
         if (getSpectra().isEmpty() || maxQuantEvidenceParser.getPeptides().isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");

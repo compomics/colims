@@ -34,8 +34,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * This class parses the MaxQuant parameter files and maps them onto the Colims SearchAndValidationSettings and related
- * entities.
+ * This class parses the MaxQuant parameter files and maps them onto the Colims
+ * SearchAndValidationSettings and related entities.
  *
  * @author Davy
  * @author Iain
@@ -58,11 +58,11 @@ public class MaxQuantSearchSettingsParser {
     private static final String MODIFICATION_NAME_ONLY = " ";
 
     private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
-            MaxQuantSummaryHeaders.ENZYME,
-            MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
-            MaxQuantSummaryHeaders.MULTIPLICITY,
-            MaxQuantSummaryHeaders.PROTEASE,
-            MaxQuantSummaryHeaders.RAW_FILE
+        MaxQuantSummaryHeaders.ENZYME,
+        MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
+        MaxQuantSummaryHeaders.MULTIPLICITY,
+        MaxQuantSummaryHeaders.PROTEASE,
+        MaxQuantSummaryHeaders.RAW_FILE
     };
 
     /**
@@ -82,15 +82,18 @@ public class MaxQuantSearchSettingsParser {
      */
     private Map<String, SearchAndValidationSettings> runSettings = new HashMap<>();
     /**
-     * The spectrum parameters with raw file name (key: raw file name; value: enum map of spectrum parameters).
+     * The spectrum parameters with raw file name (key: raw file name; value:
+     * enum map of spectrum parameters).
      */
     private Map<String, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithRawFile = new HashMap<>();
     /**
-     * The analytical run name with experiment name(key: analyticalRun ; value: experiment name).
+     * The analytical run name with experiment name(key: analyticalRun ; value:
+     * experiment name).
      */
     private Map<AnalyticalRun, String> analyticalRuns = new HashMap<>();
     /**
-     * Isobaric labels for labeled quantification.(key: index , value : isobaric label)
+     * Isobaric labels for labeled quantification.(key: index , value : isobaric
+     * label)
      */
     private Map<Integer, String> isobaricLabels = new HashMap<>();
     /**
@@ -127,13 +130,14 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Parse the search parameters for a MaxQuant experiment.
      *
-     * @param combinedFolderDirectory the MaxQuant combined folder directory path
+     * @param combinedFolderDirectory the MaxQuant combined folder directory
+     * path
      * @param parameterFilePath the parameter file
-     * @param fastaDbs             the FASTA databases used in the experiment
-     * @param storeFiles           whether data files should be stored with the experiment
+     * @param fastaDbs the FASTA databases used in the experiment
+     * @param storeFiles whether data files should be stored with the experiment
      * @throws IOException thrown in case of of an I/O related problem
      */
-    public void parse(Path combinedFolderDirectory,Path parameterFilePath, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
+    public void parse(Path combinedFolderDirectory, Path parameterFilePath, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
         Path txtDirectory = Paths.get(combinedFolderDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         parseSpectrumParameters(parameterFilePath);
         TabularFileLineValuesIterator summaryIterator = new TabularFileLineValuesIterator(Paths.get(txtDirectory.toString(), MaxQuantConstants.SUMMARY_FILE.value()).toFile(), MANDATORY_HEADERS);
@@ -143,8 +147,8 @@ public class MaxQuantSearchSettingsParser {
             row = summaryIterator.next();
             //parse the search settings
             if (getSpectrumParamsWithRawFile().containsKey(row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()))) {
-                SearchAndValidationSettings searchAndValidationSettings =
-                        parseSearchSettings(txtDirectory, fastaDbs, storeFiles, row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()));
+                SearchAndValidationSettings searchAndValidationSettings
+                        = parseSearchSettings(txtDirectory, fastaDbs, storeFiles, row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()));
                 if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getValue())) {
                     multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getValue());
                 }
@@ -156,12 +160,12 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Parse the search settings for the given experiment and map them onto a Colims SearchAndValidationSettings
-     * instance.
+     * Parse the search settings for the given experiment and map them onto a
+     * Colims SearchAndValidationSettings instance.
      *
      * @param maxQuantTxtDirectory the MaxQuant txt directory path
-     * @param fastaDbs             the FASTA databases used in the experiment
-     * @param storeFiles           whether data files should be stored with experiment
+     * @param fastaDbs the FASTA databases used in the experiment
+     * @param storeFiles whether data files should be stored with experiment
      * @return the mapped SearchAndValidationSettings instance
      * @throws IOException thrown in case of of an I/O related problem
      */
@@ -175,7 +179,8 @@ public class MaxQuantSearchSettingsParser {
         });
 
         /**
-         * Map the search parameters onto a Colims {@link SearchParameters} instance.
+         * Map the search parameters onto a Colims {@link SearchParameters}
+         * instance.
          */
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setSearchType(defaultSearchType);
@@ -188,7 +193,6 @@ public class MaxQuantSearchSettingsParser {
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
             version = versionParameter;
         }
-
 
         //precursor mass tolerance and unit
         String precursorMassToleranceString = getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE);
@@ -238,7 +242,6 @@ public class MaxQuantSearchSettingsParser {
 
         // TODO: 6/13/2016 change!
         //searchParameters.getSearchAndValidationSettingses().add(searchAndValidationSettings);
-
         return searchAndValidationSettings;
     }
 
@@ -261,7 +264,8 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Get the default search type from the database and assign it to the class field.
+     * Get the default search type from the database and assign it to the class
+     * field.
      */
     @PostConstruct
     private void getDefaultSearchType() {
@@ -284,8 +288,9 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Get analytical runs name (experiment name) which have link with analytical runs.
-     * 
+     * Get analytical runs name (experiment name) which have link with
+     * analytical runs.
+     *
      * @return analyticalRuns
      */
     public Map<AnalyticalRun, String> getAnalyticalRuns() {
@@ -294,6 +299,7 @@ public class MaxQuantSearchSettingsParser {
 
     /**
      * Get isobaric label for labeled quantification
+     *
      * @return isobaricLabels map
      */
     public Map<Integer, String> getIsobaricLabels() {
@@ -302,6 +308,7 @@ public class MaxQuantSearchSettingsParser {
 
     /**
      * Get label modifications for SILAC experiments.
+     *
      * @return labelMods
      */
     public Map<Integer, String> getLabelMods() {
@@ -309,7 +316,8 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Map the given MaxQuant Enzyme instance to a TypedCvParam instance. Returns null if no mapping was possible.
+     * Map the given MaxQuant Enzyme instance to a TypedCvParam instance.
+     * Returns null if no mapping was possible.
      *
      * @param maxQuantEnzyme the MaxQuant enzyme
      * @return the TypedCvParam instance
@@ -344,7 +352,8 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Create modifications for the given search parameter and the raw file that linked to that parameter.
+     * Create modifications for the given search parameter and the raw file that
+     * linked to that parameter.
      *
      * @param searchParameters
      * @param rawFileName
@@ -424,7 +433,7 @@ public class MaxQuantSearchSettingsParser {
         Map<Integer, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithGroup = new HashMap<>();
         // create a map to hold experiment names for each run (key: group index; value: experiment name).
         Map<Integer, String> experimentsName = new HashMap<>();
-        
+
         Resource spectrumParameterResource = new FileSystemResource(spectrumParametersPath.toFile());
 
         SAXBuilder builder = new SAXBuilder();
@@ -446,12 +455,12 @@ public class MaxQuantSearchSettingsParser {
             }
 
             Element analyticalRunNamesElement = getChildByName(root, "experiments");
-            counter = 0 ;
-            for(Element analyticalRunNameElement : analyticalRunNamesElement.getChildren()){
-                if(!analyticalRunNameElement.getContent().isEmpty()){
+            counter = 0;
+            for (Element analyticalRunNameElement : analyticalRunNamesElement.getChildren()) {
+                if (!analyticalRunNameElement.getContent().isEmpty()) {
                     experimentsName.put(counter, analyticalRunNameElement.getContent().get(0).getValue());
                     counter++;
-                }else{
+                } else {
                     throw new IllegalStateException("Experiment name in mqpar file is empty.");
                 }
             }
@@ -498,28 +507,28 @@ public class MaxQuantSearchSettingsParser {
                 }
                 spectrumParamsWithGroup.put(counter, spectrumParameters);
                 counter++;
-                
+
                 Element isobaricLabelsElement = getChildByName(parameterGroupElement, "isobaricLabels");
                 int labelCounter = 0;
-                for(Element isobaricLabelElement : isobaricLabelsElement.getChildren()){
-                    if(!isobaricLabelElement.getContent().isEmpty()){
+                for (Element isobaricLabelElement : isobaricLabelsElement.getChildren()) {
+                    if (!isobaricLabelElement.getContent().isEmpty()) {
                         isobaricLabels.put(labelCounter, isobaricLabelElement.getContent().get(0).getValue());
-                    }else{
+                    } else {
                         isobaricLabels.put(labelCounter, null);
                     }
-                    
+
                     labelCounter++;
                 }
-                
+
                 Element labelModsElement = getChildByName(parameterGroupElement, "labelMods");
                 labelCounter = 0;
-                for(Element labelModElement : labelModsElement.getChildren()){
-                    if(!labelModElement.getContent().isEmpty()){
+                for (Element labelModElement : labelModsElement.getChildren()) {
+                    if (!labelModElement.getContent().isEmpty()) {
                         labelMods.put(labelCounter, labelModElement.getContent().get(0).getValue());
-                    }else{
+                    } else {
                         labelMods.put(labelCounter, null);
                     }
-                    
+
                     labelCounter++;
                 }
             }

@@ -10,7 +10,6 @@ import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantEvidenceHead
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesModificationMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.ModificationType;
-import com.compomics.colims.model.enums.QuantificationWeight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,35 +29,17 @@ public class MaxQuantEvidenceParser {
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
     private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
-            MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
-            MaxQuantEvidenceHeaders.CHARGE,
-            MaxQuantEvidenceHeaders.DELTA_SCORE,
-            MaxQuantEvidenceHeaders.MASS,
-            MaxQuantEvidenceHeaders.MODIFICATIONS,
-            MaxQuantEvidenceHeaders.MS_MS_IDS,
-            MaxQuantEvidenceHeaders.OXIDATION_M,
-            MaxQuantEvidenceHeaders.PEP,
-            MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
-            MaxQuantEvidenceHeaders.SCORE,
-            MaxQuantEvidenceHeaders.SEQUENCE,};
-
-    /**
-     * Iterable intensity headers, based on number of labels chosen.
-     */
-    private static final Map<Integer, String[]> INTENSITY_HEADERS = new HashMap<>();
-    /**
-     * As above but quantification weights.
-     */
-    private static final Map<Integer, QuantificationWeight[]> WEIGHT_OPTIONS = new HashMap<>();
-
-    static {
-        INTENSITY_HEADERS.put(1, new String[]{"intensity"});
-        INTENSITY_HEADERS.put(2, new String[]{"intensity l", "intensity h"});
-        INTENSITY_HEADERS.put(3, new String[]{"intensity l", "intensity m", "intensity h"});
-        WEIGHT_OPTIONS.put(1, new QuantificationWeight[]{QuantificationWeight.LIGHT});
-    WEIGHT_OPTIONS.put(2, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.HEAVY});
-        WEIGHT_OPTIONS.put(3, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.MEDIUM, QuantificationWeight.HEAVY});
-    }
+        MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
+        MaxQuantEvidenceHeaders.CHARGE,
+        MaxQuantEvidenceHeaders.DELTA_SCORE,
+        MaxQuantEvidenceHeaders.MASS,
+        MaxQuantEvidenceHeaders.MODIFICATIONS,
+        MaxQuantEvidenceHeaders.MS_MS_IDS,
+        MaxQuantEvidenceHeaders.OXIDATION_M,
+        MaxQuantEvidenceHeaders.PEP,
+        MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
+        MaxQuantEvidenceHeaders.SCORE,
+        MaxQuantEvidenceHeaders.SEQUENCE};
 
     private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
     /**
@@ -89,24 +70,24 @@ public class MaxQuantEvidenceParser {
     /**
      * This method parses an evidence file.
      *
-     * @param txtDirectory           the MaxQuant txt directory
-     * @param multiplicity
+     * @param txtDirectory the MaxQuant txt directory
      * @param omittedProteinGroupIds removed protein group IDs.
-     * @throws IOException                                                       in case of an I/O related problem
+     * @throws IOException in case of an I/O related problem
      * @throws com.compomics.colims.distributed.io.maxquant.UnparseableException
-     * @throws com.compomics.colims.core.io.MappingException                     in case of a mapping problem
+     * @throws com.compomics.colims.core.io.MappingException in case of a
+     * mapping problem
      */
-    public void parse(File txtDirectory, String multiplicity, List<String> omittedProteinGroupIds) throws IOException, UnparseableException, MappingException {
+    public void parse(File txtDirectory, List<String> omittedProteinGroupIds) throws IOException, UnparseableException, MappingException {
         TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(txtDirectory, MaxQuantConstants.EVIDENCE_FILE.value()), MANDATORY_HEADERS);
-
-        int intensityCount = Integer.parseInt(multiplicity);
-
-        QuantificationWeight[] weights = WEIGHT_OPTIONS.get(intensityCount);
-        String[] intensityColumns = INTENSITY_HEADERS.get(intensityCount);
 
         Map<String, String> values;
         while (evidenceIterator.hasNext()) {
             values = evidenceIterator.next();
+
+            String evidenceId = values.get(MaxQuantEvidenceHeaders.ID.getValue());
+            if (evidenceId.equals("26876")) {
+                System.out.println("dkfdkfkfkf");
+            }
 
             String[] proteinGroupIds = values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()).split(PROTEIN_GROUP_ID_DELIMITER);
 
@@ -119,12 +100,6 @@ public class MaxQuantEvidenceParser {
                 }
             }
             if (!omitPeptide) {
-                double[] intensities = new double[intensityCount];
-
-                for (int i = 0; i < intensityColumns.length; i++) {
-                    intensities[i] = parseIntensity(values.get(intensityColumns[i]));
-                }
-
                 if (values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()) != null) {
                     String[] msmsIds = values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()).split(";");
                     for (String msmsId : msmsIds) {
@@ -137,47 +112,11 @@ public class MaxQuantEvidenceParser {
                             } else {
                                 peptides.get(spectrumID).add(peptide);
                             }
-
-                            List<Quantification> spectrumQuantList = new ArrayList<>();
-                            for (int j = 0; j < intensityCount; ++j) {
-                                Quantification quant = new Quantification();
-                                quant.setIntensity(intensities[j]);
-                                quant.setWeight(weights[j]);
-
-                                spectrumQuantList.add(quant);
-
-                                QuantificationGroup quantGroup = new QuantificationGroup();
-                                quantGroup.setQuantification(quant);
-                                quantGroup.setPeptide(peptide);
-                            }
-
-                            if (quantifications.containsKey(spectrumID)) {
-                                quantifications.get(spectrumID).addAll(spectrumQuantList);
-                            } else {
-                                quantifications.put(spectrumID, spectrumQuantList);
-                            }
                         }
                     }
                 }
             }
-
         }
-    }
-
-    /**
-     * Parse an intensity value from a string to a double.
-     *
-     * @param intensityStr Intensity in string form
-     * @return Intensity in double form
-     */
-    public double parseIntensity(String intensityStr) {
-        double intensity = 0.0;
-
-        if (intensityStr != null && !intensityStr.isEmpty() && !intensityStr.toLowerCase().contains("nan")) {
-            intensity = Double.parseDouble(intensityStr);
-        }
-
-        return intensity;
     }
 
     /**
@@ -185,12 +124,14 @@ public class MaxQuantEvidenceParser {
      *
      * @param values Set of values from a line in the file
      * @return Peptide object
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case
+     * of a modification mapping problem
      */
     public Peptide createPeptide(Map<String, String> values) throws ModificationMappingException {
         Peptide peptide = new Peptide();
 
-        double probability = -1, pep = -1;
+        double probability = -1;
+        double pep = -1;
 
         if (!values.get(MaxQuantEvidenceHeaders.SCORE.getValue()).equalsIgnoreCase("nan")) {
             probability = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.SCORE.getValue()));
@@ -223,10 +164,19 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * Create modifications for a given peptide
+     * Clear run data from parser.
+     */
+    public void clear() {
+        peptideProteins.clear();
+        peptides.clear();
+        quantifications.clear();
+    }
+
+    /**
+     * Create modifications for the given peptide.
      *
      * @param peptide Peptide to associate with modifications
-     * @param values  Row of data from evidence file
+     * @param values Row of data from evidence file
      * @return List of PeptideHasModification objects
      */
     private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) throws ModificationMappingException {
@@ -294,7 +244,6 @@ public class MaxQuantEvidenceParser {
                                 phModification.setPeptide(peptide);
 
                                 Modification modification = utilitiesModificationMapper.mapByName(modificationHeader[0].split(" ")[0]);
-                                //modification.getPeptideHasModifications().add(phModification);
                                 phModification.setModification(modification);
                                 if (modificationDeltaScores != null) {
                                     phModification.setDeltaScore(Double.parseDouble(modificationDeltaScores[i].substring(0, modificationDeltaScores[i].indexOf(")"))));
@@ -321,14 +270,14 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * Clear run data from parser.
+     * Create a PeptideHasModification instance for the given peptide.
+     *
+     * @param deltaScore the delta score value
+     * @param location the modification location
+     * @param probability the probability score
+     * @param peptide the Peptide instance
+     * @return the PeptideHasModification instance
      */
-    public void clear() {
-        peptideProteins.clear();
-        peptides.clear();
-        quantifications.clear();
-    }
-
     private PeptideHasModification createPeptideHasModification(double deltaScore, int location, double probability, Peptide peptide) {
         PeptideHasModification phModification = new PeptideHasModification();
 

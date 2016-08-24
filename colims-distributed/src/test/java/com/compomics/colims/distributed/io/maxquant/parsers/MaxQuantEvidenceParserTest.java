@@ -19,9 +19,6 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
 
 /**
  * Created by Iain on 19/05/2015.
@@ -39,26 +36,9 @@ public class MaxQuantEvidenceParserTest {
         List<String> ommittedProteinIds = new ArrayList<>();
         ommittedProteinIds.add("0");
         ommittedProteinIds.add("1");
-        maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextDirectory.toFile(), "1", ommittedProteinIds);
+        maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextDirectory.toFile(), ommittedProteinIds);
 
         assertThat(maxQuantEvidenceParser.getPeptides().size(), not(0));
-        assertThat(maxQuantEvidenceParser.getQuantifications().size(), not(0));
-        assertThat(maxQuantEvidenceParser.getQuantifications().get(0).get(0).getIntensity(), is(194030.0));
-        assertThat(maxQuantEvidenceParser.getQuantifications().get(0).get(0).getWeight(), is(QuantificationWeight.LIGHT));
-    }
-
-    @Test
-    public void testParseIntensity() {
-        maxQuantEvidenceParser.clear();
-
-        // typical value
-        assertThat(maxQuantEvidenceParser.parseIntensity("1285500"), is(1285500.0));
-        // empty
-        assertThat(maxQuantEvidenceParser.parseIntensity(""), is(0.0));
-        // null
-        assertThat(maxQuantEvidenceParser.parseIntensity(null), is(0.0));
-        // non-numeric
-        assertThat(maxQuantEvidenceParser.parseIntensity("NaN (Niet-een-getal)"), is(0.0));
     }
 
     @Test
