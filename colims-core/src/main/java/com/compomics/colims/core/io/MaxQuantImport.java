@@ -4,6 +4,7 @@ import com.compomics.colims.model.enums.FastaDbType;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.EnumMap;
+import java.util.Objects;
 
 /**
  * @author Davy
@@ -24,6 +25,10 @@ public class MaxQuantImport extends DataImport {
     private Path combinedFolderDirectory;
 
     /**
+     * Import proteins from contaminants file or not.
+     */
+    private boolean includeContaminants;
+    /**
      * no-arg Constructor.
      */
     public MaxQuantImport() {
@@ -34,11 +39,13 @@ public class MaxQuantImport extends DataImport {
      * @param parameterFilePath
      * @param combinedFolderDirectory
      * @param fastaDbIds 
+     * @param includeContaminants 
      */
-    public MaxQuantImport(final Path parameterFilePath, final Path combinedFolderDirectory, final EnumMap<FastaDbType, Long> fastaDbIds) {
+    public MaxQuantImport(final Path parameterFilePath, final Path combinedFolderDirectory, final EnumMap<FastaDbType, Long> fastaDbIds, boolean includeContaminants) {
         super(fastaDbIds);
         this.parameterFilePath = parameterFilePath;
         this.combinedFolderDirectory = combinedFolderDirectory;
+        this.includeContaminants = includeContaminants;
     }
 
     public Path getParameterFilePath() {
@@ -53,27 +60,45 @@ public class MaxQuantImport extends DataImport {
 
     public void setCombinedFolderDirectory(Path combinedFolderDirectory) {this.combinedFolderDirectory = combinedFolderDirectory;}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean isIncludeContaminants() {
+        return includeContaminants;
+    }
 
-        MaxQuantImport that = (MaxQuantImport) o;
-
-        if (parameterFilePath != null ? !parameterFilePath.equals(that.parameterFilePath) : that.parameterFilePath != null)
-            return false;
-        if (combinedFolderDirectory != null ? !combinedFolderDirectory.equals(that.combinedFolderDirectory) : that.combinedFolderDirectory != null)
-            return false;
-
-        return true;
+    public void setIncludeContaminants(boolean includeContaminants) {
+        this.includeContaminants = includeContaminants;
     }
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (parameterFilePath != null ? parameterFilePath.hashCode() : 0);
-        result = 31 * result + (combinedFolderDirectory != null ? combinedFolderDirectory.hashCode() : 0);
-        return result;
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.parameterFilePath);
+        hash = 53 * hash + Objects.hashCode(this.combinedFolderDirectory);
+        hash = 53 * hash + (this.includeContaminants ? 1 : 0);
+        return hash;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MaxQuantImport other = (MaxQuantImport) obj;
+        if (this.includeContaminants != other.includeContaminants) {
+            return false;
+        }
+        if (!Objects.equals(this.parameterFilePath, other.parameterFilePath)) {
+            return false;
+        }
+        if (!Objects.equals(this.combinedFolderDirectory, other.combinedFolderDirectory)) {
+            return false;
+        }
+        return true;
+    }
+
 }

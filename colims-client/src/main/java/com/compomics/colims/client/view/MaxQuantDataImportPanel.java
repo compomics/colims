@@ -1,6 +1,7 @@
 package com.compomics.colims.client.view;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 
@@ -83,6 +84,10 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         return selectPrimaryFastaDbButton;
     }
 
+    public JCheckBox getContaminantsCheckBox() {
+        return contaminantsCheckBox;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -100,6 +105,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         maxQuantDirectorySelectionLabel = new javax.swing.JLabel();
         selectParameterDirectoryButton = new javax.swing.JButton();
         parameterDirectoryTextField = new javax.swing.JTextField();
+        contaminantsCheckBox = new javax.swing.JCheckBox();
         separator = new javax.swing.JSeparator();
         rightPanel = new javax.swing.JPanel();
         selectPrimaryFastaDbButton = new javax.swing.JButton();
@@ -133,6 +139,8 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         parameterDirectoryTextField.setEditable(false);
 
+        contaminantsCheckBox.setText("Import proteins from contaminants file");
+
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
         leftPanelLayout.setHorizontalGroup(
@@ -151,8 +159,9 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                     .addGroup(leftPanelLayout.createSequentialGroup()
                         .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(combinedFolderDirectorySelectionLabel)
-                            .addComponent(maxQuantDirectorySelectionLabel))
-                        .addGap(0, 188, Short.MAX_VALUE)))
+                            .addComponent(maxQuantDirectorySelectionLabel)
+                            .addComponent(contaminantsCheckBox))
+                        .addGap(0, 212, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         leftPanelLayout.setVerticalGroup(
@@ -170,7 +179,9 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(parameterDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectParameterDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addGap(26, 26, 26)
+                .addComponent(contaminantsCheckBox)
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -247,7 +258,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
             .addGroup(rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(additionalFastaFileSelectionLabel)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -288,6 +299,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
     private javax.swing.JLabel additionalFastaFileSelectionLabel;
     private javax.swing.JLabel combinedFolderDirectorySelectionLabel;
     private javax.swing.JTextField combinedFolderDirectoryTextField;
+    private javax.swing.JCheckBox contaminantsCheckBox;
     private javax.swing.JTextField contaminantsFastaDbTextField;
     private javax.swing.JLabel contaminantsFastaFileSelectionLabel;
     private javax.swing.JPanel leftPanel;

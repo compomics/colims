@@ -64,14 +64,14 @@ public class MaxQuantProteinGroupParser {
      * @return Protein groups indexed by id
      * @throws IOException
      */
-    public Map<Integer, ProteinGroup> parse(File proteinGroupsFile, Map<String, String> parsedFastas) throws IOException {
+    public Map<Integer, ProteinGroup> parse(File proteinGroupsFile, Map<String, String> parsedFastas, boolean includeContaminants) throws IOException {
         Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
 
         TabularFileLineValuesIterator iterator = new TabularFileLineValuesIterator(proteinGroupsFile, MANDATORY_HEADERS);
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
-            ProteinGroup proteinGroup = parseProteinGroup(values, parsedFastas);
+            ProteinGroup proteinGroup = parseProteinGroup(values, parsedFastas, includeContaminants);
 
             if (proteinGroup.getMainProtein() != null) {
                 proteinGroups.put(Integer.parseInt(values.get(MaxQuantProteinGroupHeaders.ID.getValue())), proteinGroup);
@@ -96,9 +96,8 @@ public class MaxQuantProteinGroupParser {
      * @param parsedFastas the parsed FASTA files
      * @return A protein group
      */
-    private ProteinGroup parseProteinGroup(Map<String, String> values, Map<String, String> parsedFastas) {
-        // this value will come from view
-        boolean omitContaminants = true;
+    private ProteinGroup parseProteinGroup(Map<String, String> values, Map<String, String> parsedFastas, boolean includeContaminants) {
+
         ProteinGroup proteinGroup = new ProteinGroup();
 
         if (values.get(MaxQuantProteinGroupHeaders.PEP.getValue()) != null) {
@@ -113,7 +112,7 @@ public class MaxQuantProteinGroupParser {
         if (parsedAccession.contains(";")) {
             String[] accessions = parsedAccession.split(";");
             // if select to omit contaminants and main protein is contaminant exclude that protein group.
-            if(omitContaminants){
+            if(!includeContaminants){
                 if(accessions[0].contains("CON")){
                     omittedProteinGroup = true;
                 // if main protein is not contaminant, add all accessions except reverse. If reverse, exclude
@@ -166,7 +165,7 @@ public class MaxQuantProteinGroupParser {
             }
             
         } else {
-            if(omitContaminants){
+            if(!includeContaminants){
                 if (!parsedAccession.contains("REV") && !parsedAccession.contains("CON")) {
                     proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(parsedFastas.get(parsedAccession), parsedAccession, true, proteinGroup));
                 }else {
@@ -190,34 +189,58 @@ public class MaxQuantProteinGroupParser {
 
         if(!omittedProteinGroup){
             maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> {
-                String intensity = null , lfqIntensity = null, ibaq = null, msmsCount = null;
 
-                if(values.get(MaxQuantProteinGroupHeaders.INTENSITY.getValue() + " " + v.toLowerCase()) != null){
-                    intensity = values.get(MaxQuantProteinGroupHeaders.INTENSITY.getValue() + " " + v.toLowerCase());
-                }
-                if(values.get(MaxQuantProteinGroupHeaders.LFQ_INTENSITY.getValue() + " " + v.toLowerCase()) != null){
-                    lfqIntensity = values.get(MaxQuantProteinGroupHeaders.LFQ_INTENSITY.getValue() + " " + v.toLowerCase());
-                }
-                if(values.get(MaxQuantProteinGroupHeaders.IBAQ.getValue() + " " + v.toLowerCase()) != null){
-                    ibaq = values.get(MaxQuantProteinGroupHeaders.IBAQ.getValue() + " " + v.toLowerCase());
-                }
-                if(values.get(MaxQuantProteinGroupHeaders.MSMS_COUNT.getValue() + " " + v.toLowerCase()) != null){
-                    msmsCount = values.get(MaxQuantProteinGroupHeaders.MSMS_COUNT.getValue() + " " + v.toLowerCase());
-                }
+                String intensity = values.get(MaxQuantProteinGroupHeaders.INTENSITY.getValue() + " " + v.toLowerCase());
+
+                String lfqIntensity = values.get(MaxQuantProteinGroupHeaders.LFQ_INTENSITY.getValue() + " " + v.toLowerCase());
+
+                String ibaq = values.get(MaxQuantProteinGroupHeaders.IBAQ.getValue() + " " + v.toLowerCase());
+
+                String msmsCount = values.get(MaxQuantProteinGroupHeaders.MSMS_COUNT.getValue() + " " + v.toLowerCase());
+
                 if(intensity != null || lfqIntensity != null || ibaq != null || msmsCount != null){
                     createProteinGroupQuant(proteinGroup, k, intensity, lfqIntensity, ibaq, msmsCount);
                 }
                 // check for all labeled quantification. If exists for the run, parse.
                 for(int i = 0; i < 10; i++){
-                    String reporterIntensityCorrected = null;
-                    
-                    if(values.get(MaxQuantProteinGroupHeaders.REPORTER_INTENSITY_CORRECTED.getValue() + " " + i + " " + v.toLowerCase()) != null){
-                        reporterIntensityCorrected = values.get(MaxQuantProteinGroupHeaders.REPORTER_INTENSITY_CORRECTED.getValue() + " " + i + " " + v.toLowerCase());
+                    String reporterIntensityCorrected = values.get(MaxQuantProteinGroupHeaders.REPORTER_INTENSITY_CORRECTED.getValue() + " " + i + " " + v.toLowerCase());
+
+                    if(reporterIntensityCorrected != null && maxQuantSearchSettingsParser.getIsobaricLabels().size() >= i+1){
+                        if(maxQuantSearchSettingsParser.getIsobaricLabels().get(i) != null){
+                            createProteinGroupQuantLabeled(proteinGroup, k,  maxQuantSearchSettingsParser.getIsobaricLabels().get(i), reporterIntensityCorrected);
+                        }else{
+                            createProteinGroupQuantLabeled(proteinGroup, k,  MaxQuantProteinGroupHeaders.REPORTER_INTENSITY_CORRECTED.getValue() + " " + i, reporterIntensityCorrected);
+                        }  
+                    }
+                }
+                
+                String intensityL = values.get(MaxQuantProteinGroupHeaders.INTENSITY_L.getValue() + " " + v.toLowerCase());
+                String intensityM = values.get(MaxQuantProteinGroupHeaders.INTENSITY_M.getValue() + " " + v.toLowerCase());
+                String intensityH = values.get(MaxQuantProteinGroupHeaders.INTENSITY_H.getValue() + " " + v.toLowerCase());
+                
+                if(intensityL != null && maxQuantSearchSettingsParser.getLabelMods().size() >= 1){
+                    if(maxQuantSearchSettingsParser.getLabelMods().get(0) != null){
+                        createProteinGroupQuantLabeled(proteinGroup, k, maxQuantSearchSettingsParser.getLabelMods().get(0), intensityL);
+                    }else{
+                        createProteinGroupQuantLabeled(proteinGroup, k, MaxQuantProteinGroupHeaders.INTENSITY_L.getValue(), intensityL);
                     }
                     
-                    if(reporterIntensityCorrected != null){
-                        createProteinGroupQuantLabeled(proteinGroup, k, MaxQuantProteinGroupHeaders.REPORTER_INTENSITY_CORRECTED.getValue() + " " + i + " " + v.toLowerCase(), reporterIntensityCorrected);
+                }
+                if(intensityM != null &&  maxQuantSearchSettingsParser.getLabelMods().size() >= 2){
+                    if(maxQuantSearchSettingsParser.getLabelMods().get(1) != null){
+                        createProteinGroupQuantLabeled(proteinGroup, k, maxQuantSearchSettingsParser.getLabelMods().get(1), intensityM);
+                    }else{
+                        createProteinGroupQuantLabeled(proteinGroup, k, MaxQuantProteinGroupHeaders.INTENSITY_M.getValue(), intensityM);
                     }
+                    
+                }
+                if(intensityH != null && maxQuantSearchSettingsParser.getLabelMods().size() >= 3){
+                    if(maxQuantSearchSettingsParser.getLabelMods().get(2) != null){
+                        createProteinGroupQuantLabeled(proteinGroup, k, maxQuantSearchSettingsParser.getLabelMods().get(2), intensityH);
+                    }else{
+                        createProteinGroupQuantLabeled(proteinGroup, k, MaxQuantProteinGroupHeaders.INTENSITY_H.getValue(), intensityH);
+                    }
+                    
                 }
             });
         }

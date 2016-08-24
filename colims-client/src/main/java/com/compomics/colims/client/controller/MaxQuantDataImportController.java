@@ -40,6 +40,7 @@ public class MaxQuantDataImportController implements Controllable {
     private FastaDb primaryFastaDb;
     private FastaDb additionalFastaDb;
     private FastaDb contaminantsFastaDb;
+    private boolean includeContaminants;
     //view
     private MaxQuantDataImportPanel maxQuantDataImportPanel;
     //parent controller
@@ -128,6 +129,11 @@ public class MaxQuantDataImportController implements Controllable {
                 maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
             }
         });
+        
+        maxQuantDataImportPanel.getContaminantsCheckBox().addActionListener(e -> {
+            includeContaminants = true;
+        });
+        
     }
 
     @Override
@@ -136,12 +142,14 @@ public class MaxQuantDataImportController implements Controllable {
         primaryFastaDb = null;
         additionalFastaDb = null;
         contaminantsFastaDb = null;
+        includeContaminants = false;
         //reset the input fields
         maxQuantDataImportPanel.getParameterDirectoryTextField().setText("");
         maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText("");
         maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText("");
         maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
         maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
+        maxQuantDataImportPanel.getContaminantsCheckBox().setSelected(false);
     }
 
     public void showEditView(MaxQuantImport maxQuantImport){
@@ -189,11 +197,19 @@ public class MaxQuantDataImportController implements Controllable {
         }
         if (primaryFastaDb == null) {
             validationMessages.add("Please select a primary FASTA file.");
+        }else if(primaryFastaDb.getHeaderParseRule() == null){
+             validationMessages.add("Please add header parse rule to primary FASTA file!");
         }
+        
         if (contaminantsFastaDb == null) {
             validationMessages.add("Please select a contaminants FASTA file.");
+        }else if(contaminantsFastaDb.getHeaderParseRule()== null){
+            validationMessages.add("Please add header parse rule to contaminants FASTA file!");
         }
-
+               
+        if(additionalFastaDb != null && additionalFastaDb.getHeaderParseRule()== null){
+            validationMessages.add("Please add header parse rule to additional FASTA file!");
+        }   
         return validationMessages;
     }
 
@@ -209,10 +225,10 @@ public class MaxQuantDataImportController implements Controllable {
         if (additionalFastaDb != null) {
             fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDb.getId());
         }
-
-        return new MaxQuantImport(parameterFile.toPath(), combinedFolderDirectory, fastaDbIds);
+        
+        return new MaxQuantImport(parameterFile.toPath(), combinedFolderDirectory, fastaDbIds, includeContaminants);
     }
-
+    
     public void setParameterFile(File parameterFile) {
         this.parameterFile = parameterFile;
     }
@@ -220,8 +236,6 @@ public class MaxQuantDataImportController implements Controllable {
     public void setCombinedFolderDirectory(Path combinedFolderDirectory) {
         this.combinedFolderDirectory = combinedFolderDirectory;
     }
-
-
 
     public void setAdditionalFastaDb(FastaDb additionalFastaDb) {
         this.additionalFastaDb = additionalFastaDb;

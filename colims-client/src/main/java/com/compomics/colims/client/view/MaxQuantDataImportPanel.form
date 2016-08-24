@@ -46,8 +46,9 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="combinedFolderDirectorySelectionLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="maxQuantDirectorySelectionLabel" min="-2" max="-2" attributes="0"/>
+                              <Component id="contaminantsCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="188" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="212" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -71,7 +72,9 @@
                       <Component id="parameterDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="selectParameterDirectoryButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="83" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <Component id="contaminantsCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="35" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -123,6 +126,11 @@
         <Component class="javax.swing.JTextField" name="parameterDirectoryTextField">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="contaminantsCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Import proteins from contaminants file"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -185,7 +193,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="additionalFastaFileSelectionLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="37" max="32767" attributes="0"/>
+                  <EmptySpace pref="110" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

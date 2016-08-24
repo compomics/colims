@@ -24,9 +24,11 @@ public enum MaxQuantProteinGroupHeaders implements HeaderEnum {
     LFQ_INTENSITY(new String[]{"LFQ intensity"}),
     INTENSITY(new String[]{"Intensity"}),
     MSMS_COUNT(new String[]{"MS/MS Count"}),
-    REPORTER_INTENSITY_CORRECTED(new String[]{"Reporter intensity corrected"});
+    REPORTER_INTENSITY_CORRECTED(new String[]{"Reporter intensity corrected"}),
+    INTENSITY_L(new String[]{"Intensity L"}),
+    INTENSITY_M(new String[]{"Intensity M"}),
+    INTENSITY_H(new String[]{"Intensity H"});
     
-
     /**
      * The list of header values for the enum value.
      */
