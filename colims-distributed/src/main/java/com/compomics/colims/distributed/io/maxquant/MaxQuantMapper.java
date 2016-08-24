@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -143,9 +141,8 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     /**
      * Map the quantification settings.
      *
-     * @param quantFile The file containing quant data
-     * @param analyticalRun the AnalyticalRun instance onto the quantification
-     * settings will be mapped
+     * @param quantFile     The file containing quant data
+     * @param analyticalRun the AnalyticalRun instance onto the quantification settings will be mapped
      * @return the imported QuantificationSettings instance
      * @throws IOException thrown in case of an I/O related problem
      */

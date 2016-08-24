@@ -30,19 +30,18 @@ public class MaxQuantEvidenceParser {
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
     private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
-        MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
-        MaxQuantEvidenceHeaders.CHARGE,
-        MaxQuantEvidenceHeaders.DELTA_SCORE,
-        MaxQuantEvidenceHeaders.MASS,
-        MaxQuantEvidenceHeaders.MODIFICATIONS,
-        MaxQuantEvidenceHeaders.MS_MS_IDS,
-        MaxQuantEvidenceHeaders.OXIDATION_M,
-        MaxQuantEvidenceHeaders.PEP,
-        MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
-        MaxQuantEvidenceHeaders.SCORE,
-        MaxQuantEvidenceHeaders.SEQUENCE,};
+            MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
+            MaxQuantEvidenceHeaders.CHARGE,
+            MaxQuantEvidenceHeaders.DELTA_SCORE,
+            MaxQuantEvidenceHeaders.MASS,
+            MaxQuantEvidenceHeaders.MODIFICATIONS,
+            MaxQuantEvidenceHeaders.MS_MS_IDS,
+            MaxQuantEvidenceHeaders.OXIDATION_M,
+            MaxQuantEvidenceHeaders.PEP,
+            MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
+            MaxQuantEvidenceHeaders.SCORE,
+            MaxQuantEvidenceHeaders.SEQUENCE,};
 
-    private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
     /**
      * Iterable intensity headers, based on number of labels chosen.
      */
@@ -51,6 +50,17 @@ public class MaxQuantEvidenceParser {
      * As above but quantification weights.
      */
     private static final Map<Integer, QuantificationWeight[]> WEIGHT_OPTIONS = new HashMap<>();
+
+    static {
+        INTENSITY_HEADERS.put(1, new String[]{"intensity"});
+        INTENSITY_HEADERS.put(2, new String[]{"intensity l", "intensity h"});
+        INTENSITY_HEADERS.put(3, new String[]{"intensity l", "intensity m", "intensity h"});
+        WEIGHT_OPTIONS.put(1, new QuantificationWeight[]{QuantificationWeight.LIGHT});
+    WEIGHT_OPTIONS.put(2, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.HEAVY});
+        WEIGHT_OPTIONS.put(3, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.MEDIUM, QuantificationWeight.HEAVY});
+    }
+
+    private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
     /**
      * Spectrum IDs and associated quantifications.
      */
@@ -63,18 +73,6 @@ public class MaxQuantEvidenceParser {
      * Peptides and associated protein group IDs.
      */
     private final Map<Peptide, List<Integer>> peptideProteins = new HashMap<>();
-
-    static {
-        INTENSITY_HEADERS.put(1, new String[]{"intensity"});
-        INTENSITY_HEADERS.put(2, new String[]{"intensity l", "intensity h"});
-        INTENSITY_HEADERS.put(3, new String[]{"intensity l", "intensity m", "intensity h"});
-    }
-
-    static {
-        WEIGHT_OPTIONS.put(1, new QuantificationWeight[]{QuantificationWeight.LIGHT});
-        WEIGHT_OPTIONS.put(2, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.HEAVY});
-        WEIGHT_OPTIONS.put(3, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.MEDIUM, QuantificationWeight.HEAVY});
-    }
 
     public Map<Integer, List<Quantification>> getQuantifications() {
         return quantifications;
@@ -89,44 +87,42 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * Parse an evidence file for peptides and quantifications, also create
-     * groups for these.
+     * This method parses an evidence file.
      *
-     * @param quantFolder Evidence text file from MQ output
+     * @param txtDirectory           the MaxQuant txt directory
      * @param multiplicity
      * @param omittedProteinGroupIds removed protein group IDs.
-     * @throws IOException in case of an I/O related problem
+     * @throws IOException                                                       in case of an I/O related problem
      * @throws com.compomics.colims.distributed.io.maxquant.UnparseableException
-     * @throws com.compomics.colims.core.io.MappingException in case of a
-     * mapping problem
+     * @throws com.compomics.colims.core.io.MappingException                     in case of a mapping problem
      */
-    public void parse(File quantFolder, String multiplicity, List<String> omittedProteinGroupIds) throws IOException, UnparseableException, MappingException {
-        TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(quantFolder, MaxQuantConstants.EVIDENCE_FILE.value()), MANDATORY_HEADERS);
+    public void parse(File txtDirectory, String multiplicity, List<String> omittedProteinGroupIds) throws IOException, UnparseableException, MappingException {
+        TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(new File(txtDirectory, MaxQuantConstants.EVIDENCE_FILE.value()), MANDATORY_HEADERS);
 
-        Map<String, String> values;
-        int intensityCount;
-
-        intensityCount = Integer.parseInt(multiplicity);
+        int intensityCount = Integer.parseInt(multiplicity);
 
         QuantificationWeight[] weights = WEIGHT_OPTIONS.get(intensityCount);
         String[] intensityColumns = INTENSITY_HEADERS.get(intensityCount);
 
+        Map<String, String> values;
         while (evidenceIterator.hasNext()) {
             values = evidenceIterator.next();
-            String[] split = values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()).split(PROTEIN_GROUP_ID_DELIMITER);
-            boolean ommittedPeptide = true;
-            for(String proteinGroupID : split){
-                if(!omittedProteinGroupIds.contains(proteinGroupID)){
-                    ommittedPeptide = false;
+
+            String[] proteinGroupIds = values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()).split(PROTEIN_GROUP_ID_DELIMITER);
+
+            //check for peptides coming from omitted protein groups
+            boolean omitPeptide = true;
+
+            for (String proteinGroupId : proteinGroupIds) {
+                if (!omittedProteinGroupIds.contains(proteinGroupId)) {
+                    omitPeptide = false;
                 }
             }
-            if (!ommittedPeptide) {
+            if (!omitPeptide) {
                 double[] intensities = new double[intensityCount];
 
-                int i = 0;
-                for (String header : intensityColumns) {
-                    intensities[i] = parseIntensity(values.get(header));
-                    ++i;
+                for (int i = 0; i < intensityColumns.length; i++) {
+                    intensities[i] = parseIntensity(values.get(intensityColumns[i]));
                 }
 
                 if (values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()) != null) {
@@ -189,8 +185,7 @@ public class MaxQuantEvidenceParser {
      *
      * @param values Set of values from a line in the file
      * @return Peptide object
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case
-     * of a modification mapping problem
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     public Peptide createPeptide(Map<String, String> values) throws ModificationMappingException {
         Peptide peptide = new Peptide();
@@ -231,7 +226,7 @@ public class MaxQuantEvidenceParser {
      * Create modifications for a given peptide
      *
      * @param peptide Peptide to associate with modifications
-     * @param values Row of data from evidence file
+     * @param values  Row of data from evidence file
      * @return List of PeptideHasModification objects
      */
     private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) throws ModificationMappingException {

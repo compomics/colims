@@ -59,6 +59,7 @@ public class MaxQuantParser {
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
     @Autowired
     private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+    
     /**
      * An extra method for fun testing times. @TODO do we still need this
      * method?
@@ -110,13 +111,13 @@ public class MaxQuantParser {
         maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> {
             analyticalRuns.put(k.getName(), k);
         });
-        
+
         //first, parse the protein groups file
         LOGGER.debug("parsing protein groups");
         proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()));
 
         LOGGER.debug("parsing MSMS");
-        
+
         // TODO: 6/8/2016 write a method for unidentified spectra
         maxQuantSpectraParser.parse(maxQuantDirectory, false, maxQuantProteinGroupParser.getOmittedProteinGroupIds());
 

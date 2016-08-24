@@ -35,10 +35,6 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         return completedTaskQueueTable;
     }
 
-    public JButton getDeleteCompletedTaskButton() {
-        return deleteCompletedTaskButton;
-    }
-
     public JButton getDeleteDbTaskButton() {
         return deleteDbTaskButton;
     }
@@ -49,10 +45,6 @@ public class TaskManagementPanel extends javax.swing.JPanel {
 
     public JTextArea getNotificationTextArea() {
         return notificationTextArea;
-    }
-
-    public JButton getPurgeCompletedTasksButton() {
-        return purgeCompletedTasksButton;
     }
 
     public JButton getPurgeTaskErrorsButton() {
@@ -100,8 +92,6 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         completedTaskQueuePanel = new javax.swing.JPanel();
         completedTaskQueueScrollPane = new javax.swing.JScrollPane();
         completedTaskQueueTable = new javax.swing.JTable();
-        deleteCompletedTaskButton = new javax.swing.JButton();
-        purgeCompletedTasksButton = new javax.swing.JButton();
         taskErrorQueuePanel = new javax.swing.JPanel();
         taskErrorQueueScrollPane = new javax.swing.JScrollPane();
         taskErrorQueueTable = new javax.swing.JTable();
@@ -124,9 +114,9 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         notificationScrollPanel.setViewportView(notificationTextArea);
 
         clearNotificationsButton.setText("clear");
-        clearNotificationsButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        clearNotificationsButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        clearNotificationsButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        clearNotificationsButton.setMaximumSize(new java.awt.Dimension(90, 25));
+        clearNotificationsButton.setMinimumSize(new java.awt.Dimension(90, 25));
+        clearNotificationsButton.setPreferredSize(new java.awt.Dimension(90, 25));
 
         javax.swing.GroupLayout notificationPanelLayout = new javax.swing.GroupLayout(notificationPanel);
         notificationPanel.setLayout(notificationPanelLayout);
@@ -178,9 +168,9 @@ public class TaskManagementPanel extends javax.swing.JPanel {
 
         deleteDbTaskButton.setText("delete");
         deleteDbTaskButton.setToolTipText("remove the selected task (irreversable!)");
-        deleteDbTaskButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        deleteDbTaskButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        deleteDbTaskButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        deleteDbTaskButton.setMaximumSize(new java.awt.Dimension(90, 25));
+        deleteDbTaskButton.setMinimumSize(new java.awt.Dimension(90, 25));
+        deleteDbTaskButton.setPreferredSize(new java.awt.Dimension(90, 25));
 
         javax.swing.GroupLayout taskQueuePanelLayout = new javax.swing.GroupLayout(taskQueuePanel);
         taskQueuePanel.setLayout(taskQueuePanelLayout);
@@ -232,42 +222,20 @@ public class TaskManagementPanel extends javax.swing.JPanel {
         completedTaskQueueTable.setOpaque(false);
         completedTaskQueueScrollPane.setViewportView(completedTaskQueueTable);
 
-        deleteCompletedTaskButton.setText("delete");
-        deleteCompletedTaskButton.setToolTipText("remove the selected completed task");
-        deleteCompletedTaskButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        deleteCompletedTaskButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        deleteCompletedTaskButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        purgeCompletedTasksButton.setText("purge");
-        purgeCompletedTasksButton.setToolTipText("remove all completed tasks");
-        purgeCompletedTasksButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        purgeCompletedTasksButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        purgeCompletedTasksButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
         javax.swing.GroupLayout completedTaskQueuePanelLayout = new javax.swing.GroupLayout(completedTaskQueuePanel);
         completedTaskQueuePanel.setLayout(completedTaskQueuePanelLayout);
         completedTaskQueuePanelLayout.setHorizontalGroup(
             completedTaskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(completedTaskQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(completedTaskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(completedTaskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, completedTaskQueuePanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(deleteCompletedTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(purgeCompletedTasksButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(completedTaskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
                 .addContainerGap())
         );
         completedTaskQueuePanelLayout.setVerticalGroup(
             completedTaskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(completedTaskQueuePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(completedTaskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(completedTaskQueuePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(deleteCompletedTaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(purgeCompletedTasksButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(completedTaskQueueScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -370,13 +338,11 @@ public class TaskManagementPanel extends javax.swing.JPanel {
     private javax.swing.JPanel completedTaskQueuePanel;
     private javax.swing.JScrollPane completedTaskQueueScrollPane;
     private javax.swing.JTable completedTaskQueueTable;
-    private javax.swing.JButton deleteCompletedTaskButton;
     private javax.swing.JButton deleteDbTaskButton;
     private javax.swing.JButton deleteTaskErrorButton;
     private javax.swing.JPanel notificationPanel;
     private javax.swing.JScrollPane notificationScrollPanel;
     private javax.swing.JTextArea notificationTextArea;
-    private javax.swing.JButton purgeCompletedTasksButton;
     private javax.swing.JButton purgeTaskErrorsButton;
     private javax.swing.JButton resendTaskErrorButton;
     private javax.swing.JPanel taskErrorQueuePanel;

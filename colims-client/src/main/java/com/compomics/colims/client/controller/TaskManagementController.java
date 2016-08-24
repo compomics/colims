@@ -1,6 +1,7 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.distributed.QueueManager;
+import com.compomics.colims.client.event.CompletedDbTaskEvent;
 import com.compomics.colims.client.event.NotificationEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.table.model.CompletedDbTaskQueueTableModel;
@@ -212,35 +213,6 @@ public class TaskManagementController implements Controllable {
             }
         });
 
-        taskManagementPanel.getDeleteCompletedTaskButton().addActionListener(e -> {
-            int selectedRowIndex = taskManagementPanel.getCompletedTaskQueueTable().getSelectedRow();
-            if (selectedRowIndex != -1 && completedDbTaskQueueTableModel.getRowCount() != 0) {
-                try {
-                    CompletedDbTask storedTask = completedDbTaskQueueTableModel.getMessages().get(selectedRowIndex);
-
-                    queueManager.deleteMessage(storedQueueName, storedTask.getMessageId());
-
-                    completedDbTaskQueueTableModel.remove(selectedRowIndex);
-                } catch (Exception ex) {
-                    LOGGER.error(ex.getMessage(), ex);
-                    postConnectionErrorMessage(ex.getMessage());
-                }
-            } else {
-                eventBus.post(new MessageEvent("Completed task selection", "Please select a completed task to remove.", JOptionPane.INFORMATION_MESSAGE));
-            }
-        });
-
-        taskManagementPanel.getPurgeCompletedTasksButton().addActionListener(e -> {
-            try {
-                queueManager.purgeMessages(storedQueueName);
-
-                completedDbTaskQueueTableModel.removeAll();
-            } catch (Exception ex) {
-                LOGGER.error(ex.getMessage(), ex);
-                postConnectionErrorMessage(ex.getMessage());
-            }
-        });
-
 //        taskManagementPanel.getRefreshButton().addActionListener(new ActionListener() {
 //            @Override
 //            public void actionPerformed(ActionEvent e) {
@@ -263,9 +235,6 @@ public class TaskManagementController implements Controllable {
             List<DbTask> storageTaskMessages = queueManager.monitorQueue(storageQueueName, DbTask.class);
             dbTaskQueueTableModel.setMessages(storageTaskMessages);
 
-            List<CompletedDbTask> storedTaskMessages = queueManager.monitorQueue(storedQueueName, CompletedDbTask.class);
-            completedDbTaskQueueTableModel.setMessages(storedTaskMessages);
-
             List<DbTaskError> storageErrorMessages = queueManager.monitorQueue(errorQueueName, DbTaskError.class);
             dbTaskErrorQueueTableModel.setMessages(storageErrorMessages);
 
@@ -277,6 +246,39 @@ public class TaskManagementController implements Controllable {
             LOGGER.error(ex.getMessage(), ex);
             postConnectionErrorMessage(ex.getMessage());
         }
+    }
+
+    /**
+     * Listen to a NotificationEvent.
+     *
+     * @param notificationEvent the notification event
+     */
+    @Subscribe
+    public void onNotificationEvent(final NotificationEvent notificationEvent) {
+        Notification notification = notificationEvent.getNotification();
+        String activityMessage = System.lineSeparator() + new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date()) + ": ";
+
+        if (notification.getMessage().equals(FINISHED_MESSAGE)) {
+            //update tables if the task management tab is visible
+            if (mainController.getSelectedTabTitle().equals(MainFrame.TASKS_TAB_TITLE)) {
+                updateMonitoringTables();
+            }
+        }
+        activityMessage += notification.getMessage() + " " + notification.getDbTaskMessageId();
+        taskManagementPanel.getNotificationTextArea().append(activityMessage);
+    }
+
+    /**
+     * Listen to a CompletedDbTaskEvent and update the completed tasks table.
+     *
+     * @param completedDbTaskEvent the completed db task event
+     */
+    @Subscribe
+    public void onCompletedDbTaksEvent(final CompletedDbTaskEvent completedDbTaskEvent) {
+        CompletedDbTask completedDbTask = completedDbTaskEvent.getCompletedDbTask();
+
+        //add to the completed tasks table
+        completedDbTaskQueueTableModel.addMessage(completedDbTask);
     }
 
     /**
@@ -299,26 +301,6 @@ public class TaskManagementController implements Controllable {
 
         JOptionPane.showMessageDialog(null, scrollPane, title, JOptionPane.INFORMATION_MESSAGE);
 
-    }
-
-    /**
-     * Listen to a NotificationEvent.
-     *
-     * @param notificationEvent the notification event
-     */
-    @Subscribe
-    public void onNotificationEvent(final NotificationEvent notificationEvent) {
-        Notification notification = notificationEvent.getNotification();
-        String activityMessage = System.lineSeparator() + new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date()) + ": ";
-
-        if(notification.getMessage().equals(FINISHED_MESSAGE)){
-            //update tables if the task management tab is visible
-            if (mainController.getSelectedTabTitle().equals(MainFrame.TASKS_TAB_TITLE)) {
-                updateMonitoringTables();
-            }
-        }
-        activityMessage += notification.getMessage() + " " + notification.getDbTaskMessageId();
-        taskManagementPanel.getNotificationTextArea().append(activityMessage);
     }
 
     /**

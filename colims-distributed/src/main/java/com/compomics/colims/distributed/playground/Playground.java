@@ -49,24 +49,27 @@ public class Playground {
         userService.fetchAuthenticationRelations(adminUser);
         userBean.setCurrentUser(adminUser);
 
-        String maxquantPath = "C:/Users/demet/Desktop/6453";
+        String maxquantPath = "/home/niels/Desktop/data/maxquant_6072";
         String parameterPath =  maxquantPath + File.separator + MaxQuantConstants.PARAMETER_FILE.value();
         String combinedDirectory = maxquantPath + File.separator + MaxQuantConstants.COMBINED_DIRECTORY.value();
         String txtDirectory = combinedDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value();
-        FastaDb testFastaDb = new FastaDb();
-        testFastaDb.setName("test fasta");
-        testFastaDb.setFileName("SP_human");
-        testFastaDb.setFilePath(txtDirectory + File.separator +  "SP_human.fasta");
-        testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
-        fastaDbService.persist(testFastaDb);
+//        FastaDb testFastaDb = new FastaDb();
+//        testFastaDb.setName("test fasta");
+//        testFastaDb.setFileName("SP_human");
+//        testFastaDb.setFilePath(txtDirectory + File.separator +  "SP_human.fasta");
+//        testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+//        fastaDbService.persist(testFastaDb);
+//
+//        FastaDb contFastaDb = new FastaDb();
+//        contFastaDb.setName("cont fasta");
+//        contFastaDb.setFileName("contaminants");
+//        contFastaDb.setFilePath(txtDirectory + File.separator +  "contaminants.fasta");
+//        contFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+//        fastaDbService.persist(contFastaDb);
 
-        FastaDb contFastaDb = new FastaDb();
-        contFastaDb.setName("cont fasta");
-        contFastaDb.setFileName("contaminants");
-        contFastaDb.setFilePath(txtDirectory + File.separator +  "contaminants.fasta");
-        contFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
-        fastaDbService.persist(contFastaDb);
-        
+        FastaDb testFastaDb = fastaDbService.findById(3L);
+        FastaDb contFastaDb = fastaDbService.findById(4L);
+
         EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, testFastaDb.getId());
         fastaDbIds.put(FastaDbType.CONTAMINANTS, contFastaDb.getId());

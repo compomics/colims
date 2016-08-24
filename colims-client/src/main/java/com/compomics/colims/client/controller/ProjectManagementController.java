@@ -508,7 +508,7 @@ public class ProjectManagementController implements Controllable {
 
         //add the sample to the selected experiment and update the experiments table
         getSelectedExperiment().getSamples().add(sample);
-        projectManagementPanel.getProjectsTable().updateUI();
+        projectManagementPanel.getExperimentsTable().updateUI();
     }
 
     /**

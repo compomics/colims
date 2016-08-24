@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+import org.hibernate.HibernateException;
 
 /**
  * The user query view controller.
@@ -154,6 +155,9 @@ public class UserQueryController implements Controllable {
                     } catch (SQLGrammarException grammarException) {
                         LOGGER.error(grammarException.getMessage(), grammarException);
                         eventBus.post(new MessageEvent("Syntax problem", "There was a problem with your query: " + queryString + System.lineSeparator() + grammarException.getCause().getMessage(), JOptionPane.ERROR_MESSAGE));
+                    } catch (HibernateException hibernateException) {
+                        LOGGER.error(hibernateException.getMessage(), hibernateException);
+                        eventBus.post(new MessageEvent("Syntax problem", "There was a problem with your query: " + queryString + System.lineSeparator() + hibernateException.getMessage(), JOptionPane.ERROR_MESSAGE));
                     }
                 } else {
                     eventBus.post(new MessageEvent("Permission problem", "Your user doesn't have rights to execute this query.", JOptionPane.ERROR_MESSAGE));
