@@ -42,6 +42,7 @@ public class MaxQuantDataImportController implements Controllable {
     private FastaDb additionalFastaDb;
     private FastaDb contaminantsFastaDb;
     private boolean includeContaminants;
+    private List<String> selectedProteinGroupHeaders;
     //view
     private MaxQuantDataImportPanel maxQuantDataImportPanel;
     //parent controller
@@ -144,6 +145,7 @@ public class MaxQuantDataImportController implements Controllable {
         additionalFastaDb = null;
         contaminantsFastaDb = null;
         includeContaminants = false;
+        selectedProteinGroupHeaders = new ArrayList<>();
         //reset the input fields
         maxQuantDataImportPanel.getParameterDirectoryTextField().setText("");
         maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText("");
@@ -227,7 +229,7 @@ public class MaxQuantDataImportController implements Controllable {
             fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDb.getId());
         }
         
-        return new MaxQuantImport(parameterFile.toPath(), combinedFolderDirectory, fastaDbIds, includeContaminants);
+        return new MaxQuantImport(parameterFile.toPath(), combinedFolderDirectory, fastaDbIds, includeContaminants, selectedProteinGroupHeaders);
     }
     
     public void setParameterFile(File parameterFile) {

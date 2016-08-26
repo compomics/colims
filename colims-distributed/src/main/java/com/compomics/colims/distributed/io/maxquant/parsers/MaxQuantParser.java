@@ -69,7 +69,7 @@ public class MaxQuantParser {
      * @throws MappingException thrown in case of a mapping related problem
      * @throws UnparseableException
      */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean includeContaminants) throws IOException, MappingException, UnparseableException {
+    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean includeContaminants, List<String> optionalHeaders) throws IOException, MappingException, UnparseableException {
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         Path summaryDirectory = Paths.get(txtDirectory.toString() + File.separator + MaxQuantConstants.SUMMARY_FILE.value());
         TabularFileLineValuesIterator summaryIterator = new TabularFileLineValuesIterator(summaryDirectory.toFile());
@@ -85,7 +85,7 @@ public class MaxQuantParser {
             }
         }
 
-        parse(maxQuantDirectory, fastaDbs, multiplicity,includeContaminants);
+        parse(maxQuantDirectory, fastaDbs, multiplicity,includeContaminants, optionalHeaders);
     }
 
     /**
@@ -100,7 +100,7 @@ public class MaxQuantParser {
      * @throws UnparseableException
      * @throws MappingException thrown in case of a mapping related problem
      */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity, boolean includeContaminants) throws IOException, UnparseableException, MappingException {
+    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity, boolean includeContaminants, List<String> optionalHeaders) throws IOException, UnparseableException, MappingException {
         //look for the MaxQuant txt directory
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         if (!txtDirectory.toFile().exists()) {
@@ -114,7 +114,7 @@ public class MaxQuantParser {
         //first, parse the protein groups file
         LOGGER.debug("parsing protein groups");
         proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(), 
-                MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()), includeContaminants);
+                MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()), includeContaminants, optionalHeaders);
 
         LOGGER.debug("parsing MSMS");
         

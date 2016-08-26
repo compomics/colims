@@ -1,9 +1,9 @@
 package com.compomics.colims.core.io;
 
 import com.compomics.colims.model.enums.FastaDbType;
-import java.io.File;
 import java.nio.file.Path;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -29,6 +29,11 @@ public class MaxQuantImport extends DataImport {
      */
     private boolean includeContaminants;
     /**
+     * List of selected Protein Group Headers
+     */
+    private List<String> selectedProteinGroupHeaders;
+    
+    /**
      * no-arg Constructor.
      */
     public MaxQuantImport() {
@@ -40,12 +45,15 @@ public class MaxQuantImport extends DataImport {
      * @param combinedFolderDirectory
      * @param fastaDbIds 
      * @param includeContaminants 
+     * @param selectedProteinGroupHeaders 
      */
-    public MaxQuantImport(final Path parameterFilePath, final Path combinedFolderDirectory, final EnumMap<FastaDbType, Long> fastaDbIds, boolean includeContaminants) {
+    public MaxQuantImport(final Path parameterFilePath, final Path combinedFolderDirectory, final EnumMap<FastaDbType, 
+            Long> fastaDbIds, boolean includeContaminants, List<String> selectedProteinGroupHeaders) {
         super(fastaDbIds);
         this.parameterFilePath = parameterFilePath;
         this.combinedFolderDirectory = combinedFolderDirectory;
         this.includeContaminants = includeContaminants;
+        this.selectedProteinGroupHeaders = selectedProteinGroupHeaders;
     }
 
     public Path getParameterFilePath() {
@@ -66,6 +74,10 @@ public class MaxQuantImport extends DataImport {
 
     public void setIncludeContaminants(boolean includeContaminants) {
         this.includeContaminants = includeContaminants;
+    }
+
+    public List<String> getSelectedProteinGroupHeaders() {
+        return selectedProteinGroupHeaders;
     }
 
     @Override

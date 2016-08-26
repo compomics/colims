@@ -9,20 +9,22 @@ import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMes
 import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunsAdditionDialog;
+import com.compomics.colims.client.view.admin.LabelSelectionDialog;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.distributed.model.PersistMetadata;
 import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.io.PeptideShakerImport;
+import com.compomics.colims.core.io.headers.ProteinGroupHeaders;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.model.UserBean;
+import com.compomics.colims.model.comparator.AuditableCvParamAccessionComparator;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -39,12 +41,18 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * @author Niels Hulstaert
@@ -70,6 +78,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
     private Instrument instrument;
     //view
     private AnalyticalRunsAdditionDialog analyticalRunsAdditionDialog;
+    private LabelSelectionDialog labelSelectionDialog;
     //parent controller
     @Autowired
     private MainController mainController;
@@ -97,6 +106,8 @@ public class AnalyticalRunsAdditionController implements Controllable {
     @Autowired
     private QueueManager queueManager;
 
+    @Autowired
+    private ProteinGroupHeaders proteinGroupHeaders;
     /**
      * Get the view of this controller.
      *
@@ -198,8 +209,12 @@ public class AnalyticalRunsAdditionController implements Controllable {
                 case MAX_QUANT_DATA_IMPORT_CARD:
                     List<String> maxQuantValidationMessages = maxQuantDataImportController.validate();
                     if (maxQuantValidationMessages.isEmpty()) {
-                        sendStorageTask(maxQuantDataImportController.getDataImport());
-                        getCardLayout().show(analyticalRunsAdditionDialog.getTopPanel(), CONFIRMATION_CARD);
+                        try {
+                            showLabelSelectionView();
+                        } catch (IOException ex) {
+                            java.util.logging.Logger.getLogger(AnalyticalRunsAdditionController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
                     } else {
                         MessageEvent messageEvent = new MessageEvent("Validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
                         eventBus.post(messageEvent);
@@ -284,7 +299,44 @@ public class AnalyticalRunsAdditionController implements Controllable {
             eventBus.post(new MessageEvent("Authorization problem", "User " + userBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
         }
     }
-
+    /**
+     * Show label selection view if protein group headers list is not empty.
+     * @throws IOException 
+     */
+    private void showLabelSelectionView() throws IOException{
+        Path proteinGroupDirectory = Paths.get(maxQuantDataImportController.getDataImport().getCombinedFolderDirectory().toString() + File.separator + "txt"+ File.separator + "proteinGroups.txt");
+        proteinGroupHeaders.parseProteinGroupHeaders(proteinGroupDirectory);
+        if(proteinGroupHeaders.getProteinGroupHeaders().size() > 0){
+            initLabelSelectionView();
+            GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), labelSelectionDialog);
+            labelSelectionDialog.setVisible(true);
+        }else{
+            sendStorageTask(maxQuantDataImportController.getDataImport());
+            getCardLayout().show(analyticalRunsAdditionDialog.getTopPanel(), CONFIRMATION_CARD);
+        }
+    }
+    /**
+     * initialize label selection view
+     */
+    private void initLabelSelectionView(){
+        labelSelectionDialog = new LabelSelectionDialog(analyticalRunsAdditionDialog, true);
+        labelSelectionDialog.getLabelDualList().init((String o1, String o2) -> o1.compareToIgnoreCase(o2));
+        labelSelectionDialog.getLabelDualList().populateLists(proteinGroupHeaders.getProteinGroupHeaders(), new ArrayList<>(), proteinGroupHeaders.getProteinGroupHeaders().size());
+        maxQuantDataImportController.getDataImport().getSelectedProteinGroupHeaders().clear();
+        
+        labelSelectionDialog.getLabelSaveOrUpdateButton().addActionListener(e -> {
+            maxQuantDataImportController.getDataImport().getSelectedProteinGroupHeaders().addAll(labelSelectionDialog.getLabelDualList().getAddedItems());
+            sendStorageTask(maxQuantDataImportController.getDataImport());
+            getCardLayout().show(analyticalRunsAdditionDialog.getTopPanel(), CONFIRMATION_CARD);
+            labelSelectionDialog.dispose();
+        });
+        
+        labelSelectionDialog.getCloseLabelButton().addActionListener(e -> {
+            labelSelectionDialog.getLabelDualList().clear();
+            labelSelectionDialog.dispose();
+        });
+    }
+    
     /**
      * Listen to an InstrumentChangeEvent.
      *
