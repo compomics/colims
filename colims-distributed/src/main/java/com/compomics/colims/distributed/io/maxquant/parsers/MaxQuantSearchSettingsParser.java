@@ -488,17 +488,17 @@ public class MaxQuantSearchSettingsParser {
                     if (header.isPresent()) {
                         if (header.get().equals(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS.getValue()) || header.get().equals(MaxQuantSpectrumParameterHeaders.ENZYMES.getValue())) {
                             StringBuilder variableModification = new StringBuilder();
-                            for (Element variableModifications : getChildByName(parameterGroupElement, header.get()).getChildren()) {
+                            getChildByName(parameterGroupElement, header.get()).getChildren().stream().forEach((variableModifications) -> {
                                 variableModification.append(",");
                                 variableModification.append(variableModifications.getContent().get(0).getValue());
-                            }
+                            });
                             spectrumParameters.put(spectrumParameterHeader, org.apache.commons.lang3.StringUtils.substringAfter(variableModification.toString(), ","));
                         } else if (header.get().equals(MaxQuantSpectrumParameterHeaders.FIXED_MODIFICATIONS.getValue())) {
                             StringBuilder fixedModification = new StringBuilder();
-                            for (Element fixedModifications : getChildByName(root, header.get()).getChildren()) {
+                            getChildByName(root, header.get()).getChildren().stream().forEach((fixedModifications) -> {
                                 fixedModification.append(",");
                                 fixedModification.append(fixedModifications.getContent().get(0).getValue());
-                            }
+                            });
                             spectrumParameters.put(spectrumParameterHeader, org.apache.commons.lang3.StringUtils.substringAfter(fixedModification.toString(), ","));
                         } else {
                             spectrumParameters.put(spectrumParameterHeader, getChildByName(parameterGroupElement, header.get()).getContent().get(0).getValue());

@@ -74,7 +74,8 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                 LOGGER.error(e.getMessage(), e);
             }
 
-            maxQuantParser.parse(maxQuantImport.getCombinedFolderDirectory(), fastaDbs, maxQuantSearchSettingsParser.getMultiplicity(), maxQuantImport.isIncludeContaminants());
+            maxQuantParser.parse(maxQuantImport.getCombinedFolderDirectory(), fastaDbs, maxQuantSearchSettingsParser.getMultiplicity(),
+                    maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupHeaders());
 
             proteinGroups = maxQuantParser.getProteinGroupSet();
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
