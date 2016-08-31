@@ -1,18 +1,11 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
-import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.enums.QuantificationWeight;
-
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import com.google.common.primitives.UnsignedInts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +36,7 @@ public class MaxQuantEvidenceParserTest {
         List<String> ommittedProteinIds = new ArrayList<>();
         ommittedProteinIds.add("0");
         ommittedProteinIds.add("1");
-        maxQuantEvidenceParser.parse(MaxQuantTestSuite.maxQuantTextDirectory.toFile(), ommittedProteinIds);
+        maxQuantEvidenceParser.parse(MaxQuantTestSuite.evidenceFile, ommittedProteinIds);
 
         assertThat(maxQuantEvidenceParser.getPeptides().size(), not(0));
     }

@@ -73,10 +73,6 @@ public class ProjectOverviewController implements Controllable {
     private PsmTableModel psmTableModel;
     private DefaultEventSelectionModel<Peptide> psmSelectionModel;
     /**
-     * The spectrum annotator.
-     */
-    private final PeptideSpectrumAnnotator spectrumAnnotator = new PeptideSpectrumAnnotator();
-    /**
      * The utilities user preferences.
      */
     private final UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
@@ -93,10 +89,6 @@ public class ProjectOverviewController implements Controllable {
     //services
     @Autowired
     private SpectrumService spectrumService;
-    @Autowired
-    private PeptideService peptideService;
-    @Autowired
-    private ColimsSpectrumMapper colimsSpectrumMapper;
     @Autowired
     private EventBus eventBus;
     @Autowired

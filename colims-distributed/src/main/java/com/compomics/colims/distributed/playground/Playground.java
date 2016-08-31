@@ -27,10 +27,10 @@ public class Playground {
 
     @Autowired
     static MaxQuantMapper maxQuantMapper;
-    
+
     @Autowired
     static MaxQuantSpectraParser maxQuantSpectraParser;
-    
+
     @Autowired
     static AnnotatedSpectraParser annotatedSpectraParser;
 
@@ -75,10 +75,10 @@ public class Playground {
         fastaDbIds.put(FastaDbType.CONTAMINANTS, contFastaDb.getId());
 
         // to parse everything
-        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds, false);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds, false, new ArrayList<>());
         MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
-        
+
         String msmsFileDirectory = txtDirectory + File.separator + MaxQuantConstants.MSMS_FILE.value();
         String andromedaDirectory = combinedDirectory + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value();
 
@@ -88,11 +88,11 @@ public class Playground {
         msmsIDs.add("2");
         msmsIDs.add("3");
    //     annotatedSpectraParser.parseSpectra(Paths.get(msmsFileDirectory), Paths.get(andromedaDirectory), msmsIDs);
-        
-        
-        
+
+
+
         System.out.println("Everything is parsed!");
-        
+
 
 
         //  MaxQuantSearchSettingsParser maxQuantSearchSettingsParser = applicationContext.getBean("maxQuantSearchSettingsParser", MaxQuantSearchSettingsParser.class);

@@ -830,6 +830,8 @@ public class MzTabExportDialog extends javax.swing.JDialog {
             .addComponent(parentPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        getAccessibleContext().setAccessibleName("MzTab export");
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
