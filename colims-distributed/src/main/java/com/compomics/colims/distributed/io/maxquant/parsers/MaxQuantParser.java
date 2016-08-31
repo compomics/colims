@@ -65,11 +65,14 @@ public class MaxQuantParser {
      *
      * @param maxQuantDirectory File pointer to MaxQuant directory
      * @param fastaDbs the FASTA databases
+     * @param includeContaminants whether to import proteins from contaminants file.
+     * @param includeUnidentifiedSpectra whether to import unidentified spectra from APL files.
+     * @param optionalHeaders list of optional headers to store in protein group quantification labeled table.
      * @throws IOException thrown in case of a I/O related problem
      * @throws MappingException thrown in case of a mapping related problem
      * @throws UnparseableException
      */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean includeContaminants, List<String> optionalHeaders) throws IOException, MappingException, UnparseableException {
+    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean includeContaminants, boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, MappingException, UnparseableException {
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         Path summaryDirectory = Paths.get(txtDirectory.toString() + File.separator + MaxQuantConstants.SUMMARY_FILE.value());
         TabularFileLineValuesIterator summaryIterator = new TabularFileLineValuesIterator(summaryDirectory.toFile());
@@ -85,7 +88,7 @@ public class MaxQuantParser {
             }
         }
 
-        parse(maxQuantDirectory, fastaDbs, multiplicity,includeContaminants, optionalHeaders);
+        parse(maxQuantDirectory, fastaDbs, multiplicity,includeContaminants, includeUnidentifiedSpectra, optionalHeaders);
     }
 
     /**
@@ -96,11 +99,15 @@ public class MaxQuantParser {
      * @param fastaDbs the FASTA database map (key: FastaDb type; value: FastaDb
      * instance)
      * @param multiplicity the multiplicity String
+     * @param includeContaminants whether to import proteins from contaminants file.
+     * @param includeUnidentifiedSpectra whether to import unidentified spectra from APL files.
+     * @param optionalHeaders list of optional headers to store in protein group quantification labeled table.
      * @throws IOException thrown in case of an input/output related problem
      * @throws UnparseableException
      * @throws MappingException thrown in case of a mapping related problem
      */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity, boolean includeContaminants, List<String> optionalHeaders) throws IOException, UnparseableException, MappingException {
+    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity, boolean includeContaminants, 
+            boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, UnparseableException, MappingException {
         //look for the MaxQuant txt directory
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         if (!txtDirectory.toFile().exists()) {
@@ -117,10 +124,9 @@ public class MaxQuantParser {
                 MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()), includeContaminants, optionalHeaders);
 
         LOGGER.debug("parsing MSMS");
-        
-        // TODO: 6/8/2016 write a method for unidentified spectra
-        maxQuantSpectraParser.parse(maxQuantDirectory, false, maxQuantProteinGroupParser.getOmittedProteinGroupIds());
 
+        maxQuantSpectraParser.parse(maxQuantDirectory, includeUnidentifiedSpectra, maxQuantProteinGroupParser.getOmittedProteinGroupIds());
+        // set spectra for analytical runs where spectra comes from msms file
         getSpectra().forEach((k, v) -> {
             String rawFile = k.getTitle().split("--")[0];
             if (analyticalRuns.containsKey(rawFile)) {
@@ -133,7 +139,13 @@ public class MaxQuantParser {
                 analyticalRuns.put(rawFile, analyticalRun);
             }
         });
-
+        // set unidentified spectra for analytical runs
+        getUnidentifiedSpectra().forEach(spectrum -> {
+            String key  = analyticalRuns.entrySet().stream().filter(runs -> spectrum.getAccession().contains(runs.getKey()))
+                    .findFirst().get().getKey();
+            analyticalRuns.get(key).getSpectrums().add(spectrum);
+        });
+        
         if (analyticalRuns.isEmpty()) {
             throw new UnparseableException("could not connect spectra to any run");
         }
@@ -244,6 +256,13 @@ public class MaxQuantParser {
         return Collections.unmodifiableMap(maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumIDs());
     }
 
+    /**
+     * Return a copy of the unidentified spectra list.
+     * @return unidentified spectra list.
+     */
+    public List<Spectrum> getUnidentifiedSpectra(){
+        return Collections.unmodifiableList(maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra());
+    }
     /**
      * Return a list of protein group matches for a peptide
      *

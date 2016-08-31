@@ -133,11 +133,10 @@ public class MaxQuantAndromedaParser {
     /**
      * Parse the spectrum files and map them onto {@link SpectrumFile}
      * instances. Parse also unidentified spectra if specified.
-     *
-     * @param spectra the map of spectra (key: String apl header for linking
-     * purposes; value: the Colims Spectrum instance)
+     * @param maxQuantSpectra MaxQuantSpectra object.
      * @param includeUnidentifiedSpectra whether or not to include the
      * unidentified spectra
+     * @throws java.io.IOException
      */
     public void parseSpectra(MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
         for (Path aplFilePath : aplFilePaths.keySet()) {

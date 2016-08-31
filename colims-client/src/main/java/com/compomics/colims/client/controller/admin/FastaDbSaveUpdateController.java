@@ -180,17 +180,14 @@ public class FastaDbSaveUpdateController implements Controllable {
             updateFastaToEdit();
             List<String> validationMessages = GuiUtils.validateEntity(fastaDbToEdit);
             if (validationMessages.isEmpty()) {
-
-                int index;
                 if (fastaDbToEdit.getId() != null) {
                     fastaDbToEdit = fastaDbService.merge(fastaDbToEdit);
-                    index = fastaDbManagementController.getSelectedFastaDbIndex();
+                    //add to fasta db list
+                    fastaDbManagementController.setSelectedFasta(fastaDbManagementController.addFastaDb(fastaDbToEdit));
                 } else {
                     fastaDbService.persist(fastaDbToEdit);
-                    //add to fasta db list
-                    index = fastaDbManagementController.addFastaDb(fastaDbToEdit);
+                    fastaDbManagementController.addFastaDb(fastaDbToEdit);
                 }
-                fastaDbManagementController.setSelectedFasta(index);
                 fastaDbSaveUpdatePanel.getNameTextField().setEnabled(false);
                 fastaDbSaveUpdatePanel.getSaveOrUpdateButton().setText("update");
                 fastaDbSaveUpdatePanel.getFastaDbStateInfoLabel().setText("");

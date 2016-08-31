@@ -80,6 +80,7 @@ public class MaxQuantAplParser {
                         spectrum.setMzRatio(Double.valueOf(headers.get(APL_MZ)));
                         spectrum.setFragmentationType(FragmentationType.valueOf(headers.get(APL_FRAGMENTATION)));
                         spectrum.setCharge(Integer.valueOf(headers.get(APL_CHARGE)));
+                        spectrum.setScanNumber(org.apache.commons.lang3.StringUtils.substringAfter(header, "Index: "));
                         maxQuantSpectra.getUnidentifiedSpectra().add(spectrum);
                     }
 

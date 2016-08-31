@@ -72,7 +72,7 @@ public class Playground {
         fastaDbIds.put(FastaDbType.CONTAMINANTS, contFastaDb.getId());
 
         // to parse everything
-        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds, false);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds, false, true, new ArrayList<>());
         MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
         

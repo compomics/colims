@@ -8,7 +8,6 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.XmlFileFilter;
 import com.google.common.eventbus.EventBus;
-import java.awt.Dimension;
 import java.io.File;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +41,7 @@ public class MaxQuantDataImportController implements Controllable {
     private FastaDb additionalFastaDb;
     private FastaDb contaminantsFastaDb;
     private boolean includeContaminants;
+    private boolean includeUnidentifiedSpectra;
     private List<String> selectedProteinGroupHeaders;
     //view
     private MaxQuantDataImportPanel maxQuantDataImportPanel;
@@ -136,6 +136,9 @@ public class MaxQuantDataImportController implements Controllable {
             includeContaminants = true;
         });
         
+        maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().addActionListener(e -> {
+            includeUnidentifiedSpectra = true;
+        });
     }
 
     @Override
@@ -145,6 +148,7 @@ public class MaxQuantDataImportController implements Controllable {
         additionalFastaDb = null;
         contaminantsFastaDb = null;
         includeContaminants = false;
+        includeUnidentifiedSpectra = false;
         selectedProteinGroupHeaders = new ArrayList<>();
         //reset the input fields
         maxQuantDataImportPanel.getParameterDirectoryTextField().setText("");
@@ -153,6 +157,7 @@ public class MaxQuantDataImportController implements Controllable {
         maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
         maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
         maxQuantDataImportPanel.getContaminantsCheckBox().setSelected(false);
+        maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().setSelected(false);
     }
     
     public void showEditView(MaxQuantImport maxQuantImport){
@@ -229,7 +234,8 @@ public class MaxQuantDataImportController implements Controllable {
             fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDb.getId());
         }
         
-        return new MaxQuantImport(parameterFile.toPath(), combinedFolderDirectory, fastaDbIds, includeContaminants, selectedProteinGroupHeaders);
+        return new MaxQuantImport(parameterFile.toPath(), combinedFolderDirectory, fastaDbIds, includeContaminants, 
+                includeUnidentifiedSpectra, selectedProteinGroupHeaders);
     }
     
     public void setParameterFile(File parameterFile) {

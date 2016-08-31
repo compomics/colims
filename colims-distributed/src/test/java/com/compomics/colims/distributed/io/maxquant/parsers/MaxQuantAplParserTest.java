@@ -38,7 +38,7 @@ public class MaxQuantAplParserTest {
     /**
      * Test the parse method for identified spectra.
      *
-     * @throws Exception in case something goes wrong
+     * @throws java.io.IOException
      */
     @Test
     public void testParseAplFile() throws IOException {
@@ -91,7 +91,7 @@ public class MaxQuantAplParserTest {
     /**
      * Test the parse method for unidentified spectra.
      *
-     * @throws Exception in case something goes wrong
+     * @throws java.io.IOException
      */
     @Test
     public void testParseAplFileUnidentified() throws IOException {

@@ -88,6 +88,10 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         return contaminantsCheckBox;
     }
 
+    public JCheckBox getUnidentifiedSpectraCheckBox() {
+        return unidentifiedSpectraCheckBox;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -106,6 +110,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         selectParameterDirectoryButton = new javax.swing.JButton();
         parameterDirectoryTextField = new javax.swing.JTextField();
         contaminantsCheckBox = new javax.swing.JCheckBox();
+        unidentifiedSpectraCheckBox = new javax.swing.JCheckBox();
         separator = new javax.swing.JSeparator();
         rightPanel = new javax.swing.JPanel();
         selectPrimaryFastaDbButton = new javax.swing.JButton();
@@ -141,6 +146,8 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         contaminantsCheckBox.setText("Import proteins from contaminants file");
 
+        unidentifiedSpectraCheckBox.setText("Import unidentified spectra");
+
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
         leftPanelLayout.setHorizontalGroup(
@@ -160,8 +167,9 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                         .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(combinedFolderDirectorySelectionLabel)
                             .addComponent(maxQuantDirectorySelectionLabel)
-                            .addComponent(contaminantsCheckBox))
-                        .addGap(0, 212, Short.MAX_VALUE)))
+                            .addComponent(contaminantsCheckBox)
+                            .addComponent(unidentifiedSpectraCheckBox))
+                        .addGap(0, 229, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         leftPanelLayout.setVerticalGroup(
@@ -179,9 +187,11 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(parameterDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(selectParameterDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                .addGap(14, 14, 14)
                 .addComponent(contaminantsCheckBox)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(unidentifiedSpectraCheckBox)
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -258,7 +268,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
             .addGroup(rightPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(additionalFastaFileSelectionLabel)
-                .addContainerGap(110, Short.MAX_VALUE))
+                .addContainerGap(93, Short.MAX_VALUE))
         );
         rightPanelLayout.setVerticalGroup(
             rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -314,5 +324,6 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
     private javax.swing.JButton selectParameterDirectoryButton;
     private javax.swing.JButton selectPrimaryFastaDbButton;
     private javax.swing.JSeparator separator;
+    private javax.swing.JCheckBox unidentifiedSpectraCheckBox;
     // End of variables declaration//GEN-END:variables
 }

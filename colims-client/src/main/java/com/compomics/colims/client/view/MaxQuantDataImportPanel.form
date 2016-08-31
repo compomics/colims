@@ -47,8 +47,9 @@
                               <Component id="combinedFolderDirectorySelectionLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="maxQuantDirectorySelectionLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="contaminantsCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="unidentifiedSpectraCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="212" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="229" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -72,9 +73,11 @@
                       <Component id="parameterDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="selectParameterDirectoryButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                   <Component id="contaminantsCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="35" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="unidentifiedSpectraCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="17" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -131,6 +134,11 @@
         <Component class="javax.swing.JCheckBox" name="contaminantsCheckBox">
           <Properties>
             <Property name="text" type="java.lang.String" value="Import proteins from contaminants file"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="unidentifiedSpectraCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Import unidentified spectra"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -193,7 +201,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="additionalFastaFileSelectionLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="110" max="32767" attributes="0"/>
+                  <EmptySpace pref="93" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
