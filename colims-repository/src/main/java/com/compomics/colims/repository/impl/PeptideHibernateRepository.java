@@ -75,4 +75,9 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
 
         return criteria.list();
     }
+
+    @Override
+    public void saveOrUpdate(Peptide peptide) {
+        getCurrentSession().saveOrUpdate(peptide);
+    }
 }

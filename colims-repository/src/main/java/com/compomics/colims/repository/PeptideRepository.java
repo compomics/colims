@@ -29,4 +29,12 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @return the list of PeptideHasModification instances
      */
     List<PeptideHasModification> fetchPeptideHasModifications(Long peptideId);
+        
+    /**
+     * Cascade save or update the given peptide. We don't use the JPA merge method because of consistency with
+     * saveOrUpdate the protein groups in the PersistService.
+     *
+     * @param peptide the peptide instance to save or update
+     */
+    void saveOrUpdate(final Peptide peptide);
 }
