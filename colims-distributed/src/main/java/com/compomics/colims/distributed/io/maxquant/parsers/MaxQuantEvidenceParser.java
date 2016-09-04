@@ -7,7 +7,10 @@ import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesModificationMapper;
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.Modification;
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.model.Quantification;
 import com.compomics.colims.model.enums.ModificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Parser class for the MaxQuant evidence file.
@@ -28,21 +33,22 @@ public class MaxQuantEvidenceParser {
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
     private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
-        MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
-        MaxQuantEvidenceHeaders.CHARGE,
-        MaxQuantEvidenceHeaders.DELTA_SCORE,
-        MaxQuantEvidenceHeaders.MASS,
-        MaxQuantEvidenceHeaders.MODIFICATIONS,
-        MaxQuantEvidenceHeaders.MS_MS_IDS,
-        MaxQuantEvidenceHeaders.OXIDATION_M,
-        MaxQuantEvidenceHeaders.PEP,
-        MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
-        MaxQuantEvidenceHeaders.SCORE,
-        MaxQuantEvidenceHeaders.SEQUENCE};
+            MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
+            MaxQuantEvidenceHeaders.CHARGE,
+            MaxQuantEvidenceHeaders.DELTA_SCORE,
+            MaxQuantEvidenceHeaders.MASS,
+            MaxQuantEvidenceHeaders.MODIFICATIONS,
+            MaxQuantEvidenceHeaders.MS_MS_IDS,
+            MaxQuantEvidenceHeaders.OXIDATION_M,
+            MaxQuantEvidenceHeaders.PEP,
+            MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
+            MaxQuantEvidenceHeaders.SCORE,
+            MaxQuantEvidenceHeaders.SEQUENCE};
 
     private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
     private static final String MODIFICATION_DELIMITER = ";";
     private static final String UNMODIFIED = "Unmodified";
+    private static final Pattern MODIFICATION_PATTERN = Pattern.compile("\\(([^)]+)\\)");
     protected static final String N_TERMINAL_MODIFICATION = "Protein N-term";
     protected static final String C_TERMINAL_MODIFICATION = "Protein C-term";
     protected static final String MODIFICATION_PROBABILITIES = " probabilities";
@@ -75,12 +81,11 @@ public class MaxQuantEvidenceParser {
     /**
      * This method parses an evidence file.
      *
-     * @param evidenceFilePath the MaxQuant evidence file path
+     * @param evidenceFilePath       the MaxQuant evidence file path
      * @param omittedProteinGroupIds removed protein group IDs.
-     * @throws IOException in case of an I/O related problem
+     * @throws IOException                                                       in case of an I/O related problem
      * @throws com.compomics.colims.distributed.io.maxquant.UnparseableException
-     * @throws com.compomics.colims.core.io.MappingException in case of a
-     * mapping problem
+     * @throws com.compomics.colims.core.io.MappingException                     in case of a mapping problem
      */
     public void parse(Path evidenceFilePath, List<String> omittedProteinGroupIds) throws IOException, UnparseableException, MappingException {
         TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(evidenceFilePath.toFile(), MANDATORY_HEADERS);
@@ -124,8 +129,7 @@ public class MaxQuantEvidenceParser {
      *
      * @param values Set of values from a line in the file
      * @return Peptide object
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case
-     * of a modification mapping problem
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     public Peptide createPeptide(Map<String, String> values) throws ModificationMappingException {
         Peptide peptide = new Peptide();
@@ -176,7 +180,7 @@ public class MaxQuantEvidenceParser {
      * Create modifications for the given peptide.
      *
      * @param peptide Peptide to associate with modifications
-     * @param values Row of data from evidence file
+     * @param values  Row of data from evidence file
      * @return List of PeptideHasModification objects
      */
     private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) throws ModificationMappingException {
@@ -196,65 +200,76 @@ public class MaxQuantEvidenceParser {
                  * additional probabilities entry.
                  */
                 if (evidenceModification.isNTerminal()) {
-                    PeptideHasModification phModification = createPeptideHasModification(100.0, 0, 100.0, peptide);
+                    PeptideHasModification peptideHasModification = createPeptideHasModification(100.0, 0, 100.0, peptide);
 
                     Modification modification = utilitiesModificationMapper.mapByName(evidenceModification.getModificationName());
 
-                    //modification.getPeptideHasModifications().add(phModification);
-                    phModification.setModification(modification);
-                    peptideHasModifications.add(phModification);
+                    peptideHasModification.setModification(modification);
+                    peptideHasModifications.add(peptideHasModification);
                 } else if (evidenceModification.isCTerminal()) {
-                    PeptideHasModification phModification = createPeptideHasModification(100.0, values.get(MaxQuantEvidenceHeaders.SEQUENCE.getValue()).length() - 1, 100.0, peptide);
+                    PeptideHasModification peptideHasModification = createPeptideHasModification(100.0, values.get(MaxQuantEvidenceHeaders.SEQUENCE.getValue()).length() - 1, 100.0, peptide);
 
                     Modification modification = utilitiesModificationMapper.mapByName(evidenceModification.getModificationName());
 
-                    //modification.getPeptideHasModifications().add(phModification);
-                    phModification.setModification(modification);
-                    peptideHasModifications.add(phModification);
-                }
-
-                //get the modifications probabilities
-                String probabilitiesString = values.get(evidenceModification.getLowerCaseFullModificationName() + MODIFICATION_PROBABILITIES);
-                if (probabilitiesString != null) {
-//                    modificationString = modificationString.replaceAll("_", "");
-                    int location = 0;
-                    int previousLocation = 0;
-                    String[] modificationLocations = modificationString.split("\\(");
-                    String[] modificationDeltaScores = null;
-
-                    String scoreDiffsString = values.get(evidenceModification.getLowerCaseFullModificationName() + MODIFICATION_SCORE_DIFFS);
-                    if (values.containsKey(modificationHeader[1] + MODIFICATION_SCORE_DIFFS)) {
-                        modificationDeltaScores = values.get(modificationHeader[1] + MODIFICATION_SCORE_DIFFS).split("\\(");
-                    }
-
-                    for (int i = 0; i < modificationLocations.length; i++) {
-                        if (modificationLocations[i].contains(")")) {
-                            PeptideHasModification phModification = new PeptideHasModification();
-
-                            phModification.setModificationType(ModificationType.VARIABLE);
-                            phModification.setPeptide(peptide);
-
-                            Modification modification = utilitiesModificationMapper.mapByName(modificationHeader[0].split(" ")[0]);
-                            phModification.setModification(modification);
-                            if (modificationDeltaScores != null) {
-                                phModification.setDeltaScore(Double.parseDouble(modificationDeltaScores[i].substring(0, modificationDeltaScores[i].indexOf(")"))));
-                            } else {
-                                phModification.setDeltaScore(-1.0);
-                            }
-
-                            phModification.setProbabilityScore(Double.parseDouble(modificationLocations[i].substring(0, modificationLocations[i].indexOf(")"))));
-
-                            modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
-                            if (i != 0) {
-                                location = modificationLocations[i - 1].length() + previousLocation;
-
-                                phModification.setLocation(location);
-
-                                peptideHasModifications.add(phModification);
-                            }
-
-                            previousLocation = location;
+                    peptideHasModification.setModification(modification);
+                    peptideHasModifications.add(peptideHasModification);
+                } else {
+                    /**
+                     * Get the modifications probabilities for non-terminal modifications. This field can be empty in the evidence file.
+                     */
+                    String probabilitiesString = values.get(evidenceModification.getLowerCaseFullModificationName() + MODIFICATION_PROBABILITIES);
+                    if (probabilitiesString != null) {
+                        //first, parse the modification probability scores between brackets
+                        Matcher probabilities = MODIFICATION_PATTERN.matcher(probabilitiesString);
+                        List<Double> probabilitiesScores = new ArrayList<>();
+                        while (probabilities.find()) {
+                            probabilitiesScores.add(Double.parseDouble(probabilities.group(1)));
                         }
+                        //then parse the delta scores
+                        String scoreDiffsString = values.get(evidenceModification.getLowerCaseFullModificationName() + MODIFICATION_SCORE_DIFFS);
+                        Matcher scoreDiffs = MODIFICATION_PATTERN.matcher(scoreDiffsString);
+                        List<Double> deltaScores = new ArrayList<>();
+                        while (scoreDiffs.find()) {
+                            deltaScores.add(Double.parseDouble(scoreDiffs.group(1)));
+                        }
+                        //sort the scores
+                        probabilitiesScores.sort((o1, o2) -> o2.compareTo(o1));
+                        deltaScores.sort((o1, o2) -> o2.compareTo(o1));
+
+                        System.out.println("test");
+//                        if (values.containsKey(modificationHeader[1] + MODIFICATION_SCORE_DIFFS)) {
+//                            modificationDeltaScores = values.get(modificationHeader[1] + MODIFICATION_SCORE_DIFFS).split("\\(");
+//                        }
+
+//                        for (int i = 0; i < modificationLocations.length; i++) {
+//                            if (modificationLocations[i].contains(")")) {
+//                                PeptideHasModification phModification = new PeptideHasModification();
+//
+//                                phModification.setModificationType(ModificationType.VARIABLE);
+//                                phModification.setPeptide(peptide);
+//
+////                                Modification modification = utilitiesModificationMapper.mapByName(modificationHeader[0].split(" ")[0]);
+////                                phModification.setModification(modification);
+//                                if (modificationDeltaScores != null) {
+//                                    phModification.setDeltaScore(Double.parseDouble(modificationDeltaScores[i].substring(0, modificationDeltaScores[i].indexOf(")"))));
+//                                } else {
+//                                    phModification.setDeltaScore(-1.0);
+//                                }
+//
+//                                phModification.setProbabilityScore(Double.parseDouble(modificationLocations[i].substring(0, modificationLocations[i].indexOf(")"))));
+//
+//                                modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
+//                                if (i != 0) {
+//                                    location = modificationLocations[i - 1].length() + previousLocation;
+//
+//                                    phModification.setLocation(location);
+//
+//                                    peptideHasModifications.add(phModification);
+//                                }
+//
+//                                previousLocation = location;
+//                            }
+//                        }
                     }
                 }
             }
@@ -265,10 +280,10 @@ public class MaxQuantEvidenceParser {
     /**
      * Create a PeptideHasModification instance for the given peptide.
      *
-     * @param deltaScore the delta score value
-     * @param location the modification location
+     * @param deltaScore  the delta score value
+     * @param location    the modification location
      * @param probability the probability score
-     * @param peptide the Peptide instance
+     * @param peptide     the Peptide instance
      * @return the PeptideHasModification instance
      */
     private PeptideHasModification createPeptideHasModification(double deltaScore, int location, double probability, Peptide peptide) {
