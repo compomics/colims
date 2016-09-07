@@ -4,11 +4,15 @@ import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.model.Peptide;
+
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,8 +31,14 @@ import static org.junit.Assert.assertThat;
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 public class MaxQuantEvidenceParserTest {
 
+    private Path evidenceFile;
+
     @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
+
+    public MaxQuantEvidenceParserTest() throws IOException {
+        evidenceFile = new ClassPathResource("data/maxquant/evidence_unit_test.csv").getFile().toPath();
+    }
 
     @Test
     public void testParse() throws Exception {
@@ -36,7 +46,8 @@ public class MaxQuantEvidenceParserTest {
         List<String> ommittedProteinIds = new ArrayList<>();
         ommittedProteinIds.add("0");
         ommittedProteinIds.add("1");
-        maxQuantEvidenceParser.parse(MaxQuantTestSuite.evidenceFile, ommittedProteinIds);
+//        maxQuantEvidenceParser.parse(MaxQuantTestSuite.evidenceFile, ommittedProteinIds);
+        maxQuantEvidenceParser.parse(evidenceFile, ommittedProteinIds);
 
         assertThat(maxQuantEvidenceParser.getPeptides().size(), not(0));
     }

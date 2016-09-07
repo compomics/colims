@@ -200,14 +200,14 @@ public class MaxQuantEvidenceParser {
                  * additional probabilities entry.
                  */
                 if (evidenceModification.isNTerminal()) {
-                    PeptideHasModification peptideHasModification = createPeptideHasModification(100.0, 0, 100.0, peptide);
+                    PeptideHasModification peptideHasModification = createPeptideHasModification(0, 100.0, 100.0, peptide);
 
                     Modification modification = utilitiesModificationMapper.mapByName(evidenceModification.getModificationName());
 
                     peptideHasModification.setModification(modification);
                     peptideHasModifications.add(peptideHasModification);
                 } else if (evidenceModification.isCTerminal()) {
-                    PeptideHasModification peptideHasModification = createPeptideHasModification(100.0, values.get(MaxQuantEvidenceHeaders.SEQUENCE.getValue()).length() - 1, 100.0, peptide);
+                    PeptideHasModification peptideHasModification = createPeptideHasModification(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getValue()).length() - 1, 100.0, 100.0, peptide);
 
                     Modification modification = utilitiesModificationMapper.mapByName(evidenceModification.getModificationName());
 
@@ -215,87 +215,80 @@ public class MaxQuantEvidenceParser {
                     peptideHasModifications.add(peptideHasModification);
                 } else {
                     /**
-                     * Get the modifications probabilities for non-terminal modifications. This field can be empty in the evidence file.
+                     * Get the modifications probabilities for non-terminal modifications.
+                     * This field can be empty in the evidence file, even though the peptide has modifications.
                      */
                     String probabilitiesString = values.get(evidenceModification.getLowerCaseFullModificationName() + MODIFICATION_PROBABILITIES);
-                    if (probabilitiesString != null) {
-                        //first, parse the modification probability scores between brackets
+                    String deltasString = values.get(evidenceModification.getLowerCaseFullModificationName() + MODIFICATION_SCORE_DIFFS);
+                    /**
+                     * Array to store the parsed scores and the affected amino acid location.
+                     * (Element 0: the probability score; element 1: the delta score; element 2: the affected amino acid location starting from 1)
+                     */
+                    List<Object[]> scoresAndLocations = new ArrayList<>();
+                    if (probabilitiesString != null && deltasString != null) {
+                        //first, parse the modification probability scores and delta scores between brackets
                         Matcher probabilities = MODIFICATION_PATTERN.matcher(probabilitiesString);
-                        List<Double> probabilitiesScores = new ArrayList<>();
-                        while (probabilities.find()) {
-                            probabilitiesScores.add(Double.parseDouble(probabilities.group(1)));
-                        }
-                        //then parse the delta scores
-                        String scoreDiffsString = values.get(evidenceModification.getLowerCaseFullModificationName() + MODIFICATION_SCORE_DIFFS);
-                        Matcher scoreDiffs = MODIFICATION_PATTERN.matcher(scoreDiffsString);
-                        List<Double> deltaScores = new ArrayList<>();
-                        while (scoreDiffs.find()) {
-                            deltaScores.add(Double.parseDouble(scoreDiffs.group(1)));
-                        }
-                        //sort the scores
-                        probabilitiesScores.sort((o1, o2) -> o2.compareTo(o1));
-                        deltaScores.sort((o1, o2) -> o2.compareTo(o1));
+                        Matcher deltas = MODIFICATION_PATTERN.matcher(deltasString);
+                        //keep track of the overhead from the scores in the sequence to get the right affected amino acid location
+                        int probabilityOverhead = 1;
+                        while (probabilities.find() && deltas.find()) {
+                            Object[] scoresAndLocation = new Object[3];
+                            scoresAndLocation[0] = Double.parseDouble(probabilities.group(1));
+                            scoresAndLocation[1] = Double.parseDouble(deltas.group(1));
+                            scoresAndLocation[2] = probabilities.start(1) - probabilityOverhead;
 
-                        System.out.println("test");
-//                        if (values.containsKey(modificationHeader[1] + MODIFICATION_SCORE_DIFFS)) {
-//                            modificationDeltaScores = values.get(modificationHeader[1] + MODIFICATION_SCORE_DIFFS).split("\\(");
-//                        }
+                            scoresAndLocations.add(scoresAndLocation);
 
-//                        for (int i = 0; i < modificationLocations.length; i++) {
-//                            if (modificationLocations[i].contains(")")) {
-//                                PeptideHasModification phModification = new PeptideHasModification();
-//
-//                                phModification.setModificationType(ModificationType.VARIABLE);
-//                                phModification.setPeptide(peptide);
-//
-////                                Modification modification = utilitiesModificationMapper.mapByName(modificationHeader[0].split(" ")[0]);
-////                                phModification.setModification(modification);
-//                                if (modificationDeltaScores != null) {
-//                                    phModification.setDeltaScore(Double.parseDouble(modificationDeltaScores[i].substring(0, modificationDeltaScores[i].indexOf(")"))));
-//                                } else {
-//                                    phModification.setDeltaScore(-1.0);
-//                                }
-//
-//                                phModification.setProbabilityScore(Double.parseDouble(modificationLocations[i].substring(0, modificationLocations[i].indexOf(")"))));
-//
-//                                modificationLocations[i] = modificationLocations[i].replaceFirst(".*\\)", "");
-//                                if (i != 0) {
-//                                    location = modificationLocations[i - 1].length() + previousLocation;
-//
-//                                    phModification.setLocation(location);
-//
-//                                    peptideHasModifications.add(phModification);
-//                                }
-//
-//                                previousLocation = location;
-//                            }
-//                        }
+                            probabilityOverhead += probabilities.end() - probabilities.start();
+                        }
+
+                        /**
+                         * Check the modification occurrences;
+                         * if the number of scores is higher than the occurrences rate, take the one with the highest score.
+                         */
+                        if (evidenceModification.getOccurrences() != scoresAndLocations.size()) {
+                            //sort the scores in descending order
+                            scoresAndLocations.sort(((o1, o2) -> ((Double) o2[0]).compareTo((Double) o1[0])));
+                        }
+                    }
+
+                    for (int i = 0; i < evidenceModification.getOccurrences(); i++) {
+                        PeptideHasModification peptideHasModification = new PeptideHasModification();
+
+                        if (scoresAndLocations.isEmpty()) {
+                            //@Todo can we figure out whether the modification is fixed or variable?
+                            peptideHasModification.setModificationType(ModificationType.VARIABLE);
+
+                            createPeptideHasModification((Integer) scoresAndLocations.get(i)[2], (Double) scoresAndLocations.get(i)[0], (Double) scoresAndLocations.get(i)[1], peptide);
+                        }
                     }
                 }
             }
         }
+
         return peptideHasModifications;
     }
 
     /**
      * Create a PeptideHasModification instance for the given peptide.
      *
-     * @param deltaScore  the delta score value
      * @param location    the modification location
      * @param probability the probability score
+     * @param deltaScore  the delta score value
      * @param peptide     the Peptide instance
      * @return the PeptideHasModification instance
      */
-    private PeptideHasModification createPeptideHasModification(double deltaScore, int location, double probability, Peptide peptide) {
-        PeptideHasModification phModification = new PeptideHasModification();
+    private PeptideHasModification createPeptideHasModification(Integer location, Double probability, Double deltaScore, Peptide peptide) {
+        PeptideHasModification peptideHasModification = new PeptideHasModification();
 
-        phModification.setModificationType(ModificationType.VARIABLE);
-        phModification.setDeltaScore(deltaScore);
-        phModification.setLocation(location);
-        phModification.setProbabilityScore(probability);
-        phModification.setPeptide(peptide);
+        peptideHasModification.setModificationType(ModificationType.VARIABLE);
 
-        return phModification;
+        peptideHasModification.setLocation(location);
+        peptideHasModification.setProbabilityScore(probability);
+        peptideHasModification.setDeltaScore(deltaScore);
+        peptideHasModification.setPeptide(peptide);
+
+        return peptideHasModification;
     }
 
 }
@@ -316,20 +309,20 @@ class EvidenceModification {
      */
     private String modificicationName;
     /**
-     * The content between brackets.
+     * The affected amino acid (between brackets in the evidence file).
      */
-    private String betweenBrackets;
+    private String affectedAminoAcid;
     /**
-     * The occurrence of the modification in the peptide. This value is null if
+     * The number of occurrences of the modification in the peptide. This value is null if
      * the modification occurs only once.
      */
-    private Integer occurrence;
+    private Integer occurrences = 1;
 
-    public EvidenceModification(String modificationString) {
+    EvidenceModification(String modificationString) {
         //check if the modification string contains an occurance count
         if (Character.isDigit(modificationString.charAt(0))) {
             String[] split = modificationString.split(" ", 2);
-            occurrence = Integer.valueOf(split[0]);
+            occurrences = Integer.valueOf(split[0]);
             this.fullModificationName = split[1];
             parseModificationName(split[1]);
         } else {
@@ -338,40 +331,40 @@ class EvidenceModification {
         }
     }
 
-    public String getFullModificationName() {
+    String getFullModificationName() {
         return fullModificationName;
     }
 
-    public String getBetweenBrackets() {
-        return betweenBrackets;
+    String getAffectedAminoAcid() {
+        return affectedAminoAcid;
     }
 
-    public String getModificationName() {
+    String getModificationName() {
         return modificicationName;
     }
 
-    public int getOccurrence() {
-        return occurrence;
+    int getOccurrences() {
+        return occurrences;
     }
 
-    public void setOccurrence(int occurance) {
-        this.occurrence = occurance;
+    void setOccurrences(int occurance) {
+        this.occurrences = occurance;
     }
 
-    public String getLowerCaseModificationName() {
+    String getLowerCaseModificationName() {
         return modificicationName.toLowerCase();
     }
 
-    public String getLowerCaseFullModificationName() {
+    String getLowerCaseFullModificationName() {
         return fullModificationName.toLowerCase();
     }
 
-    public boolean isNTerminal() {
-        return betweenBrackets.equalsIgnoreCase(MaxQuantEvidenceParser.N_TERMINAL_MODIFICATION);
+    boolean isNTerminal() {
+        return affectedAminoAcid.equalsIgnoreCase(MaxQuantEvidenceParser.N_TERMINAL_MODIFICATION);
     }
 
-    public boolean isCTerminal() {
-        return betweenBrackets.equalsIgnoreCase(MaxQuantEvidenceParser.C_TERMINAL_MODIFICATION);
+    boolean isCTerminal() {
+        return affectedAminoAcid.equalsIgnoreCase(MaxQuantEvidenceParser.C_TERMINAL_MODIFICATION);
     }
 
     private void parseModificationName(String modificationName) {
@@ -379,7 +372,7 @@ class EvidenceModification {
         modificicationName = split[0];
         if (split.length == 2) {
             //remove brackets
-            betweenBrackets = split[1].substring(1, split[1].length() - 1);
+            affectedAminoAcid = split[1].substring(1, split[1].length() - 1);
         }
     }
 
