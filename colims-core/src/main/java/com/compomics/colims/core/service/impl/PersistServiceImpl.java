@@ -66,6 +66,6 @@ public class PersistServiceImpl implements PersistService {
         // cascade save or update spectrum 
         mappedData.getAnalyticalRuns().stream().forEach(analyticalRun -> {
             analyticalRun.getSpectrums().stream().forEach(spectrumRepository::saveOrUpdate);
-        });
+        }); 
     }
 }

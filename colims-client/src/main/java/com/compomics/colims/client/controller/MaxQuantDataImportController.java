@@ -1,10 +1,13 @@
 package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.FastaDbManagementController;
+import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.model.TypedCvParamSummaryListModel;
 import com.compomics.colims.client.view.MaxQuantDataImportPanel;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.XmlFileFilter;
 import com.google.common.eventbus.EventBus;
@@ -17,8 +20,15 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JListBinding;
+import org.jdesktop.swingbinding.SwingBindings;
 
 /**
  * The MaxQuant data import view controller.
@@ -38,11 +48,12 @@ public class MaxQuantDataImportController implements Controllable {
     private File parameterFile;
     private Path combinedFolderDirectory;
     private FastaDb primaryFastaDb;
-    private FastaDb additionalFastaDb;
     private FastaDb contaminantsFastaDb;
     private boolean includeContaminants;
     private boolean includeUnidentifiedSpectra;
     private List<String> selectedProteinGroupHeaders;
+    private ObservableList<FastaDb> additionalFastaDbBindingList;
+    private BindingGroup bindingGroup;
     //view
     private MaxQuantDataImportPanel maxQuantDataImportPanel;
     //parent controller
@@ -66,6 +77,14 @@ public class MaxQuantDataImportController implements Controllable {
         //register to event bus
         eventBus.register(this);
 
+        //init binding
+        bindingGroup = new BindingGroup();
+        additionalFastaDbBindingList = ObservableCollections.observableList(new ArrayList<>());
+        JListBinding additionalFastaDbListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, additionalFastaDbBindingList, maxQuantDataImportPanel.getAdditionalFastaFileList());
+        bindingGroup.addBinding(additionalFastaDbListBinding);
+        
+        bindingGroup.bind();
+        
         //init parameter file directory selection
         //disable select multiple files
         maxQuantDataImportPanel.getParameterDirectoryChooser().setMultiSelectionEnabled(false);
@@ -112,15 +131,23 @@ public class MaxQuantDataImportController implements Controllable {
 
         maxQuantDataImportPanel.getSelectAdditionalFastaDbButton().addActionListener(e -> {
             fastaDbManagementController.showView();
-            additionalFastaDb = fastaDbManagementController.getSelectedFastaDb();
 
-            if (additionalFastaDb != null) {
-                maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText(additionalFastaDb.getFilePath());
-            } else {
-                maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
+            if (fastaDbManagementController.getSelectedFastaDb() != null) {
+                additionalFastaDbBindingList.add(fastaDbManagementController.getSelectedFastaDb());
+                maxQuantDataImportPanel.getAdditionalFastaFileList().setCellRenderer(new AdditionalFastaDbListCellRenderer());
             }
         });
 
+        maxQuantDataImportPanel.getRemoveAdditionalFastaDbButton().addActionListener(e ->{
+            if(maxQuantDataImportPanel.getAdditionalFastaFileList().getSelectedIndex() != -1){
+                additionalFastaDbBindingList.remove(maxQuantDataImportPanel.getAdditionalFastaFileList().getSelectedIndex());
+                maxQuantDataImportPanel.getAdditionalFastaFileList().getSelectionModel().clearSelection();
+            }else {
+                eventBus.post(new MessageEvent("Additional Fasta db selection", "Please select an additional fasta db to remove.", JOptionPane.INFORMATION_MESSAGE));
+            }
+            
+        });
+        
         maxQuantDataImportPanel.getSelectContaminantsFastaDbButton().addActionListener(e -> {
             fastaDbManagementController.showView();
             contaminantsFastaDb = fastaDbManagementController.getSelectedFastaDb();
@@ -145,16 +172,17 @@ public class MaxQuantDataImportController implements Controllable {
     public void showView() {
         //reset the FASTA fields
         primaryFastaDb = null;
-        additionalFastaDb = null;
         contaminantsFastaDb = null;
         includeContaminants = false;
         includeUnidentifiedSpectra = false;
         selectedProteinGroupHeaders = new ArrayList<>();
+        // to do check here! nullpointer ex
+        additionalFastaDbBindingList.clear();
         //reset the input fields
         maxQuantDataImportPanel.getParameterDirectoryTextField().setText("");
         maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText("");
         maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText("");
-        maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
+        maxQuantDataImportPanel.getAdditionalFastaFileList().clearSelection();
         maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
         maxQuantDataImportPanel.getContaminantsCheckBox().setSelected(false);
         maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().setSelected(false);
@@ -164,22 +192,19 @@ public class MaxQuantDataImportController implements Controllable {
         showView();
         maxQuantDataImportPanel.getParameterDirectoryTextField().setText(maxQuantImport.getParameterFilePath().toString());
         maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(maxQuantImport.getCombinedFolderDirectory().toString());
-        if(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY) != null){
-            primaryFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY));
+        if(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0) != null){
+            primaryFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
             maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText(primaryFastaDb.getFilePath());
         }else{
             primaryFastaDb = null;
             maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText("");
         }
-        if(maxQuantImport.getFastaDbIds().get(FastaDbType.ADDITIONAL) != null){
-            additionalFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.ADDITIONAL));
-            maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText(additionalFastaDb.getFilePath());
-        }else{
-            additionalFastaDb = null;
-            maxQuantDataImportPanel.getAdditionalFastaDbTextField().setText("");
-        }
-        if(maxQuantImport.getFastaDbIds().get(FastaDbType.CONTAMINANTS) != null){
-            contaminantsFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.CONTAMINANTS));
+        maxQuantImport.getFastaDbIds().get(FastaDbType.ADDITIONAL).stream().forEach((additionalFastaDbId) -> {
+            FastaDb additionalFastaDb = fastaDbService.findById(additionalFastaDbId);
+            additionalFastaDbBindingList.add(additionalFastaDb);
+        });
+        if(maxQuantImport.getFastaDbIds().get(FastaDbType.CONTAMINANTS).get(0) != null){
+            contaminantsFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.CONTAMINANTS).get(0));
             maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText(contaminantsFastaDb.getFilePath());
         }else{
             contaminantsFastaDb = null;
@@ -214,10 +239,12 @@ public class MaxQuantDataImportController implements Controllable {
         }else if(contaminantsFastaDb.getHeaderParseRule()== null){
             validationMessages.add("Please add header parse rule to contaminants FASTA file!");
         }
-               
-        if(additionalFastaDb != null && additionalFastaDb.getHeaderParseRule()== null){
-            validationMessages.add("Please add header parse rule to additional FASTA file!");
-        }   
+        additionalFastaDbBindingList.stream().forEach(additionalFastaDb -> {
+            if(additionalFastaDb != null && additionalFastaDb.getHeaderParseRule()== null){
+                validationMessages.add("Please add header parse rule to additional FASTA file!");
+            } 
+        });       
+          
         return validationMessages;
     }
 
@@ -227,12 +254,16 @@ public class MaxQuantDataImportController implements Controllable {
      * @return the MaxQuantImport
      */
     public MaxQuantImport getDataImport() {
-        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, primaryFastaDb.getId());
-        fastaDbIds.put(FastaDbType.CONTAMINANTS, contaminantsFastaDb.getId());
-        if (additionalFastaDb != null) {
-            fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDb.getId());
-        }
+        EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(primaryFastaDb.getId())));
+        fastaDbIds.put(FastaDbType.CONTAMINANTS,new ArrayList<>(Arrays.asList(contaminantsFastaDb.getId())));
+        List<Long> additionalFastaDbIDs = new ArrayList<>();
+        additionalFastaDbBindingList.stream().forEach(additionalFastaDb -> {
+            if (additionalFastaDb != null) {
+               additionalFastaDbIDs.add(additionalFastaDb.getId());
+            }
+        });
+        fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDbIDs);
         
         return new MaxQuantImport(parameterFile.toPath(), combinedFolderDirectory, fastaDbIds, includeContaminants, 
                 includeUnidentifiedSpectra, selectedProteinGroupHeaders);
@@ -246,13 +277,40 @@ public class MaxQuantDataImportController implements Controllable {
         this.combinedFolderDirectory = combinedFolderDirectory;
     }
 
-    public void setAdditionalFastaDb(FastaDb additionalFastaDb) {
-        this.additionalFastaDb = additionalFastaDb;
-    }
-
     public void setContaminantsFastaDb(FastaDb contaminantsFastaDb) {
         this.contaminantsFastaDb = contaminantsFastaDb;
     }
 
     
+}
+
+class AdditionalFastaDbListCellRenderer extends DefaultListCellRenderer {
+
+    private static final long serialVersionUID = -1577134281957137748L;
+    /**
+     * Add only FASTA DB path to the list.
+     * @param list
+     * @param value
+     * @param index
+     * @param isSelected
+     * @param cellHasFocus
+     * @return 
+     */
+    @Override
+    public java.awt.Component getListCellRendererComponent(final JList<?> list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+        FastaDb fastaDb = (FastaDb) list.getModel().getElementAt(index);
+       
+
+        String labelText = "";
+
+        if(fastaDb != null){
+            labelText = fastaDb.getFilePath();
+        }
+
+        setText(labelText);
+
+        return this;
+    }
 }

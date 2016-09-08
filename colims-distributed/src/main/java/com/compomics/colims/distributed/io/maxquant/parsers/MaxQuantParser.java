@@ -72,7 +72,7 @@ public class MaxQuantParser {
      * @throws MappingException thrown in case of a mapping related problem
      * @throws UnparseableException
      */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean includeContaminants, boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, MappingException, UnparseableException {
+    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean includeContaminants, boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, MappingException, UnparseableException {
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         Path summaryDirectory = Paths.get(txtDirectory.toString() + File.separator + MaxQuantConstants.SUMMARY_FILE.value());
         TabularFileLineValuesIterator summaryIterator = new TabularFileLineValuesIterator(summaryDirectory.toFile());
@@ -106,7 +106,7 @@ public class MaxQuantParser {
      * @throws UnparseableException
      * @throws MappingException thrown in case of a mapping related problem
      */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity, boolean includeContaminants, 
+    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, String multiplicity, boolean includeContaminants, 
             boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, UnparseableException, MappingException {
         //look for the MaxQuant txt directory
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
@@ -120,8 +120,14 @@ public class MaxQuantParser {
         
         //first, parse the protein groups file
         LOGGER.debug("parsing protein groups");
+        List<FastaDb> fastaList = new ArrayList<>();
+        fastaDbs.forEach((k, v) -> {
+            v.forEach(fastaDb -> {
+                fastaList.add(fastaDb);
+            });
+        });
         proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(), 
-                MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()), includeContaminants, optionalHeaders);
+                MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaList), includeContaminants, optionalHeaders);
 
         LOGGER.debug("parsing MSMS");
 
@@ -178,27 +184,25 @@ public class MaxQuantParser {
                     line = bufferedReader.readLine();
                     while (line != null) {
                         if (line.startsWith(BLOCK_SEPARATOR)) {
-                            //add limiting check for protein store to avoid growing
-                            if (sequenceBuilder.length() > 0) {
-                                //get parse rule from fastaDb and parse the key
-                                if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
-                                    fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);
-                                }
-                                Pattern pattern;
-                                if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
-                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
-                                } else {
-                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule());
-                                }
-                                Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
-                                if (matcher.find()) {
-                                    parsedFasta.put(matcher.group(1), sequenceBuilder.toString().trim());
-                                } else {
-                                    parsedFasta.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
-                                }
-                                sequenceBuilder.setLength(0);
-                            }
                             header = line;
+                            //get parse rule from fastaDb and parse the key
+                            if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
+                                fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);
+                            }
+                            Pattern pattern;
+                            if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
+                                pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
+                            } else {
+                                pattern = Pattern.compile(fastaDb.getHeaderParseRule());
+                            }
+                            Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
+                            if (matcher.find()) {
+                                parsedFasta.put(matcher.group(1), sequenceBuilder.toString().trim());
+                            } else {
+                                parsedFasta.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                            }
+                            sequenceBuilder.setLength(0);
+
                         } else {
                             sequenceBuilder.append(line);
                         }
@@ -213,7 +217,7 @@ public class MaxQuantParser {
 
         return parsedFasta;
     }
-
+    
     /**
      * If parser has parsed.
      *

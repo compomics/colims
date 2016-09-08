@@ -67,9 +67,9 @@ public class Playground {
         contFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
         fastaDbService.persist(contFastaDb);
         
-        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, testFastaDb.getId());
-        fastaDbIds.put(FastaDbType.CONTAMINANTS, contFastaDb.getId());
+        EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(testFastaDb.getId())));
+        fastaDbIds.put(FastaDbType.CONTAMINANTS, new ArrayList<>(Arrays.asList(contFastaDb.getId())));
 
         // to parse everything
         MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds, false, true, new ArrayList<>());

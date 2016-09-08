@@ -118,7 +118,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
             MsExperiment msExperiment = cpsParent.getExperiment();
 
             //load the (primary, there's only one) FASTA files
-            FastaDb fastaDb = fastaDbService.findById(dataImport.getFastaDbIds().get(FastaDbType.PRIMARY));
+            FastaDb fastaDb = fastaDbService.findById(dataImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
 
             LOGGER.info("Start mapping search settings for PeptideShaker experiment " + msExperiment.getReference());
             SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(dataImport, analyticalRun, fastaDb);

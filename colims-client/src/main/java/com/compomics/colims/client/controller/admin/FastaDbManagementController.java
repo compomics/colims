@@ -218,6 +218,7 @@ public class FastaDbManagementController implements Controllable {
         });
 
         fastaDbManagementDialog.getCloseButton().addActionListener(e -> {
+            setSelectedFasta(-1);
             fastaDbManagementDialog.dispose();
         });
 

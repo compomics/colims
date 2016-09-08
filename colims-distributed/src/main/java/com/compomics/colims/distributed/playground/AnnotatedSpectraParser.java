@@ -77,7 +77,7 @@ public class AnnotatedSpectraParser {
     private static final String APL_SPECTUM_END = "peaklist end";
     private static final String APL_HEADER_DELIMITER = "=";
     private static final String APL_HEADER = "header";
-
+    
     /**
      * Parse spectra for given MSMS IDs.
      * @param msmsFile

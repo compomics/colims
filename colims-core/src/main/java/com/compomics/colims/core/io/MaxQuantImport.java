@@ -55,7 +55,7 @@ public class MaxQuantImport extends DataImport {
      * @param selectedProteinGroupHeaders 
      */
     public MaxQuantImport(final Path parameterFilePath, final Path combinedFolderDirectory, final EnumMap<FastaDbType, 
-            Long> fastaDbIds, boolean includeContaminants, boolean includeUnidentifiedSpectra, List<String> selectedProteinGroupHeaders) {
+            List<Long>> fastaDbIds, boolean includeContaminants, boolean includeUnidentifiedSpectra, List<String> selectedProteinGroupHeaders) {
         super(fastaDbIds);
         this.parameterFilePath = parameterFilePath;
         this.combinedFolderDirectory = combinedFolderDirectory;

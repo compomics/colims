@@ -64,10 +64,14 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         try {
             maxQuantParser.clear();
 
-            EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
+            EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
             //get the FASTA db entities from the database
-            maxQuantImport.getFastaDbIds().forEach((fastaDbType, fastaDbId) -> {
-                fastaDbs.put(fastaDbType, fastaDbService.findById(fastaDbId));
+            maxQuantImport.getFastaDbIds().forEach((FastaDbType fastaDbType, List<Long> fastaDbIds) -> {
+                List<FastaDb> fastaDbList = new ArrayList<>();
+                fastaDbIds.forEach(fastaDbId -> {
+                    fastaDbList.add(fastaDbService.findById(fastaDbId));
+                });
+                fastaDbs.put(fastaDbType, fastaDbList);
             });
 
             try {
