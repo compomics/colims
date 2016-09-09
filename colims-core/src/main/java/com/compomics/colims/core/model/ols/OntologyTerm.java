@@ -38,10 +38,6 @@ public class OntologyTerm {
         return iri;
     }
 
-    public void setIri(String iri) {
-        this.iri = iri;
-    }
-
     public String getLabel() {
         return label;
     }
@@ -62,10 +58,6 @@ public class OntologyTerm {
         return ontologyNamespace;
     }
 
-    public void setOntologyNamespace(String ontologyNamespace) {
-        this.ontologyNamespace = ontologyNamespace;
-    }
-
     public String getOntologyTitle() {
         return ontologyTitle;
     }
@@ -78,16 +70,8 @@ public class OntologyTerm {
         return shortForm;
     }
 
-    public void setShortForm(String shortForm) {
-        this.shortForm = shortForm;
-    }
-
     public String getOboId() {
         return oboId;
-    }
-
-    public void setOboId(String oboId) {
-        this.oboId = oboId;
     }
 
     @Override

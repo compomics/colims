@@ -1,0 +1,87 @@
+{
+  "resources": [
+    {
+      "resource": {
+        "name": "MaxQuant",
+        "mapping_types": [
+          {
+            "name": "modifications",
+            "mappings": [
+              {
+                "name": "test_modification",
+                "ontology_term": {
+                  "obo_namespace": "PSI-MOD",
+                  "obo_id": "MOD:00843",
+                  "label": "(15)N labeled residues"
+                }
+              }
+            ]
+          },
+          {
+            "name": "quantification_reagents",
+            "mappings": [
+              {
+                "name": "test_modification",
+                "ontology_term": {
+                  "obo_namespace": "PSI-MOD",
+                  "obo_id": "MOD:00843",
+                  "label": "(15)N labeled residues"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "resource": {
+        "name": "colims",
+        "mapping_types": [
+          {
+            "name:": "quantification_methods",
+            "mappings": [
+              {
+                "name: ": "TMT",
+                "ontology_term": {
+                  "obo_namespace": "PRIDE",
+                  "obo_id": "PRIDE:0000314",
+                  "label": "TMT"
+                }
+              },
+              {
+                "name: ": "iTRAQ",
+                "ontology_term": {
+                  "obo_namespace": "PRIDE",
+                  "obo_id": "PRIDE:0000313",
+                  "label": "iTRAQ"
+                }
+              },
+              {
+                "name: ": "silac",
+                "ontology_term": {
+                  "obo_namespace": "PRIDE",
+                  "obo_id": "PRIDE:0000315",
+                  "label": "SILAC"
+                }
+              },
+              {
+                "name: ": "label free",
+                "ontology_term": {
+                  "obo_namespace": "PRIDE",
+                  "obo_id": "PRIDE:0000312",
+                  "label": "Label free"
+                }
+              },
+              {
+                "name: ": "SRM",
+                "ontology_term": {
+                  "obo_namespace": "PRIDE",
+                  "obo_id": "PRIDE:0000311",
+                  "label": "Selected Reaction Monitoring"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

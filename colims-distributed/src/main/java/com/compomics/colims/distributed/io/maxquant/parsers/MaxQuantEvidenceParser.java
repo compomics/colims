@@ -193,7 +193,6 @@ public class MaxQuantEvidenceParser {
         } else {
             for (String modificationString : modifications.split(MODIFICATION_DELIMITER)) {
                 EvidenceModification evidenceModification = new EvidenceModification(modificationString);
-
                 /**
                  * Check the modification type (N-terminal, C-terminal or
                  * non-terminal). Only non-terminal modifications have an
