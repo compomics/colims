@@ -47,7 +47,7 @@ public class UtilitiesPtmSettingsMapper {
      * The Ontology Lookup Service service.
      */
     @Autowired
-    private OlsService newOlsService;
+    private OlsService olsService;
     /**
      * Contains the UNIMOD modifications.
      */
@@ -121,7 +121,7 @@ public class UtilitiesPtmSettingsMapper {
     public void clear() {
         cachedSearchModifications.clear();
         //clear the cache from the OlsService as well
-        newOlsService.getModificationsCache().clear();
+        olsService.getModificationsCache().clear();
     }
 
     /**
@@ -161,7 +161,7 @@ public class UtilitiesPtmSettingsMapper {
                     case "PSI-MOD": {
                         try {
                             //look for the search modification in the PSI-MOD ontology by accession
-                            searchModification = newOlsService.findModificationByAccession(SearchModification.class, cvTerm.getAccession());
+                            searchModification = olsService.findModificationByAccession(SearchModification.class, cvTerm.getAccession());
                         } catch (RestClientException | IOException ex) {
                             LOGGER.error(ex.getMessage(), ex);
                         }
@@ -226,7 +226,7 @@ public class UtilitiesPtmSettingsMapper {
                     //the search modification was not found in the UNIMOD ontology
                     //look for the search modification in the PSI-MOD ontology by exact name
                     try {
-                        searchModification = newOlsService.findModificationByExactName(SearchModification.class, modificationName);
+                        searchModification = olsService.findModificationByExactName(SearchModification.class, modificationName);
                     } catch (IOException e) {
                         //@// TODO: 23/03/16 handle this
                         e.printStackTrace();

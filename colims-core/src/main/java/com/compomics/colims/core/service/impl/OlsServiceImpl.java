@@ -1,9 +1,9 @@
 package com.compomics.colims.core.service.impl;
 
-import com.compomics.colims.core.model.ols.Ontology;
-import com.compomics.colims.core.model.ols.OntologyTerm;
-import com.compomics.colims.core.model.ols.OlsSearchResult;
-import com.compomics.colims.core.model.ols.SearchResultMetadata;
+import com.compomics.colims.core.ontology.ols.OlsSearchResult;
+import com.compomics.colims.core.ontology.ols.Ontology;
+import com.compomics.colims.core.ontology.ols.OntologyTerm;
+import com.compomics.colims.core.ontology.ols.SearchResultMetadata;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
  *
  * @author Niels Hulstaert
  */
-@Service("newOlsService")
-public class NewOlsServiceImpl implements OlsService {
+@Service("olsService")
+public class OlsServiceImpl implements OlsService {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(NewOlsServiceImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(OlsServiceImpl.class);
 
     private static final String OLS_BASE_URL = "http://www.ebi.ac.uk/ols/api/ontologies";
     private static final String OLS_BASE_SEARCH_URL = "http://www.ebi.ac.uk/ols/beta/api/search?q=";
@@ -352,12 +352,11 @@ public class NewOlsServiceImpl implements OlsService {
     /**
      * Get the modification by it's PSI MOD accession.
      *
-     * @param clazz the AbstractModification subclass (Modification or
-     * SearchModification)
+     * @param clazz           the AbstractModification subclass (Modification or SearchModification)
      * @param psiModAccession the PSI MOD accession of the modification
-     * @param <T> the AbstractModification subclass instance
+     * @param <T>             the AbstractModification subclass instance
      * @return
-     * @throws IOException in case of an I/O related problem
+     * @throws IOException              in case of an I/O related problem
      * @throws HttpClientErrorException in case of a HTTP 4xx error was received
      */
     private <T extends AbstractModification> T getByPsiModAccession(final Class<T> clazz, final String psiModAccession) throws IOException, HttpClientErrorException {
@@ -397,9 +396,9 @@ public class NewOlsServiceImpl implements OlsService {
      * Copy (the instance fields of) the modification from one subclass of
      * AbstractModification to another.
      *
-     * @param clazz the subclass of AbstractModification
+     * @param clazz     the subclass of AbstractModification
      * @param modToCopy the modification to copy
-     * @param <T> the AbstractModification subclass
+     * @param <T>       the AbstractModification subclass
      * @return the copied modification
      */
     private <T extends AbstractModification> T copyModification(Class<T> clazz, AbstractModification modToCopy) {

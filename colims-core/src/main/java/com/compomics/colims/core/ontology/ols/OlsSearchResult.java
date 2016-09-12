@@ -1,4 +1,4 @@
-package com.compomics.colims.core.model.ols;
+package com.compomics.colims.core.ontology.ols;
 
 import java.util.EnumMap;
 import java.util.EnumSet;

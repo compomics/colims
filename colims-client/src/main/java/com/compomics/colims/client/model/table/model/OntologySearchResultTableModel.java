@@ -1,6 +1,6 @@
 package com.compomics.colims.client.model.table.model;
 
-import com.compomics.colims.core.model.ols.OlsSearchResult;
+import com.compomics.colims.core.ontology.ols.OlsSearchResult;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;

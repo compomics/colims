@@ -1,10 +1,9 @@
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.core.model.ols.Ontology;
-import com.compomics.colims.core.model.ols.OlsSearchResult;
-import com.compomics.colims.core.model.ols.SearchResultMetadata;
+import com.compomics.colims.core.ontology.ols.Ontology;
+import com.compomics.colims.core.ontology.ols.OlsSearchResult;
+import com.compomics.colims.core.ontology.ols.SearchResultMetadata;
 import com.compomics.colims.model.AbstractModification;
-import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.cv.TypedCvParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;

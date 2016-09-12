@@ -1,6 +1,6 @@
 package com.compomics.colims.core;
 
-import com.compomics.colims.core.service.NewOlsServiceTest;
+import com.compomics.colims.core.service.OlsServiceTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -11,6 +11,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    NewOlsServiceTest.class})
+    OlsServiceTest.class})
 public class SlowUnitTests {
 }

@@ -1,4 +1,4 @@
-package com.compomics.colims.core.model.ols;
+package com.compomics.colims.core.ontology.ols;
 
 /**
  * This class represents the metadata from an Ontology Lookup Service (OLS)

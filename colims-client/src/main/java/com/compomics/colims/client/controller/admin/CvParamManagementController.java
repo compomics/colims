@@ -10,7 +10,7 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.table.model.CvParamTableModel2;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvParamManagementDialog;
-import com.compomics.colims.core.model.ols.OntologyTerm;
+import com.compomics.colims.core.ontology.ols.OntologyTerm;
 import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.cv.CvParam;
@@ -72,7 +72,7 @@ public class CvParamManagementController implements Controllable {
     @Autowired
     private CvParamService cvParamService;
     @Autowired
-    private OlsService newOlsService;
+    private OlsService olsService;
 
     @Override
     @PostConstruct
@@ -112,7 +112,7 @@ public class CvParamManagementController implements Controllable {
                     try {
                         //get the descripton from the OLS service
                         cvParamManagementDialog.getDefinitionTextArea().setText(
-                                newOlsService.getTermDescriptionByOboId(selectedCvParam.getLabel(), selectedCvParam.getAccession()));
+                                olsService.getTermDescriptionByOboId(selectedCvParam.getLabel(), selectedCvParam.getAccession()));
                     } catch (RestClientException ex) {
                         LOGGER.error(ex.getMessage(), ex);
                         cvParamManagementDialog.getDefinitionTextArea().setText("");

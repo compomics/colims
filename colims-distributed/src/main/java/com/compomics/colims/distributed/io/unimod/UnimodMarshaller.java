@@ -69,7 +69,7 @@ public class UnimodMarshaller {
      * @throws JDOMException top level exception that can be thrown in case of a problem in the JDOM classes.
      */
     @PostConstruct
-    private void marshall() throws JDOMException {
+    private void marshal() throws JDOMException {
         Resource unimodResource = new ClassPathResource("unimod/unimod.xml");
         SAXBuilder builder = new SAXBuilder();
 

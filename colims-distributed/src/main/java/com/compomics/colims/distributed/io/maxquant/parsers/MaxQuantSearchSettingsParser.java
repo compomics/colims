@@ -106,7 +106,7 @@ public class MaxQuantSearchSettingsParser {
     @Autowired
     private TypedCvParamService typedCvParamService;
     @Autowired
-    private OlsService newOlsService;
+    private OlsService olsService;
     @Autowired
     private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
 
@@ -332,7 +332,7 @@ public class MaxQuantSearchSettingsParser {
             try {
                 //the enzyme was not found by name in the database
                 //look for the enzyme in the MS ontology by name
-                enzyme = newOlsService.findEnzymeByName(maxQuantEnzyme);
+                enzyme = olsService.findEnzymeByName(maxQuantEnzyme);
             } catch (RestClientException ex) {
                 LOGGER.error(ex.getMessage(), ex);
             } catch (IOException ex) {
