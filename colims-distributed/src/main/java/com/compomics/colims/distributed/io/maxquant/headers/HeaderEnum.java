@@ -15,14 +15,14 @@ public interface HeaderEnum {
      *
      * @return the possible header values for a given header
      */
-    List<String> getPossibleValues();
+    List<String> getValues();
 
     /**
      * Set the parsed header value by index.
      *
-     * @param index the parsed header value index
+     * @param headerValueIndex the parsed header value index
      */
-    void setParsedValue(int index);
+    void setParsedValue(int headerValueIndex);
 
     /**
      * Get the parsed header value.

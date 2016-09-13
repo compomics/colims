@@ -1,0 +1,20 @@
+{
+  "header": {
+    "name": "ACETYL_K",
+    "mandatory": true,
+    "values": [
+      "Acetyl (K)",
+      "bla",
+      "bla"
+    ]
+  },
+  "header ": {
+    "name": "ACETYL_K_PROBABILITIES",
+    "mandatory": true,
+    "values": [
+      "Acetyl (K) Probabilities",
+      "bla",
+      "bla"
+    ]
+  }
+}

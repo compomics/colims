@@ -21,23 +21,18 @@ public class OntologyMapperTest {
     private OntologyMapper ontologyMapper;
 
     @Test
-    public void testGetExisitingMappedTerm() throws HttpClientErrorException, IOException {
-        OntologyTerm mappedTerm = ontologyMapper.getMappedTerm(OntologyMapper.ResourceType.COLIMS, OntologyMapper.ResourceType.QUANTIFICATION_METHODS, "TMT");
+    public void testGetColimsMapping() throws HttpClientErrorException, IOException {
+        ColimsMapping colimsMapping = ontologyMapper.getColimsMapping();
 
-        Assert.assertNotNull(mappedTerm);
-        Assert.assertEquals("PRIDE:0000314", mappedTerm.getOboId());
+        Assert.assertFalse(colimsMapping.getQuantificationMethods().isEmpty());
     }
 
     @Test
-    public void testGetNonExisitingMappedTerm() throws HttpClientErrorException, IOException {
-        OntologyTerm mappedTerm = ontologyMapper.getMappedTerm(OntologyMapper.ResourceType.COLIMS, OntologyMapper.ResourceType.QUANTIFICATION_METHODS, "TMTTMT");
-
-        Assert.assertNull(mappedTerm);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
     public void testGetMappedTermWithWrongArgument() throws HttpClientErrorException, IOException {
-        OntologyTerm mappedTerm = ontologyMapper.getMappedTerm(OntologyMapper.ResourceType.COLIMS, OntologyMapper.ResourceType.MODIFICATIONS, "TMT");
+        MaxQuantMapping maxQuantMapping = ontologyMapper.getMaxQuantMapping();
+
+        Assert.assertFalse(maxQuantMapping.getModifications().isEmpty());
+        Assert.assertFalse(maxQuantMapping.getQuantificationReagents().isEmpty());
     }
 
 }

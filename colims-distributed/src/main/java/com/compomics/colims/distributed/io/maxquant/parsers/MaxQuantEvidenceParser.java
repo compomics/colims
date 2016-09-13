@@ -49,10 +49,11 @@ public class MaxQuantEvidenceParser {
     private static final String MODIFICATION_DELIMITER = ";";
     private static final String UNMODIFIED = "Unmodified";
     private static final Pattern MODIFICATION_PATTERN = Pattern.compile("\\(([^)]+)\\)");
-    protected static final String N_TERMINAL_MODIFICATION = "Protein N-term";
-    protected static final String C_TERMINAL_MODIFICATION = "Protein C-term";
-    protected static final String MODIFICATION_PROBABILITIES = " probabilities";
-    protected static final String MODIFICATION_SCORE_DIFFS = " score diffs";
+    private static final String MODIFICATION_PROBABILITIES = " probabilities";
+    private static final String MODIFICATION_SCORE_DIFFS = " score diffs";
+    static final String N_TERMINAL_MODIFICATION = "Protein N-term";
+    static final String C_TERMINAL_MODIFICATION = "Protein C-term";
+
     /**
      * Spectrum IDs and associated quantifications.
      */
@@ -65,6 +66,12 @@ public class MaxQuantEvidenceParser {
      * Peptides and associated protein group IDs.
      */
     private final Map<Peptide, List<Integer>> peptideProteins = new HashMap<>();
+
+    /**
+     * No-arg constructor.
+     */
+    public MaxQuantEvidenceParser() {
+    }
 
     public Map<Integer, List<Quantification>> getQuantifications() {
         return quantifications;
@@ -90,11 +97,11 @@ public class MaxQuantEvidenceParser {
     public void parse(Path evidenceFilePath, List<String> omittedProteinGroupIds) throws IOException, UnparseableException, MappingException {
         TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(evidenceFilePath.toFile(), MANDATORY_HEADERS);
 
-        Map<String, String> values;
+        Map<String, String> evidenceEntry;
         while (evidenceIterator.hasNext()) {
-            values = evidenceIterator.next();
+            evidenceEntry = evidenceIterator.next();
 
-            String[] proteinGroupIds = values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()).split(PROTEIN_GROUP_ID_DELIMITER);
+            String[] proteinGroupIds = evidenceEntry.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()).split(PROTEIN_GROUP_ID_DELIMITER);
 
             //check for peptides coming from omitted protein groups
             boolean omitPeptide = true;
@@ -105,12 +112,12 @@ public class MaxQuantEvidenceParser {
                 }
             }
             if (!omitPeptide) {
-                if (values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()) != null) {
-                    String[] msmsIds = values.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()).split(";");
+                if (evidenceEntry.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()) != null) {
+                    String[] msmsIds = evidenceEntry.get(MaxQuantEvidenceHeaders.MS_MS_IDS.getValue()).split(";");
                     for (String msmsId : msmsIds) {
                         if (!msmsId.isEmpty()) {
                             Integer spectrumID = Integer.parseInt(msmsId);
-                            Peptide peptide = createPeptide(values);
+                            Peptide peptide = createPeptide(evidenceEntry);
 
                             if (!peptides.containsKey(spectrumID)) {
                                 peptides.put(spectrumID, Arrays.asList(new Peptide[]{peptide}));
@@ -125,39 +132,39 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * Create a Peptide from a row in the evidence file
+     * Create a Peptide from a row entry in the evidence file.
      *
-     * @param values Set of values from a line in the file
-     * @return Peptide object
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
+     * @param evidenceEntry key-value pairs from an evidence entry
+     * @return the mapped Peptide object
+     * @throws ModificationMappingException in case of a modification mapping related problem
      */
-    public Peptide createPeptide(Map<String, String> values) throws ModificationMappingException {
+    public Peptide createPeptide(Map<String, String> evidenceEntry) throws ModificationMappingException {
         Peptide peptide = new Peptide();
 
         double probability = -1;
         double pep = -1;
 
-        if (!values.get(MaxQuantEvidenceHeaders.SCORE.getValue()).equalsIgnoreCase("nan")) {
-            probability = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.SCORE.getValue()));
-        } else if (!values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getValue()).equalsIgnoreCase("nan")) {
-            probability = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getValue()));
+        if (!evidenceEntry.get(MaxQuantEvidenceHeaders.SCORE.getValue()).equalsIgnoreCase("nan")) {
+            probability = Double.parseDouble(evidenceEntry.get(MaxQuantEvidenceHeaders.SCORE.getValue()));
+        } else if (!evidenceEntry.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getValue()).equalsIgnoreCase("nan")) {
+            probability = Double.parseDouble(evidenceEntry.get(MaxQuantEvidenceHeaders.DELTA_SCORE.getValue()));
         }
 
-        if (values.containsKey(MaxQuantEvidenceHeaders.PEP.getValue())) {
-            pep = Double.parseDouble(values.get(MaxQuantEvidenceHeaders.PEP.getValue()));
+        if (evidenceEntry.containsKey(MaxQuantEvidenceHeaders.PEP.getValue())) {
+            pep = Double.parseDouble(evidenceEntry.get(MaxQuantEvidenceHeaders.PEP.getValue()));
         }
 
-        peptide.setCharge(Integer.parseInt(values.get(MaxQuantEvidenceHeaders.CHARGE.getValue())));
+        peptide.setCharge(Integer.parseInt(evidenceEntry.get(MaxQuantEvidenceHeaders.CHARGE.getValue())));
         peptide.setPsmPostErrorProbability(pep);
         peptide.setPsmProbability(probability);
-        peptide.setSequence(values.get(MaxQuantEvidenceHeaders.SEQUENCE.getValue()));
-        peptide.setTheoreticalMass(Double.valueOf(values.get(MaxQuantEvidenceHeaders.MASS.getValue())));
-        peptide.getPeptideHasModifications().addAll(createModifications(peptide, values));
+        peptide.setSequence(evidenceEntry.get(MaxQuantEvidenceHeaders.SEQUENCE.getValue()));
+        peptide.setTheoreticalMass(Double.valueOf(evidenceEntry.get(MaxQuantEvidenceHeaders.MASS.getValue())));
+        peptide.getPeptideHasModifications().addAll(createModifications(peptide, evidenceEntry));
 
         List<Integer> proteinGroups = new ArrayList<>();
 
-        if (values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()) != null) {
-            for (String id : values.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()).split(";")) {
+        if (evidenceEntry.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()) != null) {
+            for (String id : evidenceEntry.get(MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS.getValue()).split(";")) {
                 proteinGroups.add(Integer.parseInt(id));
             }
         }
@@ -187,11 +194,11 @@ public class MaxQuantEvidenceParser {
         List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
         //get the modifications
-        String modifications = values.get(MaxQuantEvidenceHeaders.MODIFICATIONS.getValue());
-        if (modifications == null || modifications.equalsIgnoreCase(UNMODIFIED)) {
+        String modificationsEntry = values.get(MaxQuantEvidenceHeaders.MODIFICATIONS.getValue());
+        if (modificationsEntry == null || modificationsEntry.equalsIgnoreCase(UNMODIFIED)) {
             return peptideHasModifications;
         } else {
-            for (String modificationString : modifications.split(MODIFICATION_DELIMITER)) {
+            for (String modificationString : modificationsEntry.split(MODIFICATION_DELIMITER)) {
                 EvidenceModification evidenceModification = new EvidenceModification(modificationString);
                 /**
                  * Check the modification type (N-terminal, C-terminal or
@@ -300,13 +307,13 @@ public class MaxQuantEvidenceParser {
 class EvidenceModification {
 
     /**
-     * The full modification modificicationName (with brackets).
+     * The full modification modificationName (with brackets).
      */
     private String fullModificationName;
     /**
-     * The modification modificicationName.
+     * The modification modificationName.
      */
-    private String modificicationName;
+    private String modificationName;
     /**
      * The affected amino acid (between brackets in the evidence file).
      */
@@ -318,7 +325,7 @@ class EvidenceModification {
     private Integer occurrences = 1;
 
     EvidenceModification(String modificationString) {
-        //check if the modification string contains an occurance count
+        //check if the modification string contains an occurrence count
         if (Character.isDigit(modificationString.charAt(0))) {
             String[] split = modificationString.split(" ", 2);
             occurrences = Integer.valueOf(split[0]);
@@ -339,7 +346,7 @@ class EvidenceModification {
     }
 
     String getModificationName() {
-        return modificicationName;
+        return modificationName;
     }
 
     int getOccurrences() {
@@ -351,7 +358,7 @@ class EvidenceModification {
     }
 
     String getLowerCaseModificationName() {
-        return modificicationName.toLowerCase();
+        return modificationName.toLowerCase();
     }
 
     String getLowerCaseFullModificationName() {
@@ -366,9 +373,14 @@ class EvidenceModification {
         return affectedAminoAcid.equalsIgnoreCase(MaxQuantEvidenceParser.C_TERMINAL_MODIFICATION);
     }
 
-    private void parseModificationName(String modificationName) {
-        String[] split = modificationName.split(" ", 2);
-        modificicationName = split[0];
+    /**
+     * Parse the modification name from evidence file entry.
+     *
+     * @param modificationEntry the evidence modification entry
+     */
+    private void parseModificationName(String modificationEntry) {
+        String[] split = modificationEntry.split(" ", 2);
+        this.modificationName = split[0];
         if (split.length == 2) {
             //remove brackets
             affectedAminoAcid = split[1].substring(1, split[1].length() - 1);

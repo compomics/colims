@@ -78,13 +78,13 @@ public enum MaxQuantSummaryHeaders implements HeaderEnum {
     }
 
     @Override
-    public List<String> getPossibleValues() {
+    public List<String> getValues() {
         return this.headerValues;
     }
 
     @Override
-    public void setParsedValue(int index) {
-        defaultHeaderValueIndex = index;
+    public void setParsedValue(int headerValueIndex) {
+        defaultHeaderValueIndex = headerValueIndex;
     }
 
     @Override

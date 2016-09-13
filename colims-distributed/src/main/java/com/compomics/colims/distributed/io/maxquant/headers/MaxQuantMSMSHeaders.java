@@ -87,13 +87,13 @@ public enum MaxQuantMSMSHeaders implements HeaderEnum {
     }
 
     @Override
-    public List<String> getPossibleValues() {
+    public List<String> getValues() {
         return this.headerValues;
     }
 
     @Override
-    public void setParsedValue(int index) {
-        this.defaultHeaderValueIndex = index;
+    public void setParsedValue(int headerValueIndex) {
+        this.defaultHeaderValueIndex = headerValueIndex;
     }
 
     @Override

@@ -481,10 +481,10 @@ public class MaxQuantSearchSettingsParser {
                 //create enumMap for spectrum parameters (key: parameter enum; value: parameter value).
                 EnumMap<MaxQuantSpectrumParameterHeaders, String> spectrumParameters = new EnumMap<>(MaxQuantSpectrumParameterHeaders.class);
                 for (MaxQuantSpectrumParameterHeaders spectrumParameterHeader : MaxQuantSpectrumParameterHeaders.values()) {
-                    Optional<String> header = spectrumParameterHeader.getPossibleValues()
+                    Optional<String> header = spectrumParameterHeader.getValues()
                             .stream()
                             .findFirst();
-                    spectrumParameterHeader.setParsedValue(spectrumParameterHeader.getPossibleValues().indexOf(header.get()));
+                    spectrumParameterHeader.setParsedValue(spectrumParameterHeader.getValues().indexOf(header.get()));
                     if (header.isPresent()) {
                         if (header.get().equals(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS.getValue()) || header.get().equals(MaxQuantSpectrumParameterHeaders.ENZYMES.getValue())) {
                             StringBuilder variableModification = new StringBuilder();

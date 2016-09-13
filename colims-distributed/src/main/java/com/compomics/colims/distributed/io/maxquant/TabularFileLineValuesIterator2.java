@@ -14,12 +14,12 @@ import java.util.*;
  * the values on the first line as keys and the values per line as value. Using this approach one does not have to read
  * the entire file into memory first, providing some much needed relief when parsing large MaxQuant files.
  */
-public class TabularFileLineValuesIterator implements Iterable<Map<String, String>>, Iterator<Map<String, String>> {
+public class TabularFileLineValuesIterator2 implements Iterable<Map<String, String>>, Iterator<Map<String, String>> {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(TabularFileLineValuesIterator.class);
+    private static final Logger LOGGER = Logger.getLogger(TabularFileLineValuesIterator2.class);
 
     private static final char DELIMITER = '\t';
     private FileReader fileReader;
@@ -37,7 +37,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
      * @param tsvFile tab separated values file
      * @throws IOException
      */
-    public TabularFileLineValuesIterator(final File tsvFile) throws IOException {
+    public TabularFileLineValuesIterator2(final File tsvFile) throws IOException {
         fileReader = new FileReader(tsvFile);
         lineReader = new LineReader(fileReader);
 
@@ -59,7 +59,7 @@ public class TabularFileLineValuesIterator implements Iterable<Map<String, Strin
      * @param headerEnumeration An enum of headers to specify values for
      * @throws IOException
      */
-    public TabularFileLineValuesIterator(final File tsvFile, HeaderEnum[] headerEnumeration) throws IOException {
+    public TabularFileLineValuesIterator2(final File tsvFile, HeaderEnum[] headerEnumeration) throws IOException {
         fileReader = new FileReader(tsvFile);
         lineReader = new LineReader(fileReader);
 

@@ -11,8 +11,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This class keeps track of mapping between resource (MaxQuant, PeptideShaker, Colims client) terms and ontology terms.
@@ -24,146 +25,103 @@ import java.util.List;
 public class OntologyMapper {
 
     /**
-     * Enum class for the available mapping resources.
+     * The Colims terms mapping.
      */
-    public enum ResourceType {
-        MAXQUANT(null, "MaxQuant"),
-            MODIFICATIONS(MAXQUANT, "modifications"),
-            QUANTIFICATION_REAGENTS(MAXQUANT, "quantification_reagents"),
-        COLIMS(null, "Colims"),
-            QUANTIFICATION_METHODS(COLIMS, "quantification_methods");
+    private ColimsMapping colimsMapping = new ColimsMapping();
+    /**
+     * The MaxQuant terms mapping.
+     */
+    private MaxQuantMapping maxQuantMapping = new MaxQuantMapping();
 
-        /**
-         * The parent resource type.
-         */
-        private ResourceType parent = null;
-        /**
-         * The child resource types.
-         */
-        private final List<ResourceType> children = new ArrayList<>();
-        /**
-         * The JSON value of the resource.
-         */
-        private String jsonValue;
-
-        /**
-         * Private constructor.
-         *
-         * @param parent    the parent resource type
-         * @param jsonValue the JSON value of the resource type
-         */
-        ResourceType(final ResourceType parent, final String jsonValue) {
-            this.parent = parent;
-            if (this.parent != null) {
-                this.parent.addChild(this);
-            }
-            this.jsonValue = jsonValue;
-        }
-
-        /**
-         * Get all children of this instance.
-         *
-         * @return the list of child resource types
-         */
-        public List<ResourceType> getChildren() {
-            return children;
-        }
-
-        /**
-         * Get the parent of this instance.
-         *
-         * @return the parent resource type
-         */
-        public ResourceType getParent() {
-            return parent;
-        }
-
-        /**
-         * Return the JSON value for this resource type.
-         *
-         * @return true or false
-         */
-        public String jsonValue() {
-            return jsonValue;
-        }
-
-        /**
-         * Return all child resource types of this resource type as an array.
-         *
-         * @return the resource type children
-         */
-        public ResourceType[] allChildren() {
-            List<ResourceType> list = new ArrayList<>();
-            addChildren(this, list);
-            return list.toArray(new ResourceType[list.size()]);
-        }
-
-        /**
-         * Return the child resource types of this resource type (not the sub types)
-         * as an array.
-         *
-         * @return the array of resource type children
-         */
-        public ResourceType[] getChildrenAsArray() {
-            return children.toArray(new ResourceType[children.size()]);
-        }
-
-        @Override
-        public String toString() {
-            return jsonValue;
-        }
-
-        /**
-         * Add a child resource type to this (parent) resource type.
-         *
-         * @param child the child resource type
-         */
-        private void addChild(final ResourceType child) {
-            this.children.add(child);
-        }
-
-        /**
-         * Add child resource types to this (parent) resource type in a recursive way.
-         *
-         * @param parent the parent resource type
-         * @param list   the list of child resource types
-         */
-        private static void addChildren(final ResourceType parent, final List<ResourceType> list) {
-            list.addAll(parent.children);
-            parent.children.stream().forEach((child) -> {
-                addChildren(child, list);
-            });
-        }
+    /**
+     * No-arg constructor.
+     */
+    public OntologyMapper() {
     }
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    /**
-     * The {@link JsonNode} instance with all the mapped ontoloy terms from the different resources.
-     */
-    private JsonNode resourcesNode;
+    public ColimsMapping getColimsMapping() {
+        return colimsMapping;
+    }
 
+    public MaxQuantMapping getMaxQuantMapping() {
+        return maxQuantMapping;
+    }
+
+    /**
+     * Parse the JSON mapping file and populate the mapping terms for the different resources.
+     *
+     * @throws IOException in case of an I/O related problem
+     */
     @PostConstruct
     private void parse() throws IOException {
         Resource ontologyMapping = ResourceUtils.getResourceByRelativePath("config/ontology_mapping.json");
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectReader objectReader = objectMapper.reader();
-        resourcesNode = objectReader.readTree(ontologyMapping.getInputStream());
+        JsonNode mappingResourcesNode = objectReader.readTree(ontologyMapping.getInputStream());
+
+        Iterator<Map.Entry<String, JsonNode>> mappingResourcesIterator = mappingResourcesNode.fields();
+        while (mappingResourcesIterator.hasNext()) {
+            Map.Entry<String, JsonNode> mappingResource = mappingResourcesIterator.next();
+            Map<String, Map<String, OntologyTerm>> mappingResourceTypes = parseMappingResourceTypes(objectReader, mappingResource.getValue());
+            switch (mappingResource.getKey()) {
+                case "MaxQuant":
+                    for (Map.Entry<String, Map<String, OntologyTerm>> entry : mappingResourceTypes.entrySet()) {
+                        switch (entry.getKey()) {
+                            case "modifications":
+                                maxQuantMapping.setModifications(entry.getValue());
+                                break;
+                            case "quantification_reagents":
+                                maxQuantMapping.setQuantificationReagents(entry.getValue());
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Unknown MaxQuant mapping resource type " + entry.getKey());
+                        }
+                    }
+                    break;
+                case "Colims":
+                    for (Map.Entry<String, Map<String, OntologyTerm>> entry : mappingResourceTypes.entrySet()) {
+                        switch (entry.getKey()) {
+                            case "quantification_methods":
+                                colimsMapping.setQuantificationMethods(entry.getValue());
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Unknown Colims mapping resource type " + entry.getKey());
+                        }
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown mapping resource " + mappingResource.getKey());
+            }
+        }
     }
 
-    public OntologyTerm getMappedTerm(ResourceType parent, ResourceType child, String name) throws JsonProcessingException {
-        OntologyTerm mappedTerm = null;
+    /**
+     * Parse the mapping between resource and ontology terms for the given mapping resource node.
+     *
+     * @param objectReader    the {@link ObjectReader} instance
+     * @param mappingResource the mapping resource parent node
+     * @return the mapped terms (key: mapping resource type; value: the ontology terms map)
+     * @throws JsonProcessingException
+     */
+    private Map<String, Map<String, OntologyTerm>> parseMappingResourceTypes(ObjectReader objectReader, JsonNode mappingResource) throws JsonProcessingException {
+        Map<String, Map<String, OntologyTerm>> mappings = new HashMap<>();
 
-        if (!child.getParent().equals(parent)) {
-            throw new IllegalArgumentException("Resource type " + parent.jsonValue() + " doesn't have a " + child.jsonValue() + " as child resource type.");
+        Iterator<Map.Entry<String, JsonNode>> mappingResourceTypesIterator = mappingResource.fields();
+        while (mappingResourceTypesIterator.hasNext()) {
+            Map.Entry<String, JsonNode> mappingResourceType = mappingResourceTypesIterator.next();
+            String mappingResourceTypeName = mappingResourceType.getKey();
+            Iterator<Map.Entry<String, JsonNode>> mappingsIterator = mappingResourceType.getValue().fields();
+            Map<String, OntologyTerm> terms = new HashMap<>();
+            while (mappingsIterator.hasNext()) {
+                Map.Entry<String, JsonNode> mapping = mappingsIterator.next();
+                OntologyTerm ontologyTerm = objectReader.treeToValue(mapping.getValue(), OntologyTerm.class);
+                terms.put(mapping.getKey(), ontologyTerm);
+            }
+            mappings.put(mappingResourceTypeName, terms);
         }
 
-        if (resourcesNode.get(parent.jsonValue()).get(child.jsonValue()).has(name)) {
-            ObjectReader objectReader = objectMapper.reader();
-            mappedTerm = objectReader.treeToValue(resourcesNode.get(parent.jsonValue()).get(child.jsonValue()).get(name), OntologyTerm.class);
-        }
-
-        return mappedTerm;
+        return mappings;
     }
 
 }

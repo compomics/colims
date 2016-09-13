@@ -49,13 +49,13 @@ public enum MaxQuantProteinGroupHeaders implements HeaderEnum {
     }
 
     @Override
-    public List<String> getPossibleValues() {
+    public List<String> getValues() {
         return this.headerValues;
     }
 
     @Override
-    public void setParsedValue(int index) {
-        headerValueIndex = index;
+    public void setParsedValue(int headerValueIndex) {
+        this.headerValueIndex = headerValueIndex;
     }
 
     @Override
