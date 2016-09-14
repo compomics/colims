@@ -1,6 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant;
 
-import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
+import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantHeader;
 import com.google.common.io.LineReader;
 import org.apache.log4j.Logger;
 
@@ -28,11 +28,11 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
     /**
      * The header values array. All values are lowercase.
      */
-    private String[] headers = new String[0];
+    private String[] headerValues = new String[0];
 
     /**
-     * Parse a TSV file and create a map for each line that maps the keys found on the first line to the values found to
-     * the values found on lines two and further until the end of the file.
+     * Initialize an iterator for the data file. When iterating of the rows, the columns with the given headerValues are
+     * being parsed and put in a map (key: the {@link MaxQuantHeader} instance; value: the column entry).
      *
      * @param tsvFile tab separated values file
      * @throws IOException
@@ -46,20 +46,21 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
         if (firstLine == null || firstLine.isEmpty()) {
             throw new IOException("Input file " + tsvFile.getPath() + " is empty.");
         } else {
-            headers = firstLine.toLowerCase(Locale.US).split("" + DELIMITER);
+            headerValues = firstLine.toLowerCase(Locale.US).split("" + DELIMITER);
 
             advanceLine();
         }
     }
 
     /**
-     * Parse a TSV file and create a map of keys and values for the given enum of headers and each line in the file.
+     * Initialize an iterator for the data file. When iterating of the rows, the columns with the given headerValues are
+     * being parsed and put in a map (key: the {@link MaxQuantHeader} instance; value: the column entry).
      *
-     * @param tsvFile           The data file
-     * @param headerEnumeration An enum of headers to specify values for
-     * @throws IOException
+     * @param tsvFile the tab separated data file
+     * @param maxQuantHeaders the list of headerValues
+     * @throws IOException in case of an Input/Output related problem
      */
-    public TabularFileLineValuesIterator2(final File tsvFile, HeaderEnum[] headerEnumeration) throws IOException {
+    public TabularFileLineValuesIterator2(final File tsvFile, List<MaxQuantHeader> maxQuantHeaders) throws IOException {
         fileReader = new FileReader(tsvFile);
         lineReader = new LineReader(fileReader);
 
@@ -73,19 +74,19 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
         }
 
         List<String> firstLineList = Arrays.asList(firstLine.split(String.valueOf(DELIMITER)));
-        //check if each of the given header enum values is present in the file header
-        for (HeaderEnum headerEnum : headerEnumeration) {
-            Optional<String> header = headerEnum.getValues()
+        //check if each of the given header values is present in the file header
+        for (MaxQuantHeader maxQuantHeader : maxQuantHeaders) {
+            Optional<String> optionalHeader = maxQuantHeader.getValues()
                     .stream()
                     .filter(firstLineList::contains)
                     .findFirst();
 
-            if (header.isPresent()) {
-                headerEnum.setParsedValue(headerEnum.getValues().indexOf(header.get()));
+            if (optionalHeader.isPresent()) {
+                maxQuantHeader.setParsedValue(maxQuantHeader.getValues().indexOf(optionalHeader.get()));
             }
         }
 
-        headers = firstLine.split(String.valueOf(DELIMITER));
+        headerValues = firstLine.split(String.valueOf(DELIMITER));
 
         advanceLine();
     }
@@ -93,10 +94,10 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
     /**
      * Get the header of the file to parse. Note that the header values are lowercase.
      *
-     * @return the headers identified for the currently parsed file
+     * @return the headerValues identified for the currently parsed file
      */
-    public String[] getHeaders() {
-        return headers.clone();
+    public String[] getHeaderValues() {
+        return headerValues.clone();
     }
 
     @Override
@@ -117,7 +118,7 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
         Map<String, String> lineValues = new HashMap<>();
 
         for (int i = 0; i < nextLine.length; i++) {
-            lineValues.put(headers[i], nextLine[i]);
+            lineValues.put(headerValues[i], nextLine[i]);
         }
 
         //advance to the next line for the next invocation

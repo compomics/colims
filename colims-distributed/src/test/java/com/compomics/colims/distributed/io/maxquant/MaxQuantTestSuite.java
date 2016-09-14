@@ -18,7 +18,7 @@ import java.nio.file.Path;
         MaxQuantEvidenceParserTest.class,
         MaxQuantSearchSettingsParserTest.class,
         MaxQuantParserTest.class,
-        MaxQuantProteinGroupParserTest.class,
+        MaxQuantProteinGroupsParserTest.class,
         MaxQuantSpectraParserTest.class,
         TabularFileLineValuesIteratorTest.class
 })

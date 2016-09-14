@@ -53,16 +53,15 @@ public class MaxQuantSearchSettingsParser {
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
-    private static final String PARAMETER_DELIMITER = "\t";
     private static final String MODIFICATIONS_DELIMITER = ",";
     private static final String MODIFICATION_NAME_ONLY = " ";
 
     private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
-        MaxQuantSummaryHeaders.ENZYME,
-        MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
-        MaxQuantSummaryHeaders.MULTIPLICITY,
-        MaxQuantSummaryHeaders.PROTEASE,
-        MaxQuantSummaryHeaders.RAW_FILE
+            MaxQuantSummaryHeaders.ENZYME,
+            MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
+            MaxQuantSummaryHeaders.MULTIPLICITY,
+            MaxQuantSummaryHeaders.PROTEASE,
+            MaxQuantSummaryHeaders.RAW_FILE
     };
 
     /**
@@ -130,11 +129,10 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Parse the search parameters for a MaxQuant experiment.
      *
-     * @param combinedFolderDirectory the MaxQuant combined folder directory
-     * path
-     * @param parameterFilePath the parameter file
-     * @param fastaDbs the FASTA databases used in the experiment
-     * @param storeFiles whether data files should be stored with the experiment
+     * @param combinedFolderDirectory the MaxQuant combined folder directory path
+     * @param parameterFilePath       the parameter file
+     * @param fastaDbs                the FASTA databases used in the experiment
+     * @param storeFiles              whether data files should be stored with the experiment
      * @throws IOException thrown in case of of an I/O related problem
      */
     public void parse(Path combinedFolderDirectory, Path parameterFilePath, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
@@ -164,8 +162,8 @@ public class MaxQuantSearchSettingsParser {
      * Colims SearchAndValidationSettings instance.
      *
      * @param maxQuantTxtDirectory the MaxQuant txt directory path
-     * @param fastaDbs the FASTA databases used in the experiment
-     * @param storeFiles whether data files should be stored with experiment
+     * @param fastaDbs             the FASTA databases used in the experiment
+     * @param storeFiles           whether data files should be stored with experiment
      * @return the mapped SearchAndValidationSettings instance
      * @throws IOException thrown in case of of an I/O related problem
      */

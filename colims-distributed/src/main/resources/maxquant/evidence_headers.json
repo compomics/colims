@@ -1,20 +1,65 @@
 {
   "header": {
-    "name": "ACETYL_K",
+    "name": "CHARGE",
     "mandatory": true,
     "values": [
-      "Acetyl (K)",
-      "bla",
-      "bla"
+      "Charge"
     ]
   },
   "header ": {
-    "name": "ACETYL_K_PROBABILITIES",
+    "name": "DELTA_SCORE",
     "mandatory": true,
     "values": [
-      "Acetyl (K) Probabilities",
-      "bla",
-      "bla"
+      "Delta score"
+    ]
+  },
+  "header": {
+    "name": "MASS",
+    "mandatory": true,
+    "values": [
+      "Mass"
+    ]
+  },
+  "header ": {
+    "name": "MODIFICATIONS",
+    "mandatory": true,
+    "values": [
+      "Modifications"
+    ]
+  },
+  "header": {
+    "name": "MS_MS_IDS",
+    "mandatory": true,
+    "values": [
+      "MS/MS IDs"
+    ]
+  },
+  "header ": {
+    "name": "B_MIXTURE",
+    "mandatory": true,
+    "values": [
+      "B mixture"
+    ]
+  },
+  "header": {
+    "name": "PEP",
+    "mandatory": true,
+    "values": [
+      "PEP"
+    ]
+  },
+  "header ": {
+    "name": "SCORE",
+    "mandatory": true,
+    "values": [
+      "Score"
+    ]
+  },
+  "header ": {
+    "name": "SEQUENCE",
+    "mandatory": true,
+    "values": [
+      "Sequence"
     ]
   }
 }

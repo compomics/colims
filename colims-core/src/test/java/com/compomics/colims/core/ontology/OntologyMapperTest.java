@@ -28,7 +28,7 @@ public class OntologyMapperTest {
     }
 
     @Test
-    public void testGetMappedTermWithWrongArgument() throws HttpClientErrorException, IOException {
+    public void testGetMaxQuantMapping() throws HttpClientErrorException, IOException {
         MaxQuantMapping maxQuantMapping = ontologyMapper.getMaxQuantMapping();
 
         Assert.assertFalse(maxQuantMapping.getModifications().isEmpty());

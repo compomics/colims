@@ -1,0 +1,44 @@
+{
+  "header": {
+    "name": "ID",
+    "mandatory": true,
+    "values": [
+      "id"
+    ]
+  },
+  "header": {
+    "name": "MATCHES",
+    "mandatory": true,
+    "values": [
+      "Matches"
+    ]
+  },
+  "header ": {
+    "name": "INTENSITIES",
+    "mandatory": true,
+    "values": [
+      "Intensities"
+    ]
+  },
+  "header ": {
+    "name": "MASSES",
+    "mandatory": true,
+    "values": [
+      "Masses"
+    ]
+  },
+  "header ": {
+    "name": "SCAN_EVENT_NUMBER",
+    "mandatory": true,
+    "values": [
+      "Scan event number"
+    ]
+  },
+  "header ": {
+    "name": "SCAN_INDEX",
+    "mandatory": true,
+    "values": [
+      "Scan Index"
+    ]
+  }
+}

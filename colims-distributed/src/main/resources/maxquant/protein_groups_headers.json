@@ -1,0 +1,30 @@
+{
+  "header": {
+    "name": "ACCESSION",
+    "mandatory": true,
+    "values": [
+      "Protein IDs"
+    ]
+  },
+  "header ": {
+    "name": "EVIDENCE_IDS",
+    "mandatory": true,
+    "values": [
+      "Evidence IDs"
+    ]
+  },
+  "header": {
+    "name": "ID",
+    "mandatory": true,
+    "values": [
+      "id"
+    ]
+  },
+  "header ": {
+    "name": "PEP",
+    "mandatory": true,
+    "values": [
+      "PEP"
+    ]
+  }
+}

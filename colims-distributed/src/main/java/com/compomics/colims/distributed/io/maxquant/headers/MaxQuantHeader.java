@@ -10,14 +10,14 @@ import java.util.List;
  * Created by Niels Hulstaert on 13/09/16.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Header {
+public class MaxQuantHeader {
 
     /**
      * The header name.
      */
     private String name;
     /**
-     * Boolean that indicates whether the header is mandatory or not.
+     * Boolean that indicates whether the header is mandatory for parsing or not.
      */
     private boolean mandatory;
     /**
@@ -29,7 +29,10 @@ public class Header {
      */
     private int headerValueIndex = 0;
 
-    public Header() {
+    /**
+     * No-arg constructor.
+     */
+    public MaxQuantHeader() {
     }
 
     public String getName() {

@@ -48,7 +48,7 @@ public class MaxQuantAplParser {
      * Parse the give MaqQuant .apl spectrum file and update the spectra map.
      *
      * @param aplFilePath                the MaqQuant .apl spectrum file path
-     * @param maxQuantSpectra                    the spectra map
+     * @param maxQuantSpectra            the spectra map
      * @param includeUnidentifiedSpectra whether or not to include unidentified spectra
      */
     public void parseAplFile(Path aplFilePath, MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {

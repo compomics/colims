@@ -27,7 +27,7 @@ import org.apache.commons.lang.math.NumberUtils;
  * @author Iain
  */
 @Component("maxQuantProteinGroupParser")
-public class MaxQuantProteinGroupParser {
+public class MaxQuantProteinGroupsParser {
 
     @Autowired
     private ProteinService proteinService;

@@ -1,0 +1,37 @@
+{
+  "header": {
+    "name": "ENZYME",
+    "mandatory": true,
+    "values": [
+      "Enzyme"
+    ]
+  },
+  "header": {
+    "name": "MAX_MISSED_CLEAVAGES",
+    "mandatory": true,
+    "values": [
+      "Max. missed cleavages"
+    ]
+  },
+  "header ": {
+    "name": "MULTIPLICITY",
+    "mandatory": true,
+    "values": [
+      "Multiplicity"
+    ]
+  },
+  "header ": {
+    "name": "PROTEASE",
+    "mandatory": true,
+    "values": [
+      "Protease"
+    ]
+  },
+  "header ": {
+    "name": "RAW_FILE",
+    "mandatory": true,
+    "values": [
+      "Raw file"
+    ]
+  }
+}

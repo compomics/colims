@@ -24,10 +24,10 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
-public class MaxQuantProteinGroupParserTest {
+public class MaxQuantProteinGroupsParserTest {
 
     @Autowired
-    private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
+    private MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
     @Autowired
     private MaxQuantParser maxQuantParser;
 
@@ -43,7 +43,7 @@ public class MaxQuantProteinGroupParserTest {
 
         List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.proteinGroupsFile);
 
-        Map<Integer, ProteinGroup> result = maxQuantProteinGroupParser.parse(MaxQuantTestSuite.proteinGroupsFile.toFile(),
+        Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile.toFile(),
                 maxQuantParser.parseFastas(fastaDbs), false, new ArrayList<>());
 
         // minus headers

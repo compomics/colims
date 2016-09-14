@@ -54,7 +54,7 @@ public class MaxQuantParser {
     @Autowired
     private MaxQuantSpectraParser maxQuantSpectraParser;
     @Autowired
-    private MaxQuantProteinGroupParser maxQuantProteinGroupParser;
+    private MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
     @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
     @Autowired
@@ -114,13 +114,13 @@ public class MaxQuantParser {
 
         //first, parse the protein groups file
         LOGGER.debug("parsing protein groups");
-        proteinGroups = maxQuantProteinGroupParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(),
+        proteinGroups = maxQuantProteinGroupsParser.parse(new File(maxQuantDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(),
                 MaxQuantConstants.PROTEIN_GROUPS_FILE.value()), parseFastas(fastaDbs.values()), includeContaminants, optionalHeaders);
 
         LOGGER.debug("parsing MSMS");
 
         // TODO: 6/8/2016 write a method for unidentified spectra
-        maxQuantSpectraParser.parse(maxQuantDirectory, false, maxQuantProteinGroupParser.getOmittedProteinGroupIds());
+        maxQuantSpectraParser.parse(maxQuantDirectory, false, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
         getSpectra().forEach((k, v) -> {
             String rawFile = k.getTitle().split("--")[0];
@@ -140,7 +140,7 @@ public class MaxQuantParser {
         }
 
         LOGGER.debug("parsing evidence");
-        maxQuantEvidenceParser.parse(txtDirectory.resolve(MaxQuantConstants.EVIDENCE_FILE.value()), maxQuantProteinGroupParser.getOmittedProteinGroupIds());
+        maxQuantEvidenceParser.parse(txtDirectory.resolve(MaxQuantConstants.EVIDENCE_FILE.value()), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
         if (getSpectra().isEmpty() || maxQuantEvidenceParser.getPeptides().isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");
@@ -291,7 +291,7 @@ public class MaxQuantParser {
         proteinGroups.clear();
         analyticalRuns.clear();
         maxQuantSpectraParser.clear();
-        maxQuantProteinGroupParser.clear();
+        maxQuantProteinGroupsParser.clear();
         parsed = false;
     }
 }

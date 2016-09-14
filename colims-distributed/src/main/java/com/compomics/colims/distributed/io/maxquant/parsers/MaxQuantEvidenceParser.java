@@ -2,9 +2,9 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.ModificationMappingException;
-import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
+import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator2;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
-import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
+import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantHeaders;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesModificationMapper;
 import com.compomics.colims.model.Modification;
@@ -29,22 +29,6 @@ import java.util.regex.Pattern;
 @Component("maxQuantEvidenceParser")
 public class MaxQuantEvidenceParser {
 
-    @Autowired
-    private UtilitiesModificationMapper utilitiesModificationMapper;
-
-    private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
-            MaxQuantEvidenceHeaders.ACETYL_PROTEIN_N_TERM,
-            MaxQuantEvidenceHeaders.CHARGE,
-            MaxQuantEvidenceHeaders.DELTA_SCORE,
-            MaxQuantEvidenceHeaders.MASS,
-            MaxQuantEvidenceHeaders.MODIFICATIONS,
-            MaxQuantEvidenceHeaders.MS_MS_IDS,
-            MaxQuantEvidenceHeaders.OXIDATION_M,
-            MaxQuantEvidenceHeaders.PEP,
-            MaxQuantEvidenceHeaders.PROTEIN_GROUP_IDS,
-            MaxQuantEvidenceHeaders.SCORE,
-            MaxQuantEvidenceHeaders.SEQUENCE};
-
     private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
     private static final String MODIFICATION_DELIMITER = ";";
     private static final String UNMODIFIED = "Unmodified";
@@ -53,6 +37,11 @@ public class MaxQuantEvidenceParser {
     private static final String MODIFICATION_SCORE_DIFFS = " score diffs";
     static final String N_TERMINAL_MODIFICATION = "Protein N-term";
     static final String C_TERMINAL_MODIFICATION = "Protein C-term";
+
+    @Autowired
+    private UtilitiesModificationMapper utilitiesModificationMapper;
+    @Autowired
+    private MaxQuantHeaders maxQuantMaxQuantHeaders;
 
     /**
      * Spectrum IDs and associated quantifications.
@@ -90,12 +79,12 @@ public class MaxQuantEvidenceParser {
      *
      * @param evidenceFilePath       the MaxQuant evidence file path
      * @param omittedProteinGroupIds removed protein group IDs.
-     * @throws IOException                                                       in case of an I/O related problem
-     * @throws com.compomics.colims.distributed.io.maxquant.UnparseableException
-     * @throws com.compomics.colims.core.io.MappingException                     in case of a mapping problem
+     * @throws IOException          in case of an I/O related problem
+     * @throws UnparseableException
+     * @throws MappingException     in case of a mapping problem
      */
     public void parse(Path evidenceFilePath, List<String> omittedProteinGroupIds) throws IOException, UnparseableException, MappingException {
-        TabularFileLineValuesIterator evidenceIterator = new TabularFileLineValuesIterator(evidenceFilePath.toFile(), MANDATORY_HEADERS);
+        TabularFileLineValuesIterator2 evidenceIterator = new TabularFileLineValuesIterator2(evidenceFilePath.toFile(), maxQuantMaxQuantHeaders.getMandatoryHeaders(MaxQuantHeaders.MaxQuantFile.EVIDENCE));
 
         Map<String, String> evidenceEntry;
         while (evidenceIterator.hasNext()) {
