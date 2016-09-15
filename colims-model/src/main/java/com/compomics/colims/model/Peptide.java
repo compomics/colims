@@ -67,8 +67,7 @@ public class Peptide extends DatabaseEntity {
      */
     @OneToMany(mappedBy = "peptide", cascade = CascadeType.ALL)
     private List<PeptideHasProteinGroup> peptideHasProteinGroups = new ArrayList<>();
-    @OneToMany(mappedBy = "peptide", cascade = CascadeType.ALL)
-    private List<QuantificationGroup> quantificationGroups = new ArrayList<>();
+
 
     /**
      * No-arg constructor.
@@ -138,14 +137,6 @@ public class Peptide extends DatabaseEntity {
 
     public void setPeptideHasProteinGroups(List<PeptideHasProteinGroup> peptideHasProteinGroups) {
         this.peptideHasProteinGroups = peptideHasProteinGroups;
-    }
-
-    public List<QuantificationGroup> getQuantificationGroups() {
-        return quantificationGroups;
-    }
-
-    public void setQuantificationGroups(List<QuantificationGroup> quantificationGroups) {
-        this.quantificationGroups = quantificationGroups;
     }
 
     /**

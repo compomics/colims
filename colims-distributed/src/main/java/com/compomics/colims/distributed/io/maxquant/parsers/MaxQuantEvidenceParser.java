@@ -52,10 +52,6 @@ public class MaxQuantEvidenceParser {
      */
     private static final Map<Integer, QuantificationWeight[]> WEIGHT_OPTIONS = new HashMap<>();
     /**
-     * Spectrum IDs and associated quantifications.
-     */
-    private final Map<Integer, List<Quantification>> quantifications = new HashMap<>();
-    /**
      * Spectrum IDs and peptides.
      */
     private final Map<Integer, List<Peptide>> peptides = new HashMap<>();
@@ -74,10 +70,6 @@ public class MaxQuantEvidenceParser {
         WEIGHT_OPTIONS.put(1, new QuantificationWeight[]{QuantificationWeight.LIGHT});
         WEIGHT_OPTIONS.put(2, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.HEAVY});
         WEIGHT_OPTIONS.put(3, new QuantificationWeight[]{QuantificationWeight.LIGHT, QuantificationWeight.MEDIUM, QuantificationWeight.HEAVY});
-    }
-
-    public Map<Integer, List<Quantification>> getQuantifications() {
-        return quantifications;
     }
 
     public Map<Integer, List<Peptide>> getPeptides() {
@@ -140,25 +132,6 @@ public class MaxQuantEvidenceParser {
                                 peptides.put(spectrumID, Arrays.asList(new Peptide[]{peptide}));
                             } else {
                                 peptides.get(spectrumID).add(peptide);
-                            }
-
-                            List<Quantification> spectrumQuantList = new ArrayList<>();
-                            for (int j = 0; j < intensityCount; ++j) {
-                                Quantification quant = new Quantification();
-                                quant.setIntensity(intensities[j]);
-                                quant.setWeight(weights[j]);
-
-                                spectrumQuantList.add(quant);
-
-                                QuantificationGroup quantGroup = new QuantificationGroup();
-                                quantGroup.setQuantification(quant);
-                                quantGroup.setPeptide(peptide);
-                            }
-
-                            if (quantifications.containsKey(spectrumID)) {
-                                quantifications.get(spectrumID).addAll(spectrumQuantList);
-                            } else {
-                                quantifications.put(spectrumID, spectrumQuantList);
                             }
                         }
                     }
@@ -334,7 +307,6 @@ public class MaxQuantEvidenceParser {
     public void clear() {
         peptideProteins.clear();
         peptides.clear();
-        quantifications.clear();
     }
 
     private PeptideHasModification createPeptideHasModification(double deltaScore, int location, double probability, Peptide peptide) {
