@@ -4,7 +4,7 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator2;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantHeaders;
+import com.compomics.colims.distributed.io.maxquant.headers.AbstractMaxQuantHeaders;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantEvidenceHeaders;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesModificationMapper;
 import com.compomics.colims.model.Modification;
@@ -41,7 +41,7 @@ public class MaxQuantEvidenceParser {
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
     @Autowired
-    private MaxQuantHeaders maxQuantMaxQuantHeaders;
+    private AbstractMaxQuantHeaders maxQuantMaxQuantHeaders;
 
     /**
      * Spectrum IDs and associated quantifications.
@@ -84,7 +84,7 @@ public class MaxQuantEvidenceParser {
      * @throws MappingException     in case of a mapping problem
      */
     public void parse(Path evidenceFilePath, List<String> omittedProteinGroupIds) throws IOException, UnparseableException, MappingException {
-        TabularFileLineValuesIterator2 evidenceIterator = new TabularFileLineValuesIterator2(evidenceFilePath.toFile(), maxQuantMaxQuantHeaders.getMandatoryHeaders(MaxQuantHeaders.MaxQuantFile.EVIDENCE));
+        TabularFileLineValuesIterator2 evidenceIterator = new TabularFileLineValuesIterator2(evidenceFilePath, maxQuantMaxQuantHeaders.getMandatoryHeaders(AbstractMaxQuantHeaders.MaxQuantFile.EVIDENCE));
 
         Map<String, String> evidenceEntry;
         while (evidenceIterator.hasNext()) {

@@ -19,7 +19,7 @@ import java.util.List;
 public class MaxQuantHeadersTest {
 
     @Autowired
-    private MaxQuantHeaders maxQuantHeaders;
+    private AbstractMaxQuantHeaders maxQuantHeaders;
 
     @Test
     public void testParse() throws HttpClientErrorException, IOException {

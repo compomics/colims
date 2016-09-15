@@ -5,8 +5,8 @@ import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.TypedCvParamService;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
-import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
-import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
+import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator2;
+import com.compomics.colims.distributed.io.maxquant.headers.AbstractMaxQuantHeaders;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantParameterHeaders;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSpectrumParameterHeaders;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSummaryHeaders;
@@ -56,14 +56,6 @@ public class MaxQuantSearchSettingsParser {
     private static final String MODIFICATIONS_DELIMITER = ",";
     private static final String MODIFICATION_NAME_ONLY = " ";
 
-    private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
-            MaxQuantSummaryHeaders.ENZYME,
-            MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
-            MaxQuantSummaryHeaders.MULTIPLICITY,
-            MaxQuantSummaryHeaders.PROTEASE,
-            MaxQuantSummaryHeaders.RAW_FILE
-    };
-
     /**
      * The MaxQuant version.
      */
@@ -108,6 +100,8 @@ public class MaxQuantSearchSettingsParser {
     private OlsService olsService;
     @Autowired
     private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
+    @Autowired
+    private AbstractMaxQuantHeaders maxQuantHeaders;
 
     /**
      * Get the version of MaxQuant used.
@@ -138,7 +132,7 @@ public class MaxQuantSearchSettingsParser {
     public void parse(Path combinedFolderDirectory, Path parameterFilePath, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
         Path txtDirectory = Paths.get(combinedFolderDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         parseSpectrumParameters(parameterFilePath);
-        TabularFileLineValuesIterator summaryIterator = new TabularFileLineValuesIterator(Paths.get(txtDirectory.toString(), MaxQuantConstants.SUMMARY_FILE.value()).toFile(), MANDATORY_HEADERS);
+        TabularFileLineValuesIterator2 summaryIterator = new TabularFileLineValuesIterator2(Paths.get(txtDirectory.toString(), MaxQuantConstants.SUMMARY_FILE.value()), maxQuantHeaders.getMandatoryHeaders(AbstractMaxQuantHeaders.MaxQuantFile.SUMMARY));
         Map<String, String> row;
 
         while (summaryIterator.hasNext()) {

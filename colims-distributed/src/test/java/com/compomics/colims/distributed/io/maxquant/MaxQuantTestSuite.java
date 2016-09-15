@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant;
 
+import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantHeadersTest;
 import com.compomics.colims.distributed.io.maxquant.parsers.*;
 import com.compomics.colims.model.FastaDb;
 import org.junit.runner.RunWith;
@@ -20,7 +21,8 @@ import java.nio.file.Path;
         MaxQuantParserTest.class,
         MaxQuantProteinGroupsParserTest.class,
         MaxQuantSpectraParserTest.class,
-        TabularFileLineValuesIteratorTest.class
+        TabularFileLineValuesIteratorTest.class,
+        MaxQuantHeadersTest.class
 })
 public class MaxQuantTestSuite {
 

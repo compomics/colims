@@ -4,9 +4,10 @@ import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantHeader;
 import com.google.common.io.LineReader;
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -22,7 +23,8 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
     private static final Logger LOGGER = Logger.getLogger(TabularFileLineValuesIterator2.class);
 
     private static final char DELIMITER = '\t';
-    private FileReader fileReader;
+
+    private BufferedReader bufferedReader;
     private LineReader lineReader;
     private String[] nextLine;
     /**
@@ -37,14 +39,14 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
      * @param tsvFile tab separated values file
      * @throws IOException
      */
-    public TabularFileLineValuesIterator2(final File tsvFile) throws IOException {
-        fileReader = new FileReader(tsvFile);
-        lineReader = new LineReader(fileReader);
+    public TabularFileLineValuesIterator2(final Path tsvFile) throws IOException {
+        bufferedReader = Files.newBufferedReader(tsvFile);
+        lineReader = new LineReader(bufferedReader);
 
         String firstLine = lineReader.readLine();
 
         if (firstLine == null || firstLine.isEmpty()) {
-            throw new IOException("Input file " + tsvFile.getPath() + " is empty.");
+            throw new IOException("Input file " + tsvFile.getFileName() + " is empty.");
         } else {
             headerValues = firstLine.toLowerCase(Locale.US).split("" + DELIMITER);
 
@@ -54,21 +56,23 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
 
     /**
      * Initialize an iterator for the data file. When iterating of the rows, the columns with the given headerValues are
-     * being parsed and put in a map (key: the {@link MaxQuantHeader} instance; value: the column entry).
+     * being parsed and put in a map (key: the {@link MaxQuantHeader} instance; value: the column entry). The method
+     * throws an {@link IllegalArgumentException} if a header is not present in the given file.
      *
-     * @param tsvFile the tab separated data file
-     * @param maxQuantHeaders the list of headerValues
-     * @throws IOException in case of an Input/Output related problem
+     * @param tsvFile         the tab separated data file
+     * @param maxQuantHeaders the list of headerValues that have to be present
+     * @throws IOException              in case of an Input/Output related problem
+     * @throws IllegalArgumentException in case on of the given headers is not present
      */
-    public TabularFileLineValuesIterator2(final File tsvFile, List<MaxQuantHeader> maxQuantHeaders) throws IOException {
-        fileReader = new FileReader(tsvFile);
-        lineReader = new LineReader(fileReader);
+    public TabularFileLineValuesIterator2(final Path tsvFile, List<MaxQuantHeader> maxQuantHeaders) throws IOException {
+        bufferedReader = Files.newBufferedReader(tsvFile);
+        lineReader = new LineReader(bufferedReader);
 
         //read the first line
         String firstLine = lineReader.readLine();
 
         if (firstLine == null || firstLine.isEmpty()) {
-            throw new IOException("Input file " + tsvFile.getPath() + " is empty");
+            throw new IOException("Input file " + tsvFile.getFileName() + " is empty.");
         } else {
             firstLine = firstLine.toLowerCase(Locale.US);
         }
@@ -76,13 +80,15 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
         List<String> firstLineList = Arrays.asList(firstLine.split(String.valueOf(DELIMITER)));
         //check if each of the given header values is present in the file header
         for (MaxQuantHeader maxQuantHeader : maxQuantHeaders) {
-            Optional<String> optionalHeader = maxQuantHeader.getValues()
+            Optional<String> optionalHeader = maxQuantHeader.getLowerCaseValues()
                     .stream()
                     .filter(firstLineList::contains)
                     .findFirst();
 
             if (optionalHeader.isPresent()) {
                 maxQuantHeader.setParsedValue(maxQuantHeader.getValues().indexOf(optionalHeader.get()));
+            } else {
+                throw new IllegalArgumentException("The mandatory header " + maxQuantHeader.getName() + " is not present in the given file " + tsvFile.getFileName());
             }
         }
 
@@ -104,7 +110,7 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
     public boolean hasNext() {
         if (nextLine == null) {
             try {
-                fileReader.close();
+                bufferedReader.close();
             } catch (IOException e) {
                 LOGGER.error(e.getMessage(), e);
             }

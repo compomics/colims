@@ -1,8 +1,8 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
-import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
-import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
+import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator2;
+import com.compomics.colims.distributed.io.maxquant.headers.AbstractMaxQuantHeaders;
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantMSMSHeaders;
 import com.compomics.colims.model.Spectrum;
 import org.apache.log4j.Logger;
@@ -43,27 +43,19 @@ public class MaxQuantSpectraParser {
     private static final String NOT_A_NUMBER = "nan";
     private static final String NO_INTENSITY = "-1";
     private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
-    
-    private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
-        MaxQuantMSMSHeaders.ID,
-        MaxQuantMSMSHeaders.MATCHES,
-        MaxQuantMSMSHeaders.INTENSITIES,
-        MaxQuantMSMSHeaders.MASSES,
-        MaxQuantMSMSHeaders.SCAN_EVENT_NUMBER,
-        MaxQuantMSMSHeaders.SCAN_INDEX
-    };
-
-    /**
-     * The MaxQuantAndromedaParser for parsing the .apl spectra files.
-     */
-    @Autowired
-    private MaxQuantAndromedaParser maxQuantAndromedaParser;
 
     /**
      * MaxQuantSpectra object to store identified and unidentified spectra
      */
     private final MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
-    
+    /**
+     * The MaxQuantAndromedaParser for parsing the .apl spectra files.
+     */
+    @Autowired
+    private MaxQuantAndromedaParser maxQuantAndromedaParser;
+    @Autowired
+    private AbstractMaxQuantHeaders maxQuantHeaders;
+
     /**
      * Get maxQuantSpectra
      *
@@ -77,10 +69,9 @@ public class MaxQuantSpectraParser {
      * This method parses the msms.txt and .apl spectrum files and returns the
      * result in a map.
      *
-     * @param maxQuantDirectory the MaxQuant parent directory
-     * @param includeUnidentifiedSpectra whether or not to include the
-     * unidentified spectra
-     * @param removedProteinGroupIds removed protein group IDs.
+     * @param maxQuantDirectory          the MaxQuant parent directory
+     * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
+     * @param removedProteinGroupIds     removed protein group IDs.
      * @throws IOException
      */
     public void parse(Path maxQuantDirectory, boolean includeUnidentifiedSpectra, List<String> removedProteinGroupIds) throws IOException {
@@ -102,29 +93,25 @@ public class MaxQuantSpectraParser {
      * Parse the msms.txt file. This method returns a map with a String instance
      * as key and the partially mapped Spectrum instance as value for each row.
      *
-     * @param msmsFile the MaxQuant msms.txt file path
-     * @param msmsIds the msms IDs map (key: apl spectrum header key; value: the
-     * msms ID)
-     * @param spectra the spectra map (key: apl spectrum header key; value: the
-     * mapped Spectrum instance)
+     * @param msmsFile               the MaxQuant msms.txt file path
      * @param omittedProteinGroupIds the list of omitted protein group IDs
      * @return the mapped spectra
      */
     private void parse(Path msmsFile, MaxQuantSpectra maxQuantSpectra, List<String> omittedProteinGroupIds) throws IOException {
-        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile.toFile(), MANDATORY_HEADERS);
+        TabularFileLineValuesIterator2 valuesIterator = new TabularFileLineValuesIterator2(msmsFile, maxQuantHeaders.getMandatoryHeaders(AbstractMaxQuantHeaders.MaxQuantFile.MSMS));
         Spectrum spectrum;
         for (Map<String, String> spectrumValues : valuesIterator) {
             String[] split = spectrumValues.get(MaxQuantMSMSHeaders.PROTEIN_GROUP_IDS.getValue()).split(PROTEIN_GROUP_ID_DELIMITER);
             boolean ommittedSpectrum = true;
-            for(String proteinGroupID : split){
-                if(!omittedProteinGroupIds.contains(proteinGroupID)){
+            for (String proteinGroupID : split) {
+                if (!omittedProteinGroupIds.contains(proteinGroupID)) {
                     ommittedSpectrum = false;
                 }
             }
             //concatenate the RAW file name and scan index
             String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getValue())
-                + KEY_MIDDLE
-                + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getValue());
+                    + KEY_MIDDLE
+                    + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getValue());
             if (!ommittedSpectrum) {
                 //map the spectrum
                 if (!maxQuantSpectra.getAplSpectra().containsKey(aplKey)) {
@@ -137,7 +124,7 @@ public class MaxQuantSpectraParser {
                     // get the spectrum from aplSpectra and find that spectrum instance from spectrumIDs and add id to the list
                     maxQuantSpectra.getSpectrumIDs().get(maxQuantSpectra.getAplSpectra().get(aplKey)).add(Integer.parseInt(spectrumValues.get(MaxQuantMSMSHeaders.ID.getValue())));
                 }
-            }else{
+            } else {
                 maxQuantSpectra.getOmmittedSpectraKeys().add(aplKey);
             }
         }
@@ -147,9 +134,8 @@ public class MaxQuantSpectraParser {
      * Map the spectrum values from a parsed msms.txt row entry onto a Colims
      * {@link Spectrum}.
      *
-     * @param aplKey the apl key to use as spectrum accession
-     * @param spectrumValues the map of spectrum values (key: column header;
-     * value: column value)
+     * @param aplKey         the apl key to use as spectrum accession
+     * @param spectrumValues the map of spectrum values (key: column header; value: column value)
      * @return the mapped Spectrum instance
      */
     private Spectrum mapMsmsSpectrum(String aplKey, Map<String, String> spectrumValues) {

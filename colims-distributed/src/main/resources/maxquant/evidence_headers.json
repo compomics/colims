@@ -1,62 +1,53 @@
 {
-  "header": {
-    "name": "CHARGE",
+  "CHARGE": {
     "mandatory": true,
     "values": [
       "Charge"
     ]
   },
-  "header ": {
-    "name": "DELTA_SCORE",
+  "DELTA_SCORE": {
     "mandatory": true,
     "values": [
       "Delta score"
     ]
   },
-  "header": {
-    "name": "MASS",
+  "MASS": {
     "mandatory": true,
     "values": [
       "Mass"
     ]
   },
-  "header ": {
-    "name": "MODIFICATIONS",
+  "MODIFICATIONS": {
     "mandatory": true,
     "values": [
       "Modifications"
     ]
   },
-  "header": {
-    "name": "MS_MS_IDS",
+  "MS_MS_IDS": {
     "mandatory": true,
     "values": [
       "MS/MS IDs"
     ]
   },
-  "header ": {
-    "name": "B_MIXTURE",
+  "B_MIXTURE": {
     "mandatory": true,
     "values": [
       "B mixture"
     ]
   },
-  "header": {
-    "name": "PEP",
+  "PEP": {
     "mandatory": true,
     "values": [
       "PEP"
     ]
   },
-  "header ": {
-    "name": "SCORE",
+  "SCORE": {
     "mandatory": true,
     "values": [
       "Score"
     ]
   },
-  "header ": {
-    "name": "SEQUENCE",
+  "SEQUENCE": {
     "mandatory": true,
     "values": [
       "Sequence"
