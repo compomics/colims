@@ -2,12 +2,9 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
-import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator2;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSummaryHeaders;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
-import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +45,6 @@ public class MaxQuantParser {
 
     private Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
     private final Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
-    private final Map<Integer, FragmentationType> fragmentations = new HashMap<>();
 
     private boolean parsed = false;
 
@@ -60,35 +56,6 @@ public class MaxQuantParser {
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
     @Autowired
     private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
-
-    /**
-     * An extra method for fun testing times. @TODO do we still need this
-     * method?
-     *
-     * @param maxQuantDirectory File pointer to MaxQuant directory
-     * @param fastaDbs          the FASTA databases
-     * @throws IOException          thrown in case of a I/O related problem
-     * @throws MappingException     thrown in case of a mapping related problem
-     * @throws UnparseableException
-     */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean includeContaminants, List<String> optionalHeaders) throws IOException, MappingException, UnparseableException {
-        Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
-        Path summaryDirectory = Paths.get(txtDirectory.toString() + File.separator + MaxQuantConstants.SUMMARY_FILE.value());
-        TabularFileLineValuesIterator2 summaryIterator = new TabularFileLineValuesIterator2(summaryDirectory);
-        Map<String, String> row;
-        String multiplicity = null;
-
-        while (summaryIterator.hasNext()) {
-            row = summaryIterator.next();
-
-            if (row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getValue())) {
-                multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getValue());
-                break;
-            }
-        }
-
-        parse(maxQuantDirectory, fastaDbs, multiplicity, includeContaminants, optionalHeaders);
-    }
 
     /**
      * Parse the MaxQuant output folder and map the content of the different
@@ -285,7 +252,6 @@ public class MaxQuantParser {
      * Clear the parser.
      */
     public void clear() {
-        fragmentations.clear();
         maxQuantEvidenceParser.clear();
         proteinGroups.clear();
         analyticalRuns.clear();

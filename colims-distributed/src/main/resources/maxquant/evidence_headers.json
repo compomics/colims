@@ -29,10 +29,10 @@
       "MS/MS IDs"
     ]
   },
-  "B_MIXTURE": {
+  "PROTEIN_GROUP_IDS": {
     "mandatory": true,
     "values": [
-      "B mixture"
+      "Protein group IDs"
     ]
   },
   "PEP": {

@@ -1,44 +1,80 @@
 {
-  "header": {
-    "name": "ID",
+  "ID": {
     "mandatory": true,
     "values": [
       "id"
     ]
   },
-  "header": {
-    "name": "MATCHES",
+  "MATCHES": {
     "mandatory": true,
     "values": [
       "Matches"
     ]
   },
-  "header ": {
-    "name": "INTENSITIES",
+  "INTENSITIES": {
     "mandatory": true,
     "values": [
       "Intensities"
     ]
   },
-  "header ": {
-    "name": "MASSES",
+  "MASSES": {
     "mandatory": true,
     "values": [
       "Masses"
     ]
   },
-  "header ": {
-    "name": "SCAN_EVENT_NUMBER",
+  "SCAN_EVENT_NUMBER": {
     "mandatory": true,
     "values": [
       "Scan event number"
     ]
   },
-  "header ": {
-    "name": "SCAN_INDEX",
+  "SCAN_INDEX": {
     "mandatory": true,
     "values": [
       "Scan Index"
+    ]
+  },
+  "PROTEIN_GROUP_IDS": {
+    "mandatory": true,
+    "values": [
+      "Protein Group IDs"
+    ]
+  },
+  "RAW_FILE": {
+    "mandatory": true,
+    "values": [
+      "Raw File"
+    ]
+  },
+  "SCAN_NUMBER": {
+    "mandatory": true,
+    "values": [
+      "Scan Number"
+    ]
+  },
+  "PRECURSOR_INTENSITY": {
+    "mandatory": true,
+    "values": [
+      "Precursor Intensity"
+    ]
+  },
+  "CHARGE": {
+    "mandatory": true,
+    "values": [
+      "Charge"
+    ]
+  },
+  "M_Z": {
+    "mandatory": true,
+    "values": [
+      "m/z"
+    ]
+  },
+  "RETENTION_TIME": {
+    "mandatory": true,
+    "values": [
+      "Retention Time"
     ]
   }
 }

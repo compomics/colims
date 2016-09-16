@@ -1,6 +1,5 @@
 {
-  "header": {
-    "name": "VERSION",
+  "VERSION": {
     "mandatory": true,
     "values": [
       "Version"

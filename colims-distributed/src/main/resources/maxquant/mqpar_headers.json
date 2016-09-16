@@ -1,41 +1,35 @@
 {
-  "header": {
-    "name": "PEPTIDE_MASS_TOLERANCE",
+  "PEPTIDE_MASS_TOLERANCE": {
     "mandatory": true,
     "values": [
       "mainSearchTol"
     ]
   },
-  "header ": {
-    "name": "PEPTIDE_MASS_TOLERANCE_UNIT",
+  "PEPTIDE_MASS_TOLERANCE_UNIT": {
     "mandatory": true,
     "values": [
       "searchTolInPpm"
     ]
   },
-  "header": {
-    "name": "FRAGMENT_MASS_TOLERANCE",
+  "FRAGMENT_MASS_TOLERANCE": {
     "mandatory": true,
     "values": [
       "firstSearchTol"
     ]
   },
-  "header ": {
-    "name": "ENZYMES",
+  "ENZYMES": {
     "mandatory": true,
     "values": [
       "enzymes"
     ]
   },
-  "header": {
-    "name": "MAX_MISSED_CLEAVAGES",
+  "MAX_MISSED_CLEAVAGES": {
     "mandatory": true,
     "values": [
       "maxMissedCleavages"
     ]
   },
-  "header ": {
-    "name": "MAX_CHARGE",
+  "MAX_CHARGE": {
     "mandatory": true,
     "values": [
       "maxCharge"

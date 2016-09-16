@@ -1,7 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.headers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This class represents a single header entry of a MaxQuant tab separated identification file.
@@ -10,6 +9,10 @@ import java.util.stream.Collectors;
  */
 public class MaxQuantHeader {
 
+    /**
+     * The header name as defined in the JSON file. This name should correspond to the
+     */
+    String name;
     /**
      * Boolean that indicates whether the header is mandatory for parsing or not.
      */
@@ -29,16 +32,29 @@ public class MaxQuantHeader {
     public MaxQuantHeader() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @param name      the header name
+     * @param mandatory is the header mandatory
+     * @param values    the possible header values
+     */
+    public MaxQuantHeader(String name, boolean mandatory, List<String> values) {
+        this.name = name;
+        this.mandatory = mandatory;
+        this.values = values;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public boolean isMandatory() {
         return mandatory;
     }
 
     public List<String> getValues() {
         return values;
-    }
-
-    public void setValues(List<String> values) {
-        this.values = values;
     }
 
     /**
@@ -51,6 +67,15 @@ public class MaxQuantHeader {
             throw new IllegalArgumentException("The given index " + headerValueIndex + " exceeds the number of possible header values.");
         }
         this.headerValueIndex = headerValueIndex;
+    }
+
+    /**
+     * Get the header value.
+     *
+     * @return the header value;
+     */
+    public String getValue() {
+        return values.get(headerValueIndex);
     }
 
 }

@@ -1,9 +1,9 @@
 package com.compomics.colims.distributed.io.maxquant.headers;
 
 /**
- * Created by niels.
+ * Created by Niels Hulstaert on 16/09/16.
  */
-public enum MaxQuantSpectrumParameterHeaders {
+public enum MqParHeader {
 
     ENZYMES,
     VARIABLE_MODIFICATIONS,

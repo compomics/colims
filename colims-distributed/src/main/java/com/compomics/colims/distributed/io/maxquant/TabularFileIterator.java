@@ -15,12 +15,12 @@ import java.util.*;
  * the values on the first line as keys and the values per line as value. Using this approach one does not have to read
  * the entire file into memory first, providing some much needed relief when parsing large MaxQuant files.
  */
-public class TabularFileLineValuesIterator2 implements Iterable<Map<String, String>>, Iterator<Map<String, String>> {
+public class TabularFileIterator implements Iterable<Map<String, String>>, Iterator<Map<String, String>> {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(TabularFileLineValuesIterator2.class);
+    private static final Logger LOGGER = Logger.getLogger(TabularFileIterator.class);
 
     private static final char DELIMITER = '\t';
 
@@ -34,37 +34,15 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
 
     /**
      * Initialize an iterator for the data file. When iterating of the rows, the columns with the given headerValues are
-     * being parsed and put in a map (key: the {@link MaxQuantHeader} instance; value: the column entry).
-     *
-     * @param tsvFile tab separated values file
-     * @throws IOException
-     */
-    public TabularFileLineValuesIterator2(final Path tsvFile) throws IOException {
-        bufferedReader = Files.newBufferedReader(tsvFile);
-        lineReader = new LineReader(bufferedReader);
-
-        String firstLine = lineReader.readLine();
-
-        if (firstLine == null || firstLine.isEmpty()) {
-            throw new IOException("Input file " + tsvFile.getFileName() + " is empty.");
-        } else {
-            headerValues = firstLine.toLowerCase(Locale.US).split("" + DELIMITER);
-
-            advanceLine();
-        }
-    }
-
-    /**
-     * Initialize an iterator for the data file. When iterating of the rows, the columns with the given headerValues are
      * being parsed and put in a map (key: the {@link MaxQuantHeader} instance; value: the column entry). The method
      * throws an {@link IllegalArgumentException} if a header is not present in the given file.
      *
      * @param tsvFile         the tab separated data file
-     * @param maxQuantHeaders the list of headerValues that have to be present
+     * @param maxQuantHeaders the list of headers that have to be present
      * @throws IOException              in case of an Input/Output related problem
      * @throws IllegalArgumentException in case on of the given headers is not present
      */
-    public TabularFileLineValuesIterator2(final Path tsvFile, List<MaxQuantHeader> maxQuantHeaders) throws IOException {
+    public TabularFileIterator(final Path tsvFile, List<MaxQuantHeader> maxQuantHeaders) throws IOException {
         bufferedReader = Files.newBufferedReader(tsvFile);
         lineReader = new LineReader(bufferedReader);
 
@@ -80,13 +58,13 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
         List<String> firstLineList = Arrays.asList(firstLine.split(String.valueOf(DELIMITER)));
         //check if each of the given header values is present in the file header
         for (MaxQuantHeader maxQuantHeader : maxQuantHeaders) {
-            Optional<String> optionalHeader = maxQuantHeader.getLowerCaseValues()
+            Optional<String> header = maxQuantHeader.getValues()
                     .stream()
                     .filter(firstLineList::contains)
                     .findFirst();
 
-            if (optionalHeader.isPresent()) {
-                maxQuantHeader.setParsedValue(maxQuantHeader.getValues().indexOf(optionalHeader.get()));
+            if (header.isPresent()) {
+                maxQuantHeader.setParsedValue(maxQuantHeader.getValues().indexOf(header.get()));
             } else {
                 throw new IllegalArgumentException("The mandatory header " + maxQuantHeader.getName() + " is not present in the given file " + tsvFile.getFileName());
             }
@@ -95,15 +73,6 @@ public class TabularFileLineValuesIterator2 implements Iterable<Map<String, Stri
         headerValues = firstLine.split(String.valueOf(DELIMITER));
 
         advanceLine();
-    }
-
-    /**
-     * Get the header of the file to parse. Note that the header values are lowercase.
-     *
-     * @return the headerValues identified for the currently parsed file
-     */
-    public String[] getHeaderValues() {
-        return headerValues.clone();
     }
 
     @Override

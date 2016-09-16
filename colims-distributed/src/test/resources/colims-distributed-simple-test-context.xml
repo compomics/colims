@@ -6,6 +6,6 @@
        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
        http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
 
-    <bean name="maxQuantHeaders" class="com.compomics.colims.distributed.io.maxquant.headers.AbstractMaxQuantHeaders"/>
+    <bean name="maxQuantHeaders" class="com.compomics.colims.distributed.io.maxquant.headers.MaxQuantHeaders"/>
 
 </beans>

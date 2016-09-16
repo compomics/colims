@@ -6,9 +6,9 @@
 package com.compomics.colims.distributed.playground;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
-import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator2;
-import com.compomics.colims.distributed.io.maxquant.headers.AbstractMaxQuantHeaders;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantMSMSHeaders;
+import com.compomics.colims.distributed.io.maxquant.TabularFileIterator;
+import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantHeaders;
+import com.compomics.colims.distributed.io.maxquant.headers.MsmsHeaders;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantAplParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.ParseUtils;
 import com.compomics.util.experiment.massspectrometry.Peak;
@@ -58,7 +58,7 @@ public class AnnotatedSpectraParser {
      */
     private Map<Path, Path> aplFilePaths = new HashMap<>();
     @Autowired
-    private AbstractMaxQuantHeaders maxQuantHeaders;
+    private MaxQuantHeaders maxQuantHeaders;
 
     /**
      * The start of the spectrum header in the apl file.
@@ -91,19 +91,19 @@ public class AnnotatedSpectraParser {
      * @param msmsIDs
      */
     private void parseMSMS(Path msmsFile, List<String> msmsIDs) throws IOException {
-        TabularFileLineValuesIterator2 valuesIterator = new TabularFileLineValuesIterator2(msmsFile, maxQuantHeaders.getMandatoryHeaders(AbstractMaxQuantHeaders.MaxQuantFile.MSMS));
+        TabularFileIterator valuesIterator = new TabularFileIterator(msmsFile, maxQuantHeaders.getMandatoryHeaders(MaxQuantHeaders.MaxQuantFile.MSMS));
         for (Map<String, String> spectrumValues : valuesIterator) {
-            if (msmsIDs.contains(spectrumValues.get(MaxQuantMSMSHeaders.ID.getValue()))) {
+            if (msmsIDs.contains(spectrumValues.get(MsmsHeaders.ID.getValue()))) {
                 //concatenate the RAW file name and scan index
-                String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getValue())
+                String aplKey = KEY_START + spectrumValues.get(MsmsHeaders.RAW_FILE.getValue())
                         + KEY_MIDDLE
-                        + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getValue());
+                        + spectrumValues.get(MsmsHeaders.SCAN_NUMBER.getValue());
 
                 //map the spectrum
                 if (!aplKeys.contains(aplKey)) {
-                    Map<Peak, String> annotatedPeakList = parsePeakList(spectrumValues.get(MaxQuantMSMSHeaders.MATCHES.getValue()),
-                            spectrumValues.get(MaxQuantMSMSHeaders.INTENSITIES.getValue()),
-                            spectrumValues.get(MaxQuantMSMSHeaders.MASSES.getValue()));
+                    Map<Peak, String> annotatedPeakList = parsePeakList(spectrumValues.get(MsmsHeaders.MATCHES.getValue()),
+                            spectrumValues.get(MsmsHeaders.INTENSITIES.getValue()),
+                            spectrumValues.get(MsmsHeaders.MASSES.getValue()));
                     annotations.put(aplKey, annotatedPeakList);
                     aplKeys.add(aplKey);
 
