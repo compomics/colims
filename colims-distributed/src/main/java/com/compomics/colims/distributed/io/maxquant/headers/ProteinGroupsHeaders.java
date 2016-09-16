@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.headers;
 
+import java.io.IOException;
 import java.util.EnumMap;
 
 /**
@@ -10,7 +11,7 @@ public class ProteinGroupsHeaders extends MaxQuantHeaders<ProteinGroupsHeader> {
     /**
      * No-arg constructor.
      */
-    public ProteinGroupsHeaders() {
-        super(ProteinGroupsHeader.class, new EnumMap<>(ProteinGroupsHeader.class), "maxquant/protein_groups_headers.txt");
+    public ProteinGroupsHeaders() throws IOException {
+        super(ProteinGroupsHeader.class, new EnumMap<>(ProteinGroupsHeader.class), "maxquant/protein_groups_headers.json");
     }
 }

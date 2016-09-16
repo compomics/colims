@@ -53,14 +53,17 @@ public class MaxQuantEvidenceParser {
     /**
      * The evidence evidenceHeaders.
      */
-    private EvidenceHeaders evidenceHeaders = new EvidenceHeaders();
+    private EvidenceHeaders evidenceHeaders;
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
     /**
      * No-arg constructor.
+     *
+     * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
-    public MaxQuantEvidenceParser() {
+    public MaxQuantEvidenceParser() throws IOException {
+        evidenceHeaders = new EvidenceHeaders();
     }
 
     public Map<Integer, List<Quantification>> getQuantifications() {

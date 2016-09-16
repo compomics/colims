@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.headers;
 
+import java.io.IOException;
 import java.util.EnumMap;
 
 /**
@@ -10,7 +11,7 @@ public class SummaryHeaders extends MaxQuantHeaders<SummaryHeader> {
     /**
      * No-arg constructor.
      */
-    public SummaryHeaders() {
-        super(SummaryHeader.class, new EnumMap<>(SummaryHeader.class), "maxquant/summary_headers.txt");
+    public SummaryHeaders() throws IOException {
+        super(SummaryHeader.class, new EnumMap<>(SummaryHeader.class), "maxquant/summary_headers.json");
     }
 }

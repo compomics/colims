@@ -29,11 +29,15 @@ public class MaxQuantProteinGroupsParser {
      * these protein groups are not stored in the database.
      */
     private final List<String> omittedProteinGroupIds = new ArrayList<>();
-    private ProteinGroupsHeaders proteinGroupsHeaders = new ProteinGroupsHeaders();
+    private ProteinGroupsHeaders proteinGroupsHeaders;
     @Autowired
     private ProteinService proteinService;
     @Autowired
     private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+
+    public MaxQuantProteinGroupsParser() throws IOException {
+        proteinGroupsHeaders = new ProteinGroupsHeaders();
+    }
 
     /**
      * Getter for the list of omitted protein group IDs.

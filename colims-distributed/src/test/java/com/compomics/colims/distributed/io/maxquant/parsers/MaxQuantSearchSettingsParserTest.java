@@ -1,7 +1,7 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
-import com.compomics.colims.distributed.io.maxquant.headers.MqParHeaders;
+import com.compomics.colims.distributed.io.maxquant.headers.MqParHeader;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchParameters;
@@ -57,15 +57,16 @@ public class MaxQuantSearchSettingsParserTest {
 //        assertThat(parameters.size(), is(uniqueLines.size()));
 //        assertThat(parameters.get("user name"), is("compomics"));
     }
+
     @Test
     public void testparseSpectrumParameters() throws JDOMException {
 
         maxQuantSearchSettingsParser.parseMqParFile(MaxQuantTestSuite.parameterDirectory);
 
         assertThat(maxQuantSearchSettingsParser.getSpectrumParamsWithRawFile().get("V20239_3911_Eik_green_10").
-                get(MqParHeaders.VARIABLE_MODIFICATIONS), is("Acetyl (Protein N-term),Oxidation (M)"));
+                get(MqParHeader.VARIABLE_MODIFICATIONS), is("Acetyl (Protein N-term),Oxidation (M)"));
         assertThat(maxQuantSearchSettingsParser.getSpectrumParamsWithRawFile().get("V20239_3911_Eik_green_10").
-                get(MqParHeaders.MAX_CHARGE), is("7"));
+                get(MqParHeader.MAX_CHARGE), is("7"));
 
     }
 

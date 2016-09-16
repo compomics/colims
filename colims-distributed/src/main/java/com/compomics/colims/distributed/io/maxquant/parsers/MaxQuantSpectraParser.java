@@ -45,12 +45,21 @@ public class MaxQuantSpectraParser {
      * MaxQuantSpectra object to store identified and unidentified spectra
      */
     private final MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
-    private MsmsHeaders msmsHeaders = new MsmsHeaders();
+    private MsmsHeaders msmsHeaders;
     /**
      * The MaxQuantAndromedaParser for parsing the .apl spectra files.
      */
     @Autowired
     private MaxQuantAndromedaParser maxQuantAndromedaParser;
+
+    /**
+     * No-arg constructor.
+     *
+     * @throws IOException in case of an Input/Output related problem while parsing the headers.
+     */
+    public MaxQuantSpectraParser() throws IOException {
+        msmsHeaders = new MsmsHeaders();
+    }
 
     /**
      * Get maxQuantSpectra

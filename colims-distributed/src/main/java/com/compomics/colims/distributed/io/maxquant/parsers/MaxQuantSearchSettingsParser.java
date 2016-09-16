@@ -88,9 +88,9 @@ public class MaxQuantSearchSettingsParser {
      * label mods for SILAC experiments.(key: index , value : isobaric label)
      */
     private Map<Integer, String> labelMods = new HashMap<>();
-    private MqParHeaders mqParHeaders = new MqParHeaders();
-    private ParametersHeaders parametersHeaders = new ParametersHeaders();
-    private SummaryHeaders summaryHeaders = new SummaryHeaders();
+    private MqParHeaders mqParHeaders;
+    private ParametersHeaders parametersHeaders;
+    private SummaryHeaders summaryHeaders;
     /**
      * Beans.
      */
@@ -102,6 +102,17 @@ public class MaxQuantSearchSettingsParser {
     private OlsService olsService;
     @Autowired
     private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
+
+    /**
+     * No-arg constructor.
+     *
+     * @throws IOException in case of an Input/Output related problem while parsing the headers.
+     */
+    public MaxQuantSearchSettingsParser() throws IOException {
+        parametersHeaders = new ParametersHeaders();
+        summaryHeaders = new SummaryHeaders();
+        mqParHeaders = new MqParHeaders();
+    }
 
     /**
      * Get the version of MaxQuant used.
@@ -472,33 +483,33 @@ public class MaxQuantSearchSettingsParser {
             counter = 0;
             for (Element parameterGroupElement : parameterGroupsElement.getChildren()) {
                 //create enumMap for mqpar.xml parameters (key: MqParHeader enum; value: parameter value).
-                EnumMap<MqParHeader, String> mqParParameters = new EnumMap<>(MqParHeader.class);
-                for (MqParHeaders mqparHeader : MqParHeaders.values()) {
-                    Optional<String> header = mqparHeader.getValues()
-                            .stream()
-                            .findFirst();
-                    mqparHeader.setParsedValue(mqparHeader.getValues().indexOf(header.get()));
-                    if (header.isPresent()) {
-                        if (header.get().equals(MqParHeader.VARIABLE_MODIFICATIONS) || header.get().equals(MqParHeader.ENZYMES)) {
-                            StringBuilder variableModification = new StringBuilder();
-                            getChildByName(parameterGroupElement, header.get()).getChildren().stream().forEach((variableModifications) -> {
-                                variableModification.append(",");
-                                variableModification.append(variableModifications.getContent().get(0).getValue());
-                            });
-                            mqParParameters.put(mqparHeader, org.apache.commons.lang3.StringUtils.substringAfter(variableModification.toString(), ","));
-                        } else if (header.get().equals(MqParHeader.FIXED_MODIFICATIONS)) {
-                            StringBuilder fixedModification = new StringBuilder();
-                            getChildByName(root, header.get()).getChildren().stream().forEach((fixedModifications) -> {
-                                fixedModification.append(",");
-                                fixedModification.append(fixedModifications.getContent().get(0).getValue());
-                            });
-                            mqParParameters.put(mqparHeader, org.apache.commons.lang3.StringUtils.substringAfter(fixedModification.toString(), ","));
-                        } else {
-                            mqParParameters.put(mqparHeader, getChildByName(parameterGroupElement, header.get()).getContent().get(0).getValue());
-                        }
-                    }
-                }
-                spectrumParamsWithGroup.put(counter, mqParParameters);
+//                EnumMap<MqParHeader, String> mqParParameters = new EnumMap<>(MqParHeader.class);
+//                for (MqParHeaders mqparHeader : MqParHeaders.values()) {
+//                    Optional<String> header = mqparHeader.getValues()
+//                            .stream()
+//                            .findFirst();
+//                    mqparHeader.setParsedValue(mqparHeader.getValues().indexOf(header.get()));
+//                    if (header.isPresent()) {
+//                        if (header.get().equals(MqParHeader.VARIABLE_MODIFICATIONS) || header.get().equals(MqParHeader.ENZYMES)) {
+//                            StringBuilder variableModification = new StringBuilder();
+//                            getChildByName(parameterGroupElement, header.get()).getChildren().stream().forEach((variableModifications) -> {
+//                                variableModification.append(",");
+//                                variableModification.append(variableModifications.getContent().get(0).getValue());
+//                            });
+//                            mqParParameters.put(mqparHeader, org.apache.commons.lang3.StringUtils.substringAfter(variableModification.toString(), ","));
+//                        } else if (header.get().equals(MqParHeader.FIXED_MODIFICATIONS)) {
+//                            StringBuilder fixedModification = new StringBuilder();
+//                            getChildByName(root, header.get()).getChildren().stream().forEach((fixedModifications) -> {
+//                                fixedModification.append(",");
+//                                fixedModification.append(fixedModifications.getContent().get(0).getValue());
+//                            });
+//                            mqParParameters.put(mqparHeader, org.apache.commons.lang3.StringUtils.substringAfter(fixedModification.toString(), ","));
+//                        } else {
+//                            mqParParameters.put(mqparHeader, getChildByName(parameterGroupElement, header.get()).getContent().get(0).getValue());
+//                        }
+//                    }
+//                }
+//                spectrumParamsWithGroup.put(counter, mqParParameters);
                 counter++;
 
                 Element isobaricLabelsElement = getChildByName(parameterGroupElement, "isobaricLabels");

@@ -3,13 +3,10 @@ package com.compomics.colims.distributed.io.maxquant.headers;
 import com.compomics.colims.core.util.ResourceUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -32,18 +29,23 @@ public abstract class MaxQuantHeaders<T extends Enum<T>> {
     /**
      * Constructor.
      *
-     * @param enumType the enum class for generics purposes
-     * @param headersMap the headers map
+     * @param enumType         the enum class for generics purposes
+     * @param headersMap       the headers map
      * @param jsonRelativePath the path of the JSON file with the
      */
-    public MaxQuantHeaders(Class<T> enumType, EnumMap<T, MaxQuantHeader> headersMap, String jsonRelativePath) {
+    public MaxQuantHeaders(Class<T> enumType, EnumMap<T, MaxQuantHeader> headersMap, String jsonRelativePath) throws IOException {
         this.enumType = enumType;
         this.headersMap = headersMap;
         this.jsonRelativePath = jsonRelativePath;
+        parse();
     }
 
     public Class<T> getEnumType() {
         return enumType;
+    }
+
+    public EnumMap<T, MaxQuantHeader> getHeadersMap() {
+        return headersMap;
     }
 
     /**
@@ -74,32 +76,37 @@ public abstract class MaxQuantHeaders<T extends Enum<T>> {
         return headersMap.get(headerEnum).getValue();
     }
 
+    /**
+     * Parse the JSON file and populate the {@link EnumMap} instance.
+     *
+     * @throws IOException              in case of an Input/Output related problem while parsing the JSON file
+     * @throws IllegalArgumentException in case a header entry could not be matched with an Enum value
+     */
     protected void parse() throws IOException {
         Resource jsonHeadersResource = ResourceUtils.getResourceByRelativePath(jsonRelativePath);
         ObjectMapper objectMapper = new ObjectMapper();
-        ObjectReader objectReader = objectMapper.reader();
+        //read the JSON file
+        JsonNode headersNode = objectMapper.readTree(jsonHeadersResource.getInputStream());
 
-        JsonNode headersNode = objectReader.readTree(jsonHeadersResource.getInputStream());
-        Iterator<JsonNode> headersIterator = headersNode.elements();
-
+        //iterate over the header entries
+        Iterator<Map.Entry<String, JsonNode>> headersIterator = headersNode.fields();
         while (headersIterator.hasNext()) {
-            JsonNode evidenceHeaderNode = headersIterator.next();
+            Map.Entry<String, JsonNode> headerEntry = headersIterator.next();
 
-            String headerName = "";
+            String headerName = headerEntry.getKey();
+            T headerEnum = Enum.valueOf(enumType, headerName);
+            boolean mandatory = Boolean.valueOf(headerEntry.getValue().get("mandatory").asText());
 
-            MaxQuantHeader maxQuantHeader = new MaxQuantHeader();
-            headersMap.put(getByStringValue(headerName), maxQuantHeader);
-        }
-    }
-
-    private T getByStringValue(String headersEnumStringValue) {
-        for (T headersEnum : enumType.getEnumConstants()) {
-            if (headersEnum.name().equals(headersEnumStringValue)) {
-                return headersEnum;
+            //iterate over the values array
+            JsonNode valuesNode = headerEntry.getValue().get("values");
+            List<String> values = new ArrayList<>();
+            for (JsonNode valueNode : valuesNode) {
+                values.add(valueNode.asText());
             }
-        }
 
-        throw new IllegalArgumentException("Value " + " does not correspond to an enum value of class " + enumType.getCanonicalName());
+            MaxQuantHeader maxQuantHeader = new MaxQuantHeader(headerName, mandatory, values);
+            headersMap.put(headerEnum, maxQuantHeader);
+        }
     }
 
 }
