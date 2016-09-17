@@ -16,10 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -36,11 +33,11 @@ public class MaxQuantParserTest {
 
     @Before
     public void setUp() throws MappingException, UnparseableException, IOException {
-        EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
-        fastaDbs.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb);
+        EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
+        fastaDbs.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb)));
 
         maxQuantParser.clear();
-        maxQuantParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory,fastaDbs, "2",false, new ArrayList<>());
+        maxQuantParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs, "2", false, false, new ArrayList<>());
     }
 
     @Test
@@ -55,7 +52,7 @@ public class MaxQuantParserTest {
         //look for a protein
         Assert.assertTrue(parsedContaminantsFasta.containsKey("sp|Q9D103|IFM1_MOUSE"));
         //look for a contaminants protein
-   //     Assert.assertTrue(parsedContaminantsFasta.containsKey("CON__P09870"));
+        //     Assert.assertTrue(parsedContaminantsFasta.containsKey("CON__P09870"));
     }
 
     /**

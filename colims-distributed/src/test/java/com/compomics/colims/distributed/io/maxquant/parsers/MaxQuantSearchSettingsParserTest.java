@@ -14,8 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -33,8 +32,8 @@ public class MaxQuantSearchSettingsParserTest {
 
     @Test
     public void testParse() throws Exception {
-        EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
-        fastaDbs.put(FastaDbType.PRIMARY, MaxQuantTestSuite.testFastaDb);
+        EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
+        fastaDbs.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb)));
 
         maxQuantSearchSettingsParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.parameterDirectory, fastaDbs, false);
         Map<String, SearchAndValidationSettings> result = maxQuantSearchSettingsParser.getRunSettings();

@@ -27,10 +27,10 @@ public class Playground {
 
     @Autowired
     static MaxQuantMapper maxQuantMapper;
-
+    
     @Autowired
     static MaxQuantSpectraParser maxQuantSpectraParser;
-
+    
     @Autowired
     static AnnotatedSpectraParser annotatedSpectraParser;
 
@@ -49,36 +49,33 @@ public class Playground {
         userService.fetchAuthenticationRelations(adminUser);
         userBean.setCurrentUser(adminUser);
 
-        String maxquantPath = "/home/niels/Desktop/data/maxquant_6072";
+        String maxquantPath = "C:/Users/demet/Documents/6453";
         String parameterPath =  maxquantPath + File.separator + MaxQuantConstants.PARAMETER_FILE.value();
         String combinedDirectory = maxquantPath + File.separator + MaxQuantConstants.COMBINED_DIRECTORY.value();
         String txtDirectory = combinedDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value();
-//        FastaDb testFastaDb = new FastaDb();
-//        testFastaDb.setName("test fasta");
-//        testFastaDb.setFileName("SP_human");
-//        testFastaDb.setFilePath(txtDirectory + File.separator +  "SP_human.fasta");
-//        testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
-//        fastaDbService.persist(testFastaDb);
-//
-//        FastaDb contFastaDb = new FastaDb();
-//        contFastaDb.setName("cont fasta");
-//        contFastaDb.setFileName("contaminants");
-//        contFastaDb.setFilePath(txtDirectory + File.separator +  "contaminants.fasta");
-//        contFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
-//        fastaDbService.persist(contFastaDb);
+        FastaDb testFastaDb = new FastaDb();
+        testFastaDb.setName("test fasta");
+        testFastaDb.setFileName("SP_human");
+        testFastaDb.setFilePath(txtDirectory + File.separator +  "SP_human.fasta");
+        testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+        fastaDbService.persist(testFastaDb);
 
-        FastaDb testFastaDb = fastaDbService.findById(3L);
-        FastaDb contFastaDb = fastaDbService.findById(4L);
-
-        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, testFastaDb.getId());
-        fastaDbIds.put(FastaDbType.CONTAMINANTS, contFastaDb.getId());
+        FastaDb contFastaDb = new FastaDb();
+        contFastaDb.setName("cont fasta");
+        contFastaDb.setFileName("contaminants");
+        contFastaDb.setFilePath(txtDirectory + File.separator +  "contaminants.fasta");
+        contFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+        fastaDbService.persist(contFastaDb);
+        
+        EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(testFastaDb.getId())));
+        fastaDbIds.put(FastaDbType.CONTAMINANTS, new ArrayList<>(Arrays.asList(contFastaDb.getId())));
 
         // to parse everything
-        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds, false, new ArrayList<>());
+        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory), fastaDbIds, false, true, new ArrayList<>());
         MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
-
+        
         String msmsFileDirectory = txtDirectory + File.separator + MaxQuantConstants.MSMS_FILE.value();
         String andromedaDirectory = combinedDirectory + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value();
 
@@ -88,11 +85,11 @@ public class Playground {
         msmsIDs.add("2");
         msmsIDs.add("3");
    //     annotatedSpectraParser.parseSpectra(Paths.get(msmsFileDirectory), Paths.get(andromedaDirectory), msmsIDs);
-
-
-
+        
+        
+        
         System.out.println("Everything is parsed!");
-
+        
 
 
         //  MaxQuantSearchSettingsParser maxQuantSearchSettingsParser = applicationContext.getBean("maxQuantSearchSettingsParser", MaxQuantSearchSettingsParser.class);

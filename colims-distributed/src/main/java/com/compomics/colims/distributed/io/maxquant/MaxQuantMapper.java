@@ -62,10 +62,14 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         try {
             maxQuantParser.clear();
 
-            EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
+            EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
             //get the FASTA db entities from the database
-            maxQuantImport.getFastaDbIds().forEach((fastaDbType, fastaDbId) -> {
-                fastaDbs.put(fastaDbType, fastaDbService.findById(fastaDbId));
+            maxQuantImport.getFastaDbIds().forEach((FastaDbType fastaDbType, List<Long> fastaDbIds) -> {
+                List<FastaDb> fastaDbList = new ArrayList<>();
+                fastaDbIds.forEach(fastaDbId -> {
+                    fastaDbList.add(fastaDbService.findById(fastaDbId));
+                });
+                fastaDbs.put(fastaDbType, fastaDbList);
             });
 
             try {
@@ -75,7 +79,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             }
 
             maxQuantParser.parse(maxQuantImport.getCombinedFolderDirectory(), fastaDbs, maxQuantSearchSettingsParser.getMultiplicity(),
-                    maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupHeaders());
+                    maxQuantImport.isIncludeContaminants(), maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantImport.getSelectedProteinGroupHeaders());
 
             proteinGroups = maxQuantParser.getProteinGroupSet();
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
@@ -142,19 +146,17 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     /**
      * Map the quantification settings.
      *
-     * @param quantFile     The file containing quant data
-     * @param analyticalRun the AnalyticalRun instance onto the quantification settings will be mapped
+     * @param analyticalRun the AnalyticalRun instance onto the quantification
+     * settings will be mapped
      * @return the imported QuantificationSettings instance
      * @throws IOException thrown in case of an I/O related problem
      */
-    private QuantificationSettings importQuantSettings(File quantFile, final AnalyticalRun analyticalRun) throws IOException {
+    private QuantificationSettings importQuantSettings(final AnalyticalRun analyticalRun) throws IOException {
         QuantificationSettings quantificationSettings;
 
-        List<File> quantFiles = new ArrayList<>();
-        quantFiles.add(quantFile);
-        QuantificationParameters params = new QuantificationParameters();
+        QuantificationMethodCvParam params = new QuantificationMethodCvParam();
 
-        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, maxQuantSearchSettingsParser.getVersion(), quantFiles, params);
+        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, maxQuantSearchSettingsParser.getVersion(), params);
 
         quantificationSettings.setAnalyticalRun(analyticalRun);
 

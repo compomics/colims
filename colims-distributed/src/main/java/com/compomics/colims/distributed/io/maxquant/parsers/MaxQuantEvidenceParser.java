@@ -10,7 +10,6 @@ import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesModifica
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.Quantification;
 import com.compomics.colims.model.enums.ModificationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,10 +38,6 @@ public class MaxQuantEvidenceParser {
     static final String C_TERMINAL_MODIFICATION = "Protein C-term";
 
     /**
-     * Spectrum IDs and associated quantifications.
-     */
-    private final Map<Integer, List<Quantification>> quantifications = new HashMap<>();
-    /**
      * Spectrum IDs and peptides.
      */
     private final Map<Integer, List<Peptide>> peptides = new HashMap<>();
@@ -64,10 +59,6 @@ public class MaxQuantEvidenceParser {
      */
     public MaxQuantEvidenceParser() throws IOException {
         evidenceHeaders = new EvidenceHeaders();
-    }
-
-    public Map<Integer, List<Quantification>> getQuantifications() {
-        return quantifications;
     }
 
     public Map<Integer, List<Peptide>> getPeptides() {
@@ -173,7 +164,6 @@ public class MaxQuantEvidenceParser {
     public void clear() {
         peptideProteins.clear();
         peptides.clear();
-        quantifications.clear();
     }
 
     /**

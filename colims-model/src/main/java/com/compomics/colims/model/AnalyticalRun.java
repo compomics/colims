@@ -56,7 +56,7 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
     /**
      * The spectra of this AnalyticalRun instance.
      */
-    @OneToMany(mappedBy = "analyticalRun", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "analyticalRun", cascade = CascadeType.REMOVE)
     private List<Spectrum> spectrums = new ArrayList<>();
     /**
      * The analytical run attachments. These are stored as lob's in the

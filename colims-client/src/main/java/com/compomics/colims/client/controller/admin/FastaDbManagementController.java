@@ -218,6 +218,7 @@ public class FastaDbManagementController implements Controllable {
         });
 
         fastaDbManagementDialog.getCloseButton().addActionListener(e -> {
+            setSelectedFasta(-1);
             fastaDbManagementDialog.dispose();
         });
 
@@ -342,6 +343,7 @@ public class FastaDbManagementController implements Controllable {
         fastaDbManagementDialog.getFilePathTextField().setText("");
         fastaDbManagementDialog.getVersionTextField().setText("");
         fastaDbManagementDialog.getTaxonomyTextField().setText("");
+        fastaDbManagementDialog.getHeaderParseRuleTextField().setText("");
     }
 
     /**

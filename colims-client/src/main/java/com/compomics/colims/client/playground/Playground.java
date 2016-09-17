@@ -17,6 +17,7 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumMap;
@@ -46,8 +47,8 @@ public class Playground {
         persistDbTask.setPersistMetadata(persistMetadata);
 
         List<File> mgfFiles = Arrays.asList(new File("maxquant_test1"), new File("test2"));
-        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, 1L);
+        EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY,new ArrayList<>(Arrays.asList(1L)));
         DataImport dataImport = new PeptideShakerImport(new File("testFile"), fastaDbIds, mgfFiles);
         persistDbTask.setDataImport(dataImport);
 

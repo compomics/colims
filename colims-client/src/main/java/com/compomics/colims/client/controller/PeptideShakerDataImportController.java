@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -143,7 +144,7 @@ public class PeptideShakerDataImportController implements Controllable {
     public void showEditView(PeptideShakerImport peptideShakerImport){
         showView();
         if(peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY) != null){
-            fastaDb = fastaDbService.findById(peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY));
+            fastaDb = fastaDbService.findById(peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
             peptideShakerDataImportPanel.getFastaDbTextField().setText(fastaDb.getFilePath());
         }else{
             fastaDb = null;
@@ -186,8 +187,8 @@ public class PeptideShakerDataImportController implements Controllable {
             mgfFiles.add(mgfFileListModel.get(i));
         }
 
-        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, fastaDb.getId());
+        EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(fastaDb.getId())));
 
         return new PeptideShakerImport(cpsArchive, fastaDbIds, mgfFiles);
     }

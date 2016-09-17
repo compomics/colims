@@ -61,35 +61,44 @@ public class MaxQuantParser {
      * Parse the MaxQuant output folder and map the content of the different
      * files to Colims entities.
      *
-     * @param maxQuantDirectory File pointer to MaxQuant directory
-     * @param fastaDbs          the FASTA database map (key: FastaDb type; value: FastaDb instance)
-     * @param multiplicity      the multiplicity String
+     * @param maxQuantDirectory          File pointer to MaxQuant directory
+     * @param fastaDbs                   the FASTA database map (key: FastaDb type; value: FastaDb instance)
+     * @param multiplicity               the multiplicity String
+     * @param includeContaminants        whether to import proteins from contaminants file.
+     * @param includeUnidentifiedSpectra whether to import unidentified spectra from APL files.
+     * @param optionalHeaders            list of optional headers to store in protein group quantification labeled
+     *                                   table.
      * @throws IOException          thrown in case of an input/output related problem
      * @throws UnparseableException
      * @throws MappingException     thrown in case of a mapping related problem
      */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, String multiplicity, boolean includeContaminants, List<String> optionalHeaders) throws IOException, UnparseableException, MappingException {
+    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, String multiplicity, boolean includeContaminants,
+                      boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, UnparseableException, MappingException {
         //look for the MaxQuant txt directory
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         if (!txtDirectory.toFile().exists()) {
             throw new FileNotFoundException("The MaxQuant txt directory was not found.");
         }
-        //    analyticalRuns.clear(); check if analytical run map is empty?
+        //analyticalRuns.clear(); check if analytical run map is empty?
         maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> {
             analyticalRuns.put(k.getName(), k);
         });
 
         //first, parse the protein groups file
         LOGGER.debug("parsing protein groups");
+        List<FastaDb> fastaList = new ArrayList<>();
+        fastaDbs.forEach((k, v) -> {
+            v.forEach(fastaDb -> {
+                fastaList.add(fastaDb);
+            });
+        });
         Path proteinGroupsFile = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(),
                 MaxQuantConstants.PROTEIN_GROUPS_FILE.value());
-        proteinGroups = maxQuantProteinGroupsParser.parse(proteinGroupsFile, parseFastas(fastaDbs.values()), includeContaminants, optionalHeaders);
+        proteinGroups = maxQuantProteinGroupsParser.parse(proteinGroupsFile, parseFastas(fastaList), includeContaminants, optionalHeaders);
 
         LOGGER.debug("parsing MSMS");
-
-        // TODO: 6/8/2016 write a method for unidentified spectra
-        maxQuantSpectraParser.parse(maxQuantDirectory, false, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
-
+        maxQuantSpectraParser.parse(maxQuantDirectory, includeUnidentifiedSpectra, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
+        // set spectra for analytical runs where spectra comes from msms file
         getSpectra().forEach((k, v) -> {
             String rawFile = k.getTitle().split("--")[0];
             if (analyticalRuns.containsKey(rawFile)) {
@@ -102,13 +111,19 @@ public class MaxQuantParser {
                 analyticalRuns.put(rawFile, analyticalRun);
             }
         });
+        // set unidentified spectra for analytical runs
+        getUnidentifiedSpectra().forEach(spectrum -> {
+            String key = analyticalRuns.entrySet().stream().filter(runs -> spectrum.getAccession().contains(runs.getKey()))
+                    .findFirst().get().getKey();
+            analyticalRuns.get(key).getSpectrums().add(spectrum);
+        });
 
         if (analyticalRuns.isEmpty()) {
             throw new UnparseableException("could not connect spectra to any run");
         }
 
         LOGGER.debug("parsing evidence");
-        maxQuantEvidenceParser.parse(txtDirectory.resolve(MaxQuantConstants.EVIDENCE_FILE.value()), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
+        maxQuantEvidenceParser.parse(txtDirectory, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
         if (getSpectra().isEmpty() || maxQuantEvidenceParser.getPeptides().isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");
@@ -135,27 +150,25 @@ public class MaxQuantParser {
                     line = bufferedReader.readLine();
                     while (line != null) {
                         if (line.startsWith(BLOCK_SEPARATOR)) {
-                            //add limiting check for protein store to avoid growing
-                            if (sequenceBuilder.length() > 0) {
-                                //get parse rule from fastaDb and parse the key
-                                if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
-                                    fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);
-                                }
-                                Pattern pattern;
-                                if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
-                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
-                                } else {
-                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule());
-                                }
-                                Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
-                                if (matcher.find()) {
-                                    parsedFasta.put(matcher.group(1), sequenceBuilder.toString().trim());
-                                } else {
-                                    parsedFasta.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
-                                }
-                                sequenceBuilder.setLength(0);
-                            }
                             header = line;
+                            //get parse rule from fastaDb and parse the key
+                            if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
+                                fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);
+                            }
+                            Pattern pattern;
+                            if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
+                                pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
+                            } else {
+                                pattern = Pattern.compile(fastaDb.getHeaderParseRule());
+                            }
+                            Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
+                            if (matcher.find()) {
+                                parsedFasta.put(matcher.group(1), sequenceBuilder.toString().trim());
+                            } else {
+                                parsedFasta.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                            }
+                            sequenceBuilder.setLength(0);
+
                         } else {
                             sequenceBuilder.append(line);
                         }
@@ -210,6 +223,15 @@ public class MaxQuantParser {
      */
     public Map<Spectrum, List<Integer>> getSpectra() {
         return Collections.unmodifiableMap(maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumIDs());
+    }
+
+    /**
+     * Return a copy of the unidentified spectra list.
+     *
+     * @return unidentified spectra list.
+     */
+    public List<Spectrum> getUnidentifiedSpectra() {
+        return Collections.unmodifiableList(maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra());
     }
 
     /**

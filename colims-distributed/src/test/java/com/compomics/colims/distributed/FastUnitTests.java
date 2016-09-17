@@ -1,12 +1,8 @@
 package com.compomics.colims.distributed;
 
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchSettingsMapperTest;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.distributed.io.unimod.UnimodMarshallerTest;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapperTest;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinGroupMapperTest;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchParametersMapperTest;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSpectrumMapperTest;
+import com.compomics.colims.distributed.io.utilities_to_colims.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import org.junit.Before;
@@ -103,8 +104,8 @@ public class PeptideShakerIOIT {
         //as the file path might be different depending on the OS
         fastaDbService.persist(fastaDb);
 
-        EnumMap<FastaDbType, Long> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, fastaDb.getId());
+        EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
+        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(fastaDb.getId())));
 
         List<File> mgfFiles = new ArrayList<>();
         mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());

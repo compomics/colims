@@ -121,7 +121,8 @@ public class TabularFileIterator implements Iterable<Map<String, String>>, Itera
         try {
             String readLine = lineReader.readLine();
             if (readLine != null) {
-                nextLine = readLine.split(String.valueOf(DELIMITER));
+                //the -1 argument is for not discarding trailing empty fields
+                nextLine = readLine.split(String.valueOf(DELIMITER), -1);
                 return;
             }
         } catch (IOException e) {

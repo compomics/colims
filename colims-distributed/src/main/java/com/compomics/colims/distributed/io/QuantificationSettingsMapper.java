@@ -21,23 +21,12 @@ public class QuantificationSettingsMapper {
     @Autowired
     private QuantificationSettingsService quantificationSettingsService;
 
-    public QuantificationSettings map(QuantificationEngineType quantEngineType, String version, List<File> quantFiles, QuantificationParameters quantParams) throws IOException {
+    public QuantificationSettings map(QuantificationEngineType quantEngineType, String version, QuantificationMethodCvParam quantParams) throws IOException {
         QuantificationSettings quantSettings = new QuantificationSettings();
 
         quantSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(quantEngineType, version));
 
-        quantSettings.setQuantificationParameterSettings(quantParams);
-
-        for (File file : quantFiles) {
-            QuantificationFile quantFile = new QuantificationFile();
-
-            quantFile.setFileName(file.getName());
-            quantFile.setFilePath(file.getCanonicalPath());
-            quantFile.setContent(IOUtils.readAndZip(file)); // TODO: do we always want to store the file?
-            quantFile.setBinaryFileType(BinaryFileType.TEXT);
-
-            quantSettings.getQuantificationFiles().add(quantFile);
-        }
+        quantSettings.setQuantificationMethodCvParam(quantParams);
 
         return quantSettings;
     }

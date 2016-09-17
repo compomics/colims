@@ -2,17 +2,17 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.QuantificationSettingsService;
 import com.compomics.colims.model.QuantificationEngine;
-import com.compomics.colims.model.QuantificationParameters;
+import com.compomics.colims.model.QuantificationMethodCvParam;
 import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import com.compomics.colims.repository.QuantificationEngineRepository;
-import com.compomics.colims.repository.QuantificationParametersRepository;
 import com.compomics.colims.repository.QuantificationSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import com.compomics.colims.repository.QuantificationMethodCvParamRepository;
 
 /**
  * @author Niels Hulstaert
@@ -26,7 +26,7 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     @Autowired
     private QuantificationEngineRepository quantificationEngineRepository;
     @Autowired
-    private QuantificationParametersRepository quantificationParametersRepository;
+    private QuantificationMethodCvParamRepository quantificationParametersRepository;
 
     @Override
     public QuantificationSettings findById(final Long id) {
@@ -71,9 +71,9 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     }
 
     @Override
-    public QuantificationParameters getQuantificationParameterSettings(QuantificationParameters quantificationParameterSettings) {
+    public QuantificationMethodCvParam getQuantificationParameterSettings(QuantificationMethodCvParam quantificationParameterSettings) {
         //find QuantificationParameterSettings by example
-        List<QuantificationParameters> quantificationParameterSettingses = quantificationParametersRepository.findByExample(quantificationParameterSettings);
+        List<QuantificationMethodCvParam> quantificationParameterSettingses = quantificationParametersRepository.findByExample(quantificationParameterSettings);
         if (!quantificationParameterSettingses.isEmpty()) {
             return quantificationParameterSettingses.get(0);
         } else {

@@ -37,7 +37,7 @@ public class PeptideShakerImport extends DataImport {
      * @param fastaDbIds the FASTA database IDs map
      * @param mgfFiles the list of MGF files
      */
-    public PeptideShakerImport(final File peptideShakerCpsArchive, final EnumMap<FastaDbType, Long> fastaDbIds, final List<File> mgfFiles) {
+    public PeptideShakerImport(final File peptideShakerCpsArchive, final EnumMap<FastaDbType, List<Long>> fastaDbIds, final List<File> mgfFiles) {
         super(fastaDbIds);
         this.peptideShakerCpsArchive = peptideShakerCpsArchive;
         this.mgfFiles = mgfFiles;

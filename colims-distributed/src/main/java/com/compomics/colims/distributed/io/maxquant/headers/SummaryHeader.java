@@ -8,6 +8,5 @@ public enum SummaryHeader {
     ENZYME,
     MAX_MISSED_CLEAVAGES,
     MULTIPLICITY,
-    PROTEASE,
     RAW_FILE
 }

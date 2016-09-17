@@ -10,7 +10,7 @@ import java.util.List;
 public class MaxQuantHeader {
 
     /**
-     * The header name as defined in the JSON file. This name should correspond to the
+     * The header name as found in the JSON file. This name should be the String value of the corresponding enum.
      */
     String name;
     /**
@@ -18,7 +18,7 @@ public class MaxQuantHeader {
      */
     private boolean mandatory;
     /**
-     * The list with all possible header values for this header.
+     * The list with all possible header values in lowercase for this header.
      */
     private List<String> values;
     /**

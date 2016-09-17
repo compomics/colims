@@ -124,7 +124,7 @@ public class FixedTabularFileIterator<T extends Enum<T>> implements Iterable<Map
         try {
             String readLine = lineReader.readLine();
             if (readLine != null) {
-                nextLine = readLine.split(String.valueOf(DELIMITER));
+                nextLine = readLine.split(String.valueOf(DELIMITER), -1);
                 return;
             }
         } catch (IOException e) {

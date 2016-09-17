@@ -140,7 +140,7 @@ public class MaxQuantSearchSettingsParser {
      * @param storeFiles              whether data files should be stored with the experiment
      * @throws IOException thrown in case of of an I/O related problem
      */
-    public void parse(Path combinedFolderDirectory, Path mqParFile, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
+    public void parse(Path combinedFolderDirectory,Path mqParFile, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
         Path txtDirectory = Paths.get(combinedFolderDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         //parse the mxpar.xml file
         parseMqParFile(mqParFile);
@@ -174,13 +174,15 @@ public class MaxQuantSearchSettingsParser {
      * @return the mapped SearchAndValidationSettings instance
      * @throws IOException thrown in case of of an I/O related problem
      */
-    private SearchAndValidationSettings parseSearchSettings(Path maxQuantTxtDirectory, EnumMap<FastaDbType, FastaDb> fastaDbs, boolean storeFiles, String rawFileName) throws IOException, ModificationMappingException {
+    private SearchAndValidationSettings parseSearchSettings(Path maxQuantTxtDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles, String rawFileName) throws IOException, ModificationMappingException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         //set the FASTA databases entity associations
         fastaDbs.forEach((k, v) -> {
-            SearchSettingsHasFastaDb searchSettingsHasFastaDb = new SearchSettingsHasFastaDb(k, searchAndValidationSettings, v);
-            searchAndValidationSettings.getSearchSettingsHasFastaDbs().add(searchSettingsHasFastaDb);
+            v.forEach(fastaDb -> {
+                SearchSettingsHasFastaDb searchSettingsHasFastaDb = new SearchSettingsHasFastaDb(k, searchAndValidationSettings, fastaDb);
+                searchAndValidationSettings.getSearchSettingsHasFastaDbs().add(searchSettingsHasFastaDb);
+            });
         });
 
         /**
@@ -314,7 +316,6 @@ public class MaxQuantSearchSettingsParser {
 
     /**
      * Get label modifications for SILAC experiments.
-     *
      * @return labelMods
      */
     public Map<Integer, String> getLabelMods() {
@@ -322,8 +323,7 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Map the given MaxQuant Enzyme instance to a TypedCvParam instance.
-     * Returns null if no mapping was possible.
+     * Map the given MaxQuant Enzyme instance to a TypedCvParam instance. Returns null if no mapping was possible.
      *
      * @param maxQuantEnzyme the MaxQuant enzyme
      * @return the TypedCvParam instance

@@ -16,15 +16,18 @@ import java.util.stream.Collectors;
  */
 public abstract class MaxQuantHeaders<T extends Enum<T>> {
 
-    protected Class<T> enumType;
-    protected EnumMap<T, MaxQuantHeader> headersMap;
-    protected String jsonRelativePath;
-
     /**
-     * No-arg constructor.
+     * The header enum class.
      */
-    public MaxQuantHeaders() {
-    }
+    protected Class<T> enumType;
+    /**
+     * The headers map (key: header enum; value: the {@link MaxQuantHeader} instance).
+     */
+    protected EnumMap<T, MaxQuantHeader> headersMap;
+    /**
+     * The path of the JSON file with the header information.
+     */
+    protected String jsonRelativePath;
 
     /**
      * Constructor.
@@ -101,7 +104,8 @@ public abstract class MaxQuantHeaders<T extends Enum<T>> {
             JsonNode valuesNode = headerEntry.getValue().get("values");
             List<String> values = new ArrayList<>();
             for (JsonNode valueNode : valuesNode) {
-                values.add(valueNode.asText());
+                //add the lowercase values to the values list
+                values.add(valueNode.asText().toLowerCase());
             }
 
             MaxQuantHeader maxQuantHeader = new MaxQuantHeader(headerName, mandatory, values);

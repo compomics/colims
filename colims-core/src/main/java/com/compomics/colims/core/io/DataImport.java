@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.io.Serializable;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,7 +29,7 @@ public abstract class DataImport implements Serializable {
     /**
      * The FASTA database IDs.
      */
-    protected EnumMap<FastaDbType, Long> fastaDbIds;
+    protected EnumMap<FastaDbType, List<Long>> fastaDbIds;
 
     /**
      * No-arg constructor.
@@ -41,15 +42,15 @@ public abstract class DataImport implements Serializable {
      *
      * @param fastaDbIds the FASTA database IDs map
      */
-    public DataImport(final EnumMap<FastaDbType, Long> fastaDbIds) {
+    public DataImport(final EnumMap<FastaDbType, List<Long>> fastaDbIds) {
         this.fastaDbIds = fastaDbIds;
     }
 
-    public EnumMap<FastaDbType, Long> getFastaDbIds() {
+    public EnumMap<FastaDbType, List<Long>> getFastaDbIds() {
         return fastaDbIds;
     }
 
-    public void setFastaDbIds(EnumMap<FastaDbType, Long> fastaDbIds) {
+    public void setFastaDbIds(EnumMap<FastaDbType, List<Long>> fastaDbIds) {
         this.fastaDbIds = fastaDbIds;
     }
 
