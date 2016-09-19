@@ -3,7 +3,7 @@ package com.compomics.colims.distributed.io.maxquant.headers;
 import java.util.List;
 
 /**
- * This class represents a single header entry of a MaxQuant tab separated identification file.
+ * This class represents a single header entry of a MaxQuant file.
  * <p>
  * Created by Niels Hulstaert on 13/09/16.
  */

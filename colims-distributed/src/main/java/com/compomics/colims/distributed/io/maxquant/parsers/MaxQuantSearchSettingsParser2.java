@@ -39,12 +39,12 @@ import java.util.*;
  * @author niels
  */
 @Component("maxQuantSearchSettingsParser")
-public class MaxQuantSearchSettingsParser {
+public class MaxQuantSearchSettingsParser2 {
 
     /**
      * Logger instance.
      */
-    private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
+    private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser2.class);
 
     private static final String MS_ONTOLOGY_LABEL = "MS";
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
@@ -108,7 +108,7 @@ public class MaxQuantSearchSettingsParser {
      *
      * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
-    public MaxQuantSearchSettingsParser() throws IOException {
+    public MaxQuantSearchSettingsParser2() throws IOException {
         parametersHeaders = new ParametersHeaders();
         summaryHeaders = new SummaryHeaders();
         mqParHeaders = new MqParHeaders();
@@ -485,7 +485,12 @@ public class MaxQuantSearchSettingsParser {
             for (Element parameterGroupElement : parameterGroupsElement.getChildren()) {
                 //create enumMap for mqpar.xml parameters (key: MqParHeader enum; value: parameter value).
                 EnumMap<MqParHeader, String> mqParParameters = new EnumMap<>(MqParHeader.class);
-                for (MqParHeaders mqparHeader : mqParHeaders.getMandatoryHeaders()) {
+                //look for the mqpar headers in the parameter group element children
+                for (MaxQuantHeader mqparHeader : mqParHeaders.getMandatoryHeaders()) {
+                    mqparHeader.getValues().stream().filter(value -> parameterGroupElement.getChild())
+
+
+
                     Optional<String> header = mqparHeader.getValues()
                             .stream()
                             .findFirst();
