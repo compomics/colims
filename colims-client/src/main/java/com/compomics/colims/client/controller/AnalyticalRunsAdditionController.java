@@ -72,6 +72,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
     //model
     private BindingGroup bindingGroup;
     private ObservableList<Instrument> instrumentBindingList;
+    private ObservableList<String> labelBindingList;
     private PersistType storageType;
     private Instrument instrument;
     //view
@@ -131,6 +132,8 @@ public class AnalyticalRunsAdditionController implements Controllable {
 
         //select peptideShaker radio button
         analyticalRunsAdditionDialog.getPeptideShakerRadioButton().setSelected(true);
+        analyticalRunsAdditionDialog.getLabelComboBox().setVisible(false);
+        analyticalRunsAdditionDialog.getLabelSelectionLabel().setVisible(false);
 
         //set DateTimePicker format
         analyticalRunsAdditionDialog.getDateTimePicker().setFormats(new SimpleDateFormat("dd-MM-yyyy HH:mm"));
@@ -145,8 +148,18 @@ public class AnalyticalRunsAdditionController implements Controllable {
         bindingGroup.addBinding(instrumentComboBoxBinding);
 
         bindingGroup.bind();
-
+        
         //add action listeners
+        analyticalRunsAdditionDialog.getMaxQuantRadioButton().addActionListener(e ->{
+            analyticalRunsAdditionDialog.getLabelComboBox().setVisible(true);
+            analyticalRunsAdditionDialog.getLabelSelectionLabel().setVisible(true);
+        });
+        
+        analyticalRunsAdditionDialog.getPeptideShakerRadioButton().addActionListener(e ->{
+            analyticalRunsAdditionDialog.getLabelComboBox().setVisible(false);
+            analyticalRunsAdditionDialog.getLabelSelectionLabel().setVisible(false);
+        });
+        
         analyticalRunsAdditionDialog.getProceedButton().addActionListener(e -> {
             String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunsAdditionDialog.getTopPanel());
             switch (currentCardName) {

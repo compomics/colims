@@ -115,12 +115,16 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="maxQuantRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="peptideShakerRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="instrumentComboBox" max="32767" attributes="0"/>
-                                  <Component id="instrumentSelectionLabel" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="dataTypeSelectionLabel" alignment="0" pref="336" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="maxQuantRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="peptideShakerRadioButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="instrumentComboBox" max="32767" attributes="0"/>
+                                      <Component id="instrumentSelectionLabel" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="dataTypeSelectionLabel" alignment="0" pref="336" max="32767" attributes="0"/>
+                                      <Component id="labelComboBox" max="32767" attributes="0"/>
+                                  </Group>
+                                  <Component id="labelSelectionLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -139,6 +143,10 @@
                               <Component id="instrumentSelectionLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="instrumentComboBox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <Component id="labelSelectionLabel" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="labelComboBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -176,6 +184,21 @@
                         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                           <StringArray count="0"/>
                         </Property>
+                      </Properties>
+                    </Component>
+                    <Component class="javax.swing.JComboBox" name="labelComboBox">
+                      <Properties>
+                        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                          <StringArray count="0"/>
+                        </Property>
+                      </Properties>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                      </AuxValues>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="labelSelectionLabel">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" value="Select the label:"/>
                       </Properties>
                     </Component>
                   </SubComponents>
