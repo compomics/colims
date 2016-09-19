@@ -8,7 +8,7 @@ public enum ProteinGroupsHeader {
     ACCESSION,
     BESTMSMS,
     CONTAMINANT,
-    EVIDENCEIDS,
+    EVIDENCE_IDS,
     FASTAHEADER,
     ID,
     MSMSIDS,

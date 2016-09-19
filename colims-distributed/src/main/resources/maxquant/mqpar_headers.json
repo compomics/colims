@@ -34,5 +34,17 @@
     "values": [
       "maxCharge"
     ]
+  },
+  "FIXED_MODIFICATIONS": {
+    "mandatory": false,
+    "values": [
+      "fixedModifications"
+    ]
+  },
+  "VARIABLE_MODIFICATIONS": {
+    "mandatory": false,
+    "values": [
+      "variableModifications"
+    ]
   }
 }

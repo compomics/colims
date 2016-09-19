@@ -80,6 +80,16 @@ public abstract class MaxQuantHeaders<T extends Enum<T>> {
     }
 
     /**
+     * Get the {@link MaxQuantHeader} instance associated with the given enum.
+     *
+     * @param headerEnum the enum value
+     * @return the {@link MaxQuantHeader} instance
+     */
+    public MaxQuantHeader getHeader(T headerEnum) {
+        return headersMap.get(headerEnum);
+    }
+
+    /**
      * Parse the JSON file and populate the {@link EnumMap} instance.
      *
      * @throws IOException              in case of an Input/Output related problem while parsing the JSON file

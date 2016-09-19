@@ -485,31 +485,31 @@ public class MaxQuantSearchSettingsParser {
             for (Element parameterGroupElement : parameterGroupsElement.getChildren()) {
                 //create enumMap for mqpar.xml parameters (key: MqParHeader enum; value: parameter value).
                 EnumMap<MqParHeader, String> mqParParameters = new EnumMap<>(MqParHeader.class);
-                for (MqParHeaders mqparHeader : mqParHeaders.getMandatoryHeaders()) {
-                    Optional<String> header = mqparHeader.getValues()
-                            .stream()
-                            .findFirst();
-                    mqparHeader.setParsedValue(mqparHeader.getValues().indexOf(header.get()));
-                    if (header.isPresent()) {
-                        if (header.get().equals(MqParHeader.VARIABLE_MODIFICATIONS) || header.get().equals(MqParHeader.ENZYMES)) {
-                            StringBuilder variableModification = new StringBuilder();
-                            getChildByName(parameterGroupElement, header.get()).getChildren().stream().forEach((variableModifications) -> {
-                                variableModification.append(",");
-                                variableModification.append(variableModifications.getContent().get(0).getValue());
-                            });
-                            mqParParameters.put(mqparHeader, org.apache.commons.lang3.StringUtils.substringAfter(variableModification.toString(), ","));
-                        } else if (header.get().equals(MqParHeader.FIXED_MODIFICATIONS)) {
-                            StringBuilder fixedModification = new StringBuilder();
-                            getChildByName(root, header.get()).getChildren().stream().forEach((fixedModifications) -> {
-                                fixedModification.append(",");
-                                fixedModification.append(fixedModifications.getContent().get(0).getValue());
-                            });
-                            mqParParameters.put(mqparHeader, org.apache.commons.lang3.StringUtils.substringAfter(fixedModification.toString(), ","));
-                        } else {
-                            mqParParameters.put(mqparHeader, getChildByName(parameterGroupElement, header.get()).getContent().get(0).getValue());
-                        }
-                    }
-                }
+//                for (MqParHeader mqparHeader : mqParHeaders.getMandatoryHeaders()) {
+//                    Optional<String> header = mqparHeader.getValues()
+//                            .stream()
+//                            .findFirst();
+//                    mqparHeader.setParsedValue(mqparHeader.getValues().indexOf(header.get()));
+//                    if (header.isPresent()) {
+//                        if (header.get().equals(MqParHeader.VARIABLE_MODIFICATIONS) || header.get().equals(MqParHeader.ENZYMES)) {
+//                            StringBuilder variableModification = new StringBuilder();
+//                            getChildByName(parameterGroupElement, header.get()).getChildren().stream().forEach((variableModifications) -> {
+//                                variableModification.append(",");
+//                                variableModification.append(variableModifications.getContent().get(0).getValue());
+//                            });
+//                            mqParParameters.put(mqparHeader, org.apache.commons.lang3.StringUtils.substringAfter(variableModification.toString(), ","));
+//                        } else if (header.get().equals(MqParHeader.FIXED_MODIFICATIONS)) {
+//                            StringBuilder fixedModification = new StringBuilder();
+//                            getChildByName(root, header.get()).getChildren().stream().forEach((fixedModifications) -> {
+//                                fixedModification.append(",");
+//                                fixedModification.append(fixedModifications.getContent().get(0).getValue());
+//                            });
+//                            mqParParameters.put(mqparHeader, org.apache.commons.lang3.StringUtils.substringAfter(fixedModification.toString(), ","));
+//                        } else {
+//                            mqParParameters.put(mqparHeader, getChildByName(parameterGroupElement, header.get()).getContent().get(0).getValue());
+//                        }
+//                    }
+//                }
                 spectrumParamsWithGroup.put(counter, mqParParameters);
                 counter++;
 
