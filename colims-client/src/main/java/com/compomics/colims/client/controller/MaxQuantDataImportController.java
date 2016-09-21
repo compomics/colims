@@ -2,12 +2,10 @@ package com.compomics.colims.client.controller;
 
 import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.model.TypedCvParamSummaryListModel;
 import com.compomics.colims.client.view.MaxQuantDataImportPanel;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.XmlFileFilter;
 import com.google.common.eventbus.EventBus;
@@ -266,7 +264,7 @@ public class MaxQuantDataImportController implements Controllable {
         fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDbIDs);
         
         return new MaxQuantImport(parameterFile.toPath(), combinedFolderDirectory, fastaDbIds, includeContaminants, 
-                includeUnidentifiedSpectra, selectedProteinGroupHeaders);
+                includeUnidentifiedSpectra, selectedProteinGroupHeaders, analyticalRunsAdditionController.getSelectedLabel());
     }
     
     public void setParameterFile(File parameterFile) {

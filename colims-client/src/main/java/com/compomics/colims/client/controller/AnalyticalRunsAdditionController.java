@@ -508,8 +508,18 @@ public class AnalyticalRunsAdditionController implements Controllable {
         this.instrument = instrument;
     }
 
+    public String getSelectedLabel(){
+        String selectedLabel = "";
+        if(analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex() != -1){
+            selectedLabel = labelBindingList.get(analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex());
+        }
+        
+        return selectedLabel;
+    }
+    
     public MaxQuantDataImportController getMaxQuantDataImportController() {
         return maxQuantDataImportController;
     }
+
 
 }

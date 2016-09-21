@@ -40,6 +40,11 @@ public class MaxQuantImport extends DataImport {
     private List<String> selectedProteinGroupHeaders;
     
     /**
+     * Selected quantification label
+     */
+    private String quantificationLabel;
+    
+    /**
      * no-arg Constructor.
      */
     public MaxQuantImport() {
@@ -55,13 +60,14 @@ public class MaxQuantImport extends DataImport {
      * @param selectedProteinGroupHeaders 
      */
     public MaxQuantImport(final Path parameterFilePath, final Path combinedFolderDirectory, final EnumMap<FastaDbType, 
-            List<Long>> fastaDbIds, boolean includeContaminants, boolean includeUnidentifiedSpectra, List<String> selectedProteinGroupHeaders) {
+            List<Long>> fastaDbIds, boolean includeContaminants, boolean includeUnidentifiedSpectra, List<String> selectedProteinGroupHeaders, String quantificationLabel) {
         super(fastaDbIds);
         this.parameterFilePath = parameterFilePath;
         this.combinedFolderDirectory = combinedFolderDirectory;
         this.includeContaminants = includeContaminants;
         this.includeUnidentifiedSpectra = includeUnidentifiedSpectra;
         this.selectedProteinGroupHeaders = selectedProteinGroupHeaders;
+        this.quantificationLabel = quantificationLabel;
     }
 
     public Path getParameterFilePath() {
@@ -96,14 +102,23 @@ public class MaxQuantImport extends DataImport {
         return selectedProteinGroupHeaders;
     }
 
+    public String getQuantificationLabel() {
+        return quantificationLabel;
+    }
+
+    public void setQuantificationLabel(String quantificationLabel) {
+        this.quantificationLabel = quantificationLabel;
+    }
+
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.parameterFilePath);
-        hash = 67 * hash + Objects.hashCode(this.combinedFolderDirectory);
-        hash = 67 * hash + (this.includeContaminants ? 1 : 0);
-        hash = 67 * hash + (this.includeUnidentifiedSpectra ? 1 : 0);
-        hash = 67 * hash + Objects.hashCode(this.selectedProteinGroupHeaders);
+        int hash = 5;
+        hash = 89 * hash + Objects.hashCode(this.parameterFilePath);
+        hash = 89 * hash + Objects.hashCode(this.combinedFolderDirectory);
+        hash = 89 * hash + (this.includeContaminants ? 1 : 0);
+        hash = 89 * hash + (this.includeUnidentifiedSpectra ? 1 : 0);
+        hash = 89 * hash + Objects.hashCode(this.selectedProteinGroupHeaders);
+        hash = 89 * hash + Objects.hashCode(this.quantificationLabel);
         return hash;
     }
 
@@ -125,6 +140,9 @@ public class MaxQuantImport extends DataImport {
         if (this.includeUnidentifiedSpectra != other.includeUnidentifiedSpectra) {
             return false;
         }
+        if (!Objects.equals(this.quantificationLabel, other.quantificationLabel)) {
+            return false;
+        }
         if (!Objects.equals(this.parameterFilePath, other.parameterFilePath)) {
             return false;
         }
@@ -136,5 +154,6 @@ public class MaxQuantImport extends DataImport {
         }
         return true;
     }
+
 
 }
