@@ -16,18 +16,18 @@ import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.google.common.eventbus.EventBus;
-import java.io.IOException;
+import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
+import java.io.IOException;
 import java.util.List;
-import org.apache.log4j.Logger;
-import org.springframework.web.client.RestClientException;
 
 /**
  * @author Niels Hulstaert
@@ -225,10 +225,9 @@ public class CvParamManagementController implements Controllable {
     /**
      * Update the CV param list and set the current cvParamType.
      *
-     * @param cvParamSubClass the cvParamType of the CV params in the list
-     * @param preselectedOntologyNamespaces the list of preselected ontology
-     * namespaces
-     * @param cvParams the list of CV params
+     * @param cvParamSubClass               the cvParamType of the CV params in the list
+     * @param preselectedOntologyNamespaces the list of preselected ontology namespaces
+     * @param cvParams                      the list of CV params
      */
     public void updateDialog(final Class cvParamSubClass, final List<String> preselectedOntologyNamespaces, final List<CvParam> cvParams) {
         this.cvParamSubClass = cvParamSubClass;
@@ -259,11 +258,11 @@ public class CvParamManagementController implements Controllable {
     /**
      * Update the given CV param. Only the modified fields are set.
      *
-     * @param cvParam the TypedCvParam
-     * @param ontology the ontology
-     * @param label the label
+     * @param cvParam   the TypedCvParam
+     * @param ontology  the ontology
+     * @param label     the label
      * @param accession the accession
-     * @param name the name
+     * @param name      the name
      */
     private void updateCvParam(final CvParam cvParam, final String ontology, final String label, final String accession, final String name) {
         if (!cvParam.getOntology().equalsIgnoreCase(ontology)) {
@@ -295,7 +294,7 @@ public class CvParamManagementController implements Controllable {
         if (ontologyTerm != null) {
             //check whether a CV param has to be added or updated
             if (newCvParam) {
-                CvParam cvParam = CvParamFactory.newCvInstance(cvParamSubClass, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                CvParam cvParam = CvParamFactory.newCvInstance(cvParamSubClass, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 //add CV param to the table model
                 cvParamTableModel2.addCvParam(cvParam);
@@ -305,7 +304,7 @@ public class CvParamManagementController implements Controllable {
             } else {
                 //update selected CV param
                 CvParam selectedCvParam = getSelectedCvParam();
-                updateCvParam(selectedCvParam, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                updateCvParam(selectedCvParam, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 //update CV param in table model
                 int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();

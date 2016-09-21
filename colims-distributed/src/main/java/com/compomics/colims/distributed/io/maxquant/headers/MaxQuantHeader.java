@@ -18,19 +18,13 @@ public class MaxQuantHeader {
      */
     private boolean mandatory;
     /**
-     * The list with all possible header values in lowercase for this header.
+     * The list with all possible header values for this header.
      */
     private List<String> values;
     /**
      * The header value index.
      */
     private int headerValueIndex = 0;
-
-    /**
-     * No-arg constructor.
-     */
-    public MaxQuantHeader() {
-    }
 
     /**
      * Constructor.

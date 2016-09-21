@@ -12,6 +12,6 @@ public class MqParHeaders extends MaxQuantHeaders<MqParHeader> {
      * No-arg constructor.
      */
     public MqParHeaders() throws IOException {
-        super(MqParHeader.class, new EnumMap<>(MqParHeader.class), "maxquant/mqpar_headers.json");
+        super(MqParHeader.class, new EnumMap<>(MqParHeader.class), "maxquant/mqpar_headers.json", false);
     }
 }

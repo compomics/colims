@@ -290,7 +290,7 @@ public class TypedCvParamManagementController implements Controllable {
         if (ontologyTerm != null) {
             //check whether a CV param has to be added or updated
             if (newCvParam) {
-                AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 //add CV param to the table model
                 typeCvParamTableModel2.addCvParam(cvParam);
@@ -300,7 +300,7 @@ public class TypedCvParamManagementController implements Controllable {
             } else {
                 //update selected CV param
                 AuditableTypedCvParam selectedCvParam = getSelectedCvParam();
-                updateCvParam(selectedCvParam, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                updateCvParam(selectedCvParam, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 //update CV param in table model
                 int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();

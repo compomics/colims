@@ -50,7 +50,7 @@ public class MaxQuantSearchSettingsParser {
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
-    private static final String MODIFICATIONS_DELIMITER = ",";
+    private static final String MODIFICATIONS_DELIMITER = ";";
     private static final String MODIFICATION_NAME_ONLY = " ";
 
     /**

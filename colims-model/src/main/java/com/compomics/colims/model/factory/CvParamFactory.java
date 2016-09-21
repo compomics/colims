@@ -1,14 +1,13 @@
 package com.compomics.colims.model.factory;
 
-import com.compomics.colims.model.SearchCvParam;
-import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.InstrumentCvParam;
 import com.compomics.colims.model.MaterialCvParam;
 import com.compomics.colims.model.ProtocolCvParam;
+import com.compomics.colims.model.SearchCvParam;
+import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -17,11 +16,6 @@ import org.apache.log4j.Logger;
  * @author Niels Hulstaert
  */
 public final class CvParamFactory {
-
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(CvParamFactory.class);
 
     /**
      * Private constructor to prevent instantiation.
@@ -33,10 +27,10 @@ public final class CvParamFactory {
      * Create a new AuditableTypedCvParam instance.
      *
      * @param cvParamType the CV term type
-     * @param ontology the ontology name
-     * @param label the ontology label
-     * @param accession CV term accession
-     * @param name the CV term name
+     * @param ontology    the ontology name
+     * @param label       the ontology label
+     * @param accession   CV term accession
+     * @param name        the CV term name
      * @return the AuditableTypedCvParam instance
      */
     public static AuditableTypedCvParam newAuditableTypedCvInstance(final CvParamType cvParamType, final String ontology, final String label, final String accession, final String name) {
@@ -64,10 +58,10 @@ public final class CvParamFactory {
      * Create a new TypedCvParam instance.
      *
      * @param cvParamType the CV term type
-     * @param ontology the ontology name
-     * @param label the ontology label
-     * @param accession CV term accession
-     * @param name the CV term name
+     * @param ontology    the ontology name
+     * @param label       the ontology label
+     * @param accession   CV term accession
+     * @param name        the CV term name
      * @return the TypedCvParam instance
      */
     public static TypedCvParam newTypedCvInstance(final CvParamType cvParamType, final String ontology, final String label, final String accession, final String name) {
@@ -86,12 +80,12 @@ public final class CvParamFactory {
     /**
      * Create a new CvParam instance.
      *
-     * @param <T> the CvParam subclass
-     * @param clazz the CvParam subclass
-     * @param ontology the ontology name
-     * @param label the ontology label
+     * @param <T>       the CvParam subclass
+     * @param clazz     the CvParam subclass
+     * @param ontology  the ontology name
+     * @param label     the ontology label
      * @param accession CV term accession
-     * @param name the CV term name
+     * @param name      the CV term name
      * @return the TypedCvParam instance
      */
     public static <T extends CvParam> T newCvInstance(final Class<T> clazz, final String ontology, final String label, final String accession, final String name) {

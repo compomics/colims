@@ -16,7 +16,7 @@ public class OntologySearchResultTableModel extends AbstractTableModel {
     private static final String HTML_OPEN = "<html>";
     private static final String HTML_CLOSE = "</html>";
 
-    public static final int ONTOLOGY_NAMESPACE = 0;
+    public static final int ONTOLOGY_PREFIX = 0;
     public static final int TERM_ACCESSION = 1;
     public static final int MATCHES = 2;
 
@@ -69,14 +69,15 @@ public class OntologySearchResultTableModel extends AbstractTableModel {
         OlsSearchResult searchResult = searchResults.get(rowIndex);
 
         switch (columnIndex) {
-            case ONTOLOGY_NAMESPACE:
-                return searchResult.getOntologyTerm().getOntologyNamespace();
+            case ONTOLOGY_PREFIX:
+                return searchResult.getOntologyTerm().getOntologyPrefix();
             case TERM_ACCESSION:
                 return searchResult.getOntologyTerm().getShortForm();
             case MATCHES:
-                String matches = HTML_OPEN + searchResult.getMatchedFields().entrySet().stream().map(e -> {
-                    return e.getKey().getQueryValue() + ": " + e.getValue();
-                    }).collect(Collectors.joining(", ")) + HTML_CLOSE;
+                String matches = HTML_OPEN + searchResult.getMatchedFields().entrySet()
+                        .stream()
+                        .map(e -> e.getKey().getQueryValue() + ": " + e.getValue())
+                        .collect(Collectors.joining(", ")) + HTML_CLOSE;
                 return matches.isEmpty() ? "not available" : matches;
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
