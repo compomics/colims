@@ -94,6 +94,9 @@ public class MaxQuantSearchSettingsParser2 {
      * label mods for SILAC experiments.(key: index , value : isobaric label)
      */
     private Map<Integer, String> labelMods = new HashMap<>();
+    /**
+     * The parsed files' headers of interest.
+     */
     private MqParHeaders mqParHeaders;
     private ParametersHeaders parametersHeaders;
     private SummaryHeaders summaryHeaders;
@@ -127,6 +130,52 @@ public class MaxQuantSearchSettingsParser2 {
      */
     public String getVersion() {
         return this.version;
+    }
+
+    /**
+     * Get the multiplicity for this experiment.
+     *
+     * @return Parsed multiplicity value
+     */
+    public String getMultiplicity() {
+        return multiplicity;
+    }
+
+    /**
+     * Get the run settings stored in this object
+     *
+     * @return Copy of the filename/settings map
+     */
+    public Map<String, SearchAndValidationSettings> getRunSettings() {
+        return Collections.unmodifiableMap(runSettings);
+    }
+
+    /**
+     * Get analytical runs name (experiment name) which have link with
+     * analytical runs.
+     *
+     * @return analyticalRuns
+     */
+    public Map<AnalyticalRun, String> getAnalyticalRuns() {
+        return analyticalRuns;
+    }
+
+    /**
+     * Get isobaric label for labeled quantification
+     *
+     * @return isobaricLabels map
+     */
+    public Map<Integer, String> getIsobaricLabels() {
+        return isobaricLabels;
+    }
+
+    /**
+     * Get label modifications for SILAC experiments.
+     *
+     * @return labelMods
+     */
+    public Map<Integer, String> getLabelMods() {
+        return labelMods;
     }
 
     /**
@@ -260,24 +309,6 @@ public class MaxQuantSearchSettingsParser2 {
     }
 
     /**
-     * Get the multiplicity for this experiment.
-     *
-     * @return Parsed multiplicity value
-     */
-    public String getMultiplicity() {
-        return multiplicity;
-    }
-
-    /**
-     * Get the run settings stored in this object
-     *
-     * @return Copy of the filename/settings map
-     */
-    public Map<String, SearchAndValidationSettings> getRunSettings() {
-        return Collections.unmodifiableMap(runSettings);
-    }
-
-    /**
      * Get the default search type from the database and assign it to the class
      * field.
      */
@@ -299,34 +330,6 @@ public class MaxQuantSearchSettingsParser2 {
      */
     public Map<String, EnumMap<MqParHeader, String>> getMqParParamsWithRawFile() {
         return mqParParamsWithRawFile;
-    }
-
-    /**
-     * Get analytical runs name (experiment name) which have link with
-     * analytical runs.
-     *
-     * @return analyticalRuns
-     */
-    public Map<AnalyticalRun, String> getAnalyticalRuns() {
-        return analyticalRuns;
-    }
-
-    /**
-     * Get isobaric label for labeled quantification
-     *
-     * @return isobaricLabels map
-     */
-    public Map<Integer, String> getIsobaricLabels() {
-        return isobaricLabels;
-    }
-
-    /**
-     * Get label modifications for SILAC experiments.
-     *
-     * @return labelMods
-     */
-    public Map<Integer, String> getLabelMods() {
-        return labelMods;
     }
 
     /**
