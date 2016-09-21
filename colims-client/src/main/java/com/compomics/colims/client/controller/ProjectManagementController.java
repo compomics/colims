@@ -205,7 +205,7 @@ public class ProjectManagementController implements Controllable {
 
         //add action listeners
         //add action listeners to other sample actions popup menu items
-        SamplePopupMenuActionListener samplePopupMenuActionListener = new SamplePopupMenuActionListener();
+        SampleMenuActionListener samplePopupMenuActionListener = new SampleMenuActionListener();
         projectManagementPanel.getAddRunsMenuItem().addActionListener(samplePopupMenuActionListener);
         projectManagementPanel.getMzTabExportMenuItem().addActionListener(samplePopupMenuActionListener);
         projectManagementPanel.getViewRunsMenuItem().addActionListener(samplePopupMenuActionListener);
@@ -508,7 +508,7 @@ public class ProjectManagementController implements Controllable {
 
         //add the sample to the selected experiment and update the experiments table
         getSelectedExperiment().getSamples().add(sample);
-        projectManagementPanel.getProjectsTable().updateUI();
+        projectManagementPanel.getExperimentsTable().updateUI();
     }
 
     /**
@@ -671,9 +671,9 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Inner class for listening to other sample actions pop up menu items.
+     * Inner class for listening to other sample actions menu items.
      */
-    private class SamplePopupMenuActionListener implements ActionListener {
+    private class SampleMenuActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -696,10 +696,10 @@ public class ProjectManagementController implements Controllable {
                 }
             } else if (menuItemLabel.equals(projectManagementPanel.getViewRunsMenuItem().getText())) {
                 Sample selectedSample = getSelectedSample();
-                if (selectedSample != null) {
+                if (selectedSamples.size() == 1 && !selectedSample.getAnalyticalRuns().isEmpty()) {
                     analyticalRunsSearchSettingsController.updateView(selectedSample);
                 } else {
-                    eventBus.post(new MessageEvent("Sample selection", "Please select a sample to view runs.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Sample selection", "Please select one and only sample with at least one run.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         }

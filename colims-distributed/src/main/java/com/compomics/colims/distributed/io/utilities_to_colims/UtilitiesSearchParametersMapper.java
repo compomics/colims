@@ -56,7 +56,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      * The Ontology Lookup Service service.
      */
     @Autowired
-    private OlsService newOlsService;
+    private OlsService olsService;
 
     /**
      * Map the Utilities SearchParameters to the Colims SearchParameters.
@@ -116,7 +116,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
             try {
                 //the enzyme was not found by name in the database
                 //look for the enzyme in the MS ontology by name
-                enzyme = newOlsService.findEnzymeByName(utilitiesEnzyme.getName());
+                enzyme = olsService.findEnzymeByName(utilitiesEnzyme.getName());
             } catch (RestClientException ex) {
                 LOGGER.error(ex.getMessage(), ex);
             } catch (IOException ex) {

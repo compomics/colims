@@ -17,6 +17,7 @@ import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.core.io.headers.ProteinGroupHeaders;
+import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Instrument;
@@ -104,7 +105,8 @@ public class AnalyticalRunsAdditionController implements Controllable {
     private DbTaskProducer storageTaskProducer;
     @Autowired
     private QueueManager queueManager;
-
+    @Autowired
+    private OntologyMapper ontologyMapper;
     @Autowired
     private ProteinGroupHeaders proteinGroupHeaders;
     /**
@@ -140,13 +142,17 @@ public class AnalyticalRunsAdditionController implements Controllable {
         analyticalRunsAdditionDialog.getDateTimePicker().setTimeFormat(DateFormat.getTimeInstance(DateFormat.MEDIUM));
 
         instrumentBindingList = ObservableCollections.observableList(instrumentService.findAll());
+        labelBindingList = ObservableCollections.observableList(findAllLabels());
 
         //add binding
         bindingGroup = new BindingGroup();
 
         JComboBoxBinding instrumentComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentBindingList, analyticalRunsAdditionDialog.getInstrumentComboBox());
         bindingGroup.addBinding(instrumentComboBoxBinding);
-
+        
+        JComboBoxBinding labelComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, labelBindingList, analyticalRunsAdditionDialog.getLabelComboBox());
+        bindingGroup.addBinding(labelComboBoxBinding);
+        
         bindingGroup.bind();
         
         //add action listeners
@@ -437,6 +443,18 @@ public class AnalyticalRunsAdditionController implements Controllable {
         }
     }
 
+    /**
+     * Find all quantificationMethod labels from COLIMS mapping.
+     * @return quantificationMethods
+     */
+    public List<String> findAllLabels(){
+        List<String> quantificationMethods = new ArrayList<>();
+        quantificationMethods.add("Label free");
+        quantificationMethods.addAll(ontologyMapper.getColimsMapping().getQuantificationMethods().keySet());
+        
+        return quantificationMethods;               
+    }
+    
     /**
      * Update the info label.
      *

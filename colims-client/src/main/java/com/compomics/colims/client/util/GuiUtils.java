@@ -7,11 +7,16 @@ package com.compomics.colims.client.util;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -105,5 +110,41 @@ public class GuiUtils {
         }
 
         return validationMessages;
+    }
+
+    /**
+     * This method shows a message dialog with the given values. In case of an
+     * error message, a JTextarea is shown.
+     *
+     * @param parentComponent the parent component
+     * @param title the message dialog title
+     * @param message the message dialog content
+     * @param messageType the message dialog type
+     */
+    public static void showMessageDialog(final Component parentComponent, final String title, final String message, final int messageType) {
+        if (messageType == JOptionPane.ERROR_MESSAGE) {
+            //add message to JTextArea
+            JTextArea textArea = new JTextArea(message);
+            //put JTextArea in JScrollPane
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(600, 200));
+            scrollPane.getViewport().setOpaque(false);
+            textArea.setEditable(false);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+
+            JOptionPane.showMessageDialog(parentComponent, scrollPane, title, messageType);
+        } else {
+            JOptionPane.showMessageDialog(parentComponent, message, title, messageType);
+        }
+    }
+
+    /**
+     * Returns the normal icon.
+     *
+     * @return the normal icon
+     */
+    public static Image getNormalIcon() {
+        return Toolkit.getDefaultToolkit().getImage(GuiUtils.class.getResource("/icons/colims_icon.png"));
     }
 }

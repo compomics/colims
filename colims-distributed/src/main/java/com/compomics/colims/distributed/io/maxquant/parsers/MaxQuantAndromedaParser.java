@@ -1,8 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSpectrumParameterHeaders;
-import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.commons.io.FilenameUtils;
@@ -133,10 +131,10 @@ public class MaxQuantAndromedaParser {
     /**
      * Parse the spectrum files and map them onto {@link SpectrumFile}
      * instances. Parse also unidentified spectra if specified.
-     * @param maxQuantSpectra MaxQuantSpectra object.
-     * @param includeUnidentifiedSpectra whether or not to include the
-     * unidentified spectra
-     * @throws java.io.IOException
+     *
+     * @param maxQuantSpectra            MaxQuantSpectra object.
+     * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
+     * @throws java.io.IOException in case of an Input/Output related problem
      */
     public void parseSpectra(MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
         for (Path aplFilePath : aplFilePaths.keySet()) {
@@ -146,7 +144,7 @@ public class MaxQuantAndromedaParser {
             maxQuantAplParser.parseAplFile(aplFilePath, maxQuantSpectra, includeUnidentifiedSpectra);
         }
     }
-    
+
     /**
      * Parse the mass analyzer and fragmentation type.
      *

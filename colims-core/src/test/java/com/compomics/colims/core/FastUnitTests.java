@@ -1,5 +1,6 @@
 package com.compomics.colims.core;
 
+import com.compomics.colims.core.ontology.OntologyMapperTest;
 import com.compomics.colims.core.permission.PermissionInterceptorTest;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapperTest;
 import com.compomics.colims.core.io.mzidentml.MzIdentMLExporterTest;
@@ -17,6 +18,7 @@ import org.junit.runners.Suite;
         ColimsSpectrumMapperTest.class,
         MzMLParserTest.class,
         MzIdentMLExporterTest.class,
+        OntologyMapperTest.class
 })
 public class FastUnitTests {
 }

@@ -1,6 +1,7 @@
 package com.compomics.colims.model.cv;
 
 import com.compomics.colims.model.DatabaseEntity;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,12 +17,6 @@ public abstract class CvParam extends DatabaseEntity {
 
     private static final long serialVersionUID = 3395161527675025740L;
 
-    /**
-     * The full name of the CV.
-     */
-    @Basic(optional = false)
-    @Column(name = "ontology", nullable = false)
-    protected String ontology;
     /**
      * The label of the CV.
      */
@@ -56,13 +51,12 @@ public abstract class CvParam extends DatabaseEntity {
     /**
      * Constructor.
      *
-     * @param ontology  the ontology name
      * @param label     the ontology label
      * @param accession the CV term accession
      * @param name      the CV term name
      */
-    public CvParam(final String ontology, final String label, final String accession, final String name) {
-        this.ontology = ontology;
+    public CvParam(final String label, final String accession, final String name) {
+
         this.label = label;
         this.accession = accession;
         this.name = name;
@@ -71,26 +65,16 @@ public abstract class CvParam extends DatabaseEntity {
     /**
      * Constructor.
      *
-     * @param ontology  the ontology name
      * @param label     the ontology label
      * @param accession the CV term accession
      * @param name      the CV term name
      * @param value     the CV term value
      */
-    public CvParam(final String ontology, final String label, final String accession, final String name, final String value) {
-        this.ontology = ontology;
+    public CvParam(final String label, final String accession, final String name, final String value) {
         this.label = label;
         this.accession = accession;
         this.name = name;
         this.value = value;
-    }
-
-    public String getOntology() {
-        return ontology;
-    }
-
-    public void setOntology(final String ontology) {
-        this.ontology = ontology;
     }
 
     public String getLabel() {
@@ -132,7 +116,6 @@ public abstract class CvParam extends DatabaseEntity {
 
         CvParam cvParam = (CvParam) o;
 
-        if (!ontology.equals(cvParam.ontology)) return false;
         if (!label.equals(cvParam.label)) return false;
         if (!accession.equals(cvParam.accession)) return false;
         return name.equals(cvParam.name);
@@ -141,11 +124,11 @@ public abstract class CvParam extends DatabaseEntity {
 
     @Override
     public int hashCode() {
-        int result = ontology.hashCode();
-        result = 31 * result + label.hashCode();
-        result = 31 * result + accession.hashCode();
-        result = 31 * result + name.hashCode();
-        return result;
+        int hash = 5;
+        hash = 11 * hash + Objects.hashCode(this.label);
+        hash = 11 * hash + Objects.hashCode(this.accession);
+        hash = 11 * hash + Objects.hashCode(this.name);
+        return hash;
     }
 
     @Override

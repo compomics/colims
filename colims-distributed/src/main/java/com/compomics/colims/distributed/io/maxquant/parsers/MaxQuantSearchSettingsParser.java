@@ -4,12 +4,9 @@ import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.TypedCvParamService;
+import com.compomics.colims.distributed.io.maxquant.FixedTabularFileIterator;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
-import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
-import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantParameterHeaders;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSpectrumParameterHeaders;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSummaryHeaders;
+import com.compomics.colims.distributed.io.maxquant.headers.*;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPtmSettingsMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.cv.TypedCvParam;
@@ -34,8 +31,8 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * This class parses the MaxQuant parameter files and maps them onto the Colims SearchAndValidationSettings and related
- * entities.
+ * This class parses the MaxQuant parameter files and maps them onto the Colims
+ * SearchAndValidationSettings and related entities.
  *
  * @author Davy
  * @author Iain
@@ -53,17 +50,8 @@ public class MaxQuantSearchSettingsParser {
     private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
-    private static final String PARAMETER_DELIMITER = "\t";
     private static final String MODIFICATIONS_DELIMITER = ",";
     private static final String MODIFICATION_NAME_ONLY = " ";
-
-    private static final HeaderEnum[] MANDATORY_HEADERS = new HeaderEnum[]{
-            MaxQuantSummaryHeaders.ENZYME,
-            MaxQuantSummaryHeaders.MAX_MISSED_CLEAVAGES,
-            MaxQuantSummaryHeaders.MULTIPLICITY,
-            MaxQuantSummaryHeaders.PROTEASE,
-            MaxQuantSummaryHeaders.RAW_FILE
-    };
 
     /**
      * The MaxQuant version.
@@ -82,30 +70,49 @@ public class MaxQuantSearchSettingsParser {
      */
     private Map<String, SearchAndValidationSettings> runSettings = new HashMap<>();
     /**
-     * The spectrum parameters with raw file name (key: raw file name; value: enum map of spectrum parameters).
+     * The spectrum parameters with raw file name (key: raw file name; value:
+     * enum map of spectrum parameters).
      */
-    private Map<String, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithRawFile = new HashMap<>();
+    private Map<String, EnumMap<MqParHeader, String>> spectrumParamsWithRawFile = new HashMap<>();
     /**
-     * The analytical run name with experiment name(key: analyticalRun ; value: experiment name).
+     * The analytical run name with experiment name(key: analyticalRun ; value:
+     * experiment name).
      */
     private Map<AnalyticalRun, String> analyticalRuns = new HashMap<>();
     /**
-     * Isobaric labels for labeled quantification.(key: index , value : isobaric label)
+     * Isobaric labels for labeled quantification.(key: index , value : isobaric
+     * label)
      */
     private Map<Integer, String> isobaricLabels = new HashMap<>();
     /**
      * label mods for SILAC experiments.(key: index , value : isobaric label)
      */
     private Map<Integer, String> labelMods = new HashMap<>();
-
+    private MqParHeaders mqParHeaders;
+    private ParametersHeaders parametersHeaders;
+    private SummaryHeaders summaryHeaders;
+    /**
+     * Beans.
+     */
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
     @Autowired
     private TypedCvParamService typedCvParamService;
     @Autowired
-    private OlsService newOlsService;
+    private OlsService olsService;
     @Autowired
     private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
+
+    /**
+     * No-arg constructor.
+     *
+     * @throws IOException in case of an Input/Output related problem while parsing the headers.
+     */
+    public MaxQuantSearchSettingsParser() throws IOException {
+        parametersHeaders = new ParametersHeaders();
+        summaryHeaders = new SummaryHeaders();
+        mqParHeaders = new MqParHeaders();
+    }
 
     /**
      * Get the version of MaxQuant used.
@@ -128,36 +135,38 @@ public class MaxQuantSearchSettingsParser {
      * Parse the search parameters for a MaxQuant experiment.
      *
      * @param combinedFolderDirectory the MaxQuant combined folder directory path
-     * @param parameterFilePath the parameter file
-     * @param fastaDbs             the FASTA databases used in the experiment
-     * @param storeFiles           whether data files should be stored with the experiment
+     * @param mqParFile               the mqpar.xml parameter file
+     * @param fastaDbs                the FASTA databases used in the experiment
+     * @param storeFiles              whether data files should be stored with the experiment
      * @throws IOException thrown in case of of an I/O related problem
      */
-    public void parse(Path combinedFolderDirectory,Path parameterFilePath, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
+    public void parse(Path combinedFolderDirectory, Path mqParFile, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
         Path txtDirectory = Paths.get(combinedFolderDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
-        parseSpectrumParameters(parameterFilePath);
-        TabularFileLineValuesIterator summaryIterator = new TabularFileLineValuesIterator(Paths.get(txtDirectory.toString(), MaxQuantConstants.SUMMARY_FILE.value()).toFile(), MANDATORY_HEADERS);
-        Map<String, String> row;
+        //parse the mxpar.xml file
+        parseMqParFile(mqParFile);
+        //parse the summary.txt file
+        FixedTabularFileIterator summaryIterator = new FixedTabularFileIterator(Paths.get(txtDirectory.toString(), MaxQuantConstants.SUMMARY_FILE.value()), summaryHeaders);
 
+        Map<SummaryHeader, String> summaryEntry;
         while (summaryIterator.hasNext()) {
-            row = summaryIterator.next();
+            summaryEntry = summaryIterator.next();
             //parse the search settings
-            if (getSpectrumParamsWithRawFile().containsKey(row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()))) {
-                SearchAndValidationSettings searchAndValidationSettings =
-                        parseSearchSettings(txtDirectory, fastaDbs, storeFiles, row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()));
-                if (multiplicity == null && row.containsKey(MaxQuantSummaryHeaders.MULTIPLICITY.getValue())) {
-                    multiplicity = row.get(MaxQuantSummaryHeaders.MULTIPLICITY.getValue());
+            if (getSpectrumParamsWithRawFile().containsKey(summaryEntry.get(SummaryHeader.RAW_FILE))) {
+                SearchAndValidationSettings searchAndValidationSettings
+                        = parseSearchSettings(txtDirectory, fastaDbs, storeFiles, summaryEntry.get(SummaryHeader.RAW_FILE));
+                if (multiplicity == null && summaryEntry.containsKey(SummaryHeader.MULTIPLICITY)) {
+                    multiplicity = summaryEntry.get(SummaryHeader.MULTIPLICITY);
                 }
 
-                runSettings.put(row.get(MaxQuantSummaryHeaders.RAW_FILE.getValue()), searchAndValidationSettings);
+                runSettings.put(summaryEntry.get(SummaryHeader.RAW_FILE), searchAndValidationSettings);
             }
         }
 
     }
 
     /**
-     * Parse the search settings for the given experiment and map them onto a Colims SearchAndValidationSettings
-     * instance.
+     * Parse the search settings for the given experiment and map them onto a
+     * Colims SearchAndValidationSettings instance.
      *
      * @param maxQuantTxtDirectory the MaxQuant txt directory path
      * @param fastaDbs             the FASTA databases used in the experiment
@@ -177,29 +186,30 @@ public class MaxQuantSearchSettingsParser {
         });
 
         /**
-         * Map the search parameters onto a Colims {@link SearchParameters} instance.
+         * Map the search parameters onto a Colims {@link SearchParameters}
+         * instance.
          */
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setSearchType(defaultSearchType);
 
         //parse the parameters file and iterate over the parameters
-        Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), MaxQuantConstants.PARAMETERS_FILE.value()), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
+        Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), MaxQuantConstants.PARAMETERS_FILE.value()), parametersHeaders.getMandatoryHeaders(), MaxQuantConstants.
+                PARAM_TAB_DELIMITER.value(), true);
 
         //get the MaxQuant version
-        String versionParameter = parameters.get(MaxQuantParameterHeaders.VERSION.getValue());
+        String versionParameter = parameters.get(parametersHeaders.get(ParametersHeader.VERSION));
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
             version = versionParameter;
         }
 
-
         //precursor mass tolerance and unit
-        String precursorMassToleranceString = getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE);
+        String precursorMassToleranceString = getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE);
         searchParameters.setPrecMassTolerance(Double.parseDouble(precursorMassToleranceString));
 
         String massToleranceUnit = "";
-        if (getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("true")) {
+        if (getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("true")) {
             massToleranceUnit = "ppm";
-        } else if (getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("false")) {
+        } else if (getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("false")) {
             massToleranceUnit = "da";
         } else {
             massToleranceUnit = "";
@@ -207,23 +217,23 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setPrecMassToleranceUnit(MassAccuracyType.valueOf(massToleranceUnit.toUpperCase(Locale.ENGLISH)));
 
         //fragment mass tolerance and unit
-        String fragmentMassToleranceString = getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.FRAGMENT_MASS_TOLERANCE);
+        String fragmentMassToleranceString = getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.FRAGMENT_MASS_TOLERANCE);
         searchParameters.setFragMassTolerance(Double.parseDouble(fragmentMassToleranceString));
 
         searchParameters.setFragMassToleranceUnit(MassAccuracyType.valueOf(massToleranceUnit.toUpperCase(Locale.ENGLISH)));
 
         //enzyme
-        TypedCvParam enzyme = mapEnzyme(getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.ENZYMES));
+        TypedCvParam enzyme = mapEnzyme(getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.ENZYMES));
         if (enzyme != null) {
             searchParameters.setEnzyme((SearchCvParam) enzyme);
         }
 
         //missed cleavages
-        String missedCleavages = getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.MAX_MISSED_CLEAVAGES);
+        String missedCleavages = getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.MAX_MISSED_CLEAVAGES);
         searchParameters.setNumberOfMissedCleavages(Integer.parseInt(missedCleavages));
 
         //upper charge
-        String upperCharge = getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.MAX_CHARGE);
+        String upperCharge = getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.MAX_CHARGE);
         searchParameters.setUpperCharge(Integer.parseInt(upperCharge));
 
         //add modifications
@@ -240,7 +250,6 @@ public class MaxQuantSearchSettingsParser {
 
         // TODO: 6/13/2016 change!
         //searchParameters.getSearchAndValidationSettingses().add(searchAndValidationSettings);
-
         return searchAndValidationSettings;
     }
 
@@ -263,7 +272,8 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Get the default search type from the database and assign it to the class field.
+     * Get the default search type from the database and assign it to the class
+     * field.
      */
     @PostConstruct
     private void getDefaultSearchType() {
@@ -277,17 +287,18 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Get the spectrum parameters which have link with Raw Files (runs).
+     * Get the spectrum parameters which have link with RAW Files (runs).
      *
      * @return copy of the spectrum parameter with raw file
      */
-    public Map<String, EnumMap<MaxQuantSpectrumParameterHeaders, String>> getSpectrumParamsWithRawFile() {
+    public Map<String, EnumMap<MqParHeader, String>> getSpectrumParamsWithRawFile() {
         return spectrumParamsWithRawFile;
     }
 
     /**
-     * Get analytical runs name (experiment name) which have link with analytical runs.
-     * 
+     * Get analytical runs name (experiment name) which have link with
+     * analytical runs.
+     *
      * @return analyticalRuns
      */
     public Map<AnalyticalRun, String> getAnalyticalRuns() {
@@ -296,6 +307,7 @@ public class MaxQuantSearchSettingsParser {
 
     /**
      * Get isobaric label for labeled quantification
+     *
      * @return isobaricLabels map
      */
     public Map<Integer, String> getIsobaricLabels() {
@@ -304,6 +316,7 @@ public class MaxQuantSearchSettingsParser {
 
     /**
      * Get label modifications for SILAC experiments.
+     *
      * @return labelMods
      */
     public Map<Integer, String> getLabelMods() {
@@ -326,7 +339,7 @@ public class MaxQuantSearchSettingsParser {
             try {
                 //the enzyme was not found by name in the database
                 //look for the enzyme in the MS ontology by name
-                enzyme = newOlsService.findEnzymeByName(maxQuantEnzyme);
+                enzyme = olsService.findEnzymeByName(maxQuantEnzyme);
             } catch (RestClientException ex) {
                 LOGGER.error(ex.getMessage(), ex);
             } catch (IOException ex) {
@@ -346,19 +359,20 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Create modifications for the given search parameter and the raw file that linked to that parameter.
+     * Create modifications for the given search parameter and the raw file that
+     * linked to that parameter.
      *
-     * @param searchParameters
-     * @param rawFileName
+     * @param searchParameters the search parameters
+     * @param rawFileName      the RAW file name
      * @return list of SearchParametersHasModification object.
      * @throws ModificationMappingException
      */
     private List<SearchParametersHasModification> createModifications(SearchParameters searchParameters, String rawFileName) throws ModificationMappingException {
         List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
         // find the name of fixed modification
-        String fixedModifications = getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.FIXED_MODIFICATIONS);
+        String fixedModifications = getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.FIXED_MODIFICATIONS);
         // find the name of variable modification
-        String variableModifications = getSpectrumParamsWithRawFile().get(rawFileName).get(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS);
+        String variableModifications = getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.VARIABLE_MODIFICATIONS);
 
         if (fixedModifications == null && variableModifications == null) {
             return searchParametersHasModifications;
@@ -412,28 +426,26 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Parse spectrum parameters and match with runs.
+     * Parse the mqpar.xml file and match with runs.
      *
-     * @param spectrumParametersPath
-     * @throws JDOMException
+     * @param mqParFile the mqpar.xml file path
+     * @throws JDOMException in case of an problem occurring in one of the JDOM classes
      */
-    public void parseSpectrumParameters(Path spectrumParametersPath) throws JDOMException {
+    void parseMqParFile(Path mqParFile) throws JDOMException {
         // create a map to hold raw files for each run (key: group index; value: raw file).
         Map<Integer, String> rawFilePath = new HashMap<>();
         //create a map to hold raw file groups for each run (key: group index; value: group number).
         Map<Integer, Integer> rawFileGroup = new HashMap<>();
-        //create a map to hold enum map of spectrum parameters and their group(key: group number; value: enumMAp of spectrum parameters).
-        Map<Integer, EnumMap<MaxQuantSpectrumParameterHeaders, String>> spectrumParamsWithGroup = new HashMap<>();
+        //create a map to hold enum map of spectrum parameters and their group(key: group number; value: enum map of spectrum parameters).
+        Map<Integer, EnumMap<MqParHeader, String>> spectrumParamsWithGroup = new HashMap<>();
         // create a map to hold experiment names for each run (key: group index; value: experiment name).
         Map<Integer, String> experimentsName = new HashMap<>();
-        
-        Resource spectrumParameterResource = new FileSystemResource(spectrumParametersPath.toFile());
 
+        Resource mqParResource = new FileSystemResource(mqParFile.toFile());
         SAXBuilder builder = new SAXBuilder();
-
         Document document;
         try {
-            document = builder.build(spectrumParameterResource.getInputStream());
+            document = builder.build(mqParResource.getInputStream());
 
             Element root = document.getRootElement();
             // keep each raw file in a map (key: int, value: name of file).
@@ -448,17 +460,17 @@ public class MaxQuantSearchSettingsParser {
             }
 
             Element analyticalRunNamesElement = getChildByName(root, "experiments");
-            counter = 0 ;
-            for(Element analyticalRunNameElement : analyticalRunNamesElement.getChildren()){
-                if(!analyticalRunNameElement.getContent().isEmpty()){
+            counter = 0;
+            for (Element analyticalRunNameElement : analyticalRunNamesElement.getChildren()) {
+                if (!analyticalRunNameElement.getContent().isEmpty()) {
                     experimentsName.put(counter, analyticalRunNameElement.getContent().get(0).getValue());
                     counter++;
-                }else{
+                } else {
                     throw new IllegalStateException("Experiment name in mqpar file is empty.");
                 }
             }
 
-            // keep each raw file group number in a map (key: int, value: group number).
+            // keep each raw file group number in a map (key: int; value: group number).
             Element rawFileGroupsElement = getChildByName(root, "paramgroupindices");
             counter = 0;
             for (Element rawFileGroupElement : rawFileGroupsElement.getChildren()) {
@@ -467,61 +479,61 @@ public class MaxQuantSearchSettingsParser {
                 counter++;
             }
 
-            // keep each search parameters in a map (key: group number, value = maxQuantSpectrumParameterHeaders)
+            // keep each search parameters in a map (key: group number; value = maxQuantSpectrumParameterHeaders)
             Element parameterGroupsElement = getChildByName(root, "parametergroups");
             counter = 0;
             for (Element parameterGroupElement : parameterGroupsElement.getChildren()) {
-                //create enumMap for spectrum parameters (key: parameter enum; value: parameter value).
-                EnumMap<MaxQuantSpectrumParameterHeaders, String> spectrumParameters = new EnumMap<>(MaxQuantSpectrumParameterHeaders.class);
-                for (MaxQuantSpectrumParameterHeaders spectrumParameterHeader : MaxQuantSpectrumParameterHeaders.values()) {
-                    Optional<String> header = spectrumParameterHeader.getPossibleValues()
-                            .stream()
-                            .findFirst();
-                    spectrumParameterHeader.setParsedValue(spectrumParameterHeader.getPossibleValues().indexOf(header.get()));
-                    if (header.isPresent()) {
-                        if (header.get().equals(MaxQuantSpectrumParameterHeaders.VARIABLE_MODIFICATIONS.getValue()) || header.get().equals(MaxQuantSpectrumParameterHeaders.ENZYMES.getValue())) {
-                            StringBuilder variableModification = new StringBuilder();
-                            getChildByName(parameterGroupElement, header.get()).getChildren().stream().forEach((variableModifications) -> {
-                                variableModification.append(",");
-                                variableModification.append(variableModifications.getContent().get(0).getValue());
-                            });
-                            spectrumParameters.put(spectrumParameterHeader, org.apache.commons.lang3.StringUtils.substringAfter(variableModification.toString(), ","));
-                        } else if (header.get().equals(MaxQuantSpectrumParameterHeaders.FIXED_MODIFICATIONS.getValue())) {
-                            StringBuilder fixedModification = new StringBuilder();
-                            getChildByName(root, header.get()).getChildren().stream().forEach((fixedModifications) -> {
-                                fixedModification.append(",");
-                                fixedModification.append(fixedModifications.getContent().get(0).getValue());
-                            });
-                            spectrumParameters.put(spectrumParameterHeader, org.apache.commons.lang3.StringUtils.substringAfter(fixedModification.toString(), ","));
-                        } else {
-                            spectrumParameters.put(spectrumParameterHeader, getChildByName(parameterGroupElement, header.get()).getContent().get(0).getValue());
-                        }
-                    }
-                }
-                spectrumParamsWithGroup.put(counter, spectrumParameters);
+                //create enumMap for mqpar.xml parameters (key: MqParHeader enum; value: parameter value).
+                EnumMap<MqParHeader, String> mqParParameters = new EnumMap<>(MqParHeader.class);
+//                for (MqParHeader mqparHeader : mqParHeaders.getMandatoryHeaders()) {
+//                    Optional<String> header = mqparHeader.getValues()
+//                            .stream()
+//                            .findFirst();
+//                    mqparHeader.setParsedValue(mqparHeader.getValues().indexOf(header.get()));
+//                    if (header.isPresent()) {
+//                        if (header.get().equals(MqParHeader.VARIABLE_MODIFICATIONS) || header.get().equals(MqParHeader.ENZYMES)) {
+//                            StringBuilder variableModification = new StringBuilder();
+//                            getChildByName(parameterGroupElement, header.get()).getChildren().stream().forEach((variableModifications) -> {
+//                                variableModification.append(",");
+//                                variableModification.append(variableModifications.getContent().get(0).getValue());
+//                            });
+//                            mqParParameters.put(mqparHeader, org.apache.commons.lang3.StringUtils.substringAfter(variableModification.toString(), ","));
+//                        } else if (header.get().equals(MqParHeader.FIXED_MODIFICATIONS)) {
+//                            StringBuilder fixedModification = new StringBuilder();
+//                            getChildByName(root, header.get()).getChildren().stream().forEach((fixedModifications) -> {
+//                                fixedModification.append(",");
+//                                fixedModification.append(fixedModifications.getContent().get(0).getValue());
+//                            });
+//                            mqParParameters.put(mqparHeader, org.apache.commons.lang3.StringUtils.substringAfter(fixedModification.toString(), ","));
+//                        } else {
+//                            mqParParameters.put(mqparHeader, getChildByName(parameterGroupElement, header.get()).getContent().get(0).getValue());
+//                        }
+//                    }
+//                }
+                spectrumParamsWithGroup.put(counter, mqParParameters);
                 counter++;
-                
+
                 Element isobaricLabelsElement = getChildByName(parameterGroupElement, "isobaricLabels");
                 int labelCounter = 0;
-                for(Element isobaricLabelElement : isobaricLabelsElement.getChildren()){
-                    if(!isobaricLabelElement.getContent().isEmpty()){
+                for (Element isobaricLabelElement : isobaricLabelsElement.getChildren()) {
+                    if (!isobaricLabelElement.getContent().isEmpty()) {
                         isobaricLabels.put(labelCounter, isobaricLabelElement.getContent().get(0).getValue());
-                    }else{
+                    } else {
                         isobaricLabels.put(labelCounter, null);
                     }
-                    
+
                     labelCounter++;
                 }
-                
+
                 Element labelModsElement = getChildByName(parameterGroupElement, "labelMods");
                 labelCounter = 0;
-                for(Element labelModElement : labelModsElement.getChildren()){
-                    if(!labelModElement.getContent().isEmpty()){
+                for (Element labelModElement : labelModsElement.getChildren()) {
+                    if (!labelModElement.getContent().isEmpty()) {
                         labelMods.put(labelCounter, labelModElement.getContent().get(0).getValue());
-                    }else{
+                    } else {
                         labelMods.put(labelCounter, null);
                     }
-                    
+
                     labelCounter++;
                 }
             }

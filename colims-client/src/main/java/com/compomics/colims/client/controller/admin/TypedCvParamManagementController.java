@@ -8,7 +8,7 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.table.model.TypedCvParamTableModel2;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvParamManagementDialog;
-import com.compomics.colims.core.model.ols.OntologyTerm;
+import com.compomics.colims.core.ontology.ols.OntologyTerm;
 import com.compomics.colims.core.service.AuditableTypedCvParamService;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
@@ -71,7 +71,7 @@ public class TypedCvParamManagementController implements Controllable {
     @Autowired
     private AuditableTypedCvParamService cvParamService;
     @Autowired
-    private OlsService newOlsService;
+    private OlsService olsService;
 
     @Override
     @PostConstruct
@@ -101,7 +101,7 @@ public class TypedCvParamManagementController implements Controllable {
                     }
 
                     //set details fields
-                    cvParamManagementDialog.getOntologyTextField().setText(selectedCvParam.getOntology());
+                    cvParamManagementDialog.getOntologyTextField().setText(selectedCvParam.getLabel());
                     cvParamManagementDialog.getOntologyLabelTextField().setText(selectedCvParam.getLabel());
                     cvParamManagementDialog.getAccessionTextField().setText(selectedCvParam.getAccession());
                     cvParamManagementDialog.getNameTextField().setText(selectedCvParam.getName());
@@ -111,7 +111,7 @@ public class TypedCvParamManagementController implements Controllable {
                     try {
                         //get the descripton from the OLS service
                         cvParamManagementDialog.getDefinitionTextArea().setText(
-                                newOlsService.getTermDescriptionByOboId(selectedCvParam.getLabel(), selectedCvParam.getAccession()));
+                                olsService.getTermDescriptionByOboId(selectedCvParam.getLabel(), selectedCvParam.getAccession()));
                     } catch (RestClientException ex) {
                         LOGGER.error(ex.getMessage(), ex);
                         cvParamManagementDialog.getDefinitionTextArea().setText("");
@@ -261,9 +261,7 @@ public class TypedCvParamManagementController implements Controllable {
      * @param name the name
      */
     private void updateCvParam(final AuditableTypedCvParam cvParam, final String ontology, final String label, final String accession, final String name) {
-        if (!cvParam.getOntology().equalsIgnoreCase(ontology)) {
-            cvParam.setOntology(ontology);
-        }
+        
         if (!cvParam.getLabel().equalsIgnoreCase(label)) {
             cvParam.setLabel(label);
         }
@@ -290,7 +288,7 @@ public class TypedCvParamManagementController implements Controllable {
         if (ontologyTerm != null) {
             //check whether a CV param has to be added or updated
             if (newCvParam) {
-                AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 //add CV param to the table model
                 typeCvParamTableModel2.addCvParam(cvParam);

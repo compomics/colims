@@ -152,7 +152,7 @@
         </Container>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Please select the optional protein group quantification headers to store"/>
+            <Property name="text" type="java.lang.String" value="Please select the optional protein group quantification headerValues to store"/>
           </Properties>
         </Component>
       </SubComponents>

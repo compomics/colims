@@ -1,0 +1,26 @@
+{
+  "ACCESSION": {
+    "mandatory": true,
+    "values": [
+      "Protein IDs"
+    ]
+  },
+  "EVIDENCE_IDS": {
+    "mandatory": true,
+    "values": [
+      "Evidence IDs"
+    ]
+  },
+  "ID": {
+    "mandatory": true,
+    "values": [
+      "id"
+    ]
+  },
+  "PEP": {
+    "mandatory": true,
+    "values": [
+      "PEP"
+    ]
+  }
+}

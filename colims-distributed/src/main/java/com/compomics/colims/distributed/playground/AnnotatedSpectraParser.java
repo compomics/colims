@@ -6,12 +6,16 @@
 package com.compomics.colims.distributed.playground;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
-import com.compomics.colims.distributed.io.maxquant.TabularFileLineValuesIterator;
-import com.compomics.colims.distributed.io.maxquant.headers.HeaderEnum;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantMSMSHeaders;
+import com.compomics.colims.distributed.io.maxquant.TabularFileIterator;
+import com.compomics.colims.distributed.io.maxquant.headers.MsmsHeader;
+import com.compomics.colims.distributed.io.maxquant.headers.MsmsHeaders;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantAplParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.ParseUtils;
 import com.compomics.util.experiment.massspectrometry.Peak;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,136 +26,135 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 /**
  * Parse MSMS and APL files for given MSMS IDs and keep the peak points.
+ *
  * @author demet
  */
 @Component("annotatedSpectraParser")
 public class AnnotatedSpectraParser {
-    
+
     /**
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantAplParser.class);
-    
-    /**
-     * Spectrum peaks from APL files. key: APL key of the spectrum, value :list of peaks.
-     */
-    private Map<String, List<Peak>> spectrumPeaks = new HashMap<>();
-    
-    /**
-     * Annotations from MSMS file
-     * key:APL key of the spectrum, value map( key : Peak that keeps mass and intensity, value : match)
-     */
-    private Map<String, Map<Peak, String>> annotations  = new HashMap<>();
-    
-    /**
-     * List of aplKeys from MSMS file
-     */
-    private List<String> aplKeys = new ArrayList<>();
-    
-        /**
-     * The apl spectrum file paths map (key: apl file path; value: apl param file path);
-     */
-    private Map<Path, Path> aplFilePaths = new HashMap<>();
-    
-    private static final HeaderEnum[] mandatoryHeaders = new HeaderEnum[]{
-            MaxQuantMSMSHeaders.ID,
-            MaxQuantMSMSHeaders.MATCHES,
-            MaxQuantMSMSHeaders.INTENSITIES,
-            MaxQuantMSMSHeaders.MASSES,
-            MaxQuantMSMSHeaders.SCAN_EVENT_NUMBER,
-            MaxQuantMSMSHeaders.SCAN_INDEX
-    };
-    
     /**
      * The start of the spectrum header in the apl file.
      */
     private static final String KEY_START = "RawFile: ";
-    private static final String KEY_MIDDLE = " Index: ";  
+    private static final String KEY_MIDDLE = " Index: ";
     private static final String APL_SPECTUM_START = "peaklist start";
     private static final String APL_SPECTUM_END = "peaklist end";
     private static final String APL_HEADER_DELIMITER = "=";
     private static final String APL_HEADER = "header";
-    
+    /**
+     * Spectrum peaks from APL files. key: APL key of the spectrum, value :list of peaks.
+     */
+    private Map<String, List<Peak>> spectrumPeaks = new HashMap<>();
+    /**
+     * Annotations from MSMS file
+     * key:APL key of the spectrum, value map( key : Peak that keeps mass and intensity, value : match).
+     */
+    private Map<String, Map<Peak, String>> annotations = new HashMap<>();
+    /**
+     * List of aplKeys from MSMS file.
+     */
+    private List<String> aplKeys = new ArrayList<>();
+    /**
+     * The apl spectrum file paths map (key: apl file path; value: apl param file path);
+     */
+    private Map<Path, Path> aplFilePaths = new HashMap<>();
+    private MsmsHeaders msmsHeaders;
+
+    /**
+     * No-arg constructor.
+     *
+     * @throws IOException in case of an Input/Output related problem while parsing the headers.
+     */
+    public AnnotatedSpectraParser() throws IOException {
+        msmsHeaders = new MsmsHeaders();
+    }
+
     /**
      * Parse spectra for given MSMS IDs.
+     *
      * @param msmsFile
      * @param andromedaDirectory
      * @param msmsIDs
-     * @throws IOException 
+     * @throws IOException
      */
-    public void parseSpectra(Path msmsFile, Path andromedaDirectory, List<String> msmsIDs) throws IOException{
+    public void parseSpectra(Path msmsFile, Path andromedaDirectory, List<String> msmsIDs) throws IOException {
         parseMSMS(msmsFile, msmsIDs);
         parseAplFilePaths(andromedaDirectory);
         parseAplFile();
     }
-    
+
     /**
-     * Parse msms file only for given ID numbers
+     * Parse msms file only for given ID numbers.
+     *
      * @param msmsFile
-     * @param msmsIDs 
+     * @param msmsIDs
      */
-    private void parseMSMS(Path msmsFile, List<String> msmsIDs) throws IOException{
-        TabularFileLineValuesIterator valuesIterator = new TabularFileLineValuesIterator(msmsFile.toFile(), mandatoryHeaders);
+    private void parseMSMS(Path msmsFile, List<String> msmsIDs) throws IOException {
+        TabularFileIterator valuesIterator = new TabularFileIterator(msmsFile, msmsHeaders.getMandatoryHeaders());
         for (Map<String, String> spectrumValues : valuesIterator) {
-            if(msmsIDs.contains(spectrumValues.get(MaxQuantMSMSHeaders.ID.getValue()))){
+            if (msmsIDs.contains(spectrumValues.get(MsmsHeader.ID))) {
                 //concatenate the RAW file name and scan index
-                String aplKey = KEY_START + spectrumValues.get(MaxQuantMSMSHeaders.RAW_FILE.getValue())
-                    + KEY_MIDDLE
-                    + spectrumValues.get(MaxQuantMSMSHeaders.SCAN_NUMBER.getValue());
+                String aplKey = KEY_START + spectrumValues.get(MsmsHeader.RAW_FILE)
+                        + KEY_MIDDLE
+                        + spectrumValues.get(MsmsHeader.SCAN_NUMBER);
 
                 //map the spectrum
-                if (!aplKeys.contains(aplKey)){
-                    Map<Peak, String> annotatedPeakList = parsePeakList(spectrumValues.get(MaxQuantMSMSHeaders.MATCHES.getValue()),
-                            spectrumValues.get(MaxQuantMSMSHeaders.INTENSITIES.getValue()), 
-                            spectrumValues.get(MaxQuantMSMSHeaders.MASSES.getValue()));
+                if (!aplKeys.contains(aplKey)) {
+                    Map<Peak, String> annotatedPeakList = parsePeakList(spectrumValues.get(MsmsHeader.MATCHES),
+                            spectrumValues.get(MsmsHeader.INTENSITIES),
+                            spectrumValues.get(MsmsHeader.MASSES));
                     annotations.put(aplKey, annotatedPeakList);
                     aplKeys.add(aplKey);
-                    
+
                 }
             }
         }
     }
+
     /**
-     * Parse peakList
+     * Parse peakList.
+     *
      * @param matches
      * @param intensities
-     * @param masses 
+     * @param masses
      */
-    private Map<Peak, String> parsePeakList(String matches, String intensities, String masses){
+    private Map<Peak, String> parsePeakList(String matches, String intensities, String masses) {
         Map<Peak, String> annotatedPeakList = new HashMap<>();
         if (!matches.isEmpty() && !intensities.isEmpty() && !masses.isEmpty()) {
-            String[] matchList = matches.split(";"); 
-            String[] intensityList = intensities.split(";"); 
-            String[] massList = masses.split(";"); 
+            String[] matchList = matches.split(";");
+            String[] intensityList = intensities.split(";");
+            String[] massList = masses.split(";");
 
-            if (intensityList.length != matchList.length || massList.length != matchList.length) { 
-                throw new IllegalArgumentException("Input lists are not equal length"); 
-            } 
-            for (int i = 0; i < matchList.length; i++) { 
-                int charge = 1; 
-                Double mass = Double.parseDouble(massList[i]) / charge; 
+            if (intensityList.length != matchList.length || massList.length != matchList.length) {
+                throw new IllegalArgumentException("Input lists are not equal length");
+            }
+            for (int i = 0; i < matchList.length; i++) {
+                int charge = 1;
+                Double mass = Double.parseDouble(massList[i]) / charge;
                 Peak peak = new Peak(mass, Double.parseDouble(intensityList[i]));
-                 
+
                 annotatedPeakList.put(peak, matchList[i]);
-            } 
+            }
 
         }
         return annotatedPeakList;
     }
-    
+
     /**
      * Parse APL File Paths. Put all the apl files to be used in aplFilePaths list.
+     *
      * @param andromedaDirectory
      * @throws FileNotFoundException
-     * @throws IOException 
+     * @throws IOException
      */
-    private void parseAplFilePaths(Path andromedaDirectory) throws FileNotFoundException, IOException{
+    private void parseAplFilePaths(Path andromedaDirectory) throws FileNotFoundException, IOException {
         /**
          * Parse the apl summary file 'aplfiles.txt' to extract the apl spectrum file paths, the spectrum parameter file paths
          * and the mass analyzer and fragmentation type.
@@ -173,11 +176,10 @@ public class AnnotatedSpectraParser {
         });
 
     }
-    
-    
+
+
     /**
-     * Parse the APL files for given aplKeys and put the peaks in the spectrumPeaks list
-     *
+     * Parse the APL files for given aplKeys and put the peaks in the spectrumPeaks list.
      */
     private void parseAplFile() throws IOException {
         for (Path aplFilePath : aplFilePaths.keySet()) {
@@ -207,12 +209,12 @@ public class AnnotatedSpectraParser {
                             while (!line.startsWith(APL_SPECTUM_END)) {
                                 String[] splitLine = line.split(MaxQuantConstants.PARAM_TAB_DELIMITER.value());
                                 Peak peak = new Peak(Double.parseDouble(splitLine[0]), Double.parseDouble(splitLine[1]));
-                                
+
                                 peakList.add(peak);
                                 line = bufferedReader.readLine();
                             }
                             spectrumPeaks.put(header, peakList);
-                        } 
+                        }
                         //clear headers map
                         headers.clear();
                     }

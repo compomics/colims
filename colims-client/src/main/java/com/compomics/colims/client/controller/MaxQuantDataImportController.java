@@ -68,7 +68,7 @@ public class MaxQuantDataImportController implements Controllable {
 
     @Autowired
     private FastaDbService fastaDbService;
-    
+
     @Override
     public void init() {
         //get view from parent controller
@@ -187,7 +187,7 @@ public class MaxQuantDataImportController implements Controllable {
         maxQuantDataImportPanel.getContaminantsCheckBox().setSelected(false);
         maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().setSelected(false);
     }
-    
+
     public void showEditView(MaxQuantImport maxQuantImport){
         showView();
         maxQuantDataImportPanel.getParameterDirectoryTextField().setText(maxQuantImport.getParameterFilePath().toString());
@@ -210,7 +210,7 @@ public class MaxQuantDataImportController implements Controllable {
             contaminantsFastaDb = null;
             maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
         }
-        
+
     }
 
     /**
@@ -281,7 +281,7 @@ public class MaxQuantDataImportController implements Controllable {
         this.contaminantsFastaDb = contaminantsFastaDb;
     }
 
-    
+
 }
 
 class AdditionalFastaDbListCellRenderer extends DefaultListCellRenderer {

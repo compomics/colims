@@ -1,0 +1,8 @@
+{
+  "VERSION": {
+    "mandatory": true,
+    "values": [
+      "Version"
+    ]
+  }
+}

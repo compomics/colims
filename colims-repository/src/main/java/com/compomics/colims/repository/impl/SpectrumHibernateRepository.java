@@ -78,60 +78,60 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
     }
 
     @Override
-    public Double getMinimumRetentionTime(final AnalyticalRun analyticalRun) {
+    public Double getMinimumRetentionTime(final List<Long> analyticalRunIds) {
         Double minimumRetentionTime;
 
-        Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
+        Criteria criteria = createCriteria().add(Restrictions.in("analyticalRun.id", analyticalRunIds));
         minimumRetentionTime = (Double) criteria.setProjection(Projections.min("retentionTime")).uniqueResult();
 
         return minimumRetentionTime;
     }
 
     @Override
-    public Double getMaximumRetentionTime(final AnalyticalRun analyticalRun) {
+    public Double getMaximumRetentionTime(final List<Long> analyticalRunIds) {
         Double maximumRetentionTime;
 
-        Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
+        Criteria criteria = createCriteria().add(Restrictions.in("analyticalRun.id", analyticalRunIds));
         maximumRetentionTime = (Double) criteria.setProjection(Projections.max("retentionTime")).uniqueResult();
 
         return maximumRetentionTime;
     }
 
     @Override
-    public Double getMinimumMzRatio(final AnalyticalRun analyticalRun) {
+    public Double getMinimumMzRatio(final List<Long> analyticalRunIds) {
         Double minimumMzRatio;
 
-        Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
+        Criteria criteria = createCriteria().add(Restrictions.in("analyticalRun.id", analyticalRunIds));
         minimumMzRatio = (Double) criteria.setProjection(Projections.min("mzRatio")).uniqueResult();
 
         return minimumMzRatio;
     }
 
     @Override
-    public Double getMaximumMzRatio(final AnalyticalRun analyticalRun) {
+    public Double getMaximumMzRatio(final List<Long> analyticalRunIds) {
         Double maximumMzRatio;
 
-        Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
+        Criteria criteria = createCriteria().add(Restrictions.in("analyticalRun.id", analyticalRunIds));
         maximumMzRatio = (Double) criteria.setProjection(Projections.max("mzRatio")).uniqueResult();
 
         return maximumMzRatio;
     }
 
     @Override
-    public Integer getMinimumCharge(final AnalyticalRun analyticalRun) {
+    public Integer getMinimumCharge(final List<Long> analyticalRunIds) {
         Integer minimumCharge;
 
-        Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
+        Criteria criteria = createCriteria().add(Restrictions.in("analyticalRun.id", analyticalRunIds));
         minimumCharge = (Integer) criteria.setProjection(Projections.min("charge")).uniqueResult();
 
         return minimumCharge;
     }
 
     @Override
-    public Integer getMaximumCharge(final AnalyticalRun analyticalRun) {
+    public Integer getMaximumCharge(final List<Long> analyticalRunIds) {
         Integer maximumCharge;
 
-        Criteria criteria = createCriteria().add(Restrictions.eq("analyticalRun", analyticalRun));
+        Criteria criteria = createCriteria().add(Restrictions.in("analyticalRun.id", analyticalRunIds));
         maximumCharge = (Integer) criteria.setProjection(Projections.max("charge")).uniqueResult();
 
         return maximumCharge;

@@ -2,7 +2,7 @@ package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
-import com.compomics.colims.core.model.ols.OlsSearchResult;
+import com.compomics.colims.core.ontology.ols.OlsSearchResult;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;

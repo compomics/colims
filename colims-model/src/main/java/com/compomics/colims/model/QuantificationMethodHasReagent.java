@@ -6,6 +6,7 @@
 package com.compomics.colims.model;
 
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -25,14 +26,14 @@ public class QuantificationMethodHasReagent extends DatabaseEntity{
      * The QuantificationMethodCvParam instance of this join entity.
      */
     @JoinColumn(name = "l_quantification_method_cv_param_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     private QuantificationMethodCvParam quantificationMethodCvParam;
     
     /**
      * The QuantificationMethodCvParam instance of this join entity.
      */
     @JoinColumn(name = "l_quantification_reagent_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     private QuantificationReagent quantificationReagent;
 
     public QuantificationMethodHasReagent() {

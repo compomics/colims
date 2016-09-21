@@ -1,0 +1,60 @@
+package com.compomics.colims.distributed.io.maxquant.parsers;
+
+import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
+import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.ProteinGroup;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+
+/**
+ * @author Davy
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
+public class MaxQuantProteinGroupsParserTest {
+
+    @Autowired
+    private MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
+    @Autowired
+    private MaxQuantParser maxQuantParser;
+
+    /**
+     * Test of parseMaxQuantProteinGroups method, of class MaxQuantProteinGroupParser.
+     *
+     * @throws java.lang.Exception in case of an exception
+     */
+    @Test
+    public void testParse() throws Exception {
+        List<FastaDb> fastaDbs = new ArrayList<>();
+        fastaDbs.add(MaxQuantTestSuite.testFastaDb);
+
+        List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.proteinGroupsFile);
+
+        Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
+                maxQuantParser.parseFastas(fastaDbs), false, new ArrayList<>());
+
+        // minus headers
+        assertThat(result.size(), Matchers.lessThan(rawFile.size()));
+
+        ProteinGroup proteinGroup = result.entrySet().iterator().next().getValue();
+
+        assertFalse(proteinGroup.getMainProtein().getSequence().contains("CON"));
+        assertFalse(proteinGroup.getMainProtein().getSequence().contains("REV"));
+        assertThat(proteinGroup.getPeptideHasProteinGroups().size(), is(0));
+        assertThat(proteinGroup.getProteinGroupQuantsLabeled().size(), is(0));
+        // TODO: more relevant tests
+    }
+}

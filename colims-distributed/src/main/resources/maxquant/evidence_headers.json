@@ -1,0 +1,56 @@
+{
+  "CHARGE": {
+    "mandatory": true,
+    "values": [
+      "Charge"
+    ]
+  },
+  "DELTA_SCORE": {
+    "mandatory": true,
+    "values": [
+      "Delta score"
+    ]
+  },
+  "MASS": {
+    "mandatory": true,
+    "values": [
+      "Mass"
+    ]
+  },
+  "MODIFICATIONS": {
+    "mandatory": true,
+    "values": [
+      "Modifications"
+    ]
+  },
+  "MS_MS_IDS": {
+    "mandatory": true,
+    "values": [
+      "MS/MS IDs"
+    ]
+  },
+  "PROTEIN_GROUP_IDS": {
+    "mandatory": true,
+    "values": [
+      "Protein group IDs"
+    ]
+  },
+  "PEP": {
+    "mandatory": true,
+    "values": [
+      "PEP"
+    ]
+  },
+  "SCORE": {
+    "mandatory": true,
+    "values": [
+      "Score"
+    ]
+  },
+  "SEQUENCE": {
+    "mandatory": true,
+    "values": [
+      "Sequence"
+    ]
+  }
+}

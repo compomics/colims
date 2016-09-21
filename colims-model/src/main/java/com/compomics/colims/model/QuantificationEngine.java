@@ -45,8 +45,8 @@ public class QuantificationEngine extends CvParam {
         this.version = version;
     }
 
-    public QuantificationEngine(final QuantificationEngineType quantificationEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
-        super(ontology, label, accession, name);
+    public QuantificationEngine(final QuantificationEngineType quantificationEngineType, final String version, final String label, final String accession, final String name) {
+        super(label, accession, name);
         this.quantificationEngineType = quantificationEngineType;
         this.version = version;
     }
@@ -58,7 +58,7 @@ public class QuantificationEngine extends CvParam {
      * @param version              the quantification engine version
      */
     public QuantificationEngine(final QuantificationEngine quantificationEngine, final String version) {
-        this(quantificationEngine.getQuantificationEngineType(), version, quantificationEngine.getOntology(), quantificationEngine.getLabel(), quantificationEngine.getAccession(), quantificationEngine.getName());
+        this(quantificationEngine.getQuantificationEngineType(), version, quantificationEngine.getLabel(), quantificationEngine.getAccession(), quantificationEngine.getName());
     }
 
     public QuantificationEngineType getQuantificationEngineType() {

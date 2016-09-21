@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Niels Hulstaert
  */
-@Table(name = "peptide")
+ @Table(name = "peptide")
 @Entity
 //@Cacheable
 //@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -58,12 +58,14 @@ public class Peptide extends DatabaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Spectrum spectrum;
     /**
-     * The PeptideHasModification instances from the join table between the peptide and modification tables.
+     * The PeptideHasModification instances from the join table between the
+     * peptide and modification tables.
      */
     @OneToMany(mappedBy = "peptide", cascade = CascadeType.ALL)
     private List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
     /**
-     * The PeptideHasProteinGroup instances from the join table between the peptide and protein group tables.
+     * The PeptideHasProteinGroup instances from the join table between the
+     * peptide and protein group tables.
      */
     @OneToMany(mappedBy = "peptide", cascade = CascadeType.ALL)
     private List<PeptideHasProteinGroup> peptideHasProteinGroups = new ArrayList<>();
@@ -149,16 +151,20 @@ public class Peptide extends DatabaseEntity {
     }
 
     /**
-     * This method checks if the given Peptide entity represents peptide; the same sequence modification(s) (on the same
-     * position(s)). Note that charge and PSM scores are not considered in this comparison.
+     * This method checks if the given Peptide entity represents peptide; the
+     * same sequence modification(s) (on the same position(s)). Note that charge
+     * and PSM scores are not considered in this comparison.
      *
      * @param peptide the given Peptide instance
      * @return true if the peptide has the same modifications
      */
     public boolean representsSamePeptide(Peptide peptide) {
-        if (!sequence.equals(peptide.sequence)) return false;
-        if (theoreticalMass != null ? !CompareUtils.equals(theoreticalMass, peptide.theoreticalMass) : peptide.theoreticalMass != null)
+        if (!sequence.equals(peptide.sequence)) {
             return false;
+        }
+//        if (theoreticalMass != null ? !CompareUtils.equals(theoreticalMass, peptide.theoreticalMass) : peptide.theoreticalMass != null) {
+//            return false;
+//        }
         if (peptideHasModifications.size() != peptide.peptideHasModifications.size()) {
             return false;
         }
@@ -177,17 +183,27 @@ public class Peptide extends DatabaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Peptide peptide = (Peptide) o;
 
-        if (!sequence.equals(peptide.sequence)) return false;
-        if (theoreticalMass != null ? !CompareUtils.equals(theoreticalMass, peptide.theoreticalMass) : peptide.theoreticalMass != null)
+        if (!sequence.equals(peptide.sequence)) {
             return false;
-        if (charge != null ? !charge.equals(peptide.charge) : peptide.charge != null) return false;
-        if (psmProbability != null ? !CompareUtils.equals(psmProbability, peptide.psmProbability) : peptide.psmProbability != null)
+        }
+        if (theoreticalMass != null ? !CompareUtils.equals(theoreticalMass, peptide.theoreticalMass) : peptide.theoreticalMass != null) {
             return false;
+        }
+        if (charge != null ? !charge.equals(peptide.charge) : peptide.charge != null) {
+            return false;
+        }
+        if (psmProbability != null ? !CompareUtils.equals(psmProbability, peptide.psmProbability) : peptide.psmProbability != null) {
+            return false;
+        }
         return !(psmPostErrorProbability != null ? !CompareUtils.equals(psmPostErrorProbability, peptide.psmPostErrorProbability) : peptide.psmPostErrorProbability != null);
 
     }
@@ -196,9 +212,9 @@ public class Peptide extends DatabaseEntity {
     public int hashCode() {
         int result = sequence.hashCode();
         result = 31 * result + (theoreticalMass != null ? theoreticalMass.hashCode() : 0);
-        result = 31 * result + (charge != null ? charge.hashCode() : 0);
-        result = 31 * result + (psmProbability != null ? psmProbability.hashCode() : 0);
-        result = 31 * result + (psmPostErrorProbability != null ? psmPostErrorProbability.hashCode() : 0);
+        //result = 31 * result + (charge != null ? charge.hashCode() : 0);
+        //result = 31 * result + (psmProbability != null ? psmProbability.hashCode() : 0);
+        //result = 31 * result + (psmPostErrorProbability != null ? psmPostErrorProbability.hashCode() : 0);
         return result;
     }
 }

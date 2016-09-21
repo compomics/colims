@@ -446,21 +446,7 @@ public class MainController implements Controllable, ActionListener {
      * @param messageType the dialog message type
      */
     private void showMessageDialog(final String title, final String message, final int messageType) {
-        if (messageType == JOptionPane.ERROR_MESSAGE) {
-            //add message to JTextArea
-            JTextArea textArea = new JTextArea(message);
-            //put JTextArea in JScrollPane
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            scrollPane.setPreferredSize(new Dimension(600, 200));
-            scrollPane.getViewport().setOpaque(false);
-            textArea.setEditable(false);
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
-
-            JOptionPane.showMessageDialog(mainFrame.getContentPane(), scrollPane, title, messageType);
-        } else {
-            JOptionPane.showMessageDialog(mainFrame.getContentPane(), message, title, messageType);
-        }
+        GuiUtils.showMessageDialog(mainFrame.getContentPane(), title, message, messageType);
     }
 
     /**

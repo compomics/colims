@@ -4,14 +4,13 @@ import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
-import com.compomics.colims.client.event.admin.GroupChangeEvent;
 import com.compomics.colims.client.event.admin.TypedCvParamChangeEvent;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.table.model.CvParamTableModel2;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.CvParamManagementDialog;
-import com.compomics.colims.core.model.ols.OntologyTerm;
+import com.compomics.colims.core.ontology.ols.OntologyTerm;
 import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.cv.CvParam;
@@ -73,7 +72,7 @@ public class CvParamManagementController implements Controllable {
     @Autowired
     private CvParamService cvParamService;
     @Autowired
-    private OlsService newOlsService;
+    private OlsService olsService;
 
     @Override
     @PostConstruct
@@ -103,7 +102,7 @@ public class CvParamManagementController implements Controllable {
                     }
 
                     //set details fields
-                    cvParamManagementDialog.getOntologyTextField().setText(selectedCvParam.getOntology());
+                    cvParamManagementDialog.getOntologyTextField().setText(selectedCvParam.getLabel());
                     cvParamManagementDialog.getOntologyLabelTextField().setText(selectedCvParam.getLabel());
                     cvParamManagementDialog.getAccessionTextField().setText(selectedCvParam.getAccession());
                     cvParamManagementDialog.getNameTextField().setText(selectedCvParam.getName());
@@ -113,7 +112,7 @@ public class CvParamManagementController implements Controllable {
                     try {
                         //get the descripton from the OLS service
                         cvParamManagementDialog.getDefinitionTextArea().setText(
-                                newOlsService.getTermDescriptionByOboId(selectedCvParam.getLabel(), selectedCvParam.getAccession()));
+                                olsService.getTermDescriptionByOboId(selectedCvParam.getLabel(), selectedCvParam.getAccession()));
                     } catch (RestClientException ex) {
                         LOGGER.error(ex.getMessage(), ex);
                         cvParamManagementDialog.getDefinitionTextArea().setText("");
@@ -266,10 +265,8 @@ public class CvParamManagementController implements Controllable {
      * @param accession the accession
      * @param name the name
      */
-    private void updateCvParam(final CvParam cvParam, final String ontology, final String label, final String accession, final String name) {
-        if (!cvParam.getOntology().equalsIgnoreCase(ontology)) {
-            cvParam.setOntology(ontology);
-        }
+    private void updateCvParam(final CvParam cvParam, final String label, final String accession, final String name) {
+
         if (!cvParam.getLabel().equalsIgnoreCase(label)) {
             cvParam.setLabel(label);
         }
@@ -306,7 +303,7 @@ public class CvParamManagementController implements Controllable {
             } else {
                 //update selected CV param
                 CvParam selectedCvParam = getSelectedCvParam();
-                updateCvParam(selectedCvParam, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                updateCvParam(selectedCvParam, ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 //update CV param in table model
                 int selectedIndex = cvParamManagementDialog.getCvParamTable().getSelectedRow();

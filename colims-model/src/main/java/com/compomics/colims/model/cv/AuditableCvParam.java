@@ -1,6 +1,7 @@
 package com.compomics.colims.model.cv;
 
 import com.compomics.colims.model.AuditableDatabaseEntity;
+import java.util.Objects;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -16,12 +17,6 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
 
     private static final long serialVersionUID = -7434489250278743116L;
 
-    /**
-     * The full name of the CV.
-     */
-    @Basic(optional = false)
-    @Column(name = "ontology", nullable = false)
-    protected String ontology;
     /**
      * The label of the CV.
      */
@@ -56,24 +51,15 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
     /**
      * Constructor.
      *
-     * @param ontology  the ontology name
      * @param label     the ontology label
      * @param accession the CV term accession
      * @param name      the CV term name
      */
-    public AuditableCvParam(final String ontology, final String label, final String accession, final String name) {
-        this.ontology = ontology;
+    public AuditableCvParam(final String label, final String accession, final String name) {
+
         this.label = label;
         this.accession = accession;
         this.name = name;
-    }
-
-    public String getOntology() {
-        return ontology;
-    }
-
-    public void setOntology(final String ontology) {
-        this.ontology = ontology;
     }
 
     public String getLabel() {
@@ -115,7 +101,6 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
 
         AuditableCvParam that = (AuditableCvParam) o;
 
-        if (!ontology.equals(that.ontology)) return false;
         if (!label.equals(that.label)) return false;
         if (!accession.equals(that.accession)) return false;
         if (!name.equals(that.name)) return false;
@@ -125,12 +110,12 @@ public abstract class AuditableCvParam extends AuditableDatabaseEntity {
 
     @Override
     public int hashCode() {
-        int result = ontology.hashCode();
-        result = 31 * result + label.hashCode();
-        result = 31 * result + accession.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + (value != null ? value.hashCode() : 0);
-        return result;
+        int hash = 5;
+        hash = 47 * hash + Objects.hashCode(this.label);
+        hash = 47 * hash + Objects.hashCode(this.accession);
+        hash = 47 * hash + Objects.hashCode(this.name);
+        hash = 47 * hash + Objects.hashCode(this.value);
+        return hash;
     }
 
     @Override

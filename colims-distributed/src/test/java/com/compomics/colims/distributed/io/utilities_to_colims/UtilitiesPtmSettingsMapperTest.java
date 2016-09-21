@@ -24,7 +24,7 @@ import java.io.IOException;
 public class UtilitiesPtmSettingsMapperTest {
 
     @Autowired
-    private OlsService newOlsService;
+    private OlsService olsService;
     @Autowired
     private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
     private PtmSettings ptmSettings;
@@ -68,7 +68,7 @@ public class UtilitiesPtmSettingsMapperTest {
      */
     @After
     public void clearCache() {
-        newOlsService.getModificationsCache().clear();
+        olsService.getModificationsCache().clear();
     }
 
     /**

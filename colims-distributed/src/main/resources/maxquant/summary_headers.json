@@ -1,0 +1,26 @@
+{
+  "ENZYME": {
+    "mandatory": true,
+    "values": [
+      "Enzyme"
+    ]
+  },
+  "MAX_MISSED_CLEAVAGES": {
+    "mandatory": true,
+    "values": [
+      "Max. missed cleavages"
+    ]
+  },
+  "MULTIPLICITY": {
+    "mandatory": true,
+    "values": [
+      "Multiplicity"
+    ]
+  },
+  "RAW_FILE": {
+    "mandatory": true,
+    "values": [
+      "Raw file"
+    ]
+  }
+}

@@ -12,11 +12,11 @@ import com.compomics.colims.client.model.table.model.OlsSearchResultTableModel;
 import com.compomics.colims.client.model.table.model.OntologySearchResultTableModel;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.OlsDialog;
-import com.compomics.colims.core.model.ols.Ontology;
-import com.compomics.colims.core.model.ols.OntologyTerm;
-import com.compomics.colims.core.model.ols.OntologyTitleComparator;
-import com.compomics.colims.core.model.ols.OlsSearchResult;
-import com.compomics.colims.core.model.ols.SearchResultMetadata;
+import com.compomics.colims.core.ontology.ols.Ontology;
+import com.compomics.colims.core.ontology.ols.OntologyTerm;
+import com.compomics.colims.core.ontology.ols.OntologyTitleComparator;
+import com.compomics.colims.core.ontology.ols.OlsSearchResult;
+import com.compomics.colims.core.ontology.ols.SearchResultMetadata;
 import com.compomics.colims.core.service.OlsService;
 import com.google.common.eventbus.EventBus;
 import java.awt.Cursor;
@@ -29,7 +29,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -89,7 +88,7 @@ public class OlsController implements Controllable {
     private EventBus eventBus;
     //services
     @Autowired
-    private OlsService newOlsService;
+    private OlsService olsService;
 
     @Override
     @PostConstruct
@@ -164,7 +163,7 @@ public class OlsController implements Controllable {
                         ontologiesToSearch = olsDialog.getOntologiesDualList().getAddedItems();
                     }
                     //get the search metadata
-                    searchResultMetadata = newOlsService.getPagedSearchMetadata(searchInput, ontologiesToSearch.stream().map(o -> o.getNameSpace()).collect(Collectors.toList()), getSearchFields());
+                    searchResultMetadata = olsService.getPagedSearchMetadata(searchInput, ontologiesToSearch.stream().map(o -> o.getNameSpace()).collect(Collectors.toList()), getSearchFields());
                     olsSearchResultTableModel.init(searchResultMetadata.getNumberOfResultPages());
                     //get the search results for the first page
                     doPagedSearch(0, 0);
@@ -187,7 +186,7 @@ public class OlsController implements Controllable {
 
         olsDialog.getGetAllOntologiesButton().addActionListener(e -> {
             try {
-                List<Ontology> allOntologies = newOlsService.getAllOntologies();
+                List<Ontology> allOntologies = olsService.getAllOntologies();
                 olsDialog.getOntologiesDualList().populateLists(allOntologies, olsDialog.getOntologiesDualList().getAddedItems());
             } catch (HttpClientErrorException ex) {
                 LOGGER.error(ex.getMessage(), ex);
@@ -332,7 +331,7 @@ public class OlsController implements Controllable {
             if (!nonLoadedOntologyNamespaces.isEmpty()) {
                 //fetch the not loaded view preselected ontologies
                 try {
-                    viewPreselectedOntologies.addAll(newOlsService.getOntologiesByNamespace(nonLoadedOntologyNamespaces));
+                    viewPreselectedOntologies.addAll(olsService.getOntologiesByNamespace(nonLoadedOntologyNamespaces));
                 } catch (IOException ex) {
                     LOGGER.error(ex.getMessage(), ex);
                     eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.PARSE_ERROR));
@@ -451,7 +450,7 @@ public class OlsController implements Controllable {
         if (!preselectedOntologyNamespaces.isEmpty()) {
             try {
                 if (preselectedOntologies.isEmpty()) {
-                    preselectedOntologies.addAll(newOlsService.getOntologiesByNamespace(preselectedOntologyNamespaces));
+                    preselectedOntologies.addAll(olsService.getOntologiesByNamespace(preselectedOntologyNamespaces));
                 }
                 olsDialog.getOntologiesDualList().populateLists(olsDialog.getOntologiesDualList().getAllItems(), preselectedOntologies);
                 olsDialog.getPreselectedOntologiesRadioButton().setSelected(true);
@@ -477,7 +476,7 @@ public class OlsController implements Controllable {
      */
     private void doPagedSearch(int startIndex, int newPageIndex) {
         try {
-            GlazedLists.replaceAll(searchResults, newOlsService.doPagedSearch(searchResultMetadata.getRequestUrl(), startIndex, PAGE_SIZE), true);
+            GlazedLists.replaceAll(searchResults, olsService.doPagedSearch(searchResultMetadata.getRequestUrl(), startIndex, PAGE_SIZE), true);
             olsSearchResultTableModel.setPage(newPageIndex);
             olsDialog.getSearchResultPageLabel().setText(olsSearchResultTableModel.getPageIndicator());
         } catch (HttpClientErrorException ex) {

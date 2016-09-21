@@ -8,10 +8,8 @@ import com.compomics.colims.model.enums.SearchEngineType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.EnumMap;
-import java.util.List;
 
 /**
  * This class maps the Utilities search settings to a SearchAndValidationSettings instance.

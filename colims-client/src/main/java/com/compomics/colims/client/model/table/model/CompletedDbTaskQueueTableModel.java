@@ -62,12 +62,12 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
     }
 
     /**
-     * Remove the stored task with the given index.
+     * Add a completed db task to the table.
      *
-     * @param index the index of the stored task that needs to be removed.
+     * @param completedDbTask the CompletedDbTask instance
      */
-    public void remove(int index) {
-        messages.remove(index);
+    public void addMessage(CompletedDbTask completedDbTask) {
+        this.messages.add(completedDbTask);
         this.fireTableDataChanged();
     }
 

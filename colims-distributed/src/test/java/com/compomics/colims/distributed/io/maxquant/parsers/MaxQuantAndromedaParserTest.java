@@ -2,7 +2,6 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
-import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantSpectrumParameterHeaders;
 import com.compomics.colims.model.enums.FragmentationType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.nio.file.Path;
-import java.util.EnumMap;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)

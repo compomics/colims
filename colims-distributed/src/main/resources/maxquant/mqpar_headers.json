@@ -1,0 +1,50 @@
+{
+  "PEPTIDE_MASS_TOLERANCE": {
+    "mandatory": true,
+    "values": [
+      "mainSearchTol"
+    ]
+  },
+  "PEPTIDE_MASS_TOLERANCE_UNIT": {
+    "mandatory": true,
+    "values": [
+      "searchTolInPpm"
+    ]
+  },
+  "FRAGMENT_MASS_TOLERANCE": {
+    "mandatory": true,
+    "values": [
+      "firstSearchTol"
+    ]
+  },
+  "ENZYMES": {
+    "mandatory": true,
+    "values": [
+      "enzymes"
+    ]
+  },
+  "MAX_MISSED_CLEAVAGES": {
+    "mandatory": true,
+    "values": [
+      "maxMissedCleavages"
+    ]
+  },
+  "MAX_CHARGE": {
+    "mandatory": true,
+    "values": [
+      "maxCharge"
+    ]
+  },
+  "FIXED_MODIFICATIONS": {
+    "mandatory": false,
+    "values": [
+      "fixedModifications"
+    ]
+  },
+  "VARIABLE_MODIFICATIONS": {
+    "mandatory": false,
+    "values": [
+      "variableModifications"
+    ]
+  }
+}

@@ -26,7 +26,7 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     @Autowired
     private QuantificationEngineRepository quantificationEngineRepository;
     @Autowired
-    private QuantificationMethodCvParamRepository quantificationParametersRepository;
+    private QuantificationMethodCvParamRepository quantificationMethodCvParamRepository;
 
     @Override
     public QuantificationSettings findById(final Long id) {
@@ -71,15 +71,15 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     }
 
     @Override
-    public QuantificationMethodCvParam getQuantificationParameterSettings(QuantificationMethodCvParam quantificationParameterSettings) {
-        //find QuantificationParameterSettings by example
-        List<QuantificationMethodCvParam> quantificationParameterSettingses = quantificationParametersRepository.findByExample(quantificationParameterSettings);
-        if (!quantificationParameterSettingses.isEmpty()) {
-            return quantificationParameterSettingses.get(0);
+    public QuantificationMethodCvParam getQuantificationMethodCvParams(QuantificationMethodCvParam quantificationMethodCvParam) {
+        //find QuantificationMethodCvParam by example
+        List<QuantificationMethodCvParam> quantificationMethodCvParams = quantificationMethodCvParamRepository.findByExample(quantificationMethodCvParam);
+        if (!quantificationMethodCvParams.isEmpty()) {
+            return quantificationMethodCvParams.get(0);
         } else {
             //save the given instance
-            quantificationParametersRepository.persist(quantificationParameterSettings);
-            return quantificationParameterSettings;
+            quantificationMethodCvParamRepository.persist(quantificationMethodCvParam);
+            return quantificationMethodCvParam;
         }
     }
 

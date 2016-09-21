@@ -1,5 +1,5 @@
 use colims;
-    
+
     create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
@@ -126,7 +126,6 @@ use colims;
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
-        ontology varchar(255) not null,
         param_value varchar(255),
         cv_property varchar(255) not null,
         primary key (id)
@@ -158,7 +157,6 @@ use colims;
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
-        ontology varchar(255) not null,
         param_value varchar(255),
         cv_property varchar(255) not null,
         primary key (id)
@@ -301,7 +299,6 @@ use colims;
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
-        ontology varchar(255) not null,
         param_value varchar(255),
         cv_property varchar(255) not null,
         primary key (id)
@@ -322,7 +319,6 @@ use colims;
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
-        ontology varchar(255) not null,
         param_value varchar(255),
         type varchar(255) not null,
         version varchar(255),
@@ -334,7 +330,6 @@ use colims;
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
-        ontology varchar(255) not null,
         param_value varchar(255),
         primary key (id)
     );
@@ -351,7 +346,6 @@ use colims;
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
-        ontology varchar(255) not null,
         param_value varchar(255),
         primary key (id)
     );
@@ -418,7 +412,6 @@ use colims;
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
-        ontology varchar(255) not null,
         param_value varchar(255),
         cv_property varchar(255) not null,
         primary key (id)
@@ -429,7 +422,6 @@ use colims;
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
-        ontology varchar(255) not null,
         param_value varchar(255),
         type varchar(255) not null,
         version varchar(255),
@@ -512,7 +504,6 @@ use colims;
         accession varchar(255) not null,
         label varchar(255) not null,
         name varchar(255) not null,
-        ontology varchar(255) not null,
         param_value varchar(255),
         primary key (id)
     );
@@ -904,6 +895,7 @@ use colims;
         foreign key (l_user_query_user_id) 
         references colims.colims_user (id);
 
+
 -- create default value insertions
 -- insert default admin and distributed users
 INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin@admin.com','admin','admin','admin','ud5JjaDO0ztrMKdcQDXxhq8G21LuDCOj'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed@distributed.com','distributed','distributed','distributed','4a1zr6paBPFaEP8ixjm3hDSVLpXvzP98');
@@ -927,8 +919,8 @@ INSERT INTO permission (id, creation_date, modification_date, user_name, descrip
 INSERT INTO role_has_permission (l_role_id, l_permission_id) VALUES (1,1),(1,2),(1,3),(1,4),(2,1),(2,2),(2,3);
 
 -- insert default search engines
-INSERT INTO search_engine (id, accession, label, name, ontology, type, version) VALUES (1,'N/A','N/A','PeptideShaker','N/A','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','PSI Mass Spectrometry Ontology [MS]','MAXQUANT', '0.0.0');
+INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '0.0.0');
 
 -- insert search parameter cv params
-INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) VALUES (1, 'MS:1001251', 'PSI-MS', 'Trypsin', 'PSI-MS', 'SEARCH_PARAM_ENZYME');
-INSERT INTO search_cv_param (id, accession, label, name, ontology, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'PSI-MS', 'SEARCH_TYPE');
+INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (1, 'MS:1001251', 'PSI-MS', 'Trypsin', 'SEARCH_PARAM_ENZYME');
+INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'SEARCH_TYPE');

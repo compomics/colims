@@ -8,12 +8,13 @@ import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TableComparatorChooser;
+import com.compomics.colims.client.comparator.PeptideStartIndexComparator;
 import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
 import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.factory.PsmPanelGenerator;
+import com.compomics.colims.client.factory.SpectrumPanelGenerator;
 import com.compomics.colims.client.model.table.format.PeptideTableFormat;
 import com.compomics.colims.client.model.table.format.ProteinGroupTableFormat;
 import com.compomics.colims.client.model.table.format.ProteinPanelPsmTableFormat;
@@ -23,13 +24,14 @@ import com.compomics.colims.client.model.table.model.ProteinGroupTableModel;
 import com.compomics.colims.client.renderer.PeptideSequenceRenderer;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.ProteinOverviewPanel;
-import com.compomics.colims.client.view.SpectrumPopupDialog;
+import com.compomics.colims.client.view.SpectrumDialog;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Project;
+import com.compomics.colims.model.Sample;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.util.gui.TableProperties;
@@ -59,12 +61,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
- * Created by Iain on 19/06/2015.
+ * The protein(group) overview controller.
  */
 @Component("proteinOverviewController")
 public class ProteinOverviewController implements Controllable {
@@ -87,23 +90,20 @@ public class ProteinOverviewController implements Controllable {
     private DefaultEventSelectionModel<ProteinGroupDTO> proteinGroupSelectionModel;
     private DefaultEventSelectionModel<PeptideTableRow> peptideSelectionModel;
     private DefaultEventSelectionModel<Peptide> psmSelectionModel;
-    private ProteinPanelPsmTableFormat psmTableFormat = new ProteinPanelPsmTableFormat();
-    private AnalyticalRun selectedAnalyticalRun;
+    private final ProteinPanelPsmTableFormat psmTableFormat = new ProteinPanelPsmTableFormat();
+    private final List<AnalyticalRun> selectedAnalyticalRuns = new ArrayList<>();
     private double minimumRetentionTime;
     private double maximumRetentionTime;
     private double minimumMzRatio;
     private double maximumMzRatio;
     private int minimumCharge;
     private int maximumCharge;
-    List<Long> analyticalRunIds = new ArrayList<>();
     /**
      * The utilities user preferences.
      */
     private final UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     //view
     private ProteinOverviewPanel proteinOverviewPanel;
-    //child view
-    private SpectrumPopupDialog psmPopupDialog;
 
     //parent controller
     @Autowired
@@ -116,7 +116,7 @@ public class ProteinOverviewController implements Controllable {
     @Autowired
     private SpectrumService spectrumService;
     @Autowired
-    private PsmPanelGenerator psmPanelGenerator;
+    private SpectrumPanelGenerator spectrumPanelGenerator;
 
     /**
      * Get the panel associated with this controller.
@@ -134,7 +134,6 @@ public class ProteinOverviewController implements Controllable {
 
         //init views
         proteinOverviewPanel = new ProteinOverviewPanel();
-        psmPopupDialog = new SpectrumPopupDialog(mainController.getMainFrame(), true);
 
         //init and populate project tree
         DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
@@ -153,7 +152,8 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinGroupTable().setSelectionModel(proteinGroupSelectionModel);
 
         //init peptide table
-        SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, (o1, o2) -> o2.getPeptides().size() - (o1.getPeptides().size()));
+        //SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, (o1, o2) -> o2.getPeptides().size() - (o1.getPeptides().size()));
+        SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, new PeptideStartIndexComparator());
 
         peptideTableModel = GlazedListsSwing.eventTableModel(sortedPeptides, new PeptideTableFormat());
         proteinOverviewPanel.getPeptideTable().setModel(peptideTableModel);
@@ -182,8 +182,8 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setPreferredWidth(70);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMaxWidth(150);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ID).setMinWidth(50);
-        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setPreferredWidth(120);
-        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMaxWidth(150);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setPreferredWidth(150);
+        proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMaxWidth(250);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.ACCESSION).setMinWidth(50);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.SEQUENCE).setMinWidth(50);
         proteinOverviewPanel.getProteinGroupTable().getColumnModel().getColumn(ProteinGroupTableFormat.NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES).setPreferredWidth(145);
@@ -208,9 +208,9 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.CONFIDENCE).setMaxWidth(100);
         proteinOverviewPanel.getPeptideTable().getColumnModel().getColumn(PeptideTableFormat.CONFIDENCE).setMinWidth(50);
 
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setPreferredWidth(100);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setMaxWidth(100);
-        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setMinWidth(100);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setPreferredWidth(80);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setMaxWidth(80);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.SPECTRUM_ID).setMinWidth(80);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE).setPreferredWidth(100);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE).setMaxWidth(150);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE).setMinWidth(50);
@@ -224,34 +224,41 @@ public class ProteinOverviewController implements Controllable {
 
         proteinOverviewPanel.getExportFileChooser().setApproveButtonText("Save");
 
-//        setProteinGroupTableCellRenderers();
-        //Listeners
+        //setProteinGroupTableCellRenderers();
+        //add action listeners
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener((TreeSelectionEvent e) -> {
-            analyticalRunIds.clear();
-            TreePath[] treePaths = proteinOverviewPanel.getProjectTree().getSelectionPaths();
-
-            for (TreePath treePath : treePaths) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
-                if (node != null && node.isLeaf() && node.getUserObject() instanceof AnalyticalRun) {
-                    selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
-
-                    //load search settings for the run
-                    psmPanelGenerator.loadSettingsForRun(selectedAnalyticalRun);
-                    //set search parameters in PSM table formatter
-                    psmTableFormat.setSearchParameters(selectedAnalyticalRun.getSearchAndValidationSettings().getSearchParameters());
-
-                    analyticalRunIds.add(selectedAnalyticalRun.getId());
-
-                    setPsmTableCellRenderers();
-                    // todo maybe we don't need this part
-                    minimumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
-                    maximumRetentionTime = spectrumService.getMinimumRetentionTime(selectedAnalyticalRun);
-                    minimumCharge = spectrumService.getMinimumCharge(selectedAnalyticalRun);
-                    maximumCharge = spectrumService.getMaximumCharge(selectedAnalyticalRun);
+            TreePath[] treePaths = e.getPaths();
+            for (int i = 0; i < treePaths.length; i++) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePaths[i].getLastPathComponent();
+                //check whether the path was added or removed
+                if (e.isAddedPath(i)) {
+                    if (node.getUserObject() instanceof AnalyticalRun) {
+                        AnalyticalRun selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
+                        selectedAnalyticalRuns.add(selectedAnalyticalRun);
+                    } else if (node.getUserObject() instanceof Sample) {
+                        Sample selectedSample = (Sample) node.getUserObject();
+                        selectedAnalyticalRuns.addAll(selectedSample.getAnalyticalRuns());
+                    }
+                } else if (node.getUserObject() instanceof AnalyticalRun) {
+                    AnalyticalRun selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
+                    selectedAnalyticalRuns.remove(selectedAnalyticalRun);
+                } else if (node.getUserObject() instanceof Sample) {
+                    Sample selectedSample = (Sample) node.getUserObject();
+                    selectedAnalyticalRuns.removeAll(selectedSample.getAnalyticalRuns());
                 }
             }
-            if (analyticalRunIds.size() > 0) {
-                proteinGroupTableModel.reset(analyticalRunIds);
+
+            if (selectedAnalyticalRuns.size() > 0) {
+                //for the moment, take the search settings from the first selected run
+                //@TODO think about how to handle runs with different search settings
+                //load search settings for the first run
+                spectrumPanelGenerator.loadSettingsForRun(selectedAnalyticalRuns.get(0));
+                //set search parameters in PSM table formatter
+                psmTableFormat.setSearchParameters(selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters());
+
+                setPsmTableCellRenderers();
+
+                proteinGroupTableModel.reset(getSelectedAnalyticalRunIds());
                 updateProteinGroupTable();
 
                 //Set scrollpane to match row count (TODO: doesn't work!)
@@ -261,15 +268,18 @@ public class ProteinOverviewController implements Controllable {
                 ));
 
                 //get minimum and maximum projections for SparkLines rendering
-                Object[] spectraProjections = spectrumService.getSpectraProjections(analyticalRunIds);
+                Object[] spectraProjections = spectrumService.getSpectraProjections(getSelectedAnalyticalRunIds());
                 minimumRetentionTime = (double) spectraProjections[0];
                 maximumRetentionTime = (double) spectraProjections[1];
                 minimumMzRatio = (double) spectraProjections[2];
                 maximumMzRatio = (double) spectraProjections[3];
                 minimumCharge = (int) spectraProjections[4];
                 maximumCharge = (int) spectraProjections[5];
+            } else {
+                //clear the selection
+                selectedAnalyticalRuns.clear();
+                GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);
             }
-
         });
 
         proteinGroupSelectionModel.addListSelectionListener(lse -> {
@@ -277,8 +287,9 @@ public class ProteinOverviewController implements Controllable {
                 if (!proteinGroupSelectionModel.getSelected().isEmpty()) {
                     ProteinGroupDTO selectedProteinGroupDTO = proteinGroupSelectionModel.getSelected().get(0);
 
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
                     //get the PeptideDTO instances for the selected protein group
-                    List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTO(selectedProteinGroupDTO.getId(), analyticalRunIds);
+                    List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTO(selectedProteinGroupDTO.getId(), getSelectedAnalyticalRunIds());
 
                     //map to PeptideTableRow objects
                     List<PeptideTableRow> mappedPeptideTableRows = mapPeptideDTOs(peptideDTOs);
@@ -286,6 +297,7 @@ public class ProteinOverviewController implements Controllable {
                     setPeptideTableCellRenderers();
 
                     GlazedLists.replaceAll(peptideTableRows, mappedPeptideTableRows, false);
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 } else {
                     GlazedLists.replaceAll(peptideTableRows, new ArrayList<>(), false);
                 }
@@ -452,51 +464,63 @@ public class ProteinOverviewController implements Controllable {
         });
 
         proteinOverviewPanel.getExportProteinGroupsButton().addActionListener(e -> {
-            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein data");
+            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein groups");
 
-            if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            if (!proteinGroupDTOs.isEmpty()) {
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                EventList<ProteinGroupDTO> exportProteinGroupDTOs = new BasicEventList<>();
-                ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteinGroupDTOs, null), new ProteinGroupTableFormat(), 20, ProteinGroupTableFormat.ID);
-                exportModel.setPerPage(0);
-                GlazedLists.replaceAll(exportProteinGroupDTOs, exportModel.getRows(analyticalRunIds), false);
+                    EventList<ProteinGroupDTO> exportProteinGroupDTOs = new BasicEventList<>();
+                    ProteinGroupTableModel exportModel = new ProteinGroupTableModel(new SortedList<>(exportProteinGroupDTOs, null), new ProteinGroupTableFormat(), 20, ProteinGroupTableFormat.ID);
+                    exportModel.setPerPage(0);
+                    GlazedLists.replaceAll(exportProteinGroupDTOs, exportModel.getRows(getSelectedAnalyticalRunIds()), false);
 
-                exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
 
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            } else {
+                eventBus.post(new MessageEvent("Export protein groups problem", "Please select one or more runs to export the protein groups for.", JOptionPane.WARNING_MESSAGE));
             }
         });
 
         proteinOverviewPanel.getExportPeptidesButton().addActionListener(e -> {
-            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export peptide data");
+            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export protein group peptides");
 
-            if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            if (!sortedPeptides.isEmpty()) {
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                Map<Integer, Pattern> columnFilter = new HashMap<>();
-                columnFilter.put(0, HTML_TAGS);
+                    Map<Integer, Pattern> columnFilter = new HashMap<>();
+                    columnFilter.put(0, HTML_TAGS);
 
-                //need a new model... or table format?
-                //could potentially lose the filtering if its only on this model
-                PeptideExportModel exportModel = new PeptideExportModel();
-                exportModel.setPeptideTableRows(sortedPeptides);
+                    //need a new model... or table format?
+                    //could potentially lose the filtering if its only on this model
+                    PeptideExportModel exportModel = new PeptideExportModel();
+                    exportModel.setPeptideTableRows(sortedPeptides);
 
-                exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), exportModel);
 
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            } else {
+                eventBus.post(new MessageEvent("Export peptides problem", "Please select a protein group to export the peptides for.", JOptionPane.WARNING_MESSAGE));
             }
         });
 
         proteinOverviewPanel.getExportPsmsButton().addActionListener(e -> {
-            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export PSM data");
+            proteinOverviewPanel.getExportFileChooser().setDialogTitle("Export PSMs");
 
-            if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            if (!psms.isEmpty()) {
+                if (proteinOverviewPanel.getExportFileChooser().showOpenDialog(proteinOverviewPanel) == JFileChooser.APPROVE_OPTION) {
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), psmTableModel);
+                    exportTable(proteinOverviewPanel.getExportFileChooser().getSelectedFile(), psmTableModel);
 
-                mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    mainController.getMainFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                }
+            } else {
+                eventBus.post(new MessageEvent("Export PSMs problem", "Please select a peptide to export the PSMs for.", JOptionPane.WARNING_MESSAGE));
             }
         });
     }
@@ -572,7 +596,7 @@ public class ProteinOverviewController implements Controllable {
                 DefaultMutableTreeNode experimentNode = new DefaultMutableTreeNode(experiment.getTitle());
                 if (experiment.getSamples().size() > 0) {
                     experiment.getSamples().stream().forEach(sample -> {
-                        DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample.getName());
+                        DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample);
                         if (sample.getAnalyticalRuns().size() > 0) {
                             sample.getAnalyticalRuns().stream().forEach(analyticalRun -> {
                                 DefaultMutableTreeNode runNode = new DefaultMutableTreeNode(analyticalRun);
@@ -595,29 +619,26 @@ public class ProteinOverviewController implements Controllable {
     private void updateProteinGroupTable() {
         GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);
         proteinOverviewPanel.getProteinGroupPageLabel().setText("");
-        if (selectedAnalyticalRun != null) {
-            GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(analyticalRunIds), false);
+        if (!selectedAnalyticalRuns.isEmpty()) {
+            GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(getSelectedAnalyticalRunIds()), false);
             proteinOverviewPanel.getProteinGroupPageLabel().setText(proteinGroupTableModel.getPageIndicator());
         }
     }
 
     /**
-     * Show the given PSM in the spectrum popup dialog.
+     * Show the given PSM in the spectrum dialog.
      *
      * @param peptide the Peptide instance
      */
     private void showPsmPopDialog(Peptide peptide) {
         try {
-            JPanel spectrumJPanel = psmPopupDialog.getSpectrumJPanel();
-            JPanel secondarySpectrumPlotsJPanel = psmPopupDialog.getSecondarySpectrumPlotsJPanel();
+            SpectrumDialog spectrumDialog = spectrumPanelGenerator.generateSpectrumDialog(mainController.getMainFrame(), peptide);
 
-            psmPanelGenerator.addPsm(peptide, spectrumJPanel, secondarySpectrumPlotsJPanel);
-
-            GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), psmPopupDialog);
-            psmPopupDialog.setVisible(true);
+            GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), spectrumDialog);
+            spectrumDialog.setVisible(true);
         } catch (MappingException | InterruptedException | SQLException | IOException | ClassNotFoundException e) {
             LOGGER.error(e, e.getCause());
-            eventBus.post(new MessageEvent("Spectrum popup dialog problem", "The spectrum cannot be shown", JOptionPane.ERROR_MESSAGE));
+            eventBus.post(new MessageEvent("Spectrum dialog problem", "The spectrum cannot be shown", JOptionPane.ERROR_MESSAGE));
         }
     }
 
@@ -683,6 +704,15 @@ public class ProteinOverviewController implements Controllable {
             LOGGER.error(e.getMessage(), e);
             eventBus.post(new MessageEvent("Export error", "Exporting tabular data failed: " + System.lineSeparator() + System.lineSeparator() + e.getMessage(), JOptionPane.ERROR_MESSAGE));
         }
+    }
+
+    /**
+     * Get the selected run IDs.
+     *
+     * @return the list of selected run IDs
+     */
+    private List<Long> getSelectedAnalyticalRunIds() {
+        return selectedAnalyticalRuns.stream().map(AnalyticalRun::getId).collect(Collectors.toList());
     }
 
     /**
@@ -767,8 +797,8 @@ public class ProteinOverviewController implements Controllable {
                 .getColumnModel()
                 .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR)
                 .setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                        -selectedAnalyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
-                        selectedAnalyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
+                        selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
+                        selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
                         utilitiesUserPreferences.getSparklineColor(),
                         utilitiesUserPreferences.getSparklineColor())
                 );

@@ -41,7 +41,7 @@ public class UtilitiesModificationMapperTest {
     @Autowired
     private ModificationService modificationService;
     @Autowired
-    private OlsService newOlsService;
+    private OlsService olsService;
     private PTM oxidation;
     private PTM phosphorylation;
     private CvTerm nonUtilitiesPtm;
@@ -77,7 +77,7 @@ public class UtilitiesModificationMapperTest {
     @After
     public void clearCache() {
         utilitiesModificationMapper.clear();
-        newOlsService.getModificationsCache().clear();
+        olsService.getModificationsCache().clear();
     }
 
     /**

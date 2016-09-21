@@ -1,7 +1,3 @@
-/*
- *
-
- */
 package com.compomics.colims.core.util;
 
 import org.springframework.core.io.ClassPathResource;

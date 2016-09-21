@@ -1,0 +1,134 @@
+{
+  "MaxQuant": {
+    "modifications": {
+      "test_modification": {
+        "obo_namespace": "PSI-MOD",
+        "obo_id": "MOD:00843",
+        "label": "(15)N labeled residues"
+      }
+    },
+    "quantification_reagents": {
+      "test_reagent": {
+        "obo_namespace": "PSI-MOD",
+        "obo_id": "MOD:00843",
+        "label": "(15)N labeled residues"
+      }
+    }
+  },
+  "Colims": {
+    "quantification_methods": {
+      "TMT": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000314",
+        "label": "TMT"
+      },
+      "iTRAQ": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000313",
+        "label": "iTRAQ"
+      },
+      "SILAC": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000315",
+        "label": "SILAC"
+      },
+      "label free": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000312",
+        "label": "Label free"
+      },
+      "SRM": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000311",
+        "label": "Selected Reaction Monitoring"
+      }
+    },
+    "quantification_reagents": {
+        "SILAC light": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000326",
+            "label": "SILAC light"
+        },
+        "SILAC medium": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000327",
+            "label": "SILAC medium"
+        },
+        "SILAC heavy": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000325",
+            "label": "SILAC heavy"
+        },
+        "TMT reagent 126": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000285",
+            "label": "TMT reagent 126"
+        },
+        "TMT reagent 127": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000286",
+            "label": "TMT reagent 127"
+        },
+        "TMT reagent 128": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000287",
+            "label": "TMT reagent 128"
+        },
+        "TMT reagent 129": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000288",
+            "label": "TMT reagent 129"
+        },
+        "TMT reagent 130": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000289",
+            "label": "TMT reagent 130"
+        },
+        "TMT reagent 131": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000290",
+            "label": "TMT reagent 131"
+        },
+        "iTRAQ reagent 113": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000264",
+            "label": "iTRAQ reagent 113"
+        },
+        "iTRAQ reagent 114": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000114",
+            "label": "iTRAQ reagent 114"
+        },
+        "iTRAQ reagent 115": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000115",
+            "label": "iTRAQ reagent 115"
+        },
+        "iTRAQ reagent 116": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000116",
+            "label": "iTRAQ reagent 116"
+        },
+        "iTRAQ reagent 117": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000117",
+            "label": "iTRAQ reagent 117"
+        },
+        "iTRAQ reagent 118": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000265",
+            "label": "iTRAQ reagent 118"
+        },
+        "iTRAQ reagent 119": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000266",
+            "label": "iTRAQ reagent 119"
+        },
+        "iTRAQ reagent 121": {
+            "ontology_prefix": "PRIDE",
+            "obo_id": "PRIDE:0000267",
+            "label": "iTRAQ reagent 121"
+        }
+    }
+  }
+}

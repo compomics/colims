@@ -41,7 +41,7 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
     public Class getColumnClass(int column) {
         switch (column) {
             case SPECTRUM_ID:
-                return Long.class;
+                return String.class;
             case SEQUENCE:
                 return String.class;
             case PRECURSOR_CHARGE:
