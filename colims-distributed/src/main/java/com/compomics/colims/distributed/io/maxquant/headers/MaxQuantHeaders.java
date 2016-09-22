@@ -34,13 +34,26 @@ public abstract class MaxQuantHeaders<T extends Enum<T>> {
      *
      * @param enumType         the enum class for generics purposes
      * @param headersMap       the headers map
-     * @param jsonRelativePath the path of the JSON file with the
+     * @param jsonRelativePath the path of the JSON file with the header values
+     * @param toLowerCase      convert the parsed values to lowercase
+     * @throws java.io.IOException in case of an Input/Output related problem
      */
-    public MaxQuantHeaders(Class<T> enumType, EnumMap<T, MaxQuantHeader> headersMap, String jsonRelativePath) throws IOException {
+    public MaxQuantHeaders(Class<T> enumType, EnumMap<T, MaxQuantHeader> headersMap, String jsonRelativePath, boolean toLowerCase) throws IOException {
         this.enumType = enumType;
         this.headersMap = headersMap;
         this.jsonRelativePath = jsonRelativePath;
-        parse();
+        parse(toLowerCase);
+    }
+
+    /**
+     * Constructor. The header values are by default parsed in lower case.
+     *
+     * @param enumType         the enum class for generics purposes
+     * @param headersMap       the headers map
+     * @param jsonRelativePath the path of the JSON file with the header values
+     */
+    public MaxQuantHeaders(Class<T> enumType, EnumMap<T, MaxQuantHeader> headersMap, String jsonRelativePath) throws IOException {
+        this(enumType, headersMap, jsonRelativePath, true);
     }
 
     public Class<T> getEnumType() {
@@ -92,10 +105,11 @@ public abstract class MaxQuantHeaders<T extends Enum<T>> {
     /**
      * Parse the JSON file and populate the {@link EnumMap} instance.
      *
+     * @param toLowerCase convert the parsed values to lower case
      * @throws IOException              in case of an Input/Output related problem while parsing the JSON file
      * @throws IllegalArgumentException in case a header entry could not be matched with an Enum value
      */
-    protected void parse() throws IOException {
+    protected void parse(boolean toLowerCase) throws IOException {
         Resource jsonHeadersResource = ResourceUtils.getResourceByRelativePath(jsonRelativePath);
         ObjectMapper objectMapper = new ObjectMapper();
         //read the JSON file
@@ -114,8 +128,11 @@ public abstract class MaxQuantHeaders<T extends Enum<T>> {
             JsonNode valuesNode = headerEntry.getValue().get("values");
             List<String> values = new ArrayList<>();
             for (JsonNode valueNode : valuesNode) {
-                //add the lowercase values to the values list
-                values.add(valueNode.asText().toLowerCase());
+                if (toLowerCase) {
+                    values.add(valueNode.asText().toLowerCase());
+                } else {
+                    values.add(valueNode.asText());
+                }
             }
 
             MaxQuantHeader maxQuantHeader = new MaxQuantHeader(headerName, mandatory, values);

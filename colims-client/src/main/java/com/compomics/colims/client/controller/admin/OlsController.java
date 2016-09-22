@@ -124,7 +124,7 @@ public class OlsController implements Controllable {
         enableSearchFieldCheckBoxes(false);
 
         //set column widths
-        olsDialog.getSearchResultTable().getColumnModel().getColumn(OntologySearchResultTableModel.ONTOLOGY_NAMESPACE).setPreferredWidth(100);
+        olsDialog.getSearchResultTable().getColumnModel().getColumn(OntologySearchResultTableModel.ONTOLOGY_PREFIX).setPreferredWidth(100);
         olsDialog.getSearchResultTable().getColumnModel().getColumn(OntologySearchResultTableModel.TERM_ACCESSION).setPreferredWidth(200);
         olsDialog.getSearchResultTable().getColumnModel().getColumn(OntologySearchResultTableModel.MATCHES).setPreferredWidth(500);
 
@@ -139,7 +139,7 @@ public class OlsController implements Controllable {
                     OlsSearchResult selectedSearchResult = searchResults.get(selectedRow);
 
                     //set details fields
-                    olsDialog.getOntologyNamespaceTextField().setText(selectedSearchResult.getOntologyTerm().getOntologyNamespace());
+                    olsDialog.getOntologyNamespaceTextField().setText(selectedSearchResult.getOntologyTerm().getOntologyPrefix());
                     olsDialog.getTermAccessionTextField().setText(selectedSearchResult.getOntologyTerm().getOboId());
                     olsDialog.getTermLabelTextField().setText(selectedSearchResult.getOntologyTerm().getLabel());
                     //check for null values

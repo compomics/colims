@@ -13,7 +13,7 @@ import javax.swing.JTextField;
  */
 public class CvParamManagementDialog extends javax.swing.JDialog {
 
-     /**
+    /**
      * Dialog constructor.
      *
      * @param parent the parent frame
@@ -60,10 +60,6 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
         return ontologyLabelTextField;
     }
 
-    public JTextField getOntologyTextField() {
-        return ontologyTextField;
-    }
-
     public JButton getSaveOrUpdateButton() {
         return saveOrUpdateButton;
     }
@@ -92,8 +88,6 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
         cvParamTableScrollPane = new javax.swing.JScrollPane();
         cvParamTable = new javax.swing.JTable();
         cvParamDetailPanel = new javax.swing.JPanel();
-        ontologyLabel = new javax.swing.JLabel();
-        ontologyTextField = new javax.swing.JTextField();
         ontologyLabelLabel = new javax.swing.JLabel();
         ontologyLabelTextField = new javax.swing.JTextField();
         accessionLabel = new javax.swing.JLabel();
@@ -161,7 +155,7 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
             cvParamOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(cvParamOverviewPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cvParamTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
+                .addComponent(cvParamTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(cvParamOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addCvParamButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -172,10 +166,6 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
         cvParamDetailPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Detail"));
         cvParamDetailPanel.setOpaque(false);
         cvParamDetailPanel.setPreferredSize(new java.awt.Dimension(100, 100));
-
-        ontologyLabel.setText("Ontology Name");
-
-        ontologyTextField.setEnabled(false);
 
         ontologyLabelLabel.setText("Ontology Label");
 
@@ -232,18 +222,19 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
                         .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(cvParamDetailPanelLayout.createSequentialGroup()
                         .addGroup(cvParamDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(cvParamDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(nameLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(accessionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(ontologyLabelLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(definitionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(ontologyLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(cvParamDetailPanelLayout.createSequentialGroup()
+                                .addGroup(cvParamDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(accessionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(ontologyLabelLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(definitionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(9, 9, 9))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cvParamDetailPanelLayout.createSequentialGroup()
+                                .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addGroup(cvParamDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                             .addComponent(accessionTextField)
                             .addComponent(nameTextField)
-                            .addComponent(ontologyTextField)
                             .addComponent(ontologyLabelTextField))))
                 .addContainerGap())
         );
@@ -251,10 +242,6 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
             cvParamDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(cvParamDetailPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(cvParamDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(ontologyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ontologyLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(cvParamDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ontologyLabelTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ontologyLabelLabel))
@@ -268,7 +255,7 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
                     .addComponent(nameLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(cvParamDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(cvParamDetailPanelLayout.createSequentialGroup()
                         .addComponent(definitionLabel)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -304,9 +291,9 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
             cvParamCrudPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(cvParamCrudPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(cvParamOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                .addComponent(cvParamOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cvParamDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+                .addComponent(cvParamDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -344,10 +331,8 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel nameLabel;
     private javax.swing.JTextField nameTextField;
-    private javax.swing.JLabel ontologyLabel;
     private javax.swing.JLabel ontologyLabelLabel;
     private javax.swing.JTextField ontologyLabelTextField;
-    private javax.swing.JTextField ontologyTextField;
     private javax.swing.JButton saveOrUpdateButton;
     // End of variables declaration//GEN-END:variables
 

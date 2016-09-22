@@ -22,6 +22,8 @@ public class OntologyTerm {
     private List<String> description;
     @JsonProperty(value = "ontology_name")
     private String ontologyNamespace;
+    @JsonProperty(value = "ontology_prefix")
+    private String ontologyPrefix;
     private String ontologyTitle;
     @JsonProperty(value = "short_form")
     private String shortForm;
@@ -58,6 +60,10 @@ public class OntologyTerm {
         return ontologyNamespace;
     }
 
+    public String getOntologyPrefix() {
+        return ontologyPrefix;
+    }
+
     public String getOntologyTitle() {
         return ontologyTitle;
     }
@@ -89,6 +95,7 @@ public class OntologyTerm {
         this.label = ontologyTermToCopy.getLabel();
         this.description = ontologyTermToCopy.getDescription();
         this.ontologyNamespace = ontologyTermToCopy.getOntologyNamespace();
+        this.ontologyPrefix = ontologyTermToCopy.getOntologyPrefix();
         this.ontologyTitle = ontologyTermToCopy.getOntologyTitle();
         this.oboId = ontologyTermToCopy.getOboId();
         this.shortForm = ontologyTermToCopy.shortForm;

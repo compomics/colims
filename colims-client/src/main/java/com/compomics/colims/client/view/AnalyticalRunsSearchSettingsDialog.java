@@ -18,6 +18,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
 
     /**
      * Creates new form AnalyticalRunsSearchSettingsDialog
+     *
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
@@ -469,29 +470,23 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AnalyticalRunsSearchSettingsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AnalyticalRunsSearchSettingsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AnalyticalRunsSearchSettingsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AnalyticalRunsSearchSettingsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
+        //</editor-fold>
+
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                AnalyticalRunsSearchSettingsDialog dialog = new AnalyticalRunsSearchSettingsDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-   }
+        java.awt.EventQueue.invokeLater(() -> {
+            AnalyticalRunsSearchSettingsDialog dialog = new AnalyticalRunsSearchSettingsDialog(new javax.swing.JFrame(), true);
+            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent e) {
+                    System.exit(0);
+                }
+            });
+            dialog.setVisible(true);
         });
     }
 

@@ -16,7 +16,6 @@ import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -156,7 +155,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
         QuantificationMethodCvParam params = new QuantificationMethodCvParam();
 
-        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAX_QUANT, maxQuantSearchSettingsParser.getVersion(), params);
+        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAXQUANT, maxQuantSearchSettingsParser.getVersion(), params);
 
         quantificationSettings.setAnalyticalRun(analyticalRun);
 

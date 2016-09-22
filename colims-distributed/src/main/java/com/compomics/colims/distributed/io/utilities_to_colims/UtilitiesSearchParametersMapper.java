@@ -20,7 +20,8 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 /**
- * This class maps the Utilities search parameters onto the Colims search parameters.
+ * This class maps the Utilities search parameters onto the Colims search
+ * parameters.
  *
  * @author Kenneth Verheggen
  * @author Niels Hulstaert
@@ -34,7 +35,6 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);
 
     private static final String MS_ONTOLOGY_LABEL = "MS";
-    private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
 
@@ -62,8 +62,9 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      * Map the Utilities SearchParameters to the Colims SearchParameters.
      *
      * @param utilitiesSearchParameters the Utilities search parameters
-     * @param searchParameters          the Colims search parameters
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
+     * @param searchParameters the Colims search parameters
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case
+     * of a modification mapping problem
      */
     @Override
     public void map(com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) throws ModificationMappingException {
@@ -101,7 +102,8 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     }
 
     /**
-     * Map the given Utilities Enzyme instance to a TypedCvParam instance. Return null if no mapping was possible.
+     * Map the given Utilities Enzyme instance to a TypedCvParam instance.
+     * Return null if no mapping was possible.
      *
      * @param utilitiesEnzyme the Utilities Enzyme instance
      * @return the TypedCvParam instance
@@ -125,7 +127,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
 
             if (enzyme == null) {
                 //the enzyme was not found by name in the MS ontology
-                enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, utilitiesEnzyme.getName());
+                enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, utilitiesEnzyme.getName());
             }
 
             //persist the newly created enzyme
@@ -136,7 +138,8 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     }
 
     /**
-     * Get the default search type from the database and assign it to the class field.
+     * Get the default search type from the database and assign it to the class
+     * field.
      */
     @PostConstruct
     private void getDefaultSearchType() {

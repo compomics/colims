@@ -18,14 +18,14 @@ public class OlsSearchResultTableFormat implements AdvancedTableFormat<OlsSearch
     public final static String[] COLUMN_NAMES = {"ontology", "accession", "match(es)"};
     private static final String HTML_OPEN = "<html>";
     private static final String HTML_CLOSE = "</html>";
-    public static final int ONTOLOGY_NAMESPACE = 0;
+    public static final int ONTOLOGY_PREFIX = 0;
     public static final int TERM_ACCESSION = 1;
     public static final int MATCHES = 2;
 
     @Override
     public Class getColumnClass(int column) {
         switch (column) {
-            case ONTOLOGY_NAMESPACE:
+            case ONTOLOGY_PREFIX:
                 return String.class;
             case TERM_ACCESSION:
                 return String.class;
@@ -54,8 +54,8 @@ public class OlsSearchResultTableFormat implements AdvancedTableFormat<OlsSearch
     @Override
     public Object getColumnValue(OlsSearchResult searchResult, int column) {
         switch (column) {
-            case ONTOLOGY_NAMESPACE:
-                return searchResult.getOntologyTerm().getOntologyNamespace();
+            case ONTOLOGY_PREFIX:
+                return searchResult.getOntologyTerm().getOntologyPrefix();
             case TERM_ACCESSION:
                 return searchResult.getOntologyTerm().getShortForm();
             case MATCHES:

@@ -28,27 +28,27 @@ import org.springframework.stereotype.Component;
  */
 @Component("maxQuantQuantificationSettingsParser")
 public class MaxQuantQuantificationSettingsParser {
-    
+
     /**
      * Logger instance.
      */
-    private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
+    private static final Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
     /**
      * The quantification settings indexed by analytical run (key: AnalyticalRun ; value: QuantificationSettings)
      */
-    private Map<AnalyticalRun, QuantificationSettings> runsAndQuantificationSettings = new HashMap<>();
+    private final Map<AnalyticalRun, QuantificationSettings> runsAndQuantificationSettings = new HashMap<>();
     /**
      * The MaxQuant version.
      */
-    private String version = "N/A";
-    
+    private final String version = "N/A";
+
     @Autowired
     private OntologyMapper ontologyMapper;
     @Autowired
     private QuantificationSettingsService quantificationSettingsService;
-    
+
     /**
-     * Get map of analytical run and quantification settings 
+     * Get map of analytical run and quantification settings
      * @return runsAndQuantificationSettings
      */
     public Map<AnalyticalRun, QuantificationSettings> getRunsAndQuantificationSettings() {
@@ -57,49 +57,49 @@ public class MaxQuantQuantificationSettingsParser {
     /**
      * Parse the quantification parameters for a MaxQuant experiment
      * @param analyticalRuns
-     * @param experimentLabel 
-     * @param reagents 
+     * @param experimentLabel
+     * @param reagents
      */
     public void parse(List<AnalyticalRun> analyticalRuns, String experimentLabel, List<String> reagents){
-        
+
         OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(experimentLabel);
         // create quantificationCvParam
-        QuantificationMethodCvParam quantificationMethodCvParam = 
+        QuantificationMethodCvParam quantificationMethodCvParam =
                 new QuantificationMethodCvParam(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
         quantificationMethodCvParam.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethodCvParam, reagents));
         quantificationMethodCvParam = quantificationSettingsService.getQuantificationMethodCvParams(quantificationMethodCvParam);
         // create quantificationSettings
         QuantificationSettings quantificationSettings = new QuantificationSettings();
         quantificationSettings.setQuantificationMethodCvParam(quantificationMethodCvParam);
-        quantificationSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(QuantificationEngineType.MAX_QUANT, version));
+        quantificationSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(QuantificationEngineType.MAXQUANT, version));
         analyticalRuns.forEach(analyticalRun -> {
             runsAndQuantificationSettings.put(analyticalRun, quantificationSettings);
         });
     }
-    
+
     /**
      * This method is to create QuantificationReagent and its link to QuantificationMethodCvParam
-     * 
+     *
      * @param quantificationMethodCvParam
      * @param reagents
      * @return QuantificationMethodHasReagents list
      */
     public List<QuantificationMethodHasReagent> createQuantificationReagent(QuantificationMethodCvParam quantificationMethodCvParam, List<String> reagents){
         List<QuantificationMethodHasReagent> quantificationMethodHasReagents = new ArrayList<>();
-        
+
         reagents.forEach(reagent -> {
             OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationReagents().get(reagent);
-            
+
             QuantificationMethodHasReagent quantificationMethodHasReagent = new QuantificationMethodHasReagent();
-            
-            QuantificationReagent quantificationReagent = 
+
+            QuantificationReagent quantificationReagent =
                     new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
-            
+
             quantificationMethodHasReagent.setQuantificationReagent(quantificationReagent);
             quantificationMethodHasReagent.setQuantificationMethodCvParam(quantificationMethodCvParam);
             quantificationMethodHasReagents.add(quantificationMethodHasReagent);
         });
-        
+
         return quantificationMethodHasReagents;
     }
 }

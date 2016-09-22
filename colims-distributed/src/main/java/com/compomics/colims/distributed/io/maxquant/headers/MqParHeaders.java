@@ -13,6 +13,6 @@ public class MqParHeaders extends MaxQuantHeaders<MqParHeader> {
      * @throws java.io.IOException
      */
     public MqParHeaders() throws IOException {
-        super(MqParHeader.class, new EnumMap<>(MqParHeader.class), "maxquant/mqpar_headers.json");
+        super(MqParHeader.class, new EnumMap<>(MqParHeader.class), "maxquant/mqpar_headers.json", false);
     }
 }

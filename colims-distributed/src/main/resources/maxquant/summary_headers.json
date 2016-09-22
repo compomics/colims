@@ -1,16 +1,4 @@
 {
-  "ENZYME": {
-    "mandatory": true,
-    "values": [
-      "Enzyme"
-    ]
-  },
-  "MAX_MISSED_CLEAVAGES": {
-    "mandatory": true,
-    "values": [
-      "Max. missed cleavages"
-    ]
-  },
   "MULTIPLICITY": {
     "mandatory": true,
     "values": [

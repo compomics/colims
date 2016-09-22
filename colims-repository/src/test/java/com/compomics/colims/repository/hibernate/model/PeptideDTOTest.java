@@ -21,7 +21,7 @@ public class PeptideDTOTest {
     private static PeptideDTO peptideDTO1;
     private static PeptideDTO peptideDTO2;
     private static PeptideDTO peptideDTO3;
-    private static final List<PeptideDTO> peptideDTOs = new ArrayList<>();
+    private static final List<PeptideDTO> PEPTIDE_DTO_LIST = new ArrayList<>();
 
     @BeforeClass
     public static void setup() {
@@ -72,7 +72,7 @@ public class PeptideDTOTest {
         peptideDTO3 = new PeptideDTO();
         peptideDTO3.setPeptide(peptide3);
 
-        peptideDTOs.add(peptideDTO1);
+        PEPTIDE_DTO_LIST.add(peptideDTO1);
     }
 
     /**
@@ -81,7 +81,7 @@ public class PeptideDTOTest {
      */
     @Test
     public void testAddPeptideDTOMismatchToMap() {
-        Assert.assertFalse(peptideDTOs.contains(peptideDTO2));
+        Assert.assertFalse(PEPTIDE_DTO_LIST.contains(peptideDTO2));
     }
 
     /**
@@ -90,7 +90,7 @@ public class PeptideDTOTest {
      */
     @Test
     public void testAddPeptideDTOMatchToMap() {
-        Assert.assertTrue(peptideDTOs.contains(peptideDTO3));
+        Assert.assertTrue(PEPTIDE_DTO_LIST.contains(peptideDTO3));
     }
 
 }
