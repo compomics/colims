@@ -61,13 +61,12 @@ public class SearchEngine extends CvParam {
      *
      * @param searchEngineType the search engine type enum
      * @param version          the search engine version
-     * @param ontology         the CV term ontology
      * @param label            the CV term label
      * @param accession        The CV term accession
      * @param name             The CV term name
      */
-    public SearchEngine(final SearchEngineType searchEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
-        super(ontology, label, accession, name);
+    public SearchEngine(final SearchEngineType searchEngineType, final String version, final String label, final String accession, final String name) {
+        super(label, accession, name);
         this.searchEngineType = searchEngineType;
         this.version = version;
     }
@@ -79,7 +78,7 @@ public class SearchEngine extends CvParam {
      * @param version      the search engine version
      */
     public SearchEngine(final SearchEngine searchEngine, final String version) {
-        this(searchEngine.getSearchEngineType(), version, searchEngine.getOntology(), searchEngine.getLabel(), searchEngine.getAccession(), searchEngine.getName());
+        this(searchEngine.getSearchEngineType(), version, searchEngine.getLabel(), searchEngine.getAccession(), searchEngine.getName());
     }
 
     public SearchEngineType getSearchEngineType() {

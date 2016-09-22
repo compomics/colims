@@ -16,11 +16,11 @@ public class MaxQuantHeader {
     /**
      * Boolean that indicates whether the header is mandatory for parsing or not.
      */
-    private boolean mandatory;
+    private final boolean mandatory;
     /**
      * The list with all possible header values for this header.
      */
-    private List<String> values;
+    private final List<String> values;
     /**
      * The header value index.
      */

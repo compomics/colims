@@ -6,7 +6,11 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.cv.CvParam;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -19,10 +23,27 @@ public class QuantificationMethodCvParam extends CvParam{
     
     private static final long serialVersionUID = 8852434545673934041L;
 
+    /**
+     * The QuantificationMethodHasReagent instances from the join table between the QuantificationMethodCvParam and 
+     * QuantificationReagent.
+     */
+    @OneToMany(mappedBy = "quantificationMethodCvParam", cascade = CascadeType.ALL)
+    private List<QuantificationMethodHasReagent> quantificationMethodHasReagents = new ArrayList<>();
+    
     public QuantificationMethodCvParam() {
     }
 
-    public QuantificationMethodCvParam(final String ontology, final String label, final String accession, final String name, final String value) {
-        super(ontology, label, accession, name, value);
+    public QuantificationMethodCvParam(final String label, final String accession, final String name, final String value) {
+        super(label, accession, name, value);
     }
+
+    public List<QuantificationMethodHasReagent> getQuantificationMethodHasReagents() {
+        return quantificationMethodHasReagents;
+    }
+
+    public void setQuantificationMethodHasReagents(List<QuantificationMethodHasReagent> quantificationMethodHasReagents) {
+        this.quantificationMethodHasReagents = quantificationMethodHasReagents;
+    }
+    
+    
 }

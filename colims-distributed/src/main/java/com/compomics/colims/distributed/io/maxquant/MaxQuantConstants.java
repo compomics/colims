@@ -79,7 +79,7 @@ public enum MaxQuantConstants {
         /**
          * The constant value;
          */
-        private String value;
+        private final String value;
 
         /**
          * Constructor.
@@ -103,7 +103,7 @@ public enum MaxQuantConstants {
     /**
      * The constant value;
      */
-    private String value;
+    private final String value;
 
     /**
      * Constructor.

@@ -18,14 +18,14 @@ public class QuantificationEngine extends CvParam {
     private static final String NOT_APPLICABLE = "N/A";
 
     /**
-     * The search engine type.
+     * The quantification engine type.
      */
     @Basic(optional = false)
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private QuantificationEngineType quantificationEngineType;
     /**
-     * The version of the search engine.
+     * The version of the quantification engine.
      */
     @Basic(optional = true)
     @Column(name = "version", nullable = true)
@@ -39,26 +39,42 @@ public class QuantificationEngine extends CvParam {
     public QuantificationEngine() {
     }
 
-    public QuantificationEngine(QuantificationEngineType quantificationEngineType, String version) {
+    /**
+     * Constructor.
+     *
+     * @param quantificationEngineType the quantification engine type enum
+     * @param version the quantification engine version
+     */
+    public QuantificationEngine(final QuantificationEngineType quantificationEngineType, final String version) {
         super(NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE);
         this.quantificationEngineType = quantificationEngineType;
         this.version = version;
     }
 
-    public QuantificationEngine(final QuantificationEngineType quantificationEngineType, final String version, final String ontology, final String label, final String accession, final String name) {
-        super(ontology, label, accession, name);
+    /**
+     * Constructor.
+     *
+     * @param quantificationEngineType the quantification engine type enum
+     * @param version the quantification engine version
+     * @param label the CV term label
+     * @param accession The CV term accession
+     * @param name The CV term name
+     */
+    public QuantificationEngine(final QuantificationEngineType quantificationEngineType, final String version, final String label, final String accession, final String name) {
+        super(label, accession, name);
         this.quantificationEngineType = quantificationEngineType;
         this.version = version;
     }
 
     /**
-     * Constructor that creates a new instance with all fields of the given QuantificationEngine and the given version.
+     * Constructor that creates a new instance with all fields of the given
+     * QuantificationEngine and the given version.
      *
      * @param quantificationEngine the QuantificationEngine to copy
-     * @param version              the quantification engine version
+     * @param version the quantification engine version
      */
     public QuantificationEngine(final QuantificationEngine quantificationEngine, final String version) {
-        this(quantificationEngine.getQuantificationEngineType(), version, quantificationEngine.getOntology(), quantificationEngine.getLabel(), quantificationEngine.getAccession(), quantificationEngine.getName());
+        this(quantificationEngine.getQuantificationEngineType(), version, quantificationEngine.getLabel(), quantificationEngine.getAccession(), quantificationEngine.getName());
     }
 
     public QuantificationEngineType getQuantificationEngineType() {
@@ -87,12 +103,18 @@ public class QuantificationEngine extends CvParam {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         QuantificationEngine that = (QuantificationEngine) o;
 
-        if (quantificationEngineType != that.quantificationEngineType) return false;
+        if (quantificationEngineType != that.quantificationEngineType) {
+            return false;
+        }
         return !(version != null ? !version.equals(that.version) : that.version != null);
 
     }

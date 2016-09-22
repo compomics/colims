@@ -16,7 +16,11 @@ public class ColimsMapping {
      * The Colims quantification method terms mappings.
      */
     private Map<String, OntologyTerm> quantificationMethods;
-
+    
+    /**
+     * The Colims quantification reagent terms mappings.
+     */
+    private Map<String, OntologyTerm> quantificationReagents;
     /**
      * No-arg constructor.
      */
@@ -30,4 +34,13 @@ public class ColimsMapping {
     public void setQuantificationMethods(Map<String, OntologyTerm> quantificationMethods) {
         this.quantificationMethods = quantificationMethods;
     }
+
+    public Map<String, OntologyTerm> getQuantificationReagents() {
+        return quantificationReagents;
+    }
+
+    public void setQuantificationReagents(Map<String, OntologyTerm> quantificationReagents) {
+        this.quantificationReagents = quantificationReagents;
+    }
+    
 }

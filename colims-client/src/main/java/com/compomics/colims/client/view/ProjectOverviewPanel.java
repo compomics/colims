@@ -796,10 +796,10 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
 
         PtmSettings ptmSettings = searchParameters.getPtmSettings();
 
-        for (ModificationMatch modMatch : peptide.getModificationMatches()) {
+        peptide.getModificationMatches().stream().forEach((modMatch) -> {
             String modName = modMatch.getTheoreticPtm();
-
-            if (ptmFactory.getPTM(modMatch.getTheoreticPtm()).getType() == PTM.MODAA) { // exclude terminal ptms
+            if (ptmFactory.getPTM(modMatch.getTheoreticPtm()).getType() == PTM.MODAA) {
+                // exclude terminal ptms
 
                 int modSite = modMatch.getModificationSite();
 
@@ -822,8 +822,7 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
                     fixedModifications.get(modSite).add(modName);
                 }
             }
-
-        }
+        });
 
         return Peptide.getTaggedModifiedSequence(ptmSettings, peptide, confidentLocations, representativeAmbiguousLocations,
                 secondaryAmbiguousLocations, fixedModifications, useHtmlColorCoding, includeHtmlStartEndTag, useShortName);

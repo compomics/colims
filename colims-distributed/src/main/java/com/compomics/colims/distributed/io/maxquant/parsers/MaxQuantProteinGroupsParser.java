@@ -29,7 +29,7 @@ public class MaxQuantProteinGroupsParser {
      * these protein groups are not stored in the database.
      */
     private final List<String> omittedProteinGroupIds = new ArrayList<>();
-    private ProteinGroupsHeaders proteinGroupsHeaders;
+    private final ProteinGroupsHeaders proteinGroupsHeaders;
     @Autowired
     private ProteinService proteinService;
     @Autowired
@@ -65,7 +65,7 @@ public class MaxQuantProteinGroupsParser {
 
             ProteinGroup proteinGroup = parseProteinGroup(values, parsedFastas, includeContaminants, optionalHeaders);
             if (proteinGroup.getMainProtein() != null) {
-                proteinGroups.put(Integer.parseInt(values.get(ProteinGroupsHeader.ID)), proteinGroup);
+                proteinGroups.put(Integer.parseInt(values.get(ProteinGroupsHeader.ID.toString())), proteinGroup);
             }
         }
 
@@ -90,11 +90,11 @@ public class MaxQuantProteinGroupsParser {
     private ProteinGroup parseProteinGroup(Map<String, String> proteinGroupsEntry, Map<String, String> parsedFastas, boolean includeContaminants, List<String> optionalHeaders) {
         ProteinGroup proteinGroup = new ProteinGroup();
 
-        if (proteinGroupsEntry.get(ProteinGroupsHeader.PEP) != null) {
-            proteinGroup.setProteinPostErrorProbability(Double.parseDouble(proteinGroupsEntry.get(ProteinGroupsHeader.PEP)));
+        if (proteinGroupsEntry.get(ProteinGroupsHeader.PEP.toString()) != null) {
+            proteinGroup.setProteinPostErrorProbability(Double.parseDouble(proteinGroupsEntry.get(ProteinGroupsHeader.PEP.toString())));
         }
 
-        String parsedAccession = proteinGroupsEntry.get(ProteinGroupsHeader.ACCESSION);
+        String parsedAccession = proteinGroupsEntry.get(ProteinGroupsHeader.ACCESSION.toString());
         List<String> filteredAccessions = new ArrayList<>();
 
         boolean omittedProteinGroup = false;
@@ -142,7 +142,7 @@ public class MaxQuantProteinGroupsParser {
                     }
                 }
             } else {
-                omittedProteinGroupIds.add(proteinGroupsEntry.get(ProteinGroupsHeader.ID));
+                omittedProteinGroupIds.add(proteinGroupsEntry.get(ProteinGroupsHeader.ID.toString()));
             }
 
         } else {
@@ -150,7 +150,7 @@ public class MaxQuantProteinGroupsParser {
                 if (!parsedAccession.contains("REV") && !parsedAccession.contains("CON")) {
                     proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequenceInFasta(parsedAccession, parsedFastas), parsedAccession, true, proteinGroup));
                 } else {
-                    omittedProteinGroupIds.add(proteinGroupsEntry.get(ProteinGroupsHeader.ID));
+                    omittedProteinGroupIds.add(proteinGroupsEntry.get(ProteinGroupsHeader.ID.toString()));
                     omittedProteinGroup = true;
                 }
             } else {
@@ -161,7 +161,7 @@ public class MaxQuantProteinGroupsParser {
                     }
                     proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequenceInFasta(accToSearchSeq, parsedFastas), parsedAccession, true, proteinGroup));
                 } else {
-                    omittedProteinGroupIds.add(proteinGroupsEntry.get(ProteinGroupsHeader.ID));
+                    omittedProteinGroupIds.add(proteinGroupsEntry.get(ProteinGroupsHeader.ID.toString()));
                     omittedProteinGroup = true;
                 }
             }

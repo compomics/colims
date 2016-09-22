@@ -48,7 +48,7 @@ public class MaxQuantEvidenceParser {
     /**
      * The evidence evidenceHeaders.
      */
-    private EvidenceHeaders evidenceHeaders;
+    private final EvidenceHeaders evidenceHeaders;
     @Autowired
     private UtilitiesModificationMapper utilitiesModificationMapper;
 
@@ -292,7 +292,7 @@ class EvidenceModification {
     /**
      * The full modification modificationName (with brackets).
      */
-    private String fullModificationName;
+    private final String fullModificationName;
     /**
      * The modification modificationName.
      */

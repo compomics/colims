@@ -11,8 +11,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OntologyTerm {
 
-    @JsonProperty(value = "obo_namespace")
-    private String oboNamespace;
+    @JsonProperty(value = "ontology_prefix")
+    private String ontologyPrefix;
     @JsonProperty(value = "obo_id")
     private String oboId;
     private String label;
@@ -23,12 +23,12 @@ public class OntologyTerm {
     public OntologyTerm() {
     }
 
-    public String getOboNamespace() {
-        return oboNamespace;
+    public String getOntologyPrefix() {
+        return ontologyPrefix;
     }
 
-    public void setOboNamespace(String oboNamespace) {
-        this.oboNamespace = oboNamespace;
+    public void setOntologyPrefix(String ontologyPrefix) {
+        this.ontologyPrefix = ontologyPrefix;
     }
 
     public String getOboId() {
@@ -54,7 +54,7 @@ public class OntologyTerm {
 
         OntologyTerm that = (OntologyTerm) o;
 
-        if (!oboNamespace.equals(that.oboNamespace)) return false;
+        if (!ontologyPrefix.equals(that.ontologyPrefix)) return false;
         if (!oboId.equals(that.oboId)) return false;
         return label != null ? label.equals(that.label) : that.label == null;
 
@@ -62,7 +62,7 @@ public class OntologyTerm {
 
     @Override
     public int hashCode() {
-        int result = oboNamespace.hashCode();
+        int result = ontologyPrefix.hashCode();
         result = 31 * result + oboId.hashCode();
         return result;
     }

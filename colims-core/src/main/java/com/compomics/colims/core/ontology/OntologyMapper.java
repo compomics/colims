@@ -85,6 +85,9 @@ public class OntologyMapper {
                             case "quantification_methods":
                                 colimsMapping.setQuantificationMethods(entry.getValue());
                                 break;
+                            case "quantification_reagents":
+                                colimsMapping.setQuantificationReagents(entry.getValue());
+                                break;
                             default:
                                 throw new IllegalArgumentException("Unknown Colims mapping resource type " + entry.getKey());
                         }

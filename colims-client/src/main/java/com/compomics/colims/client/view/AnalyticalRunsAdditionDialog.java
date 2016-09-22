@@ -90,6 +90,14 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
         return dateTimePicker;
     }
 
+    public JComboBox<String> getLabelComboBox() {
+        return labelComboBox;
+    }
+
+    public JLabel getLabelSelectionLabel() {
+        return labelSelectionLabel;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -110,6 +118,8 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
         maxQuantRadioButton = new javax.swing.JRadioButton();
         instrumentSelectionLabel = new javax.swing.JLabel();
         instrumentComboBox = new javax.swing.JComboBox();
+        labelComboBox = new javax.swing.JComboBox<>();
+        labelSelectionLabel = new javax.swing.JLabel();
         rightPanel = new javax.swing.JPanel();
         storageDescriptionLabel = new javax.swing.JLabel();
         storageDescriptionTextField = new javax.swing.JTextField();
@@ -154,18 +164,23 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
 
         instrumentSelectionLabel.setText("Select the instrument:");
 
+        labelSelectionLabel.setText("Select the label:");
+
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(leftPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(maxQuantRadioButton)
-                    .addComponent(peptideShakerRadioButton)
-                    .addComponent(instrumentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(instrumentSelectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dataTypeSelectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE))
+                .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(maxQuantRadioButton)
+                        .addComponent(peptideShakerRadioButton)
+                        .addComponent(instrumentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(instrumentSelectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(dataTypeSelectionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                        .addComponent(labelComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(labelSelectionLabel))
                 .addContainerGap())
         );
         leftPanelLayout.setVerticalGroup(
@@ -181,6 +196,10 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
                 .addComponent(instrumentSelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(instrumentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20)
+                .addComponent(labelSelectionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -385,6 +404,8 @@ public class AnalyticalRunsAdditionDialog extends javax.swing.JDialog {
     private javax.swing.JLabel infoLabel;
     private javax.swing.JComboBox instrumentComboBox;
     private javax.swing.JLabel instrumentSelectionLabel;
+    private javax.swing.JComboBox<String> labelComboBox;
+    private javax.swing.JLabel labelSelectionLabel;
     private javax.swing.JPanel leftPanel;
     private com.compomics.colims.client.view.MaxQuantDataImportPanel maxQuantDataImportPanel;
     private javax.swing.JRadioButton maxQuantRadioButton;

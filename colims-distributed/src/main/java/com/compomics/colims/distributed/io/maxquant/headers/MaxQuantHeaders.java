@@ -35,7 +35,8 @@ public abstract class MaxQuantHeaders<T extends Enum<T>> {
      * @param enumType         the enum class for generics purposes
      * @param headersMap       the headers map
      * @param jsonRelativePath the path of the JSON file with the header values
-     * @param inLowerCase      convert the parsed values to lowercase
+     * @param toLowerCase      convert the parsed values to lowercase
+     * @throws java.io.IOException in case of an Input/Output related problem
      */
     public MaxQuantHeaders(Class<T> enumType, EnumMap<T, MaxQuantHeader> headersMap, String jsonRelativePath, boolean toLowerCase) throws IOException {
         this.enumType = enumType;

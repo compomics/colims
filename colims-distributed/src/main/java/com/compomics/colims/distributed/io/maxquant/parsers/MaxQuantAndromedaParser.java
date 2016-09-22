@@ -44,7 +44,7 @@ public class MaxQuantAndromedaParser {
      * The apl spectrum file paths map (key: apl file path; value: apl param
      * file path);
      */
-    private Map<Path, Path> aplFilePaths = new HashMap<>();
+    private final Map<Path, Path> aplFilePaths = new HashMap<>();
     /**
      * The fragmentation type used.
      */
@@ -112,8 +112,8 @@ public class MaxQuantAndromedaParser {
         Map<String, String> aplFilePaths = ParseUtils.parseParameters(aplSummaryPath, MaxQuantConstants.PARAM_TAB_DELIMITER.value());
         aplFilePaths.entrySet().stream().forEach(entry -> {
             //use paths relative to the andromeda directory
-            Path relativeAplfilePath = Paths.get(andromedaDirectory.toString(), FilenameUtils.getName(entry.getKey().toString()));
-            Path relativeSpectrumParametersfilePath = Paths.get(andromedaDirectory.toString(), FilenameUtils.getName(entry.getValue().toString()));
+            Path relativeAplfilePath = Paths.get(andromedaDirectory.toString(), FilenameUtils.getName(entry.getKey()));
+            Path relativeSpectrumParametersfilePath = Paths.get(andromedaDirectory.toString(), FilenameUtils.getName(entry.getValue()));
             this.aplFilePaths.put(relativeAplfilePath, relativeSpectrumParametersfilePath);
         });
 

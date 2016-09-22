@@ -101,7 +101,6 @@ public class TypedCvParamManagementController implements Controllable {
                     }
 
                     //set details fields
-                    cvParamManagementDialog.getOntologyTextField().setText(selectedCvParam.getOntology());
                     cvParamManagementDialog.getOntologyLabelTextField().setText(selectedCvParam.getLabel());
                     cvParamManagementDialog.getAccessionTextField().setText(selectedCvParam.getAccession());
                     cvParamManagementDialog.getNameTextField().setText(selectedCvParam.getName());
@@ -261,9 +260,7 @@ public class TypedCvParamManagementController implements Controllable {
      * @param name the name
      */
     private void updateCvParam(final AuditableTypedCvParam cvParam, final String ontology, final String label, final String accession, final String name) {
-        if (!cvParam.getOntology().equalsIgnoreCase(ontology)) {
-            cvParam.setOntology(ontology);
-        }
+
         if (!cvParam.getLabel().equalsIgnoreCase(label)) {
             cvParam.setLabel(label);
         }
@@ -290,7 +287,7 @@ public class TypedCvParamManagementController implements Controllable {
         if (ontologyTerm != null) {
             //check whether a CV param has to be added or updated
             if (newCvParam) {
-                AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 //add CV param to the table model
                 typeCvParamTableModel2.addCvParam(cvParam);
@@ -330,7 +327,6 @@ public class TypedCvParamManagementController implements Controllable {
      */
     private void clearCvParamDetailFields() {
         cvParamManagementDialog.getCvParamStateInfoLabel().setText("");
-        cvParamManagementDialog.getOntologyTextField().setText("");
         cvParamManagementDialog.getOntologyLabelTextField().setText("");
         cvParamManagementDialog.getAccessionTextField().setText("");
         cvParamManagementDialog.getNameTextField().setText("");

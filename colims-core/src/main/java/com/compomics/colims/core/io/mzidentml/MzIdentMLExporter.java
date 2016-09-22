@@ -330,7 +330,7 @@ public class MzIdentMLExporter {
             mzEnzyme.setId("ENZYME-1");
             mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
         } else {
-            cvEnzyme = getDataItem("GenericCV." + colimsEnzyme.getOntology(), CvParam.class);
+            cvEnzyme = getDataItem("GenericCV." + colimsEnzyme.getLabel(), CvParam.class);
             cvEnzyme.setName(colimsEnzyme.getName());
             cvEnzyme.setAccession(colimsEnzyme.getAccession());
 

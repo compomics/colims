@@ -1,8 +1,6 @@
 package com.compomics.colims.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -23,7 +21,7 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
      * The quantification engine used for the searches.
      */
     @JoinColumn(name = "l_quant_engine_id", referencedColumnName = "id")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     private QuantificationEngine quantificationEngine;
     
     /**

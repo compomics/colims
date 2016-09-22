@@ -12,6 +12,6 @@ package com.compomics.colims.model.enums;
  */
 public enum QuantificationEngineType {
 
-    MAX_QUANT
+    MAXQUANT
 
 }

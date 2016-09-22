@@ -24,25 +24,25 @@ public class MaxQuantSpectra {
      * This map is used to link with apl files
      * The aplSpectra map (key: Spectrum Key; value: spectrum).
      */
-    private Map<String, Spectrum> aplSpectra = new HashMap<>();
+    private final Map<String, Spectrum> aplSpectra = new HashMap<>();
 
     /**
      * This map is used to link with spectra IDs in msms file
      * The spectrumIDs map (key: Spectrum; value: list of msms ID)
      */
-    private Map<Spectrum, List<Integer>> spectrumIDs = new HashMap<>();
+    private final Map<Spectrum, List<Integer>> spectrumIDs = new HashMap<>();
 
     /**
      * The list of unidentified aplSpectra.
      */
-    private List<Spectrum> unidentifiedSpectra = new ArrayList<>();
+    private final List<Spectrum> unidentifiedSpectra = new ArrayList<>();
 
     /**
      * ommittedSpectraKeys to avoid keeping them as unidentified spectra
      */
-    private List<String> ommittedSpectraKeys = new ArrayList<>();
-    
-  
+    private final List<String> ommittedSpectraKeys = new ArrayList<>();
+
+
     public MaxQuantSpectra() {
     }
 
@@ -79,7 +79,7 @@ public class MaxQuantSpectra {
     public List<String> getOmmittedSpectraKeys() {
         return ommittedSpectraKeys;
     }
-    
+
     /**
      * Clear max quant spectra.
      */

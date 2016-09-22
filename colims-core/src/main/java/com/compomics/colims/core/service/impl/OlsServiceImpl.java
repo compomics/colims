@@ -281,7 +281,7 @@ public class OlsServiceImpl implements OlsService {
 
     @Override
     public <T extends AbstractModification> T findModificationByAccession(Class<T> clazz, String accession) throws RestClientException, IOException {
-        T modification = null;
+        T modification;
 
         //look for the modification in the cache
         if (modificationsCache.containsKey(accession)) {
@@ -339,7 +339,7 @@ public class OlsServiceImpl implements OlsService {
                         namespaces.add(ontologyTerm.getOntologyNamespace());
                         List<Ontology> ontologies = getOntologiesByNamespace(namespaces);
                         ontologyTerm.setOntologyTitle(ontologies.get(0).getTitle());
-                        enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, ontologies.get(0).getTitle(), ontologyTerm.getLabel(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                        enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, ontologyTerm.getLabel(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
                         break;
                     }
                 }
