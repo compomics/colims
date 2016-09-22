@@ -53,6 +53,8 @@ public class MaxQuantProteinGroupsParser {
      *
      * @param proteinGroupsFile MaxQuant protein groups file
      * @param parsedFastas      FASTA files parsed into header/sequence pairs
+     * @param includeContaminants
+     * @param optionalHeaders
      * @return Protein groups indexed by id
      * @throws IOException
      */
@@ -318,7 +320,8 @@ public class MaxQuantProteinGroupsParser {
      * @param analyticalRun
      * @param experimentName
      */
-    private void parseLabeledQuantification(Map<String, String> values, ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String experimentName, List<String> optionalHeaders) {
+    private void parseLabeledQuantification(Map<String, String> values, ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String experimentName,
+            List<String> optionalHeaders) {
         for (int i = 0; i < 10; i++) {
             String reporterIntensityCorrected = values.get(ProteinGroupsHeader.REPORTER_INTENSITY_CORRECTED + " " + i + " " + experimentName);
 

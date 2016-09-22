@@ -55,11 +55,12 @@ public class MaxQuantQuantificationSettingsParserTest {
     @Test
     public void testCreateQuantificationReagent(){
         QuantificationMethodCvParam quantificationMethodCvParam = new QuantificationMethodCvParam("PRIDE", "PRIDE:0000315", "SILAC", null);
+        String experimentLabel = "TMT";
         List<String> reagents = new ArrayList<>();
         reagents.add("SILAC heavy");
         reagents.add("SILAC light");
         
-        List<QuantificationMethodHasReagent> quantificationMethodHasReagents = maxQuantQuantificationSettingsParser.createQuantificationReagent(quantificationMethodCvParam, reagents);
+        List<QuantificationMethodHasReagent> quantificationMethodHasReagents = maxQuantQuantificationSettingsParser.createQuantificationReagent(quantificationMethodCvParam, experimentLabel, reagents);
         
         assertThat(quantificationMethodHasReagents.size(), is(2));
         assertThat(quantificationMethodHasReagents.get(0).getQuantificationReagent().getLabel(), is("PRIDE"));

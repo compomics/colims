@@ -33,6 +33,8 @@ public class MaxQuantQuantificationSettingsParser {
      * Logger instance.
      */
     private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
+    
+    private static final String SILAC_LABEL = "SILAC";
     /**
      * The quantification settings indexed by analytical run (key: AnalyticalRun ; value: QuantificationSettings)
      */
@@ -57,16 +59,16 @@ public class MaxQuantQuantificationSettingsParser {
     /**
      * Parse the quantification parameters for a MaxQuant experiment
      * @param analyticalRuns
-     * @param experimentLabel 
+     * @param quantificationLabel 
      * @param reagents 
      */
-    public void parse(List<AnalyticalRun> analyticalRuns, String experimentLabel, List<String> reagents){
+    public void parse(List<AnalyticalRun> analyticalRuns, String quantificationLabel, List<String> reagents){
         
-        OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(experimentLabel);
+        OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(quantificationLabel);
         // create quantificationCvParam
         QuantificationMethodCvParam quantificationMethodCvParam = 
                 new QuantificationMethodCvParam(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
-        quantificationMethodCvParam.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethodCvParam, reagents));
+        quantificationMethodCvParam.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethodCvParam, quantificationLabel, reagents));
         quantificationMethodCvParam = quantificationSettingsService.getQuantificationMethodCvParams(quantificationMethodCvParam);
         // create quantificationSettings
         QuantificationSettings quantificationSettings = new QuantificationSettings();
@@ -81,23 +83,31 @@ public class MaxQuantQuantificationSettingsParser {
      * This method is to create QuantificationReagent and its link to QuantificationMethodCvParam
      * 
      * @param quantificationMethodCvParam
+     * @param quantificationLabel
      * @param reagents
      * @return QuantificationMethodHasReagents list
      */
-    public List<QuantificationMethodHasReagent> createQuantificationReagent(QuantificationMethodCvParam quantificationMethodCvParam, List<String> reagents){
+    public List<QuantificationMethodHasReagent> createQuantificationReagent(QuantificationMethodCvParam quantificationMethodCvParam, String quantificationLabel, List<String> reagents){
         List<QuantificationMethodHasReagent> quantificationMethodHasReagents = new ArrayList<>();
         
         reagents.forEach(reagent -> {
-            OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationReagents().get(reagent);
+            OntologyTerm ontologyTerm = null;
+            if(quantificationLabel.equals(SILAC_LABEL)){
+                ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationReagents().get(reagent);
+            }else{
+                ontologyTerm = ontologyMapper.getMaxQuantMapping().getQuantificationReagents().get(reagent);
+            }
             
             QuantificationMethodHasReagent quantificationMethodHasReagent = new QuantificationMethodHasReagent();
-            
-            QuantificationReagent quantificationReagent = 
+            if(ontologyTerm != null){
+                QuantificationReagent quantificationReagent = 
                     new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
             
-            quantificationMethodHasReagent.setQuantificationReagent(quantificationReagent);
-            quantificationMethodHasReagent.setQuantificationMethodCvParam(quantificationMethodCvParam);
-            quantificationMethodHasReagents.add(quantificationMethodHasReagent);
+                quantificationMethodHasReagent.setQuantificationReagent(quantificationReagent);
+                quantificationMethodHasReagent.setQuantificationMethodCvParam(quantificationMethodCvParam);
+                quantificationMethodHasReagents.add(quantificationMethodHasReagent);
+            }
+            
         });
         
         return quantificationMethodHasReagents;

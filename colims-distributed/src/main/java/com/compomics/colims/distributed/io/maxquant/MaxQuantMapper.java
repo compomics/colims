@@ -7,6 +7,7 @@ import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.QuantificationSettingsMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantQuantificationSettingsParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +41,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
     @Autowired
     private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+    private MaxQuantQuantificationSettingsParser maxQuantQuantificationSettingsParser;
     @Autowired
     private MaxQuantParser maxQuantParser;
     @Autowired
@@ -102,6 +105,27 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                     //               analyticalRun.setQuantificationSettings(importQuantSettings(new File(txtDirectory.toFile(), QUANT_FILE), analyticalRun));
                 }
             }
+            // parse quantification settings
+            // for silac experiment, we don't have any reagent name from maxquant. Colims gives reagent name due to number of sample.
+            if(maxQuantImport.getQuantificationLabel().equals("SILAC")){
+                List<String> silacReagents = new ArrayList<>();
+                if(maxQuantSearchSettingsParser.getLabelMods().size() == 3){
+                    silacReagents.addAll( Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
+                    maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), silacReagents);
+                }else if(maxQuantSearchSettingsParser.getLabelMods().size() == 2){
+                    silacReagents.addAll( Arrays.asList("SILAC light", "SILAC heavy"));
+                    maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), silacReagents);
+                }
+            }else {
+                List<String> reagents = new ArrayList<String>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
+                maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), reagents);
+            }
+            // link quantification settings to analytical run
+            analyticalRuns.forEach(analyticalRun -> {
+                analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun));
+                maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun).setAnalyticalRun(analyticalRun);
+            });
+            
         } catch (IOException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
