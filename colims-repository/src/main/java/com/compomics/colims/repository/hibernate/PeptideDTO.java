@@ -1,8 +1,6 @@
 package com.compomics.colims.repository.hibernate;
 
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.util.CompareUtils;
-import java.util.Objects;
 
 /**
  * This class represents a peptide data transfer object that holds some

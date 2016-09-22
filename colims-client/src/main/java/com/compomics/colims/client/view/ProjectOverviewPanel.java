@@ -5,7 +5,6 @@ import com.compomics.util.experiment.biology.*;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
-import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.spectrum_annotation.AnnotationSettings;
 import com.compomics.util.gui.error_handlers.HelpDialog;
 import com.compomics.util.preferences.UtilitiesUserPreferences;

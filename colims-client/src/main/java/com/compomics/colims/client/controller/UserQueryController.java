@@ -215,9 +215,8 @@ public class UserQueryController implements Controllable {
      * @return the formatted query string
      */
     private String getFormattedQueryString(String queryString) {
-        String formattedQueryString = formatter.format(queryString);
 
-        return formattedQueryString;
+        return formatter.format(queryString);
     }
 
     /**

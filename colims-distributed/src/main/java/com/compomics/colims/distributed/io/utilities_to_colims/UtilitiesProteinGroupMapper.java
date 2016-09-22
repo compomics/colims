@@ -30,8 +30,12 @@ public class UtilitiesProteinGroupMapper {
     /**
      * The protein service instance.
      */
+    private final ProteinService proteinService;
+
     @Autowired
-    private ProteinService proteinService;
+    public UtilitiesProteinGroupMapper(ProteinService proteinService) {
+        this.proteinService = proteinService;
+    }
 
     /**
      * Map the Utilities protein related objects to Colims ProteinGroup and

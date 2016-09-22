@@ -11,8 +11,7 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.util.gui.export.graphics.ExportGraphicsDialog;
 import com.compomics.util.io.filefilters.MgfFileFilter;
 import com.compomics.util.preferences.LastSelectedFolder;
-import java.awt.Component;
-import java.awt.Window;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;

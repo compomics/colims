@@ -22,8 +22,12 @@ import java.util.List;
 @Transactional
 public class ExperimentServiceImpl implements ExperimentService {
 
+    private final ExperimentRepository experimentRepository;
+
     @Autowired
-    private ExperimentRepository experimentRepository;
+    public ExperimentServiceImpl(ExperimentRepository experimentRepository) {
+        this.experimentRepository = experimentRepository;
+    }
 
     @Override
     public Experiment findById(final Long id) {

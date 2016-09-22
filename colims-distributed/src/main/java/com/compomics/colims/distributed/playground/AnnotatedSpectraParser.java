@@ -93,8 +93,8 @@ public class AnnotatedSpectraParser {
     /**
      * Parse msms file only for given ID numbers.
      *
-     * @param msmsFile
-     * @param msmsIDs
+     * @param msmsFile the msms.txt file
+     * @param msmsIDs the list of msms IDs to parse
      */
     private void parseMSMS(Path msmsFile, List<String> msmsIDs) throws IOException {
         TabularFileIterator valuesIterator = new TabularFileIterator(msmsFile, msmsHeaders.getMandatoryHeaders());

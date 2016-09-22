@@ -16,8 +16,12 @@ import java.util.List;
 @Transactional
 public class InstitutionServiceImpl implements InstitutionService {
 
+    private final InstitutionRepository institutionRepository;
+
     @Autowired
-    private InstitutionRepository institutionRepository;
+    public InstitutionServiceImpl(InstitutionRepository institutionRepository) {
+        this.institutionRepository = institutionRepository;
+    }
 
     @Override
     public Institution findById(final Long id) {

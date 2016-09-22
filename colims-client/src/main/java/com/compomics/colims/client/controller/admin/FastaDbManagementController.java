@@ -15,7 +15,6 @@ import com.compomics.colims.client.view.admin.FastaDbManagementDialog;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.TaxonomyCvParam;
-import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.eventbus.EventBus;
 import java.awt.CardLayout;
@@ -31,8 +30,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 /**

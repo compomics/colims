@@ -30,8 +30,12 @@ public class UserQueryServiceImpl implements UserQueryService {
     @Value("${user_query.max_number_store}")
     private Integer maximumNumberToStore;
 
+    private final UserQueryRepository userQueryRepository;
+
     @Autowired
-    private UserQueryRepository userQueryRepository;
+    public UserQueryServiceImpl(UserQueryRepository userQueryRepository) {
+        this.userQueryRepository = userQueryRepository;
+    }
 
     @Override
     public List<LinkedHashMap<String, Object>> executeUserQuery(User user, String queryString) {

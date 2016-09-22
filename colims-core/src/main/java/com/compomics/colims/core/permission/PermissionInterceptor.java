@@ -2,7 +2,6 @@ package com.compomics.colims.core.permission;
 
 import com.compomics.colims.model.UserBean;
 import com.compomics.colims.model.enums.DefaultPermission;
-import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -18,8 +17,12 @@ public class PermissionInterceptor {
      * The Colims user bean containing the logged in user and his/her
      * credentials.
      */
+    private final UserBean userBean;
+
     @Autowired
-    private UserBean userBean;
+    public PermissionInterceptor(UserBean userBean) {
+        this.userBean = userBean;
+    }
 
     /**
      * This method is triggered by a save method call from an interceptable

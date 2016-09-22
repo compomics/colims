@@ -38,8 +38,7 @@ public class DbTaskConsumer implements MessageListener {
     /**
      * The PersistDbTask handler.
      */
-    @Autowired
-    private PersistDbTaskHandler persistDbTaskHandler;
+    private final PersistDbTaskHandler persistDbTaskHandler;
     /**
      * The DeleteDbTask handler.
      */
@@ -50,6 +49,13 @@ public class DbTaskConsumer implements MessageListener {
      */
     @Autowired
     private NotificationProducer notificationProducer;
+
+    @Autowired
+    public DbTaskConsumer(PersistDbTaskHandler persistDbTaskHandler, DeleteDbTaskHandler deleteDbTaskHandler, NotificationProducer notificationProducer) {
+        this.persistDbTaskHandler = persistDbTaskHandler;
+        this.deleteDbTaskHandler = deleteDbTaskHandler;
+        this.notificationProducer = notificationProducer;
+    }
 
     /**
      * Implementation of <code>MessageListener</code>.

@@ -30,8 +30,12 @@ public class DbTaskErrorProducer {
     /**
      * The JMS template instance.
      */
+    private final JmsTemplate dbTaskErrorProducerTemplate;
+
     @Autowired
-    private JmsTemplate dbTaskErrorProducerTemplate;
+    public DbTaskErrorProducer(JmsTemplate dbTaskErrorProducerTemplate) {
+        this.dbTaskErrorProducerTemplate = dbTaskErrorProducerTemplate;
+    }
 
     /**
      * Send the serialized DbTaskError to the error queue.

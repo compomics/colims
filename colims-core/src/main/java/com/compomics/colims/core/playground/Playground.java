@@ -1,10 +1,7 @@
 package com.compomics.colims.core.playground;
 
-import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.context.ApplicationContext;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 

@@ -350,9 +350,7 @@ public class MaxQuantSearchSettingsParser2 {
                 //the enzyme was not found by name in the database
                 //look for the enzyme in the MS ontology by name
                 enzyme = olsService.findEnzymeByName(maxQuantEnzyme);
-            } catch (RestClientException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-            } catch (IOException ex) {
+            } catch (RestClientException | IOException ex) {
                 LOGGER.error(ex.getMessage(), ex);
             }
 
@@ -401,10 +399,10 @@ public class MaxQuantSearchSettingsParser2 {
 
         if (variableModifications != null && !variableModifications.isEmpty()) {
             String[] split = variableModifications.split(MODIFICATIONS_DELIMITER);
-            for (int i = 0; i < split.length; i++) {
+            for (String aSplit : split) {
                 SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, "");
 
-                SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(split[i].split(MODIFICATION_NAME_ONLY)[0]);
+                SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(aSplit.split(MODIFICATION_NAME_ONLY)[0]);
 
                 searchParametersHasModification.setModificationType(ModificationType.VARIABLE);
                 searchParametersHasModification.setSearchModification(searchModification);

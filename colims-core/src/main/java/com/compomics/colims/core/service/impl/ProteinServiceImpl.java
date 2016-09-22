@@ -24,8 +24,12 @@ public class ProteinServiceImpl implements ProteinService {
      * The map of cached proteins (key: sequence, value: the protein).
      */
     private final Map<String, Protein> cachedProteins = new HashMap<>();
+    private final ProteinRepository proteinRepository;
+
     @Autowired
-    private ProteinRepository proteinRepository;
+    public ProteinServiceImpl(ProteinRepository proteinRepository) {
+        this.proteinRepository = proteinRepository;
+    }
 
     @Override
     public Protein findBySequence(final String sequence) {

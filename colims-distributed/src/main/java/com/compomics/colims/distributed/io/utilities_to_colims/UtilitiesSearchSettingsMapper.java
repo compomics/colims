@@ -22,13 +22,14 @@ public class UtilitiesSearchSettingsMapper {
     /**
      * The Utilities search parameters to Colims search parameters mapper.
      */
+    private final UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
+    private final SearchAndValidationSettingsService searchAndValidationSettingsService;
+
     @Autowired
-    private UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
-    /**
-     *
-     */
-    @Autowired
-    private SearchAndValidationSettingsService searchAndValidationSettingsService;
+    public UtilitiesSearchSettingsMapper(UtilitiesSearchParametersMapper utilitiesSearchParametersMapper, SearchAndValidationSettingsService searchAndValidationSettingsService) {
+        this.utilitiesSearchParametersMapper = utilitiesSearchParametersMapper;
+        this.searchAndValidationSettingsService = searchAndValidationSettingsService;
+    }
 
     /**
      * Map the SearchAndValidationSettings.

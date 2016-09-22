@@ -24,10 +24,14 @@ public class ColimsSearchParametersMapper {
      */
     private static final Logger LOGGER = Logger.getLogger(ColimsSearchParametersMapper.class);
 
+    private final ColimsSearchModificationMapper colimsSearchModificationMapper;
+    private final SearchParametersService searchParametersService;
+
     @Autowired
-    private ColimsSearchModificationMapper colimsSearchModificationMapper;
-    @Autowired
-    private SearchParametersService searchParametersService;
+    public ColimsSearchParametersMapper(ColimsSearchModificationMapper colimsSearchModificationMapper, SearchParametersService searchParametersService) {
+        this.colimsSearchModificationMapper = colimsSearchModificationMapper;
+        this.searchParametersService = searchParametersService;
+    }
 
     /**
      * Map the Colims SearchParameters onto the Utilties SearchParameters. This method only maps the fields necessary to
@@ -44,20 +48,20 @@ public class ColimsSearchParametersMapper {
         utilitiesSearchParameters.setFragmentIonAccuracy(colimsSearchParameters.getFragMassTolerance());
 
         //fragment ions searched
-        if(colimsSearchParameters.getFirstSearchedIonType() != null){
+        if (colimsSearchParameters.getFirstSearchedIonType() != null) {
             utilitiesSearchParameters.setIonSearched1(getFragmentIonTypeToString(colimsSearchParameters.getFirstSearchedIonType()));
         }
-        if(colimsSearchParameters.getSecondSearchedIonType() != null){
+        if (colimsSearchParameters.getSecondSearchedIonType() != null) {
             utilitiesSearchParameters.setIonSearched2(getFragmentIonTypeToString(colimsSearchParameters.getSecondSearchedIonType()));
         }
         //precursor accuracy
         utilitiesSearchParameters.setPrecursorAccuracyType(MassAccuracyType.getByColimsMassAccuracyType(colimsSearchParameters.getPrecMassToleranceUnit()));
         utilitiesSearchParameters.setPrecursorAccuracy(colimsSearchParameters.getPrecMassTolerance());
 
-        if(colimsSearchParameters.getLowerCharge() != null){
+        if (colimsSearchParameters.getLowerCharge() != null) {
             utilitiesSearchParameters.setMinChargeSearched(new Charge(1, colimsSearchParameters.getLowerCharge()));
         }
-        if(colimsSearchParameters.getUpperCharge() != null){
+        if (colimsSearchParameters.getUpperCharge() != null) {
             utilitiesSearchParameters.setMaxChargeSearched(new Charge(1, colimsSearchParameters.getUpperCharge()));
         }
         //map search modifications

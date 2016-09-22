@@ -45,18 +45,22 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     /**
      * The Utilities PTM settings mapper.
      */
-    @Autowired
-    private UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
+    private final UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
     /**
      * The TypedCvParam class service.
      */
-    @Autowired
-    private TypedCvParamService typedCvParamService;
+    private final TypedCvParamService typedCvParamService;
     /**
      * The Ontology Lookup Service service.
      */
+    private final OlsService olsService;
+
     @Autowired
-    private OlsService olsService;
+    public UtilitiesSearchParametersMapper(UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper, TypedCvParamService typedCvParamService, OlsService olsService) {
+        this.utilitiesPtmSettingsMapper = utilitiesPtmSettingsMapper;
+        this.typedCvParamService = typedCvParamService;
+        this.olsService = olsService;
+    }
 
     /**
      * Map the Utilities SearchParameters to the Colims SearchParameters.
@@ -119,9 +123,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
                 //the enzyme was not found by name in the database
                 //look for the enzyme in the MS ontology by name
                 enzyme = olsService.findEnzymeByName(utilitiesEnzyme.getName());
-            } catch (RestClientException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-            } catch (IOException ex) {
+            } catch (RestClientException | IOException ex) {
                 LOGGER.error(ex.getMessage(), ex);
             }
 

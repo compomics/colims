@@ -34,8 +34,12 @@ public class NotificationConsumer implements MessageListener {
     /**
      * The guava EventBus instance.
      */
+    private final EventBus eventBus;
+
     @Autowired
-    private EventBus eventBus;
+    public NotificationConsumer(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
     /**
      * Implementation of <code>MessageListener</code>.

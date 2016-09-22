@@ -25,8 +25,12 @@ public class PeptideServiceImpl implements PeptideService {
      */
     private static final Logger LOGGER = Logger.getLogger(PeptideServiceImpl.class);
 
+    private final PeptideRepository peptideRepository;
+
     @Autowired
-    private PeptideRepository peptideRepository;
+    public PeptideServiceImpl(PeptideRepository peptideRepository) {
+        this.peptideRepository = peptideRepository;
+    }
 
     @Override
     public Peptide findById(final Long id) {

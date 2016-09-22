@@ -5,7 +5,6 @@
 package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.RoleService;
-import com.compomics.colims.model.Group;
 import com.compomics.colims.model.Role;
 import com.compomics.colims.model.enums.DefaultRole;
 import com.compomics.colims.repository.RoleRepository;
@@ -22,8 +21,12 @@ import java.util.List;
 @Transactional
 public class RoleServiceImpl implements RoleService {
 
+    private final RoleRepository roleRepository;
+
     @Autowired
-    private RoleRepository roleRepository;
+    public RoleServiceImpl(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public Role findById(final Long id) {

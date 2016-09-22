@@ -112,10 +112,13 @@ public class MaxQuantParser {
             }
         });
         // set unidentified spectra for analytical runs
-        getUnidentifiedSpectra().forEach(spectrum -> {
-            String key = analyticalRuns.entrySet().stream().filter(runs -> spectrum.getAccession().contains(runs.getKey()))
-                    .findFirst().get().getKey();
-            analyticalRuns.get(key).getSpectrums().add(spectrum);
+        getUnidentifiedSpectra().forEach(unidentifiedSpectrum -> {
+            Optional foundKey = analyticalRuns.keySet().stream()
+                    .filter(runKey -> unidentifiedSpectrum.getAccession().contains(runKey))
+                    .findFirst();
+            if(foundKey.isPresent()){
+                analyticalRuns.get(foundKey.get()).getSpectrums().add(unidentifiedSpectrum);
+            }
         });
 
         if (analyticalRuns.isEmpty()) {

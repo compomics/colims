@@ -36,14 +36,18 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantMapper.class);
 
+    private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+    private final MaxQuantParser maxQuantParser;
+    private final QuantificationSettingsMapper quantificationSettingsMapper;
+    private final FastaDbService fastaDbService;
+
     @Autowired
-    private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
-    @Autowired
-    private MaxQuantParser maxQuantParser;
-    @Autowired
-    private QuantificationSettingsMapper quantificationSettingsMapper;
-    @Autowired
-    private FastaDbService fastaDbService;
+    public MaxQuantMapper(MaxQuantSearchSettingsParser maxQuantSearchSettingsParser, MaxQuantParser maxQuantParser, QuantificationSettingsMapper quantificationSettingsMapper, FastaDbService fastaDbService) {
+        this.maxQuantSearchSettingsParser = maxQuantSearchSettingsParser;
+        this.maxQuantParser = maxQuantParser;
+        this.quantificationSettingsMapper = quantificationSettingsMapper;
+        this.fastaDbService = fastaDbService;
+    }
 
     @Override
     public void clear() {
@@ -145,8 +149,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     /**
      * Map the quantification settings.
      *
-     * @param analyticalRun the AnalyticalRun instance onto the quantification
-     * settings will be mapped
+     * @param analyticalRun the AnalyticalRun instance onto the quantification settings will be mapped
      * @return the imported QuantificationSettings instance
      * @throws IOException thrown in case of an I/O related problem
      */

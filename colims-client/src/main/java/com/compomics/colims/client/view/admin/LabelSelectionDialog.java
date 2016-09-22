@@ -8,7 +8,6 @@ package com.compomics.colims.client.view.admin;
 import com.compomics.colims.client.compoment.DualList;
 import java.awt.Dialog;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 
 /**
  *

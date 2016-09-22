@@ -16,11 +16,11 @@ import com.compomics.util.pride.CvTerm;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.web.client.RestClientException;
 
 /**
  * This class maps the Compomics Utilities modification related classes to
@@ -41,33 +41,35 @@ public class UtilitiesPtmSettingsMapper {
     /**
      * The modification service instance.
      */
-    @Autowired
-    private SearchModificationService searchModificationService;
+    private final SearchModificationService searchModificationService;
     /**
      * The Ontology Lookup Service service.
      */
-    @Autowired
-    private OlsService olsService;
+    private final OlsService olsService;
     /**
      * Contains the UNIMOD modifications.
      */
-    @Autowired
-    private UnimodMarshaller unimodMarshaller;
+    private final UnimodMarshaller unimodMarshaller;
     /**
      * The map of cached modifications (key: modification name, value: the
      * search modification).
      */
     private final Map<String, SearchModification> cachedSearchModifications = new HashMap<>();
 
+    @Autowired
+    public UtilitiesPtmSettingsMapper(SearchModificationService searchModificationService, OlsService olsService, UnimodMarshaller unimodMarshaller) {
+        this.searchModificationService = searchModificationService;
+        this.olsService = olsService;
+        this.unimodMarshaller = unimodMarshaller;
+    }
+
     /**
      * Map the utilities modification profile to the Colims search parameters.
      * The Utilities PTMs are matched first onto CV terms from PSI-MOD.
      *
-     * @param ptmSettings the Utilities modification profile with the
-     * modifications used for the searches.
+     * @param ptmSettings      the Utilities modification profile with the modifications used for the searches.
      * @param searchParameters the Colims search parameters
-     * @throws ModificationMappingException thrown in case of a modification
-     * mapping problem
+     * @throws ModificationMappingException thrown in case of a modification mapping problem
      */
     public void map(final PtmSettings ptmSettings, final SearchParameters searchParameters) throws ModificationMappingException {
         //iterate over all modifications
@@ -203,8 +205,7 @@ public class UtilitiesPtmSettingsMapper {
      *
      * @param modificationName the modification name
      * @return the Colims SearchModification instance
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case
-     * of a modification mapping problem
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     public SearchModification mapByName(final String modificationName) throws ModificationMappingException {
         SearchModification searchModification;
