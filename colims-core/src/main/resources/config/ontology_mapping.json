@@ -8,10 +8,420 @@
       }
     },
     "quantification_reagents": {
-      "test_reagent": {
-        "obo_namespace": "PSI-MOD",
-        "obo_id": "MOD:00843",
-        "label": "(15)N labeled residues"
+      "iodoTMT6plex-Cys126": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000285",
+        "label": "TMT reagent 126"
+      },
+      "iodoTMT6plex-Cys127": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "iodoTMT6plex-Cys128": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000287",
+        "label": "TMT reagent 128"
+      },
+      "iodoTMT6plex-Cys128": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000287",
+        "label": "TMT reagent 128"
+      },
+      "iodoTMT6plex-Cys129": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "iodoTMT6plex-Cys130": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000289",
+        "label": "TMT reagent 130"
+      },
+      "iodoTMT6plex-Cys131": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000290",
+        "label": "TMT reagent 131"
+      },
+      "iTRAQ4plex-Lys114": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000114",
+        "label": "iTRAQ reagent 114"
+      },
+      "iTRAQ4plex-Lys115": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000115",
+        "label": "iTRAQ reagent 115"
+      },
+      "iTRAQ4plex-Lys116": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000116",
+        "label": "iTRAQ reagent 116"
+      },
+      "iTRAQ4plex-Lys117": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000117",
+        "label": "iTRAQ reagent 117"
+      },
+      "iTRAQ4plex-Nter114": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000114",
+        "label": "iTRAQ reagent 114"
+      },
+      "iTRAQ4plex-Nter115": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000115",
+        "label": "iTRAQ reagent 115"
+      },
+      "iTRAQ4plex-Nter116": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000116",
+        "label": "iTRAQ reagent 116"
+      },
+      "iTRAQ4plex-Nter117": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000117",
+        "label": "iTRAQ reagent 117"
+      },
+      "iTRAQ8plex-Lys113": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000264",
+        "label": "iTRAQ reagent 113"
+      },
+      "iTRAQ8plex-Lys114": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000114",
+        "label": "iTRAQ reagent 114"
+      },
+      "iTRAQ8plex-Lys115": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000115",
+        "label": "iTRAQ reagent 115"
+      },
+      "iTRAQ8plex-Lys116": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000116",
+        "label": "iTRAQ reagent 116"
+      },
+      "iTRAQ8plex-Lys117": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000117",
+        "label": "iTRAQ reagent 117"
+      },
+      "iTRAQ8plex-Lys118": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000265",
+        "label": "iTRAQ reagent 118"
+      },
+      "iTRAQ8plex-Lys119": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000266",
+        "label": "iTRAQ reagent 119"
+      },
+      "iTRAQ8plex-Lys121": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000267",
+        "label": "iTRAQ reagent 121"
+      },
+      "iTRAQ8plex-Nter113": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000264",
+        "label": "iTRAQ reagent 113"
+      },
+      "iTRAQ8plex-Nter114": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000114",
+        "label": "iTRAQ reagent 114"
+      },
+      "iTRAQ8plex-Nter115": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000115",
+        "label": "iTRAQ reagent 115"
+      },
+      "iTRAQ8plex-Nter116": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000116",
+        "label": "iTRAQ reagent 116"
+      },
+      "iTRAQ8plex-Nter117": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000117",
+        "label": "iTRAQ reagent 117"
+      },
+      "iTRAQ8plex-Nter118": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000265",
+        "label": "iTRAQ reagent 118"
+      },
+      "iTRAQ8plex-Nter119": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000266",
+        "label": "iTRAQ reagent 119"
+      },
+      "iTRAQ8plex-Nter121": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000267",
+        "label": "iTRAQ reagent 121"
+      },
+      "TMT10plex-Lys126C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000285",
+        "label": "TMT reagent 126"
+      },
+      "TMT10plex-Lys127C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT10plex-Lys127N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT10plex-Lys128C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000287",
+        "label": "TMT reagent 128"
+      },
+      "TMT10plex-Lys128N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000287",
+        "label": "TMT reagent 128"
+      },
+      "TMT10plex-Lys129C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "TMT10plex-Lys129N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "TMT10plex-Lys130C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000289",
+        "label": "TMT reagent 130"
+      },      
+      "TMT10plex-Lys130N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000289",
+        "label": "TMT reagent 130"
+      },
+      "TMT10plex-Lys131N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000290",
+        "label": "TMT reagent 131"
+      },
+      "TMT10plex-Nter126C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000285",
+        "label": "TMT reagent 126"
+      },
+      "TMT10plex-Nter127C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT10plex-Nter127N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT10plex-Nter128C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000287",
+        "label": "TMT reagent 128"
+      },
+      "TMT10plex-Nter128N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000287",
+        "label": "TMT reagent 128"
+      },
+      "TMT10plex-Nter129C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "TMT10plex-Nter129N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "TMT10plex-Nter130C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000289",
+        "label": "TMT reagent 130"
+      },
+      "TMT10plex-Nter130N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000289",
+        "label": "TMT reagent 130"
+      },
+      "TMT10plex-Nter131N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000290",
+        "label": "TMT reagent 131"
+      },
+      "TMT2plex-Lys126": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000285",
+        "label": "TMT reagent 126"
+      },
+      "TMT2plex-Lys127": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT2plex-Nter126": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000285",
+        "label": "TMT reagent 126"
+      },
+      "TMT2plex-Nter127": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT6plex-Lys126": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000285",
+        "label": "TMT reagent 126"
+      },
+      "TMT6plex-Lys127": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT6plex-Lys128": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000287",
+        "label": "TMT reagent 128"
+      },
+      "TMT6plex-Lys129": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "TMT6plex-Lys130": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000289",
+        "label": "TMT reagent 130"
+      },
+      "TMT6plex-Lys131": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000290",
+        "label": "TMT reagent 131"
+      },
+      "TMT6plex-Nter126": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000285",
+        "label": "TMT reagent 126"
+      },
+      "TMT6plex-Nter127": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT6plex-Nter128": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000287",
+        "label": "TMT reagent 128"
+      },
+      "TMT6plex-Nter129": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "TMT6plex-Nter130": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000289",
+        "label": "TMT reagent 130"
+      },
+      "TMT6plex-Nter131": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000290",
+        "label": "TMT reagent 131"
+      },
+      "TMT8plex-Lys126C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000285",
+        "label": "TMT reagent 126"
+      },
+      "TMT8plex-Lys127C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT8plex-Lys127N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT8plex-Lys128C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000287",
+        "label": "TMT reagent 128"
+      },
+      "TMT8plex-Lys129C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "TMT8plex-Lys129N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "TMT8plex-Lys130C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000289",
+        "label": "TMT reagent 130"
+      },
+      "TMT8plex-Lys131N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000290",
+        "label": "TMT reagent 131"
+      },
+      "TMT8plex-Nter126C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000285",
+        "label": "TMT reagent 126"
+      },
+      "TMT8plex-Nter127C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT8plex-Nter127N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000286",
+        "label": "TMT reagent 127"
+      },
+      "TMT8plex-Nter128C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000287",
+        "label": "TMT reagent 128"
+      },
+      "TMT8plex-Nter129C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "TMT8plex-Nter129N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000288",
+        "label": "TMT reagent 129"
+      },
+      "TMT8plex-Nter130C": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000289",
+        "label": "TMT reagent 130"
+      },
+      "TMT8plex-Nter131N": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000290",
+        "label": "TMT reagent 131"
       }
     }
   },
@@ -44,91 +454,21 @@
       }
     },
     "quantification_reagents": {
-        "SILAC light": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000326",
-            "label": "SILAC light"
-        },
-        "SILAC medium": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000327",
-            "label": "SILAC medium"
-        },
-        "SILAC heavy": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000325",
-            "label": "SILAC heavy"
-        },
-        "TMT reagent 126": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000285",
-            "label": "TMT reagent 126"
-        },
-        "TMT reagent 127": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000286",
-            "label": "TMT reagent 127"
-        },
-        "TMT reagent 128": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000287",
-            "label": "TMT reagent 128"
-        },
-        "TMT reagent 129": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000288",
-            "label": "TMT reagent 129"
-        },
-        "TMT reagent 130": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000289",
-            "label": "TMT reagent 130"
-        },
-        "TMT reagent 131": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000290",
-            "label": "TMT reagent 131"
-        },
-        "iTRAQ reagent 113": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000264",
-            "label": "iTRAQ reagent 113"
-        },
-        "iTRAQ reagent 114": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000114",
-            "label": "iTRAQ reagent 114"
-        },
-        "iTRAQ reagent 115": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000115",
-            "label": "iTRAQ reagent 115"
-        },
-        "iTRAQ reagent 116": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000116",
-            "label": "iTRAQ reagent 116"
-        },
-        "iTRAQ reagent 117": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000117",
-            "label": "iTRAQ reagent 117"
-        },
-        "iTRAQ reagent 118": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000265",
-            "label": "iTRAQ reagent 118"
-        },
-        "iTRAQ reagent 119": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000266",
-            "label": "iTRAQ reagent 119"
-        },
-        "iTRAQ reagent 121": {
-            "ontology_prefix": "PRIDE",
-            "obo_id": "PRIDE:0000267",
-            "label": "iTRAQ reagent 121"
-        }
+      "SILAC light": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000326",
+        "label": "SILAC light"
+      },
+      "SILAC medium": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000327",
+        "label": "SILAC medium"
+      },
+      "SILAC heavy": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000325",
+        "label": "SILAC heavy"
+      }
     }
   }
 }
