@@ -62,9 +62,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="cvParamOverviewPanel" pref="193" max="32767" attributes="0"/>
+                  <Component id="cvParamOverviewPanel" pref="199" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                  <Component id="cvParamDetailPanel" pref="343" max="32767" attributes="0"/>
+                  <Component id="cvParamDetailPanel" min="-2" pref="294" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="closeButton" min="-2" pref="23" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -108,7 +108,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="cvParamTableScrollPane" pref="117" max="32767" attributes="0"/>
+                      <Component id="cvParamTableScrollPane" pref="115" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="addCvParamButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -201,20 +201,23 @@
                           </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="nameLabel" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="accessionLabel" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="ontologyLabelLabel" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="definitionLabel" max="32767" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                          <Component id="accessionLabel" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="ontologyLabelLabel" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="definitionLabel" max="32767" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="ontologyLabel" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="nameLabel" min="-2" pref="92" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
                                   <Component id="jScrollPane1" alignment="0" pref="417" max="32767" attributes="0"/>
                                   <Component id="accessionTextField" alignment="1" max="32767" attributes="0"/>
                                   <Component id="nameTextField" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="ontologyTextField" max="32767" attributes="0"/>
                                   <Component id="ontologyLabelTextField" alignment="1" max="32767" attributes="0"/>
                               </Group>
                           </Group>
@@ -227,11 +230,6 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="ontologyTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="ontologyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="ontologyLabelTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="ontologyLabelLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -248,7 +246,7 @@
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane1" pref="107" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="definitionLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -268,16 +266,6 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JLabel" name="ontologyLabel">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Ontology Name"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="ontologyTextField">
-              <Properties>
-                <Property name="enabled" type="boolean" value="false"/>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JLabel" name="ontologyLabelLabel">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Ontology Label"/>

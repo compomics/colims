@@ -143,7 +143,7 @@ public class MaxQuantParser {
         Map<String, String> parsedFasta = new HashMap<>();
         try {
             final StringBuilder sequenceBuilder = new StringBuilder();
-            String header = "";
+            String header;
             String line;
             for (FastaDb fastaDb : fastaDbs) {
                 try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(FilenameUtils.separatorsToSystem(fastaDb.getFilePath())))) {

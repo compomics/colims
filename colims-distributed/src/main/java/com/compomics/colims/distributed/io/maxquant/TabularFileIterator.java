@@ -24,8 +24,8 @@ public class TabularFileIterator implements Iterable<Map<String, String>>, Itera
 
     private static final char DELIMITER = '\t';
 
-    private BufferedReader bufferedReader;
-    private LineReader lineReader;
+    private final BufferedReader bufferedReader;
+    private final LineReader lineReader;
     private String[] nextLine;
     /**
      * The header values array. All values are lowercase.

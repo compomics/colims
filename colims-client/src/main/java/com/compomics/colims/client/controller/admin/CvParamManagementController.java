@@ -16,18 +16,18 @@ import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.google.common.eventbus.EventBus;
-import java.io.IOException;
+import org.apache.log4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
+import java.io.IOException;
 import java.util.List;
-import org.apache.log4j.Logger;
-import org.springframework.web.client.RestClientException;
 
 /**
  * @author Niels Hulstaert
@@ -102,7 +102,6 @@ public class CvParamManagementController implements Controllable {
                     }
 
                     //set details fields
-                    cvParamManagementDialog.getOntologyTextField().setText(selectedCvParam.getLabel());
                     cvParamManagementDialog.getOntologyLabelTextField().setText(selectedCvParam.getLabel());
                     cvParamManagementDialog.getAccessionTextField().setText(selectedCvParam.getAccession());
                     cvParamManagementDialog.getNameTextField().setText(selectedCvParam.getName());
@@ -260,7 +259,6 @@ public class CvParamManagementController implements Controllable {
      * Update the given CV param. Only the modified fields are set.
      *
      * @param cvParam the TypedCvParam
-     * @param ontology the ontology
      * @param label the label
      * @param accession the accession
      * @param name the name
@@ -293,7 +291,7 @@ public class CvParamManagementController implements Controllable {
         if (ontologyTerm != null) {
             //check whether a CV param has to be added or updated
             if (newCvParam) {
-                CvParam cvParam = CvParamFactory.newCvInstance(cvParamSubClass, ontologyTerm.getOntologyTitle(), ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                CvParam cvParam = CvParamFactory.newCvInstance(cvParamSubClass, ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 //add CV param to the table model
                 cvParamTableModel2.addCvParam(cvParam);
@@ -333,7 +331,6 @@ public class CvParamManagementController implements Controllable {
      */
     private void clearCvParamDetailFields() {
         cvParamManagementDialog.getCvParamStateInfoLabel().setText("");
-        cvParamManagementDialog.getOntologyTextField().setText("");
         cvParamManagementDialog.getOntologyLabelTextField().setText("");
         cvParamManagementDialog.getAccessionTextField().setText("");
         cvParamManagementDialog.getNameTextField().setText("");

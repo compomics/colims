@@ -28,29 +28,31 @@ import org.springframework.stereotype.Component;
  */
 @Component("maxQuantQuantificationSettingsParser")
 public class MaxQuantQuantificationSettingsParser {
-    
+
     /**
      * Logger instance.
      */
+
     private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
     
     private static final String SILAC_LABEL = "SILAC";
+
     /**
      * The quantification settings indexed by analytical run (key: AnalyticalRun ; value: QuantificationSettings)
      */
-    private Map<AnalyticalRun, QuantificationSettings> runsAndQuantificationSettings = new HashMap<>();
+    private final Map<AnalyticalRun, QuantificationSettings> runsAndQuantificationSettings = new HashMap<>();
     /**
      * The MaxQuant version.
      */
-    private String version = "N/A";
-    
+    private final String version = "N/A";
+
     @Autowired
     private OntologyMapper ontologyMapper;
     @Autowired
     private QuantificationSettingsService quantificationSettingsService;
-    
+
     /**
-     * Get map of analytical run and quantification settings 
+     * Get map of analytical run and quantification settings
      * @return runsAndQuantificationSettings
      */
     public Map<AnalyticalRun, QuantificationSettings> getRunsAndQuantificationSettings() {
@@ -65,23 +67,24 @@ public class MaxQuantQuantificationSettingsParser {
     public void parse(List<AnalyticalRun> analyticalRuns, String quantificationLabel, List<String> reagents){
         
         OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(quantificationLabel);
+
         // create quantificationCvParam
-        QuantificationMethodCvParam quantificationMethodCvParam = 
+        QuantificationMethodCvParam quantificationMethodCvParam =
                 new QuantificationMethodCvParam(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
         quantificationMethodCvParam.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethodCvParam, quantificationLabel, reagents));
         quantificationMethodCvParam = quantificationSettingsService.getQuantificationMethodCvParams(quantificationMethodCvParam);
         // create quantificationSettings
         QuantificationSettings quantificationSettings = new QuantificationSettings();
         quantificationSettings.setQuantificationMethodCvParam(quantificationMethodCvParam);
-        quantificationSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(QuantificationEngineType.MAX_QUANT, version));
+        quantificationSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(QuantificationEngineType.MAXQUANT, version));
         analyticalRuns.forEach(analyticalRun -> {
             runsAndQuantificationSettings.put(analyticalRun, quantificationSettings);
         });
     }
-    
+
     /**
      * This method is to create QuantificationReagent and its link to QuantificationMethodCvParam
-     * 
+     *
      * @param quantificationMethodCvParam
      * @param quantificationLabel
      * @param reagents
@@ -89,7 +92,7 @@ public class MaxQuantQuantificationSettingsParser {
      */
     public List<QuantificationMethodHasReagent> createQuantificationReagent(QuantificationMethodCvParam quantificationMethodCvParam, String quantificationLabel, List<String> reagents){
         List<QuantificationMethodHasReagent> quantificationMethodHasReagents = new ArrayList<>();
-        
+
         reagents.forEach(reagent -> {
             OntologyTerm ontologyTerm = null;
             if(quantificationLabel.equals(SILAC_LABEL)){
@@ -107,9 +110,15 @@ public class MaxQuantQuantificationSettingsParser {
                 quantificationMethodHasReagent.setQuantificationMethodCvParam(quantificationMethodCvParam);
                 quantificationMethodHasReagents.add(quantificationMethodHasReagent);
             }
-            
+
+            QuantificationReagent quantificationReagent =
+                    new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
+
+            quantificationMethodHasReagent.setQuantificationReagent(quantificationReagent);
+            quantificationMethodHasReagent.setQuantificationMethodCvParam(quantificationMethodCvParam);
+            quantificationMethodHasReagents.add(quantificationMethodHasReagent);
         });
-        
+
         return quantificationMethodHasReagents;
     }
 }

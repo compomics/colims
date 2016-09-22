@@ -44,13 +44,12 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Logger instance.
      */
-    private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
+    private static final Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
 
     private static final String MS_ONTOLOGY_LABEL = "MS";
-    private static final String MS_ONTOLOGY = "PSI Mass Spectrometry Ontology [MS]";
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
-    private static final String MODIFICATIONS_DELIMITER = ",";
+    private static final String MODIFICATIONS_DELIMITER = ";";
     private static final String MODIFICATION_NAME_ONLY = " ";
 
     /**
@@ -68,29 +67,29 @@ public class MaxQuantSearchSettingsParser {
     /**
      * The settings used in the experiment, indexed by run.
      */
-    private Map<String, SearchAndValidationSettings> runSettings = new HashMap<>();
+    private final Map<String, SearchAndValidationSettings> runSettings = new HashMap<>();
     /**
      * The spectrum parameters with raw file name (key: raw file name; value:
      * enum map of spectrum parameters).
      */
-    private Map<String, EnumMap<MqParHeader, String>> spectrumParamsWithRawFile = new HashMap<>();
+    private final Map<String, EnumMap<MqParHeader, String>> spectrumParamsWithRawFile = new HashMap<>();
     /**
      * The analytical run name with experiment name(key: analyticalRun ; value:
      * experiment name).
      */
-    private Map<AnalyticalRun, String> analyticalRuns = new HashMap<>();
+    private final Map<AnalyticalRun, String> analyticalRuns = new HashMap<>();
     /**
      * Isobaric labels for labeled quantification.(key: index , value : isobaric
      * label)
      */
-    private Map<Integer, String> isobaricLabels = new HashMap<>();
+    private final Map<Integer, String> isobaricLabels = new HashMap<>();
     /**
      * label mods for SILAC experiments.(key: index , value : isobaric label)
      */
-    private Map<Integer, String> labelMods = new HashMap<>();
-    private MqParHeaders mqParHeaders;
-    private ParametersHeaders parametersHeaders;
-    private SummaryHeaders summaryHeaders;
+    private final Map<Integer, String> labelMods = new HashMap<>();
+    private final MqParHeaders mqParHeaders;
+    private final ParametersHeaders parametersHeaders;
+    private final SummaryHeaders summaryHeaders;
     /**
      * Beans.
      */
@@ -106,7 +105,8 @@ public class MaxQuantSearchSettingsParser {
     /**
      * No-arg constructor.
      *
-     * @throws IOException in case of an Input/Output related problem while parsing the headers.
+     * @throws IOException in case of an Input/Output related problem while
+     * parsing the headers.
      */
     public MaxQuantSearchSettingsParser() throws IOException {
         parametersHeaders = new ParametersHeaders();
@@ -134,10 +134,11 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Parse the search parameters for a MaxQuant experiment.
      *
-     * @param combinedFolderDirectory the MaxQuant combined folder directory path
-     * @param mqParFile               the mqpar.xml parameter file
-     * @param fastaDbs                the FASTA databases used in the experiment
-     * @param storeFiles              whether data files should be stored with the experiment
+     * @param combinedFolderDirectory the MaxQuant combined folder directory
+     * path
+     * @param mqParFile the mqpar.xml parameter file
+     * @param fastaDbs the FASTA databases used in the experiment
+     * @param storeFiles whether data files should be stored with the experiment
      * @throws IOException thrown in case of of an I/O related problem
      */
     public void parse(Path combinedFolderDirectory, Path mqParFile, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
@@ -169,8 +170,8 @@ public class MaxQuantSearchSettingsParser {
      * Colims SearchAndValidationSettings instance.
      *
      * @param maxQuantTxtDirectory the MaxQuant txt directory path
-     * @param fastaDbs             the FASTA databases used in the experiment
-     * @param storeFiles           whether data files should be stored with experiment
+     * @param fastaDbs the FASTA databases used in the experiment
+     * @param storeFiles whether data files should be stored with experiment
      * @return the mapped SearchAndValidationSettings instance
      * @throws IOException thrown in case of of an I/O related problem
      */
@@ -193,8 +194,7 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setSearchType(defaultSearchType);
 
         //parse the parameters file and iterate over the parameters
-        Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), MaxQuantConstants.PARAMETERS_FILE.value()), parametersHeaders.getMandatoryHeaders(), MaxQuantConstants.
-                PARAM_TAB_DELIMITER.value(), true);
+        Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), MaxQuantConstants.PARAMETERS_FILE.value()), parametersHeaders.getMandatoryHeaders(), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
 
         //get the MaxQuant version
         String versionParameter = parameters.get(parametersHeaders.get(ParametersHeader.VERSION));
@@ -206,7 +206,7 @@ public class MaxQuantSearchSettingsParser {
         String precursorMassToleranceString = getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE);
         searchParameters.setPrecMassTolerance(Double.parseDouble(precursorMassToleranceString));
 
-        String massToleranceUnit = "";
+        String massToleranceUnit;
         if (getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("true")) {
             massToleranceUnit = "ppm";
         } else if (getSpectrumParamsWithRawFile().get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("false")) {
@@ -324,7 +324,8 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Map the given MaxQuant Enzyme instance to a TypedCvParam instance. Returns null if no mapping was possible.
+     * Map the given MaxQuant Enzyme instance to a TypedCvParam instance.
+     * Returns null if no mapping was possible.
      *
      * @param maxQuantEnzyme the MaxQuant enzyme
      * @return the TypedCvParam instance
@@ -348,7 +349,7 @@ public class MaxQuantSearchSettingsParser {
 
             if (enzyme == null) {
                 //the enzyme was not found by name in the MS ontology
-                enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, maxQuantEnzyme);
+                enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, maxQuantEnzyme);
             }
 
             //persist the newly created enzyme
@@ -363,7 +364,7 @@ public class MaxQuantSearchSettingsParser {
      * linked to that parameter.
      *
      * @param searchParameters the search parameters
-     * @param rawFileName      the RAW file name
+     * @param rawFileName the RAW file name
      * @return list of SearchParametersHasModification object.
      * @throws ModificationMappingException
      */
@@ -380,28 +381,22 @@ public class MaxQuantSearchSettingsParser {
 
         if (fixedModifications != null && !fixedModifications.isEmpty()) {
             String[] split = fixedModifications.split(MODIFICATIONS_DELIMITER);
-            for (int i = 0; i < split.length; i++) {
+            for (String split1 : split) {
                 SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, "");
-
-                SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(split[i].split(MODIFICATION_NAME_ONLY)[0]);
-
+                SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(split1.split(MODIFICATION_NAME_ONLY)[0]);
                 searchParametersHasModification.setModificationType(ModificationType.FIXED);
                 searchParametersHasModification.setSearchModification(searchModification);
-
                 searchParametersHasModifications.add(searchParametersHasModification);
             }
         }
 
         if (variableModifications != null && !variableModifications.isEmpty()) {
             String[] split = variableModifications.split(MODIFICATIONS_DELIMITER);
-            for (int i = 0; i < split.length; i++) {
+            for (String split1 : split) {
                 SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, "");
-
-                SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(split[i].split(MODIFICATION_NAME_ONLY)[0]);
-
+                SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(split1.split(MODIFICATION_NAME_ONLY)[0]);
                 searchParametersHasModification.setModificationType(ModificationType.VARIABLE);
                 searchParametersHasModification.setSearchModification(searchModification);
-
                 searchParametersHasModifications.add(searchParametersHasModification);
             }
         }
@@ -429,7 +424,8 @@ public class MaxQuantSearchSettingsParser {
      * Parse the mqpar.xml file and match with runs.
      *
      * @param mqParFile the mqpar.xml file path
-     * @throws JDOMException in case of an problem occurring in one of the JDOM classes
+     * @throws JDOMException in case of an problem occurring in one of the JDOM
+     * classes
      */
     void parseMqParFile(Path mqParFile) throws JDOMException {
         // create a map to hold raw files for each run (key: group index; value: raw file).

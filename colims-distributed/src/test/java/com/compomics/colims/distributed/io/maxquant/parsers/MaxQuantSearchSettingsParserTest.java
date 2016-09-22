@@ -62,9 +62,9 @@ public class MaxQuantSearchSettingsParserTest {
 //
 //        maxQuantSearchSettingsParser.parseMqParFile(MaxQuantTestSuite.parameterDirectory);
 //
-//        assertThat(maxQuantSearchSettingsParser.getSpectrumParamsWithRawFile().get("V20239_3911_Eik_green_10").
+//        assertThat(maxQuantSearchSettingsParser.getMqParParamsWithRawFile().get("V20239_3911_Eik_green_10").
 //                get(MqParHeader.VARIABLE_MODIFICATIONS), is("Acetyl (Protein N-term),Oxidation (M)"));
-//        assertThat(maxQuantSearchSettingsParser.getSpectrumParamsWithRawFile().get("V20239_3911_Eik_green_10").
+//        assertThat(maxQuantSearchSettingsParser.getMqParParamsWithRawFile().get("V20239_3911_Eik_green_10").
 //                get(MqParHeader.MAX_CHARGE), is("7"));
 
     }

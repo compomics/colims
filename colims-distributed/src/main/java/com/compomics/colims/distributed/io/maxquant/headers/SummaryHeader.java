@@ -5,8 +5,6 @@ package com.compomics.colims.distributed.io.maxquant.headers;
  */
 public enum SummaryHeader {
 
-    ENZYME,
-    MAX_MISSED_CLEAVAGES,
     MULTIPLICITY,
     RAW_FILE
 }
