@@ -10,7 +10,6 @@ import com.google.common.eventbus.Subscribe;
 import java.awt.Toolkit;
 import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * The progress bar controller.
@@ -24,8 +23,12 @@ public class ProgressController implements Controllable {
     private int progress;
     //view
     private ProgressDialogX progressDialog = new ProgressDialogX(true);
+    private final EventBus eventBus;
+
     @Autowired
-    private EventBus eventBus;
+    public ProgressController(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
     @PostConstruct
     @Override

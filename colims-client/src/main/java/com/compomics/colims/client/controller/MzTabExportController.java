@@ -64,13 +64,18 @@ public class MzTabExportController implements Controllable {
     //view
     private MzTabExportDialog mzTabExportDialog;
     //parent controller
-    @Autowired
-    private MainController mainController;
+    private final MainController mainController;
     //services
+    private final EventBus eventBus;
+    private final MzTabExporter mzTabExporter;
+
     @Autowired
-    private EventBus eventBus;
-    @Autowired
-    private MzTabExporter mzTabExporter;
+    public MzTabExportController(MzTabExporter mzTabExporter, EventBus eventBus, MainController mainController) {
+        this.mzTabExporter = mzTabExporter;
+        this.eventBus = eventBus;
+        this.mainController = mainController;
+
+    }
 
     public MzTabExport getMzTabExport() {
         return mzTabExport;
@@ -450,7 +455,7 @@ public class MzTabExportController implements Controllable {
         MzTabType selectedMzTabType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -550,7 +555,7 @@ public class MzTabExportController implements Controllable {
         MzTabMode selectedMzTabMode = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -566,7 +571,7 @@ public class MzTabExportController implements Controllable {
      * tree. Returns false if nothing or another path level (assay, root path)
      * is selected.
      *
-     * @param tree the JTree instance
+     * @param tree  the JTree instance
      * @param level the level of the node (0 for root node)
      * @return the boolean result
      */
@@ -591,7 +596,7 @@ public class MzTabExportController implements Controllable {
      * nothing or another path level (study variable or assay, root path) is
      * selected.
      *
-     * @param tree the JTree instance
+     * @param tree  the JTree instance
      * @param level the level of the node(s) (0 for root node) nodes nodes
      * @return the boolean result
      */
@@ -636,8 +641,8 @@ public class MzTabExportController implements Controllable {
     /**
      * Remove all assays from the given tree.
      *
-     * @param treeModel the JTree model instance
-     * @param rootNode the tree root node
+     * @param treeModel        the JTree model instance
+     * @param rootNode         the tree root node
      * @param assayParentLevel the level of the assay parent node
      */
     private void removeAllAssaysFromTree(DefaultTreeModel treeModel, DefaultMutableTreeNode rootNode, int assayParentLevel) {

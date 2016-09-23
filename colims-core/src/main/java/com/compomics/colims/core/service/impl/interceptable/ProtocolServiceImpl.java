@@ -16,8 +16,12 @@ import java.util.List;
 @Transactional
 public class ProtocolServiceImpl implements ProtocolService {
 
+    private final ProtocolRepository protocolRepository;
+
     @Autowired
-    private ProtocolRepository protocolRepository;
+    public ProtocolServiceImpl(ProtocolRepository protocolRepository) {
+        this.protocolRepository = protocolRepository;
+    }
 
     @Override
     public Protocol findById(final Long id) {

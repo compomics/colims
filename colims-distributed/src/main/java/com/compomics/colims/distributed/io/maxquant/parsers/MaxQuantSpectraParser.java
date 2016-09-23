@@ -49,16 +49,17 @@ public class MaxQuantSpectraParser {
     /**
      * The MaxQuantAndromedaParser for parsing the .apl spectra files.
      */
-    @Autowired
-    private MaxQuantAndromedaParser maxQuantAndromedaParser;
+    private final MaxQuantAndromedaParser maxQuantAndromedaParser;
 
     /**
      * No-arg constructor.
      *
      * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
-    public MaxQuantSpectraParser() throws IOException {
+    @Autowired
+    public MaxQuantSpectraParser(MaxQuantAndromedaParser maxQuantAndromedaParser) throws IOException {
         msmsHeaders = new MsmsHeaders();
+        this.maxQuantAndromedaParser = maxQuantAndromedaParser;
     }
 
     /**
@@ -126,7 +127,7 @@ public class MaxQuantSpectraParser {
                     //add to apl spectra map
                     maxQuantSpectra.getAplSpectra().putIfAbsent(aplKey, spectrum);
                     //map the spectrumIDS map where ID numbers are from msms file
-                    maxQuantSpectra.getSpectrumIDs().put(spectrum, new ArrayList<>(Arrays.asList(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)))));
+                    maxQuantSpectra.getSpectrumIDs().put(spectrum, new ArrayList<>(Collections.singletonList(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)))));
                 } else {
                     // get the spectrum from aplSpectra and find that spectrum instance from spectrumIDs and add id to the list
                     maxQuantSpectra.getSpectrumIDs().get(maxQuantSpectra.getAplSpectra().get(aplKey)).add(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)));

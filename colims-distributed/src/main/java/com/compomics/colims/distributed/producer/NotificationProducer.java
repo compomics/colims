@@ -30,8 +30,12 @@ public class NotificationProducer {
     /**
      * The JMS template instance.
      */
+    private final JmsTemplate notificationProducerTemplate;
+
     @Autowired
-    private JmsTemplate notificationProducerTemplate;
+    public NotificationProducer(JmsTemplate notificationProducerTemplate) {
+        this.notificationProducerTemplate = notificationProducerTemplate;
+    }
 
     /**
      * Send the serialized Notification to the completed queue.

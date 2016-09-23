@@ -20,8 +20,12 @@ import java.util.List;
 @Transactional
 public class SampleServiceImpl implements SampleService {
 
+    private final SampleRepository sampleRepository;
+
     @Autowired
-    private SampleRepository sampleRepository;
+    public SampleServiceImpl(SampleRepository sampleRepository) {
+        this.sampleRepository = sampleRepository;
+    }
 
     @Override
     public Sample findById(final Long id) {

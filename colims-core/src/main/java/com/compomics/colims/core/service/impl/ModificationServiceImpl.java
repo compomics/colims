@@ -16,8 +16,12 @@ import java.util.List;
 @Transactional
 public class ModificationServiceImpl implements ModificationService {
 
+    private final ModificationRepository modificationRepository;
+
     @Autowired
-    private ModificationRepository modificationRepository;
+    public ModificationServiceImpl(ModificationRepository modificationRepository) {
+        this.modificationRepository = modificationRepository;
+    }
 
     @Override
     public Modification findById(final Long id) {

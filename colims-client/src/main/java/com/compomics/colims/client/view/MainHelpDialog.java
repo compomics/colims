@@ -2,8 +2,6 @@ package com.compomics.colims.client.view;
 
 import java.awt.Desktop;
 import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;

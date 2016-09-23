@@ -25,12 +25,16 @@ public class DeleteDbTaskHandler {
      */
     private static final Logger LOGGER = Logger.getLogger(DeleteDbTaskHandler.class);
 
+    private final CompletedTaskProducer completedTaskProducer;
+    private final DbTaskErrorProducer dbTaskErrorProducer;
+    private final DeleteService deleteService;
+
     @Autowired
-    private CompletedTaskProducer completedTaskProducer;
-    @Autowired
-    private DbTaskErrorProducer dbTaskErrorProducer;
-    @Autowired
-    private DeleteService deleteService;
+    public DeleteDbTaskHandler(CompletedTaskProducer completedTaskProducer, DbTaskErrorProducer dbTaskErrorProducer, DeleteService deleteService) {
+        this.completedTaskProducer = completedTaskProducer;
+        this.dbTaskErrorProducer = dbTaskErrorProducer;
+        this.deleteService = deleteService;
+    }
 
     public void handleDeleteDbTask(DeleteDbTask deleteDbTask) {
         Long started = System.currentTimeMillis();

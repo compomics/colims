@@ -18,10 +18,11 @@ public class ProgressConsoleMonitor {
 
     private double previousProgressValue;
 
-    @Autowired
-    private EventBus eventBus;
+    private final EventBus eventBus;
 
-    public ProgressConsoleMonitor(){
+    @Autowired
+    public ProgressConsoleMonitor(EventBus eventBus){
+        this.eventBus = eventBus;
     }
 
     @PostConstruct

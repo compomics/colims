@@ -1,7 +1,6 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Experiment;
 
 import java.util.List;
 

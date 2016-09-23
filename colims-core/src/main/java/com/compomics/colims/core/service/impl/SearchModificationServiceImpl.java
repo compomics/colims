@@ -16,8 +16,12 @@ import java.util.List;
 @Transactional
 public class SearchModificationServiceImpl implements SearchModificationService {
 
+    private final SearchModificationRepository searchModificationRepository;
+
     @Autowired
-    private SearchModificationRepository searchModificationRepository;
+    public SearchModificationServiceImpl(SearchModificationRepository searchModificationRepository) {
+        this.searchModificationRepository = searchModificationRepository;
+    }
 
     @Override
     public SearchModification findById(final Long id) {

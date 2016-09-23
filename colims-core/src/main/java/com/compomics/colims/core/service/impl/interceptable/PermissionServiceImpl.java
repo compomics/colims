@@ -6,7 +6,6 @@ package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.PermissionService;
 import com.compomics.colims.model.Permission;
-import com.compomics.colims.model.Role;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,12 @@ import java.util.List;
 @Transactional
 public class PermissionServiceImpl implements PermissionService {
 
+    private final PermissionRepository permissionRepository;
+
     @Autowired
-    private PermissionRepository permissionRepository;
+    public PermissionServiceImpl(PermissionRepository permissionRepository) {
+        this.permissionRepository = permissionRepository;
+    }
 
     @Override
     public Permission findById(final Long id) {

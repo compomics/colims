@@ -27,15 +27,15 @@ import static org.junit.Assert.assertThat;
 public class MaxQuantSearchSettingsParserTest {
 
     @Autowired
-    MaxQuantSearchSettingsParser2 maxQuantSearchSettingsParser2;
+    MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
 
     @Test
     public void testParse() throws Exception {
         EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
         fastaDbs.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb)));
 
-        maxQuantSearchSettingsParser2.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.parameterDirectory, fastaDbs, false);
-        Map<String, SearchAndValidationSettings> result = maxQuantSearchSettingsParser2.getRunSettings();
+        maxQuantSearchSettingsParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.parameterDirectory, fastaDbs, false);
+        Map<String, SearchAndValidationSettings> result = maxQuantSearchSettingsParser.getRunSettings();
 
         // insane way to get the single entry from the map
         SearchParameters testProfile = result.entrySet().iterator().next().getValue().getSearchParameters();

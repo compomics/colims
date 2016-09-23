@@ -17,8 +17,12 @@ import java.util.List;
 @Transactional
 public class FastaDbServiceImpl implements FastaDbService {
 
+    private final FastaDbRepository fastaDbRepository;
+
     @Autowired
-    private FastaDbRepository fastaDbRepository;
+    public FastaDbServiceImpl(FastaDbRepository fastaDbRepository) {
+        this.fastaDbRepository = fastaDbRepository;
+    }
 
     @Override
     public FastaDb findById(final Long id) {

@@ -50,14 +50,10 @@ public class SpectrumPanelGenerator {
      */
     private static final Logger LOGGER = Logger.getLogger(SpectrumPanelGenerator.class);
 
-    @Autowired
-    private SpectrumService spectrumService;
-    @Autowired
-    private ColimsSpectrumMapper colimsSpectrumMapper;
-    @Autowired
-    private ColimsPeptideMapper colimsPeptideMapper;
-    @Autowired
-    private ColimsSearchParametersMapper colimsSearchParametersMapper;
+    private final SpectrumService spectrumService;
+    private final ColimsSpectrumMapper colimsSpectrumMapper;
+    private final ColimsPeptideMapper colimsPeptideMapper;
+    private final ColimsSearchParametersMapper colimsSearchParametersMapper;
 
     /**
      * The ID of the current analytical run.
@@ -67,6 +63,18 @@ public class SpectrumPanelGenerator {
     private AnnotationSettings annotationSettings;
     private final UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     private final PTMFactory ptmFactory = PTMFactory.getInstance();
+
+    @Autowired
+    public SpectrumPanelGenerator(SpectrumService spectrumService,
+                                  ColimsSpectrumMapper colimsSpectrumMapper,
+                                  ColimsPeptideMapper colimsPeptideMapper,
+                                  ColimsSearchParametersMapper colimsSearchParametersMapper
+    ) {
+        this.spectrumService = spectrumService;
+        this.colimsSpectrumMapper = colimsSpectrumMapper;
+        this.colimsPeptideMapper = colimsPeptideMapper;
+        this.colimsSearchParametersMapper = colimsSearchParametersMapper;
+    }
 
     /**
      * Load the search settings for the given run and map them to the
@@ -90,7 +98,7 @@ public class SpectrumPanelGenerator {
     /**
      * Generate a spectrum dialog for the given peptide to spectrum match (PSM).
      *
-     * @param parent the parent JFrame component
+     * @param parent  the parent JFrame component
      * @param peptide the Peptide instance
      * @return the generated SpectrumDialog instance
      * @throws MappingException
@@ -113,11 +121,9 @@ public class SpectrumPanelGenerator {
     /**
      * Add the Utilities SpectrumPanel for the given PSM to the given JPanel.
      *
-     * @param peptide the Peptide instance
-     * @param spectrumParentPanel the parent panel where the spectrum will be
-     * added to
-     * @param secondarySpectrumPlotsParentPanel the parent panel were the
-     * secondary spectrum plots will be added to
+     * @param peptide                           the Peptide instance
+     * @param spectrumParentPanel               the parent panel where the spectrum will be added to
+     * @param secondarySpectrumPlotsParentPanel the parent panel were the secondary spectrum plots will be added to
      * @throws com.compomics.colims.core.io.MappingException
      * @throws java.lang.InterruptedException
      * @throws java.lang.ClassNotFoundException
@@ -229,11 +235,10 @@ public class SpectrumPanelGenerator {
      * PTMFactory. /!\ This method uses the modifications as set in the
      * modification matches of this peptide and displays all of them.
      *
-     * @param peptide the peptide
-     * @param useHtmlColorCoding if true, color coded HTML is used, otherwise
-     * PTM tags, e.g, &lt;mox&gt;, are used
+     * @param peptide                the peptide
+     * @param useHtmlColorCoding     if true, color coded HTML is used, otherwise PTM tags, e.g, &lt;mox&gt;, are used
      * @param includeHtmlStartEndTag if true, start and end HTML tags are added
-     * @param useShortName if true the short names are used in the tags
+     * @param useShortName           if true the short names are used in the tags
      * @return the tagged sequence as a string
      */
     private String getTaggedPeptideSequence(com.compomics.util.experiment.biology.Peptide peptide, boolean useHtmlColorCoding, boolean includeHtmlStartEndTag, boolean useShortName) {

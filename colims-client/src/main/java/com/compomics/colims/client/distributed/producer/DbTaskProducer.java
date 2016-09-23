@@ -30,8 +30,12 @@ public class DbTaskProducer {
     /**
      * The JMS template instance.
      */
+    private final JmsTemplate dbTaskProducerTemplate;
+
     @Autowired
-    private JmsTemplate dbTaskProducerTemplate;
+    public DbTaskProducer(JmsTemplate dbTaskProducerTemplate) {
+        this.dbTaskProducerTemplate = dbTaskProducerTemplate;
+    }
 
     /**
      * Send the serialized DbTask to the db task queue.

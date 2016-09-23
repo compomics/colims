@@ -15,7 +15,6 @@ import com.compomics.colims.model.AnalyticalRunBinaryFile;
 import com.compomics.colims.model.Instrument;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import com.mysql.jdbc.PacketTooBigException;
 import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
@@ -34,7 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
-import org.apache.poi.hssf.record.PageBreakRecord;
+
 import org.hibernate.exception.GenericJDBCException;
 
 /**

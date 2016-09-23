@@ -6,13 +6,13 @@ import com.compomics.colims.model.QuantificationMethodCvParam;
 import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import com.compomics.colims.repository.QuantificationEngineRepository;
+import com.compomics.colims.repository.QuantificationMethodCvParamRepository;
 import com.compomics.colims.repository.QuantificationSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import com.compomics.colims.repository.QuantificationMethodCvParamRepository;
 
 /**
  * @author Niels Hulstaert
@@ -21,12 +21,16 @@ import com.compomics.colims.repository.QuantificationMethodCvParamRepository;
 @Transactional
 public class QuantificationSettingsServiceImpl implements QuantificationSettingsService {
 
+    private final QuantificationSettingsRepository quantificationSettingsRepository;
+    private final QuantificationEngineRepository quantificationEngineRepository;
+    private final QuantificationMethodCvParamRepository quantificationMethodCvParamRepository;
+
     @Autowired
-    private QuantificationSettingsRepository quantificationSettingsRepository;
-    @Autowired
-    private QuantificationEngineRepository quantificationEngineRepository;
-    @Autowired
-    private QuantificationMethodCvParamRepository quantificationMethodCvParamRepository;
+    public QuantificationSettingsServiceImpl(QuantificationSettingsRepository quantificationSettingsRepository, QuantificationEngineRepository quantificationEngineRepository, QuantificationMethodCvParamRepository quantificationMethodCvParamRepository) {
+        this.quantificationSettingsRepository = quantificationSettingsRepository;
+        this.quantificationEngineRepository = quantificationEngineRepository;
+        this.quantificationMethodCvParamRepository = quantificationMethodCvParamRepository;
+    }
 
     @Override
     public QuantificationSettings findById(final Long id) {

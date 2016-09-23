@@ -19,8 +19,13 @@ import java.util.List;
 @Transactional
 public class ProteinGroupServiceImpl implements ProteinGroupService {
 
-    @Autowired
+    final
     ProteinGroupRepository proteinGroupRepository;
+
+    @Autowired
+    public ProteinGroupServiceImpl(ProteinGroupRepository proteinGroupRepository) {
+        this.proteinGroupRepository = proteinGroupRepository;
+    }
 
     @Override
     public List<ProteinGroupDTO> getPagedProteinGroupsForRuns(List<Long> analyticalRunIds, int start, int length, String orderBy, SortDirection sortDirection, String filter) {

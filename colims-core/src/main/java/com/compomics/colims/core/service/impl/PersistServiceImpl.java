@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 
 /**
- * Implementation of the DataStorageService interface.
+ * Implementation of the PersistService interface.
  *
  * @author Niels Hulstaert
  */
@@ -27,14 +27,18 @@ import java.util.Date;
 @Transactional
 public class PersistServiceImpl implements PersistService {
 
+    private final AnalyticalRunRepository analyticalRunRepository;
+    private final ProteinGroupRepository proteinGroupRepository;
+    private final PeptideRepository peptideRepository;
+    private final SpectrumRepository spectrumRepository;
+
     @Autowired
-    private AnalyticalRunRepository analyticalRunRepository;
-    @Autowired
-    ProteinGroupRepository proteinGroupRepository;
-    @Autowired
-    PeptideRepository peptideRepository;
-    @Autowired
-    SpectrumRepository spectrumRepository;
+    public PersistServiceImpl(AnalyticalRunRepository analyticalRunRepository, ProteinGroupRepository proteinGroupRepository, PeptideRepository peptideRepository, SpectrumRepository spectrumRepository) {
+        this.analyticalRunRepository = analyticalRunRepository;
+        this.proteinGroupRepository = proteinGroupRepository;
+        this.peptideRepository = peptideRepository;
+        this.spectrumRepository = spectrumRepository;
+    }
 
     @Override
     public void persist(MappedData mappedData, Sample sample, Instrument instrument, String userName, Date startDate) {

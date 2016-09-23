@@ -56,8 +56,12 @@ public class MaxQuantAndromedaParser {
     /**
      * The .apl spectrum parser.
      */
+    private final MaxQuantAplParser maxQuantAplParser;
+
     @Autowired
-    private MaxQuantAplParser maxQuantAplParser;
+    public MaxQuantAndromedaParser(MaxQuantAplParser maxQuantAplParser) {
+        this.maxQuantAplParser = maxQuantAplParser;
+    }
 
     /**
      * Get the fragmentation type.

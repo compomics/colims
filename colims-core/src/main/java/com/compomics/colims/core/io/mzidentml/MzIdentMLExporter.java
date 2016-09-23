@@ -70,8 +70,12 @@ public class MzIdentMLExporter {
      */
     private Inputs inputs;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public MzIdentMLExporter(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Read in the JSON file that contains controlled vocabulary terms.

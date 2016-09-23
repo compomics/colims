@@ -18,11 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The DataMapper implementation for MaxQuant projects.
@@ -38,15 +34,24 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantMapper.class);
 
+    private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+    private final MaxQuantParser maxQuantParser;
+    private final QuantificationSettingsMapper quantificationSettingsMapper;
+    private final MaxQuantQuantificationSettingsParser maxQuantQuantificationSettingsParser;
+    private final FastaDbService fastaDbService;
+
     @Autowired
-    private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
-    private MaxQuantQuantificationSettingsParser maxQuantQuantificationSettingsParser;
-    @Autowired
-    private MaxQuantParser maxQuantParser;
-    @Autowired
-    private QuantificationSettingsMapper quantificationSettingsMapper;
-    @Autowired
-    private FastaDbService fastaDbService;
+    public MaxQuantMapper(MaxQuantSearchSettingsParser maxQuantSearchSettingsParser,
+                          MaxQuantParser maxQuantParser,
+                          QuantificationSettingsMapper quantificationSettingsMapper,
+                          MaxQuantQuantificationSettingsParser maxQuantQuantificationSettingsParser,
+                          FastaDbService fastaDbService) {
+        this.maxQuantSearchSettingsParser = maxQuantSearchSettingsParser;
+        this.maxQuantParser = maxQuantParser;
+        this.quantificationSettingsMapper = quantificationSettingsMapper;
+        this.maxQuantQuantificationSettingsParser = maxQuantQuantificationSettingsParser;
+        this.fastaDbService = fastaDbService;
+    }
 
     @Override
     public void clear() {
@@ -106,16 +111,16 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             }
             // parse quantification settings
             // for silac experiment, we don't have any reagent name from maxquant. Colims gives reagent name due to number of sample.
-            if(maxQuantImport.getQuantificationLabel().equals("SILAC")){
+            if (maxQuantImport.getQuantificationLabel().equals("SILAC")) {
                 List<String> silacReagents = new ArrayList<>();
-                if(maxQuantSearchSettingsParser.getLabelMods().size() == 3){
-                    silacReagents.addAll( Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
+                if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
+                    silacReagents.addAll(Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
                     maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), silacReagents);
-                }else if(maxQuantSearchSettingsParser.getLabelMods().size() == 2){
-                    silacReagents.addAll( Arrays.asList("SILAC light", "SILAC heavy"));
+                } else if (maxQuantSearchSettingsParser.getLabelMods().size() == 2) {
+                    silacReagents.addAll(Arrays.asList("SILAC light", "SILAC heavy"));
                     maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), silacReagents);
                 }
-            }else {
+            } else {
                 List<String> reagents = new ArrayList<String>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
                 maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), reagents);
             }
@@ -124,7 +129,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                 analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun));
                 maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun).setAnalyticalRun(analyticalRun);
             });
-            
+
         } catch (IOException | UnparseableException | MappingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
@@ -169,8 +174,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     /**
      * Map the quantification settings.
      *
-     * @param analyticalRun the AnalyticalRun instance onto the quantification
-     * settings will be mapped
+     * @param analyticalRun the AnalyticalRun instance onto the quantification settings will be mapped
      * @return the imported QuantificationSettings instance
      * @throws IOException thrown in case of an I/O related problem
      */

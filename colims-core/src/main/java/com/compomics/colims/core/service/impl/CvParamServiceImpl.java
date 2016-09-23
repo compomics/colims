@@ -18,8 +18,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class CvParamServiceImpl implements CvParamService {
 
+    private final CvParamRepository cvParamRepository;
+
     @Autowired
-    private CvParamRepository cvParamRepository;
+    public CvParamServiceImpl(CvParamRepository cvParamRepository) {
+        this.cvParamRepository = cvParamRepository;
+    }
 
     @Override
     public CvParam findById(Long id) {

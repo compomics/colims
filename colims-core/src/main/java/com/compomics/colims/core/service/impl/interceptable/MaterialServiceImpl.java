@@ -16,8 +16,12 @@ import java.util.List;
 @Transactional
 public class MaterialServiceImpl implements MaterialService {
 
+    private final MaterialRepository materialRepository;
+
     @Autowired
-    private MaterialRepository materialRepository;
+    public MaterialServiceImpl(MaterialRepository materialRepository) {
+        this.materialRepository = materialRepository;
+    }
 
     @Override
     public Material findById(final Long id) {

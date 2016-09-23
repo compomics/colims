@@ -21,22 +21,33 @@ import java.util.stream.Collectors;
 @Transactional
 public class DeleteServiceImpl implements DeleteService {
 
+    private final ProteinRepository proteinRepository;
+    private final ModificationRepository modificationRepository;
+    private final SearchParametersRepository searchParametersRepository;
+    private final SearchModificationRepository searchModificationRepository;
+    private final ProjectRepository projectRepository;
+    private final ExperimentRepository experimentRepository;
+    private final SampleRepository sampleRepository;
+    private final AnalyticalRunRepository analyticalRunRepository;
+
     @Autowired
-    private ProteinRepository proteinRepository;
-    @Autowired
-    private ModificationRepository modificationRepository;
-    @Autowired
-    private SearchParametersRepository searchParametersRepository;
-    @Autowired
-    private SearchModificationRepository searchModificationRepository;
-    @Autowired
-    private ProjectRepository projectRepository;
-    @Autowired
-    private ExperimentRepository experimentRepository;
-    @Autowired
-    private SampleRepository sampleRepository;
-    @Autowired
-    private AnalyticalRunRepository analyticalRunRepository;
+    public DeleteServiceImpl(ProteinRepository proteinRepository,
+                             ModificationRepository modificationRepository,
+                             SearchParametersRepository searchParametersRepository,
+                             SearchModificationRepository searchModificationRepository,
+                             ProjectRepository projectRepository,
+                             ExperimentRepository experimentRepository,
+                             SampleRepository sampleRepository,
+                             AnalyticalRunRepository analyticalRunRepository) {
+        this.proteinRepository = proteinRepository;
+        this.modificationRepository = modificationRepository;
+        this.searchParametersRepository = searchParametersRepository;
+        this.searchModificationRepository = searchModificationRepository;
+        this.projectRepository = projectRepository;
+        this.experimentRepository = experimentRepository;
+        this.sampleRepository = sampleRepository;
+        this.analyticalRunRepository = analyticalRunRepository;
+    }
 
     @Override
     public void delete(DeleteDbTask deleteDbTask) {

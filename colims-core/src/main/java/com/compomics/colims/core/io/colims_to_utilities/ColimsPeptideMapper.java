@@ -18,10 +18,14 @@ import java.util.ArrayList;
 @Component("colimspeptideMapper")
 public class ColimsPeptideMapper {
 
+    private final ColimsModificationMapper colimsModificationMapper;
+    private final PeptideService peptideService;
+
     @Autowired
-    private ColimsModificationMapper colimsModificationMapper;
-    @Autowired
-    private PeptideService peptideService;
+    public ColimsPeptideMapper(PeptideService peptideService, ColimsModificationMapper colimsModificationMapper) {
+        this.peptideService = peptideService;
+        this.colimsModificationMapper = colimsModificationMapper;
+    }
 
     public PeptideAssumption map(Peptide sourcePeptide) {
         //map peptide

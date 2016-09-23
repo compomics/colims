@@ -561,10 +561,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.0</version>
+                <version>3.5</version>
                 <configuration>
-                    <targetJdk>1.7</targetJdk>
-                    <ignoreAnnotations>false</ignoreAnnotations>
+                    <targetJdk>1.8</targetJdk>
                     <excludes>
                         <exclude>**/view/*.java</exclude>
                     </excludes>
@@ -625,7 +624,7 @@
                             <excludes>
                                 <exclude>**/*IT.class</exclude>
                             </excludes>
-                            <argLine>${argLine}</argLine>
+                            <argLine>@{argLine}</argLine>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -659,7 +658,7 @@
                                 <exclude>**/PeptideShakerImporterIT.class</exclude>
                                 <exclude>**/PeptideShakerIOIT.class</exclude>
                             </excludes>
-                            <argLine>${argLine}</argLine>
+                            <argLine>@{argLine}</argLine>
                         </configuration>
                         <executions>
                             <execution>

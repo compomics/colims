@@ -22,8 +22,12 @@ import java.util.List;
 @Transactional
 public class ProjectServiceImpl implements ProjectService {
 
+    private final ProjectRepository projectRepository;
+
     @Autowired
-    private ProjectRepository projectRepository;
+    public ProjectServiceImpl(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
 
     @Override
     public Project findById(final Long id) {
