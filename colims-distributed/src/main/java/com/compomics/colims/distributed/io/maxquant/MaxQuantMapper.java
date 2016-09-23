@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The DataMapper implementation for MaxQuant projects.
@@ -114,16 +111,16 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             }
             // parse quantification settings
             // for silac experiment, we don't have any reagent name from maxquant. Colims gives reagent name due to number of sample.
-            if(maxQuantImport.getQuantificationLabel().equals("SILAC")){
+            if (maxQuantImport.getQuantificationLabel().equals("SILAC")) {
                 List<String> silacReagents = new ArrayList<>();
-                if(maxQuantSearchSettingsParser.getLabelMods().size() == 3){
-                    silacReagents.addAll( Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
+                if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
+                    silacReagents.addAll(Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
                     maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), silacReagents);
-                }else if(maxQuantSearchSettingsParser.getLabelMods().size() == 2){
-                    silacReagents.addAll( Arrays.asList("SILAC light", "SILAC heavy"));
+                } else if (maxQuantSearchSettingsParser.getLabelMods().size() == 2) {
+                    silacReagents.addAll(Arrays.asList("SILAC light", "SILAC heavy"));
                     maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), silacReagents);
                 }
-            }else {
+            } else {
                 List<String> reagents = new ArrayList<String>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
                 maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), reagents);
             }
