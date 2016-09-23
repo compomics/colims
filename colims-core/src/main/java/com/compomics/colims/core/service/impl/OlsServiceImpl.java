@@ -69,8 +69,7 @@ public class OlsServiceImpl implements OlsService {
     /**
      * The Spring RestTemplate instance for accessing the OLS rest API.
      */
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
     /**
      * The JSON mapper.
      */
@@ -87,6 +86,11 @@ public class OlsServiceImpl implements OlsService {
      * Modification} and {@link com.compomics.colims.model.SearchModification}.
      */
     private final java.util.Map<String, AbstractModification> modificationsCache = new HashMap<>();
+
+    @Autowired
+    public OlsServiceImpl(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public List<Ontology> getAllOntologies() throws RestClientException, IOException {

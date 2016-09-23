@@ -5,9 +5,6 @@
 package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.Group;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Role;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultUser;
 import com.compomics.colims.repository.UserRepository;
@@ -25,8 +22,12 @@ import java.util.List;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public User findById(final Long userId) {

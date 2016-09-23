@@ -16,8 +16,13 @@ import java.util.List;
 @Transactional
 public class ProteinAccessionServiceImpl implements ProteinAccessionService {
 
-    @Autowired
+    final
     ProteinAccessionRepository proteinAccessionRepository;
+
+    @Autowired
+    public ProteinAccessionServiceImpl(ProteinAccessionRepository proteinAccessionRepository) {
+        this.proteinAccessionRepository = proteinAccessionRepository;
+    }
 
     @Override
     public ProteinAccession findById(Long aLong) {

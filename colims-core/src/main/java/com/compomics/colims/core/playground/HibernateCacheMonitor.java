@@ -25,8 +25,12 @@ public class HibernateCacheMonitor {
     private static final Logger LOGGER = Logger.getLogger(HibernateCacheMonitor.class);
     private static final NumberFormat NF = new DecimalFormat("0.0###");
 
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public HibernateCacheMonitor(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     //pointcut for the execution of any method in a repository interface.
     //The implementations are assumed to be in sub packages.

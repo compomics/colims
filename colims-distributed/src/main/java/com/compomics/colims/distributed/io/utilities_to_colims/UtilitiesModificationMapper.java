@@ -17,12 +17,12 @@ import eu.isas.peptideshaker.scoring.PtmScoring;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.web.client.RestClientException;
 
 /**
  * This class maps the Compomics Utilities modification related classes to
@@ -42,33 +42,36 @@ public class UtilitiesModificationMapper {
     /**
      * The modification service instance.
      */
-    @Autowired
-    private ModificationService modificationService;
+    private final ModificationService modificationService;
     /**
      * The Ontology Lookup Service service.
      */
-    @Autowired
-    private OlsService olsService;
+    private final OlsService olsService;
     /**
      * Contains the UNIMOD modifications.
      */
-    @Autowired
-    private UnimodMarshaller unimodMarshaller;
+    private final UnimodMarshaller unimodMarshaller;
     /**
      * The map of cached modifications (key: modification name, value: the
      * modification).
      */
     private final Map<String, Modification> cachedModifications = new HashMap<>();
 
+    @Autowired
+    public UtilitiesModificationMapper(ModificationService modificationService, OlsService olsService, UnimodMarshaller unimodMarshaller) {
+        this.modificationService = modificationService;
+        this.olsService = olsService;
+        this.unimodMarshaller = unimodMarshaller;
+    }
+
     /**
      * Map the utilities modification matches to the Colims peptide. The
      * Utilities PTMs are matched first onto CV terms from PSI-MOD.
      *
      * @param modificationMatches the list of modification matches
-     * @param ptmScores the PeptideShaker PTM scores
-     * @param targetPeptide the Colims target peptide
-     * @throws ModificationMappingException thrown in case of a modification
-     * mapping problem
+     * @param ptmScores           the PeptideShaker PTM scores
+     * @param targetPeptide       the Colims target peptide
+     * @throws ModificationMappingException thrown in case of a modification mapping problem
      */
     public void map(final ArrayList<ModificationMatch> modificationMatches, final PSPtmScores ptmScores, final Peptide targetPeptide) throws ModificationMappingException {
         //iterate over modification matches
@@ -233,8 +236,7 @@ public class UtilitiesModificationMapper {
      *
      * @param modificationName the modification name
      * @return the Colims Modification instance
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case
-     * of a modification mapping problem
+     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     public Modification mapByName(final String modificationName) throws ModificationMappingException {
         Modification modification;

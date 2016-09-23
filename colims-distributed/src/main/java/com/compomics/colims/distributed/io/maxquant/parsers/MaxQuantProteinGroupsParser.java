@@ -30,13 +30,14 @@ public class MaxQuantProteinGroupsParser {
      */
     private final List<String> omittedProteinGroupIds = new ArrayList<>();
     private final ProteinGroupsHeaders proteinGroupsHeaders;
-    @Autowired
-    private ProteinService proteinService;
-    @Autowired
-    private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+    private final ProteinService proteinService;
+    private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
 
-    public MaxQuantProteinGroupsParser() throws IOException {
+    @Autowired
+    public MaxQuantProteinGroupsParser(ProteinService proteinService, MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) throws IOException {
         proteinGroupsHeaders = new ProteinGroupsHeaders();
+        this.proteinService = proteinService;
+        this.maxQuantSearchSettingsParser = maxQuantSearchSettingsParser;
     }
 
     /**
@@ -200,7 +201,7 @@ public class MaxQuantProteinGroupsParser {
      * @return sequence
      */
     private String sequenceInFasta(String accession, Map<String, String> parsedFastas) {
-        String sequence = "";
+        String sequence;
         /*for (String key : parsedFastas.keySet()) {
         if (key.contains(accession)) {
         sequence = parsedFastas.get(key);

@@ -25,8 +25,12 @@ public class UtilitiesPeptideMapper {
     /**
      * The Utilities to Colims modification mapper instance.
      */
+    private final UtilitiesModificationMapper utilitiesModificationMapper;
+
     @Autowired
-    private UtilitiesModificationMapper utilitiesModificationMapper;
+    public UtilitiesPeptideMapper(UtilitiesModificationMapper utilitiesModificationMapper) {
+        this.utilitiesModificationMapper = utilitiesModificationMapper;
+    }
 
     /**
      * Map the utilities objects onto the Colims Peptide.

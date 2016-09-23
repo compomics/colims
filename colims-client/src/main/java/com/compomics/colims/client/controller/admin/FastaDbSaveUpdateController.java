@@ -23,12 +23,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.swing.JFileChooser;
@@ -62,7 +57,7 @@ public class FastaDbSaveUpdateController implements Controllable {
     /**
      * The preselected ontology namespaces.
      */
-    private static final List<String> PRESELECTED_ONTOLOGY_NAMESPACES = Arrays.asList("ncbitaxon");
+    private static final List<String> PRESELECTED_ONTOLOGY_NAMESPACES = Collections.singletonList("ncbitaxon");
     /**
      * The default taxonomy value for the taxonomy combo box.
      */

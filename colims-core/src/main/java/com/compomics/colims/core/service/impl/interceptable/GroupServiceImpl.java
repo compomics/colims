@@ -6,7 +6,6 @@ package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.GroupService;
 import com.compomics.colims.model.Group;
-import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultGroup;
 import com.compomics.colims.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,12 @@ import java.util.List;
 @Transactional
 public class GroupServiceImpl implements GroupService {
 
+    private final GroupRepository groupRepository;
+
     @Autowired
-    private GroupRepository groupRepository;
+    public GroupServiceImpl(GroupRepository groupRepository) {
+        this.groupRepository = groupRepository;
+    }
 
     @Override
     public Group findById(final Long id) {

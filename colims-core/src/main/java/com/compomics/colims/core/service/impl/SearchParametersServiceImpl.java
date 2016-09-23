@@ -18,8 +18,12 @@ import java.util.List;
 @Transactional
 public class SearchParametersServiceImpl implements SearchParametersService {
 
+    private final SearchParametersRepository searchParametersRepository;
+
     @Autowired
-    private SearchParametersRepository searchParametersRepository;
+    public SearchParametersServiceImpl(SearchParametersRepository searchParametersRepository) {
+        this.searchParametersRepository = searchParametersRepository;
+    }
 
     @Override
     public void fetchSearchModifications(SearchParameters searchParameters) {

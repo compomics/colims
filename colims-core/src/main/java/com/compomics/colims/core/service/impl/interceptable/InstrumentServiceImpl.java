@@ -16,8 +16,12 @@ import java.util.List;
 @Transactional
 public class InstrumentServiceImpl implements InstrumentService {
 
+    private final InstrumentRepository instrumentRepository;
+
     @Autowired
-    private InstrumentRepository instrumentRepository;
+    public InstrumentServiceImpl(InstrumentRepository instrumentRepository) {
+        this.instrumentRepository = instrumentRepository;
+    }
 
     @Override
     public Instrument findById(final Long id) {

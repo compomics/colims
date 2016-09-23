@@ -112,10 +112,7 @@ public class CvParamManagementController implements Controllable {
                         //get the descripton from the OLS service
                         cvParamManagementDialog.getDefinitionTextArea().setText(
                                 olsService.getTermDescriptionByOboId(selectedCvParam.getLabel(), selectedCvParam.getAccession()));
-                    } catch (RestClientException ex) {
-                        LOGGER.error(ex.getMessage(), ex);
-                        cvParamManagementDialog.getDefinitionTextArea().setText("");
-                    } catch (IOException ex) {
+                    } catch (RestClientException | IOException ex) {
                         LOGGER.error(ex.getMessage(), ex);
                         cvParamManagementDialog.getDefinitionTextArea().setText("");
                     }

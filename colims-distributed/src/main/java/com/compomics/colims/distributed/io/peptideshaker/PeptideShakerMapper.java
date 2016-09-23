@@ -5,9 +5,9 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchSettingsMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesProteinGroupMapper;
+import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchSettingsMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
@@ -62,28 +62,36 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
     /**
      * The utilities to Colims search settings mapper.
      */
-    @Autowired
-    private UtilitiesSearchSettingsMapper utilitiesSearchSettingsMapper;
+    private final UtilitiesSearchSettingsMapper utilitiesSearchSettingsMapper;
     /**
      * The Compomics Utilities to Colims spectrum mapper.
      */
-    @Autowired
-    private UtilitiesSpectrumMapper utilitiesSpectrumMapper;
+    private final UtilitiesSpectrumMapper utilitiesSpectrumMapper;
     /**
      * The Compomics Utilities to Colims protein group mapper.
      */
-    @Autowired
-    private UtilitiesProteinGroupMapper utilitiesProteinGroupMapper;
+    private final UtilitiesProteinGroupMapper utilitiesProteinGroupMapper;
     /**
      * The Compomics Utilities to Colims peptide mapper.
      */
-    @Autowired
-    private UtilitiesPeptideMapper utilitiesPeptideMapper;
+    private final UtilitiesPeptideMapper utilitiesPeptideMapper;
     /**
      * The fasta db service instance.
      */
+    private final FastaDbService fastaDbService;
+
     @Autowired
-    private FastaDbService fastaDbService;
+    public PeptideShakerMapper(UtilitiesSearchSettingsMapper utilitiesSearchSettingsMapper,
+                               UtilitiesSpectrumMapper utilitiesSpectrumMapper,
+                               UtilitiesProteinGroupMapper utilitiesProteinGroupMapper,
+                               UtilitiesPeptideMapper utilitiesPeptideMapper,
+                               FastaDbService fastaDbService) {
+        this.utilitiesSearchSettingsMapper = utilitiesSearchSettingsMapper;
+        this.utilitiesSpectrumMapper = utilitiesSpectrumMapper;
+        this.utilitiesProteinGroupMapper = utilitiesProteinGroupMapper;
+        this.utilitiesPeptideMapper = utilitiesPeptideMapper;
+        this.fastaDbService = fastaDbService;
+    }
 
     /**
      * Clear the mapping resources: reset the SpectrumFactory, SequenceFactory, ...

@@ -17,10 +17,8 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.*;
+
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
@@ -253,8 +251,8 @@ public class MaxQuantDataImportController implements Controllable {
      */
     public MaxQuantImport getDataImport() {
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(primaryFastaDb.getId())));
-        fastaDbIds.put(FastaDbType.CONTAMINANTS,new ArrayList<>(Arrays.asList(contaminantsFastaDb.getId())));
+        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Collections.singletonList(primaryFastaDb.getId())));
+        fastaDbIds.put(FastaDbType.CONTAMINANTS,new ArrayList<>(Collections.singletonList(contaminantsFastaDb.getId())));
         List<Long> additionalFastaDbIDs = new ArrayList<>();
         additionalFastaDbBindingList.stream().forEach(additionalFastaDb -> {
             if (additionalFastaDb != null) {

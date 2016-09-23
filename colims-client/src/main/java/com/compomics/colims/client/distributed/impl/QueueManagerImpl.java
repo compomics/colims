@@ -77,13 +77,17 @@ public class QueueManagerImpl implements QueueManager {
     /**
      * The JMS template instance.
      */
-    @Autowired
-    private JmsTemplate queueManagerTemplate;
+    private final JmsTemplate queueManagerTemplate;
     /**
      * The MBean connector.
      */
+    private final MBeanServerConnection clientConnector;
+
     @Autowired
-    private MBeanServerConnection clientConnector;
+    public QueueManagerImpl(JmsTemplate queueManagerTemplate, MBeanServerConnection clientConnector) {
+        this.queueManagerTemplate = queueManagerTemplate;
+        this.clientConnector = clientConnector;
+    }
 
     @Override
     public <T extends QueueMessage> List<T> monitorQueue(final String queueName, final Class<T> clazz) {

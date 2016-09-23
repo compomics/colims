@@ -22,21 +22,12 @@
       <string>C:\Users\compomics\Desktop\MaxQuant\test\V20263_3910_Eik_red_12.raw</string>
    </filePaths>
    <experiments>
-<<<<<<< HEAD
       <string>Eik_green_10</string>
       <string>Eik_green_11</string>
       <string>Eik_green_12</string>
       <string>Eik_red_10</string>
       <string>Eik_red_11</string>
       <string>Eik_red_12</string>
-=======
-      <string>exp1</string>
-      <string>exp2</string>
-      <string>exp3</string>
-      <string>exp4</string>
-      <string>exp5</string>
-      <string>exp6</string>
->>>>>>> 2f84ebe59e92b10e90b949d74a1fb8fd4b366fc4
    </experiments>
    <fractions>
       <short>32767</short>

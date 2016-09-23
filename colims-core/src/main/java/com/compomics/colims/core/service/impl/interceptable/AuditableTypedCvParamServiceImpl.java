@@ -1,7 +1,6 @@
 package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.AuditableTypedCvParamService;
-import com.compomics.colims.model.Material;
 import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.repository.AuditableTypedCvParamRepository;
@@ -19,8 +18,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class AuditableTypedCvParamServiceImpl implements AuditableTypedCvParamService {
 
+    private final AuditableTypedCvParamRepository auditableTypedCvParamRepository;
+
     @Autowired
-    private AuditableTypedCvParamRepository auditableTypedCvParamRepository;
+    public AuditableTypedCvParamServiceImpl(AuditableTypedCvParamRepository auditableTypedCvParamRepository) {
+        this.auditableTypedCvParamRepository = auditableTypedCvParamRepository;
+    }
 
     @Override
     public AuditableTypedCvParam findById(Long id) {

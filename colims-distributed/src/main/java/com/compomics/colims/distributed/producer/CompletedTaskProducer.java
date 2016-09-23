@@ -31,8 +31,12 @@ public class CompletedTaskProducer {
     /**
      * The JmsTemplate.
      */
+    private final JmsTemplate completedDbTaskProducerTemplate;
+
     @Autowired
-    private JmsTemplate completedDbTaskProducerTemplate;
+    public CompletedTaskProducer(JmsTemplate completedDbTaskProducerTemplate) {
+        this.completedDbTaskProducerTemplate = completedDbTaskProducerTemplate;
+    }
 
     /**
      * Send the serialized CompletedDbTask to the completed queue.

@@ -8,12 +8,12 @@ import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
 import com.compomics.colims.repository.SearchEngineRepository;
 import com.compomics.colims.repository.SearchParametersRepository;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import org.hibernate.LazyInitializationException;
 
 /**
  * @author Niels Hulstaert
@@ -22,13 +22,17 @@ import org.hibernate.LazyInitializationException;
 @Transactional
 public class SearchAndValidationSettingsServiceImpl implements SearchAndValidationSettingsService {
 
+    private final SearchAndValidationSettingsRepository searchAndValidationSettingsRepository;
+    private final SearchEngineRepository searchEngineRepository;
+    private final SearchParametersRepository searchParametersRepository;
+
     @Autowired
-    private SearchAndValidationSettingsRepository searchAndValidationSettingsRepository;
-    @Autowired
-    private SearchEngineRepository searchEngineRepository;
-    @Autowired
-    private SearchParametersRepository searchParametersRepository;
-    
+    public SearchAndValidationSettingsServiceImpl(SearchAndValidationSettingsRepository searchAndValidationSettingsRepository, SearchEngineRepository searchEngineRepository, SearchParametersRepository searchParametersRepository) {
+        this.searchAndValidationSettingsRepository = searchAndValidationSettingsRepository;
+        this.searchEngineRepository = searchEngineRepository;
+        this.searchParametersRepository = searchParametersRepository;
+    }
+
 
     @Override
     public SearchAndValidationSettings findById(final Long id) {
@@ -97,7 +101,7 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
 
     @Override
     public void fetchSearchSettingsHasFastaDb(SearchAndValidationSettings searchAndValidationSettings) {
-        try{
+        try {
             searchAndValidationSettings.getSearchSettingsHasFastaDbs().size();
         } catch (LazyInitializationException e) {
             // merge the searchAndValidationSettings

@@ -35,8 +35,12 @@ public class CompletedDbTaskConsumer implements MessageListener {
     /**
      * The guava EventBus instance.
      */
+    private final EventBus eventBus;
+
     @Autowired
-    private EventBus eventBus;
+    public CompletedDbTaskConsumer(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
     /**
      * Implementation of <code>MessageListener</code>.

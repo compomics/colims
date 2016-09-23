@@ -37,10 +37,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +50,7 @@ public class InstrumentManagementController implements Controllable {
     /**
      * The preselected ontology namespaces.
      */
-    private static final List<String> PRESELECTED_ONTOLOGY_NAMESPACES = Arrays.asList("ms");
+    private static final List<String> PRESELECTED_ONTOLOGY_NAMESPACES = Collections.singletonList("ms");
 
     //model
     private TypedCvParamSummaryListModel<InstrumentCvParam> typedCvParamSummaryListModel;

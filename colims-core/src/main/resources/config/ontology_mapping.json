@@ -516,7 +516,7 @@
         "obo_id": "UNIMOD:1051",
         "label": "Ala-&gt;Gln"
       },
-      "Ala-&gt;Gln": {
+      "Ala->Gln": {
         "obo_namespace": "UNIMOD",
         "obo_id": "UNIMOD:1051",
         "label": "Ala-&gt;Gln"
@@ -672,11 +672,6 @@
         "ontology_prefix": "PRIDE",
         "obo_id": "PRIDE:0000286",
         "label": "TMT reagent 127"
-      },
-      "iodoTMT6plex-Cys128": {
-        "ontology_prefix": "PRIDE",
-        "obo_id": "PRIDE:0000287",
-        "label": "TMT reagent 128"
       },
       "iodoTMT6plex-Cys128": {
         "ontology_prefix": "PRIDE",
@@ -857,7 +852,7 @@
         "ontology_prefix": "PRIDE",
         "obo_id": "PRIDE:0000289",
         "label": "TMT reagent 130"
-      },      
+      },
       "TMT10plex-Lys130N": {
         "ontology_prefix": "PRIDE",
         "obo_id": "PRIDE:0000289",

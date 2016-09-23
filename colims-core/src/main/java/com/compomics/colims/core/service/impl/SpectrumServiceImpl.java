@@ -42,8 +42,12 @@ public class SpectrumServiceImpl implements SpectrumService {
      * This constant defines the ernd tag for the ions.
      */
     private static final String IONS_END = "END IONS";
+    private final SpectrumRepository spectrumRepository;
+
     @Autowired
-    private SpectrumRepository spectrumRepository;
+    public SpectrumServiceImpl(SpectrumRepository spectrumRepository) {
+        this.spectrumRepository = spectrumRepository;
+    }
 
     @Override
     public Spectrum findById(Long id) {

@@ -20,11 +20,14 @@ import java.util.List;
 @Transactional
 public class AnalyticalRunServiceImpl implements AnalyticalRunService {
 
-    @Autowired
-    private AnalyticalRunRepository analyticalRunRepository;
-    @Autowired
-    private InstrumentRepository instrumentRepository;
+    private final AnalyticalRunRepository analyticalRunRepository;
+    private final InstrumentRepository instrumentRepository;
 
+    @Autowired
+    public AnalyticalRunServiceImpl(AnalyticalRunRepository analyticalRunRepository, InstrumentRepository instrumentRepository) {
+        this.analyticalRunRepository = analyticalRunRepository;
+        this.instrumentRepository = instrumentRepository;
+    }
 
     @Override
     public AnalyticalRun findById(final Long id) {

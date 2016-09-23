@@ -49,16 +49,17 @@ public class MaxQuantEvidenceParser {
      * The evidence evidenceHeaders.
      */
     private final EvidenceHeaders evidenceHeaders;
-    @Autowired
-    private UtilitiesModificationMapper utilitiesModificationMapper;
+    private final UtilitiesModificationMapper utilitiesModificationMapper;
 
     /**
      * No-arg constructor.
      *
      * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
-    public MaxQuantEvidenceParser() throws IOException {
+    @Autowired
+    public MaxQuantEvidenceParser(UtilitiesModificationMapper utilitiesModificationMapper) throws IOException {
         evidenceHeaders = new EvidenceHeaders();
+        this.utilitiesModificationMapper = utilitiesModificationMapper;
     }
 
     public Map<Integer, List<Peptide>> getPeptides() {

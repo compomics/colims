@@ -9,7 +9,6 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.MgfFileFilter;
 import com.google.common.eventbus.EventBus;
-import com.sun.xml.bind.v2.TODO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -17,10 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * The PeptideShaker data import view controller.
@@ -188,7 +184,7 @@ public class PeptideShakerDataImportController implements Controllable {
         }
 
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(fastaDb.getId())));
+        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Collections.singletonList(fastaDb.getId())));
 
         return new PeptideShakerImport(cpsArchive, fastaDbIds, mgfFiles);
     }

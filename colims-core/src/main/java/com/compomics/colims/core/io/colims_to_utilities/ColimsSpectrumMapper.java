@@ -27,8 +27,12 @@ public class ColimsSpectrumMapper {
      */
     private static final Logger LOGGER = Logger.getLogger(ColimsSpectrumMapper.class);
 
+    private final SpectrumService spectrumService;
+
     @Autowired
-    private SpectrumService spectrumService;
+    public ColimsSpectrumMapper(SpectrumService spectrumService) {
+        this.spectrumService = spectrumService;
+    }
 
     /**
      * Map the utilities spectrum onto the colims spectrum.
