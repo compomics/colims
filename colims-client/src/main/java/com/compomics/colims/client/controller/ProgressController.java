@@ -23,8 +23,12 @@ public class ProgressController implements Controllable {
     private int progress;
     //view
     private ProgressDialogX progressDialog = new ProgressDialogX(true);
+    private final EventBus eventBus;
+
     @Autowired
-    private EventBus eventBus;
+    public ProgressController(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
     @PostConstruct
     @Override

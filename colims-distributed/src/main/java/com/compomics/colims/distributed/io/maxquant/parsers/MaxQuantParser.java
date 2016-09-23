@@ -48,14 +48,21 @@ public class MaxQuantParser {
 
     private boolean parsed = false;
 
+    private final MaxQuantSpectraParser maxQuantSpectraParser;
+    private final MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
+    private final MaxQuantEvidenceParser maxQuantEvidenceParser;
+    private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+
     @Autowired
-    private MaxQuantSpectraParser maxQuantSpectraParser;
-    @Autowired
-    private MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
-    @Autowired
-    private MaxQuantEvidenceParser maxQuantEvidenceParser;
-    @Autowired
-    private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+    public MaxQuantParser(MaxQuantSpectraParser maxQuantSpectraParser,
+                          MaxQuantProteinGroupsParser maxQuantProteinGroupsParser,
+                          MaxQuantEvidenceParser maxQuantEvidenceParser,
+                          MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) {
+        this.maxQuantSpectraParser = maxQuantSpectraParser;
+        this.maxQuantProteinGroupsParser = maxQuantProteinGroupsParser;
+        this.maxQuantEvidenceParser = maxQuantEvidenceParser;
+        this.maxQuantSearchSettingsParser = maxQuantSearchSettingsParser;
+    }
 
     /**
      * Parse the MaxQuant output folder and map the content of the different
@@ -116,7 +123,7 @@ public class MaxQuantParser {
             Optional foundKey = analyticalRuns.keySet().stream()
                     .filter(runKey -> unidentifiedSpectrum.getAccession().contains(runKey))
                     .findFirst();
-            if(foundKey.isPresent()){
+            if (foundKey.isPresent()) {
                 analyticalRuns.get(foundKey.get()).getSpectrums().add(unidentifiedSpectrum);
             }
         });
