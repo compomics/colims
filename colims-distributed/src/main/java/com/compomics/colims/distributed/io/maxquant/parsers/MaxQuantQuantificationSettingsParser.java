@@ -7,6 +7,7 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.OntologyTerm;
+import com.compomics.colims.core.service.QuantificationReagentService;
 import com.compomics.colims.core.service.QuantificationSettingsService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.QuantificationMethodCvParam;
@@ -50,6 +51,8 @@ public class MaxQuantQuantificationSettingsParser {
     private OntologyMapper ontologyMapper;
     @Autowired
     private QuantificationSettingsService quantificationSettingsService;
+    @Autowired
+    private QuantificationReagentService quantificationReagentService;
 
     /**
      * Get map of analytical run and quantification settings
@@ -72,6 +75,7 @@ public class MaxQuantQuantificationSettingsParser {
         QuantificationMethodCvParam quantificationMethodCvParam =
                 new QuantificationMethodCvParam(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
         quantificationMethodCvParam.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethodCvParam, quantificationLabel, reagents));
+        // check if quantificationMethodCvParam is in the db
         quantificationMethodCvParam = quantificationSettingsService.getQuantificationMethodCvParams(quantificationMethodCvParam);
         // create quantificationSettings
         QuantificationSettings quantificationSettings = new QuantificationSettings();
@@ -105,18 +109,12 @@ public class MaxQuantQuantificationSettingsParser {
             if(ontologyTerm != null){
                 QuantificationReagent quantificationReagent = 
                     new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
-            
+                // check if quantificationReagent is in the db
+                quantificationReagent = quantificationReagentService.getQuantificationReagent(quantificationReagent);
                 quantificationMethodHasReagent.setQuantificationReagent(quantificationReagent);
                 quantificationMethodHasReagent.setQuantificationMethodCvParam(quantificationMethodCvParam);
                 quantificationMethodHasReagents.add(quantificationMethodHasReagent);
             }
-
-            QuantificationReagent quantificationReagent =
-                    new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
-
-            quantificationMethodHasReagent.setQuantificationReagent(quantificationReagent);
-            quantificationMethodHasReagent.setQuantificationMethodCvParam(quantificationMethodCvParam);
-            quantificationMethodHasReagents.add(quantificationMethodHasReagent);
         });
 
         return quantificationMethodHasReagents;
