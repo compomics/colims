@@ -18,9 +18,93 @@
     ]
   },
   "PEP": {
-    "mandatory": true,
+    "mandatory": false,
     "values": [
       "PEP"
+    ]
+  },
+  "BESTMSMS": {
+    "mandatory": true,
+    "values": [
+      "Best MS/MS"
+    ]
+  },
+  "CONTAMINANT": {
+    "mandatory": true,
+    "values": [
+      "Potential contaminant"
+    ]
+  },
+  "FASTAHEADER": {
+    "mandatory": true,
+    "values": [
+      "Fasta headers"
+    ]
+  },
+  "MSMSIDS": {
+    "mandatory": true,
+    "values": [
+      "MS/MS IDs"
+    ]
+  },
+  "PEPTIDEIDS": {
+    "mandatory": true,
+    "values": [
+      "Peptide IDs"
+    ]
+  },
+  "REVERSE": {
+    "mandatory": true,
+    "values": [
+      "Reverse"
+    ]
+  },
+  "IBAQ": {
+    "mandatory": false,
+    "values": [
+      "iBAQ"
+    ]
+  },
+  "LFQ_INTENSITY": {
+    "mandatory": false,
+    "values": [
+      "LFQ intensity"
+    ]
+  },
+  "INTENSITY": {
+    "mandatory": true,
+    "values": [
+      "Intensity"
+    ]
+  },
+  "MSMS_COUNT": {
+    "mandatory": false,
+    "values": [
+      "MS/MS Count"
+    ]
+  },
+  "REPORTER_INTENSITY_CORRECTED": {
+    "mandatory": false,
+    "values": [
+      "Reporter intensity corrected"
+    ]
+  },
+  "INTENSITY_L": {
+    "mandatory": false,
+    "values": [
+      "Intensity L"
+    ]
+  },
+  "INTENSITY_M": {
+    "mandatory": false,
+    "values": [
+      "Intensity M"
+    ]
+  },
+  "INTENSITY_H": {
+    "mandatory": false,
+    "values": [
+      "Intensity H"
     ]
   }
 }
