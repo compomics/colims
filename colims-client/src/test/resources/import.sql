@@ -105,7 +105,7 @@ INSERT INTO spectrum_file (id, content, l_spectrum_id) VALUES (1, 'AABBCC', 1);
 INSERT INTO search_parameters (id, precursor_mass_tolerance, precursor_mass_tolerance_unit, fragment_mass_tolerance, fragment_mass_tolerance_unit, l_search_enzyme_cv_id) VALUES (1, 4, 1, 5, 1, 1);
 
 -- insert a search params has mod
-INSERT INTO search_params_has_modification (id, modification_type, residues, l_search_modification_id, l_search_parameters_id) VALUES (1, 1, 'CK', 3, 1);
+INSERT INTO search_params_has_modification (id, modification_type, l_search_modification_id, l_search_parameters_id) VALUES (1, 1, 3, 1);
 
 -- insert a search and val settings set of settings
 INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1);

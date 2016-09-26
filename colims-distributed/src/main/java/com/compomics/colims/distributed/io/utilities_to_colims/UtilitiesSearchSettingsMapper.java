@@ -1,6 +1,5 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
-import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
@@ -40,10 +39,9 @@ public class UtilitiesSearchSettingsMapper {
      * @param utilitiesSearchParameters the Utilities search parameters
      * @param storeIdentificationFile   store the identification or not
      * @return the mapped SearchAndValidationSettings
-     * @throws IOException                  thrown in case of an I/O related exception
-     * @throws ModificationMappingException in case of a modification mapping problem
+     * @throws IOException thrown in case of an I/O related exception
      */
-    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, EnumMap<FastaDbType, FastaDb> fastaDbs, com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, boolean storeIdentificationFile) throws IOException, ModificationMappingException {
+    public SearchAndValidationSettings map(SearchEngineType searchEngineType, String version, EnumMap<FastaDbType, FastaDb> fastaDbs, com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, boolean storeIdentificationFile) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         /**

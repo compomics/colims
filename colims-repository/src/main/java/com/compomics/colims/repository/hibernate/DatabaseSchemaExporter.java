@@ -26,7 +26,7 @@ public class DatabaseSchemaExporter {
         SessionFactoryServiceRegistryImpl serviceRegistry = (SessionFactoryServiceRegistryImpl) sf.getServiceRegistry();
 
         SchemaExport schemaExport = new SchemaExport();
-        schemaExport.setOutputFile("C:/Users/demet/Desktop/colims_export.sql");
+        schemaExport.setOutputFile("/home/niels/Desktop/colims_export.sql");
         schemaExport.setDelimiter(";");
         schemaExport.setFormat(true);
         EnumSet<TargetType> targetTypes = EnumSet.of(TargetType.SCRIPT);

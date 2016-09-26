@@ -14,10 +14,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
+@ContextConfiguration(locations = {"classpath:colims-distributed-simple-test-context.xml"})
 public class UnimodMarshallerTest {
 
     private static final String MOD_NAME = "DTT_C";
+    private static final String MOD_ACCESSION = "UNIMOD:736";
 
     @Autowired
     private UnimodMarshaller unimodMarshaller;
@@ -38,14 +39,31 @@ public class UnimodMarshallerTest {
      * Modification and SearchModification instances.
      */
     @Test
+    public void testGetModificationByAccession() {
+        SearchModification searchModification = unimodMarshaller.getModificationByAccession(SearchModification.class, MOD_ACCESSION);
+        Assert.assertNotNull(searchModification);
+
+        Modification modification = unimodMarshaller.getModificationByAccession(Modification.class, MOD_ACCESSION);
+        Assert.assertNotNull(modification);
+        Assert.assertEquals(MOD_ACCESSION, modification.getAccession());
+        Assert.assertEquals(MOD_NAME, modification.getName());
+        Assert.assertEquals(120.0245, modification.getMonoIsotopicMassShift(), 0.0001);
+        Assert.assertEquals(120.1701, modification.getAverageMassShift(), 0.0001);
+    }
+
+    /**
+     * Test the retrieval of a modification from the marshaller of both
+     * Modification and SearchModification instances.
+     */
+    @Test
     public void testGetModificationByName() {
         SearchModification searchModification = unimodMarshaller.getModificationByName(SearchModification.class, MOD_NAME);
         Assert.assertNotNull(searchModification);
 
         Modification modification = unimodMarshaller.getModificationByName(Modification.class, MOD_NAME);
         Assert.assertNotNull(modification);
-        Assert.assertEquals("UNIMOD:736", modification.getAccession());
-        Assert.assertEquals("DTT_C", modification.getName());
+        Assert.assertEquals(MOD_ACCESSION, modification.getAccession());
+        Assert.assertEquals(MOD_NAME, modification.getName());
         Assert.assertEquals(120.0245, modification.getMonoIsotopicMassShift(), 0.0001);
         Assert.assertEquals(120.1701, modification.getAverageMassShift(), 0.0001);
     }
