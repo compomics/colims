@@ -133,7 +133,8 @@ public class MaxQuantParser {
         }
 
         LOGGER.debug("parsing evidence");
-        maxQuantEvidenceParser.parse(txtDirectory, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
+        Path evidenceFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.EVIDENCE_FILE.value());
+        maxQuantEvidenceParser.parse(evidenceFile, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
         if (getSpectra().isEmpty() || maxQuantEvidenceParser.getPeptides().isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");

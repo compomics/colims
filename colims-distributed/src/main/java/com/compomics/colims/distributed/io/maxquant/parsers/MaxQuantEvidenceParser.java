@@ -54,6 +54,7 @@ public class MaxQuantEvidenceParser {
     /**
      * No-arg constructor.
      *
+     * @param utilitiesModificationMapper
      * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
     @Autowired
@@ -245,7 +246,7 @@ public class MaxQuantEvidenceParser {
                     for (int i = 0; i < evidenceModification.getOccurrences(); i++) {
                         PeptideHasModification peptideHasModification = new PeptideHasModification();
 
-                        if (scoresAndLocations.isEmpty()) {
+                        if (!scoresAndLocations.isEmpty()) {
                             //@Todo can we figure out whether the modification is fixed or variable?
                             peptideHasModification.setModificationType(ModificationType.VARIABLE);
 

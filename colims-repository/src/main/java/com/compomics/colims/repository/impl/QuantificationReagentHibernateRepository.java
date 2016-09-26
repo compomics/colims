@@ -30,25 +30,25 @@ public class QuantificationReagentHibernateRepository extends GenericHibernateRe
             QuantificationReagent quantificationReagent = iterator.next();
             
             //check accession
-            if(!exampleInstance.getAccession().equals(quantificationReagent.getAccession())){
+            if(exampleInstance.getAccession() != null && !exampleInstance.getAccession().equals(quantificationReagent.getAccession())){
                 iterator.remove();
                 continue;
             }
             
             //check label
-            if(!exampleInstance.getLabel().equals(quantificationReagent.getLabel())){
+            if(exampleInstance.getLabel() != null && !exampleInstance.getLabel().equals(quantificationReagent.getLabel())){
                 iterator.remove();
                 continue;
             }
             
             //check name
-            if(!exampleInstance.getName().equals(quantificationReagent.getName())){
+            if(exampleInstance.getName() != null && !exampleInstance.getName().equals(quantificationReagent.getName())){
                 iterator.remove();
                 continue;
             }
             
             //check value
-            if(!exampleInstance.getValue().equals(quantificationReagent.getValue())){
+            if(exampleInstance.getValue() != null && !exampleInstance.getValue().equals(quantificationReagent.getValue())){
                 iterator.remove();
             }
         }
