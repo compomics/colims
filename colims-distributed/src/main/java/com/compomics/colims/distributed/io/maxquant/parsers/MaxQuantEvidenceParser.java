@@ -1,12 +1,11 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.ModificationMappingException;
+import com.compomics.colims.distributed.io.ModificationMapper;
 import com.compomics.colims.distributed.io.maxquant.TabularFileIterator;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.distributed.io.maxquant.headers.EvidenceHeader;
 import com.compomics.colims.distributed.io.maxquant.headers.EvidenceHeaders;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesModificationMapper;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
@@ -49,7 +48,7 @@ public class MaxQuantEvidenceParser {
      * The evidence evidenceHeaders.
      */
     private final EvidenceHeaders evidenceHeaders;
-    private final UtilitiesModificationMapper utilitiesModificationMapper;
+    private final ModificationMapper modificationMapper;
 
     /**
      * No-arg constructor.
@@ -58,9 +57,9 @@ public class MaxQuantEvidenceParser {
      * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
     @Autowired
-    public MaxQuantEvidenceParser(UtilitiesModificationMapper utilitiesModificationMapper) throws IOException {
+    public MaxQuantEvidenceParser(ModificationMapper modificationMapper) throws IOException {
         evidenceHeaders = new EvidenceHeaders();
-        this.utilitiesModificationMapper = utilitiesModificationMapper;
+        this.modificationMapper = modificationMapper;
     }
 
     public Map<Integer, List<Peptide>> getPeptides() {
@@ -122,9 +121,8 @@ public class MaxQuantEvidenceParser {
      *
      * @param evidenceEntry key-value pairs from an evidence entry
      * @return the mapped Peptide object
-     * @throws ModificationMappingException in case of a modification mapping related problem
      */
-    public Peptide createPeptide(Map<String, String> evidenceEntry) throws ModificationMappingException {
+    public Peptide createPeptide(Map<String, String> evidenceEntry) {
         Peptide peptide = new Peptide();
 
         double probability = -1;
@@ -175,7 +173,7 @@ public class MaxQuantEvidenceParser {
      * @param values  Row of data from evidence file
      * @return List of PeptideHasModification objects
      */
-    private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) throws ModificationMappingException {
+    private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) {
         List<PeptideHasModification> peptideHasModifications = new ArrayList<>();
 
         //get the modifications
@@ -193,14 +191,14 @@ public class MaxQuantEvidenceParser {
                 if (evidenceModification.isNTerminal()) {
                     PeptideHasModification peptideHasModification = createPeptideHasModification(0, 100.0, 100.0, peptide);
 
-                    Modification modification = utilitiesModificationMapper.mapByName(evidenceModification.getModificationName());
+                    Modification modification = modificationMapper.mapByName(evidenceModification.getModificationName());
 
                     peptideHasModification.setModification(modification);
                     peptideHasModifications.add(peptideHasModification);
                 } else if (evidenceModification.isCTerminal()) {
                     PeptideHasModification peptideHasModification = createPeptideHasModification(values.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE)).length() - 1, 100.0, 100.0, peptide);
 
-                    Modification modification = utilitiesModificationMapper.mapByName(evidenceModification.getModificationName());
+                    Modification modification = modificationMapper.mapByName(evidenceModification.getModificationName());
 
                     peptideHasModification.setModification(modification);
                     peptideHasModifications.add(peptideHasModification);

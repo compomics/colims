@@ -110,21 +110,6 @@ public interface OlsService {
     <T extends AbstractModification> T findModificationByAccession(final Class<T> clazz, final String accession) throws RestClientException, IOException;
 
     /**
-     * Find a modification by name and UNIMOD accession in the PSI-MOD ontology.
-     * This method tries to find the modification by name and checks whether the
-     * UNIMOD accession could be found in the Xref section (by using {@link
-     * java.lang.String#equalsIgnoreCase(String)}).
-     *
-     * @param <T> the AbstractModification subclass instance
-     * @param clazz the AbstractModification subclass (Modification or
-     * SearchModification)
-     * @param name the modification name
-     * @param unimodAccession the modification UNIMOD accession
-     * @return the found modification, null if nothing was found
-     */
-    <T extends AbstractModification> T findModificationByNameAndUnimodAccession(final Class<T> clazz, final String name, final String unimodAccession);
-
-    /**
      * Find an enzyme by name in the PSI-MOD ontology. This method uses
      * {@link java.lang.String#equalsIgnoreCase(String)} as comparison method.
      *

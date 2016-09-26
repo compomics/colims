@@ -2,7 +2,6 @@ package com.compomics.colims.distributed.io.peptideshaker;
 
 import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPeptideMapper;
@@ -247,7 +246,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
      * @return the mapped search and validation settings
      * @throws IOException thrown in case of an I/O related problem
      */
-    private SearchAndValidationSettings mapSearchSettings(final UnpackedPeptideShakerImport unpackedPeptideShakerImport, final AnalyticalRun analyticalRun, final FastaDb fastaDb) throws IOException, ModificationMappingException {
+    private SearchAndValidationSettings mapSearchSettings(final UnpackedPeptideShakerImport unpackedPeptideShakerImport, final AnalyticalRun analyticalRun, final FastaDb fastaDb) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings;
 
         CpsParent cpsParent = unpackedPeptideShakerImport.getCpsParent();

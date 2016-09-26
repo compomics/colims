@@ -1,6 +1,5 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
-import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.SearchAndValidationSettings;
@@ -64,11 +63,9 @@ public class UtilitiesSearchSettingsMapperTest {
      * Test the map method.
      *
      * @throws IOException thrown in case of an IO related problem.
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case
-     * of a modification mapping problem
      */
     @Test
-    public void testMap() throws IOException, ModificationMappingException {
+    public void testMap() throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDbs, searchParameters, false);
 
         Assert.assertNotNull(searchAndValidationSettings);

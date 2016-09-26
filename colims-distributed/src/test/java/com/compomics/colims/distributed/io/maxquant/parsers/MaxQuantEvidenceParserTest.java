@@ -1,6 +1,5 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.core.io.ModificationMappingException;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +73,7 @@ public class MaxQuantEvidenceParserTest {
 
     @Ignore
     @Test
-    public void testCreateSingleModification() throws ModificationMappingException {
+    public void testCreateSingleModification() {
 //        maxQuantEvidenceParser.clear();
 //
 //        Map<String, String> values = new HashMap<>();
@@ -95,7 +94,7 @@ public class MaxQuantEvidenceParserTest {
 
     @Ignore
     @Test
-    public void testCreateMultipleModifications() throws ModificationMappingException {
+    public void testCreateMultipleModifications() {
 //        maxQuantEvidenceParser.clear();
 //
 //        Map<String, String> values = new HashMap<>();

@@ -1,13 +1,12 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.TypedCvParamService;
+import com.compomics.colims.distributed.io.SearchModificationMapper;
 import com.compomics.colims.distributed.io.maxquant.FixedTabularFileIterator;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.headers.*;
-import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesPtmSettingsMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.*;
@@ -104,7 +103,7 @@ public class MaxQuantSearchSettingsParser {
     private final SearchAndValidationSettingsService searchAndValidationSettingsService;
     private final TypedCvParamService typedCvParamService;
     private final OlsService olsService;
-    private final UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
+    private final SearchModificationMapper searchModificationMapper;
 
     /**
      * Constructor.
@@ -115,11 +114,11 @@ public class MaxQuantSearchSettingsParser {
      * @param utilitiesPtmSettingsMapper
      * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
-    public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, TypedCvParamService typedCvParamService, OlsService olsService, UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper) throws IOException {
+    public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, TypedCvParamService typedCvParamService, OlsService olsService, SearchModificationMapper searchModificationMapper) throws IOException {
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.typedCvParamService = typedCvParamService;
         this.olsService = olsService;
-        this.utilitiesPtmSettingsMapper = utilitiesPtmSettingsMapper;
+        this.searchModificationMapper = searchModificationMapper;
         parametersHeaders = new ParametersHeaders();
         summaryHeaders = new SummaryHeaders();
         mqParHeaders = new MqParHeaders();
@@ -197,7 +196,7 @@ public class MaxQuantSearchSettingsParser {
      * @param storeFiles              whether data files should be stored with the experiment
      * @throws IOException in case of of an I/O related problem
      */
-    public void parse(Path combinedFolderDirectory, Path mqParFile, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles) throws IOException, ModificationMappingException, JDOMException {
+    public void parse(Path combinedFolderDirectory, Path mqParFile, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles) throws IOException, JDOMException {
         Path txtDirectory = Paths.get(combinedFolderDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         //parse the mxpar.xml file
         parseMqParFile(mqParFile);
@@ -231,7 +230,7 @@ public class MaxQuantSearchSettingsParser {
      * @return the mapped SearchAndValidationSettings instance
      * @throws IOException thrown in case of of an I/O related problem
      */
-    private SearchAndValidationSettings parseSearchSettings(Path maxQuantTxtDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles, String rawFileName) throws IOException, ModificationMappingException {
+    private SearchAndValidationSettings parseSearchSettings(Path maxQuantTxtDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles, String rawFileName) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         //set the FASTA databases entity associations
@@ -364,21 +363,20 @@ public class MaxQuantSearchSettingsParser {
      *
      * @param searchParameters the search parameters
      * @param rawFileName      the RAW file name
-     * @return list of SearchParametersHasModification object.
-     * @throws ModificationMappingException
+     * @return list of SearchParametersHasModification objects
      */
-    private List<SearchParametersHasModification> createModifications(SearchParameters searchParameters, String rawFileName) throws ModificationMappingException {
+    private List<SearchParametersHasModification> createModifications(SearchParameters searchParameters, String rawFileName) {
         List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
-        // find the name of fixed modification
+        // retrieve fixed modification names
         String fixedModifications = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.FIXED_MODIFICATIONS);
-        // find the name of variable modification
+        // retrieve the variable modification names
         String variableModifications = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.VARIABLE_MODIFICATIONS);
 
         if (fixedModifications != null && !fixedModifications.isEmpty()) {
             String[] split = fixedModifications.split(PARAMETER_DELIMITER);
             for (String modification : split) {
-                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, "");
-                SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(modification.split(MODIFICATION_NAME_ONLY)[0]);
+                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters);
+                SearchModification searchModification = searchModificationMapper.mapByName(modification.split(MODIFICATION_NAME_ONLY)[0]);
                 searchParametersHasModification.setModificationType(ModificationType.FIXED);
                 searchParametersHasModification.setSearchModification(searchModification);
                 searchParametersHasModifications.add(searchParametersHasModification);
@@ -388,9 +386,9 @@ public class MaxQuantSearchSettingsParser {
         if (variableModifications != null && !variableModifications.isEmpty()) {
             String[] modification = variableModifications.split(PARAMETER_DELIMITER);
             for (String aSplit : modification) {
-                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, "");
+                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters);
 
-                SearchModification searchModification = utilitiesPtmSettingsMapper.mapByName(aSplit.split(MODIFICATION_NAME_ONLY)[0]);
+                SearchModification searchModification = searchModificationMapper.mapByName(aSplit.split(MODIFICATION_NAME_ONLY)[0]);
 
                 searchParametersHasModification.setModificationType(ModificationType.VARIABLE);
                 searchParametersHasModification.setSearchModification(searchModification);
@@ -403,17 +401,16 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Create searchParametersHasModification instance
+     * Create a {@link SearchParametersHasModification} instance.
      *
      * @param searchParameters
      * @param residues
      * @return searchParametersHasModification instance
      */
-    private SearchParametersHasModification createSearchParametersHasModification(SearchParameters searchParameters, String residues) {
+    private SearchParametersHasModification createSearchParametersHasModification(SearchParameters searchParameters) {
         SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
 
         searchParametersHasModification.setSearchParameters(searchParameters);
-        searchParametersHasModification.setResidues(residues);
 
         return searchParametersHasModification;
     }
