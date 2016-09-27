@@ -1,5 +1,7 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.ontology.OntologyMapper;
+import com.compomics.colims.core.ontology.OntologyTerm;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.TypedCvParamService;
@@ -104,17 +106,20 @@ public class MaxQuantSearchSettingsParser {
     private final TypedCvParamService typedCvParamService;
     private final OlsService olsService;
     private final SearchModificationMapper searchModificationMapper;
+    private final Map<String, OntologyTerm> modificationMappings;
 
     /**
      * Constructor.
      *
      * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
-    public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, TypedCvParamService typedCvParamService, OlsService olsService, SearchModificationMapper searchModificationMapper) throws IOException {
+    public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, TypedCvParamService typedCvParamService, OlsService olsService, SearchModificationMapper searchModificationMapper, OntologyMapper ontologyMapper) throws IOException {
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.typedCvParamService = typedCvParamService;
         this.olsService = olsService;
         this.searchModificationMapper = searchModificationMapper;
+        //get the modification mappings from the OntologyMapper
+        modificationMappings = ontologyMapper.getMaxQuantMapping().getModifications();
         parametersHeaders = new ParametersHeaders();
         summaryHeaders = new SummaryHeaders();
         mqParHeaders = new MqParHeaders();
@@ -369,25 +374,18 @@ public class MaxQuantSearchSettingsParser {
         String variableModifications = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.VARIABLE_MODIFICATIONS);
 
         if (fixedModifications != null && !fixedModifications.isEmpty()) {
-            String[] split = fixedModifications.split(PARAMETER_DELIMITER);
-            for (String modification : split) {
-                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters);
-                SearchModification searchModification = searchModificationMapper.mapByName(modification.split(MODIFICATION_NAME_ONLY)[0]);
-                searchParametersHasModification.setModificationType(ModificationType.FIXED);
-                searchParametersHasModification.setSearchModification(searchModification);
+            String[] modifications = fixedModifications.split(PARAMETER_DELIMITER);
+            for (String modification : modifications) {
+                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, modification, ModificationType.FIXED);
+
                 searchParametersHasModifications.add(searchParametersHasModification);
             }
         }
 
         if (variableModifications != null && !variableModifications.isEmpty()) {
-            String[] modification = variableModifications.split(PARAMETER_DELIMITER);
-            for (String aSplit : modification) {
-                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters);
-
-                SearchModification searchModification = searchModificationMapper.mapByName(aSplit.split(MODIFICATION_NAME_ONLY)[0]);
-
-                searchParametersHasModification.setModificationType(ModificationType.VARIABLE);
-                searchParametersHasModification.setSearchModification(searchModification);
+            String[] modifications = variableModifications.split(PARAMETER_DELIMITER);
+            for (String modification : modifications) {
+                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, modification, ModificationType.VARIABLE);
 
                 searchParametersHasModifications.add(searchParametersHasModification);
             }
@@ -400,12 +398,27 @@ public class MaxQuantSearchSettingsParser {
      * Create a {@link SearchParametersHasModification} instance.
      *
      * @param searchParameters
-     * @param residues
      * @return searchParametersHasModification instance
      */
-    private SearchParametersHasModification createSearchParametersHasModification(SearchParameters searchParameters) {
+    private SearchParametersHasModification createSearchParametersHasModification(SearchParameters searchParameters, String modificationName, ModificationType modificationType) {
         SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
 
+        SearchModification searchModification;
+        //look for the modification in the mapping file
+        if (modificationMappings.containsKey(modificationName)) {
+            OntologyTerm modificationTerm = modificationMappings.get(modificationName);
+            searchModification = searchModificationMapper.mapByOntologyTerm(
+                    modificationTerm.getOntologyPrefix(),
+                    modificationTerm.getOboId(),
+                    modificationTerm.getLabel());
+        } else {
+            searchModification = searchModificationMapper.mapByName(modificationName.split(MODIFICATION_NAME_ONLY)[0]);
+        }
+
+        searchParametersHasModification.setModificationType(modificationType);
+
+        //set entity relation
+        searchParametersHasModification.setSearchModification(searchModification);
         searchParametersHasModification.setSearchParameters(searchParameters);
 
         return searchParametersHasModification;
