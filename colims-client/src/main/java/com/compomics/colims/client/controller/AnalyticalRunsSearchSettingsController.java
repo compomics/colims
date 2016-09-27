@@ -282,7 +282,7 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
                     analyticalRunsSearchSettingsDialog.getFastaNameTextField().setText(fastaDb.getFastaDb().getFileName());
                 }
             });
-            analyticalRunsSearchSettingsDialog.getEnzymeTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getEnzyme().getName());
+            analyticalRunsSearchSettingsDialog.getEnzymeTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getEnzymes());
             analyticalRunsSearchSettingsDialog.getMaxMissedCleTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getNumberOfMissedCleavages().toString());
             analyticalRunsSearchSettingsDialog.getPreMasTolTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance().toString());
         } else {

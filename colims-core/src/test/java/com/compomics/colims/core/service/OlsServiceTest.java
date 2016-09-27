@@ -2,6 +2,7 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.core.ontology.ols.Ontology;
 import com.compomics.colims.core.ontology.ols.OlsSearchResult;
+import com.compomics.colims.core.ontology.ols.OntologyTerm;
 import com.compomics.colims.core.ontology.ols.SearchResultMetadata;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.SearchModification;
@@ -216,7 +217,7 @@ public class OlsServiceTest {
     @Test
     public void testFindEnzymeByName() throws RestClientException, IOException {
         //try to find a non existing enzyme
-        TypedCvParam enzyme = olsService.findEnzymeByName("Non existing enzyme");
+        OntologyTerm enzyme = olsService.findEnzymeByName("Non existing enzyme");
 
         Assert.assertNull(enzyme);
 
@@ -224,14 +225,14 @@ public class OlsServiceTest {
         enzyme = olsService.findEnzymeByName("trypsin");
 
         Assert.assertNotNull(enzyme);
-        Assert.assertEquals("MS:1001251", enzyme.getAccession());
-        Assert.assertEquals("Trypsin", enzyme.getName());
+        Assert.assertEquals("MS:1001251", enzyme.getOboId());
+        Assert.assertEquals("Trypsin", enzyme.getLabel());
 
         //try to find an existing enzyme (upper case)
         enzyme = olsService.findEnzymeByName("TRYPSIN");
 
         Assert.assertNotNull(enzyme);
-        Assert.assertEquals("MS:1001251", enzyme.getAccession());
-        Assert.assertEquals("Trypsin", enzyme.getName());
+        Assert.assertEquals("MS:1001251", enzyme.getOboId());
+        Assert.assertEquals("Trypsin", enzyme.getLabel());
     }
 }

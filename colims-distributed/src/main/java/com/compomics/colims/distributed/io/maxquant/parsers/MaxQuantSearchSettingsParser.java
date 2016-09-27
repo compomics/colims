@@ -57,11 +57,13 @@ public class MaxQuantSearchSettingsParser {
     private static final String PARAM_GROUP_INDICES = "paramgroupindices";
     private static final String PARAMETER_GROUPS = "parametergroups";
     private static final String PARAMETER_DELIMITER = ";";
+    private static final String PPM = "ppm";
+    private static final String DALTON = "da";
 
     /**
      * The MaxQuant version.
      */
-    private String version = "N/A";
+    private String version = NOT_APPLICABLE;
     /**
      * The experiment multiplicity.
      */
@@ -114,7 +116,8 @@ public class MaxQuantSearchSettingsParser {
      * @param searchAndValidationSettingsService
      * @param typedCvParamService
      * @param olsService
-     * @param utilitiesPtmSettingsMapper
+     * @param searchModificationMapper
+     * @param ontologyMapper
      * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
     public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, TypedCvParamService typedCvParamService, OlsService olsService, SearchModificationMapper searchModificationMapper, OntologyMapper ontologyMapper) throws IOException {
@@ -189,6 +192,10 @@ public class MaxQuantSearchSettingsParser {
      */
     public void clear() {
         runSettings.clear();
+        mqParParamsWithRawFile.clear();
+        analyticalRuns.clear();
+        isobaricLabels.clear();
+        labelMods.clear();
         multiplicity = null;
     }
 
@@ -202,6 +209,9 @@ public class MaxQuantSearchSettingsParser {
      * @throws IOException in case of of an I/O related problem
      */
     public void parse(Path combinedFolderDirectory, Path mqParFile, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles) throws IOException, JDOMException {
+        multiplicity = null;
+        runSettings.clear();
+
         Path txtDirectory = Paths.get(combinedFolderDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         //parse the mxpar.xml file
         parseMqParFile(mqParFile);
@@ -260,19 +270,19 @@ public class MaxQuantSearchSettingsParser {
         String versionParameter = parameters.get(parametersHeaders.get(ParametersHeader.VERSION));
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
             version = versionParameter;
+        } else {
+            version = NOT_APPLICABLE;
         }
 
         //precursor mass tolerance and unit
         String precursorMassToleranceString = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE);
         searchParameters.setPrecMassTolerance(Double.parseDouble(precursorMassToleranceString));
 
-        String massToleranceUnit;
+        String massToleranceUnit = null;
         if (mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("true")) {
-            massToleranceUnit = "ppm";
+            massToleranceUnit = PPM;
         } else if (mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("false")) {
-            massToleranceUnit = "da";
-        } else {
-            massToleranceUnit = "";
+            massToleranceUnit = DALTON;
         }
         searchParameters.setPrecMassToleranceUnit(MassAccuracyType.valueOf(massToleranceUnit.toUpperCase(Locale.ENGLISH)));
 
@@ -283,9 +293,9 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setFragMassToleranceUnit(MassAccuracyType.valueOf(massToleranceUnit.toUpperCase(Locale.ENGLISH)));
 
         //enzyme
-        TypedCvParam enzyme = mapEnzyme(mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.ENZYMES));
-        if (enzyme != null) {
-            searchParameters.setEnzyme((SearchCvParam) enzyme);
+        String enzymes = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.ENZYMES);
+        if (enzymes != null) {
+            searchParameters.setEnzymes(enzymes);
         }
 
         //missed cleavages
@@ -326,40 +336,6 @@ public class MaxQuantSearchSettingsParser {
         } else {
             throw new IllegalStateException("The default search type CV term was not found in the database.");
         }
-    }
-
-    /**
-     * Map the given MaxQuant Enzyme instance to a TypedCvParam instance.
-     * Returns null if no mapping was possible.
-     *
-     * @param maxQuantEnzyme the MaxQuant enzyme
-     * @return the TypedCvParam instance
-     */
-    private TypedCvParam mapEnzyme(final String maxQuantEnzyme) {
-        TypedCvParam enzyme;
-
-        //look for the enzyme in the database
-        enzyme = typedCvParamService.findByName(maxQuantEnzyme, CvParamType.SEARCH_PARAM_ENZYME, true);
-
-        if (enzyme == null) {
-            try {
-                //the enzyme was not found by name in the database
-                //look for the enzyme in the MS ontology by name
-                enzyme = olsService.findEnzymeByName(maxQuantEnzyme);
-            } catch (RestClientException | IOException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-            }
-
-            if (enzyme == null) {
-                //the enzyme was not found by name in the MS ontology
-                enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, maxQuantEnzyme);
-            }
-
-            //persist the newly created enzyme
-            typedCvParamService.persist(enzyme);
-        }
-
-        return enzyme;
     }
 
     /**
@@ -436,6 +412,11 @@ public class MaxQuantSearchSettingsParser {
      * @throws IOException   in case of an problem with the mqpar.xml file
      */
     private void parseMqParFile(Path mqParFile) throws JDOMException, IOException {
+        mqParParamsWithRawFile.clear();
+        analyticalRuns.clear();
+        isobaricLabels.clear();
+        labelMods.clear();
+
         // create a map to hold raw files for each run (key: group index; value: raw file).
         Map<Integer, String> rawFilePath = new HashMap<>();
         //create a map to hold raw file groups for each run (key: group index; value: group number).

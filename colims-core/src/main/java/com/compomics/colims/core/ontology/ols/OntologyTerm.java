@@ -24,7 +24,6 @@ public class OntologyTerm {
     private String ontologyNamespace;
     @JsonProperty(value = "ontology_prefix")
     private String ontologyPrefix;
-    private String ontologyTitle;
     @JsonProperty(value = "short_form")
     private String shortForm;
     @JsonProperty(value = "obo_id")
@@ -64,14 +63,6 @@ public class OntologyTerm {
         return ontologyPrefix;
     }
 
-    public String getOntologyTitle() {
-        return ontologyTitle;
-    }
-
-    public void setOntologyTitle(String ontologyTitle) {
-        this.ontologyTitle = ontologyTitle;
-    }
-
     public String getShortForm() {
         return shortForm;
     }
@@ -96,7 +87,6 @@ public class OntologyTerm {
         this.description = ontologyTermToCopy.getDescription();
         this.ontologyNamespace = ontologyTermToCopy.getOntologyNamespace();
         this.ontologyPrefix = ontologyTermToCopy.getOntologyPrefix();
-        this.ontologyTitle = ontologyTermToCopy.getOntologyTitle();
         this.oboId = ontologyTermToCopy.getOboId();
         this.shortForm = ontologyTermToCopy.shortForm;
     }
