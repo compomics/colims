@@ -7,7 +7,7 @@ package com.compomics.colims.repository;
 import com.compomics.colims.model.QuantificationMethodCvParam;
 
 /**
- * This interface provides repository methods for the QuantificationParameters class.
+ * This interface provides repository methods for the QuantificationMethodCvParam class.
  *
  * @author Niels Hulstaert
  */

@@ -61,7 +61,7 @@ public class FastaDbSaveUpdateController implements Controllable {
     /**
      * The default taxonomy value for the taxonomy combo box.
      */
-    private static final TaxonomyCvParam TAXONOMY_CV_PARAM_NONE = new TaxonomyCvParam("none", "none", "none", "none");
+    private static final TaxonomyCvParam TAXONOMY_CV_PARAM_NONE = new TaxonomyCvParam("none", "none", "none");
     /**
      * List to hold map of parse rule and explanation.
      */

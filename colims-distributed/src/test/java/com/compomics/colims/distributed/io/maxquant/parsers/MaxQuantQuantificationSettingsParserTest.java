@@ -41,7 +41,7 @@ public class MaxQuantQuantificationSettingsParserTest {
         analyticalRuns.add(analyticalRun2);
         String experimentLabel = "TMT";
         List<String> reagents = new ArrayList<>();
-        reagents.add("TMT reagent 126");
+        reagents.add("TMT2plex-Lys126");
         
         maxQuantQuantificationSettingsParser.parse(analyticalRuns, experimentLabel, reagents);
         
@@ -55,7 +55,7 @@ public class MaxQuantQuantificationSettingsParserTest {
     @Test
     public void testCreateQuantificationReagent(){
         QuantificationMethodCvParam quantificationMethodCvParam = new QuantificationMethodCvParam("PRIDE", "PRIDE:0000315", "SILAC", null);
-        String experimentLabel = "TMT";
+        String experimentLabel = "SILAC";
         List<String> reagents = new ArrayList<>();
         reagents.add("SILAC heavy");
         reagents.add("SILAC light");

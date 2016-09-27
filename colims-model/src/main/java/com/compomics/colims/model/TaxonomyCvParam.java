@@ -24,13 +24,12 @@ public class TaxonomyCvParam extends CvParam {
     /**
      * Constructor.
      *
-     * @param ontology the ontology name
      * @param label the ontology label
      * @param accession the CV term accession
      * @param name the CV term name
      */
-    public TaxonomyCvParam(final String ontology, final String label, final String accession, final String name) {
-        super(ontology, label, accession, name);
+    public TaxonomyCvParam(final String label, final String accession, final String name) {
+        super(label, accession, name);
     }
 
 }

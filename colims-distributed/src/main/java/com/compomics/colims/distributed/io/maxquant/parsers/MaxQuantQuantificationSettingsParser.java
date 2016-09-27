@@ -7,11 +7,11 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.OntologyTerm;
+import com.compomics.colims.core.service.QuantificationReagentService;
 import com.compomics.colims.core.service.QuantificationSettingsService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -44,11 +44,12 @@ public class MaxQuantQuantificationSettingsParser {
 
     private final OntologyMapper ontologyMapper;
     private final QuantificationSettingsService quantificationSettingsService;
+    private final QuantificationReagentService quantificationReagentService;
 
-    @Autowired
-    public MaxQuantQuantificationSettingsParser(QuantificationSettingsService quantificationSettingsService, OntologyMapper ontologyMapper) {
+    public MaxQuantQuantificationSettingsParser(QuantificationSettingsService quantificationSettingsService, OntologyMapper ontologyMapper, QuantificationReagentService quantificationReagentService) {
         this.quantificationSettingsService = quantificationSettingsService;
         this.ontologyMapper = ontologyMapper;
+        this.quantificationReagentService = quantificationReagentService;
     }
 
     /**
@@ -75,6 +76,7 @@ public class MaxQuantQuantificationSettingsParser {
         QuantificationMethodCvParam quantificationMethodCvParam =
                 new QuantificationMethodCvParam(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
         quantificationMethodCvParam.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethodCvParam, quantificationLabel, reagents));
+        // check if quantificationMethodCvParam is in the db
         quantificationMethodCvParam = quantificationSettingsService.getQuantificationMethodCvParams(quantificationMethodCvParam);
         // create quantificationSettings
         QuantificationSettings quantificationSettings = new QuantificationSettings();
@@ -109,17 +111,13 @@ public class MaxQuantQuantificationSettingsParser {
                 QuantificationReagent quantificationReagent =
                     new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
 
+                // check if quantificationReagent is in the db
+                quantificationReagent = quantificationReagentService.getQuantificationReagent(quantificationReagent);
+
                 quantificationMethodHasReagent.setQuantificationReagent(quantificationReagent);
                 quantificationMethodHasReagent.setQuantificationMethodCvParam(quantificationMethodCvParam);
                 quantificationMethodHasReagents.add(quantificationMethodHasReagent);
             }
-
-            QuantificationReagent quantificationReagent =
-                    new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
-
-            quantificationMethodHasReagent.setQuantificationReagent(quantificationReagent);
-            quantificationMethodHasReagent.setQuantificationMethodCvParam(quantificationMethodCvParam);
-            quantificationMethodHasReagents.add(quantificationMethodHasReagent);
         });
 
         return quantificationMethodHasReagents;

@@ -111,6 +111,10 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Constructor.
      *
+     * @param searchAndValidationSettingsService
+     * @param typedCvParamService
+     * @param olsService
+     * @param utilitiesPtmSettingsMapper
      * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
     public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, TypedCvParamService typedCvParamService, OlsService olsService, SearchModificationMapper searchModificationMapper, OntologyMapper ontologyMapper) throws IOException {

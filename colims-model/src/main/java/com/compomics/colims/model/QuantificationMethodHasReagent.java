@@ -33,7 +33,7 @@ public class QuantificationMethodHasReagent extends DatabaseEntity{
      * The QuantificationMethodCvParam instance of this join entity.
      */
     @JoinColumn(name = "l_quantification_reagent_id", referencedColumnName = "id")
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(cascade=CascadeType.MERGE)
     private QuantificationReagent quantificationReagent;
 
     public QuantificationMethodHasReagent() {

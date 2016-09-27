@@ -68,7 +68,7 @@ public class MaxQuantProteinGroupsParser {
 
             ProteinGroup proteinGroup = parseProteinGroup(values, parsedFastas, includeContaminants, optionalHeaders);
             if (proteinGroup.getMainProtein() != null) {
-                proteinGroups.put(Integer.parseInt(values.get(ProteinGroupsHeader.ID.toString())), proteinGroup);
+                proteinGroups.put(Integer.parseInt(values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))), proteinGroup);
             }
         }
 
@@ -93,11 +93,11 @@ public class MaxQuantProteinGroupsParser {
     private ProteinGroup parseProteinGroup(Map<String, String> proteinGroupsEntry, Map<String, String> parsedFastas, boolean includeContaminants, List<String> optionalHeaders) {
         ProteinGroup proteinGroup = new ProteinGroup();
 
-        if (proteinGroupsEntry.get(ProteinGroupsHeader.PEP.toString()) != null) {
-            proteinGroup.setProteinPostErrorProbability(Double.parseDouble(proteinGroupsEntry.get(ProteinGroupsHeader.PEP.toString())));
+        if (proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.PEP)) != null) {
+            proteinGroup.setProteinPostErrorProbability(Double.parseDouble(proteinGroupsHeaders.get(ProteinGroupsHeader.PEP)));
         }
 
-        String parsedAccession = proteinGroupsEntry.get(ProteinGroupsHeader.ACCESSION.toString());
+        String parsedAccession = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ACCESSION));
         List<String> filteredAccessions = new ArrayList<>();
 
         boolean omittedProteinGroup = false;
@@ -145,7 +145,7 @@ public class MaxQuantProteinGroupsParser {
                     }
                 }
             } else {
-                omittedProteinGroupIds.add(proteinGroupsEntry.get(ProteinGroupsHeader.ID.toString()));
+                omittedProteinGroupIds.add(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID)));
             }
 
         } else {
@@ -153,7 +153,7 @@ public class MaxQuantProteinGroupsParser {
                 if (!parsedAccession.contains("REV") && !parsedAccession.contains("CON")) {
                     proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequenceInFasta(parsedAccession, parsedFastas), parsedAccession, true, proteinGroup));
                 } else {
-                    omittedProteinGroupIds.add(proteinGroupsEntry.get(ProteinGroupsHeader.ID.toString()));
+                    omittedProteinGroupIds.add(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID)));
                     omittedProteinGroup = true;
                 }
             } else {
@@ -164,7 +164,7 @@ public class MaxQuantProteinGroupsParser {
                     }
                     proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequenceInFasta(accToSearchSeq, parsedFastas), parsedAccession, true, proteinGroup));
                 } else {
-                    omittedProteinGroupIds.add(proteinGroupsEntry.get(ProteinGroupsHeader.ID.toString()));
+                    omittedProteinGroupIds.add(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID)));
                     omittedProteinGroup = true;
                 }
             }
@@ -174,13 +174,13 @@ public class MaxQuantProteinGroupsParser {
         if (!omittedProteinGroup) {
             maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> {
 
-                String intensity = proteinGroupsEntry.get(ProteinGroupsHeader.INTENSITY + " " + v.toLowerCase());
+                String intensity = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY) + " " + v.toLowerCase());
 
-                String lfqIntensity = proteinGroupsEntry.get(ProteinGroupsHeader.LFQ_INTENSITY + " " + v.toLowerCase());
+                String lfqIntensity = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.LFQ_INTENSITY) + " " + v.toLowerCase());
 
-                String ibaq = proteinGroupsEntry.get(ProteinGroupsHeader.IBAQ + " " + v.toLowerCase());
+                String ibaq = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.IBAQ) + " " + v.toLowerCase());
 
-                String msmsCount = proteinGroupsEntry.get(ProteinGroupsHeader.MSMS_COUNT + " " + v.toLowerCase());
+                String msmsCount = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.MSMS_COUNT) + " " + v.toLowerCase());
 
                 if (intensity != null || lfqIntensity != null || ibaq != null || msmsCount != null) {
                     createProteinGroupQuant(proteinGroup, k, intensity, lfqIntensity, ibaq, msmsCount);
@@ -324,7 +324,7 @@ public class MaxQuantProteinGroupsParser {
     private void parseLabeledQuantification(Map<String, String> values, ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String experimentName,
             List<String> optionalHeaders) {
         for (int i = 0; i < 10; i++) {
-            String reporterIntensityCorrected = values.get(ProteinGroupsHeader.REPORTER_INTENSITY_CORRECTED + " " + i + " " + experimentName);
+            String reporterIntensityCorrected = values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.REPORTER_INTENSITY_CORRECTED) + " " + i + " " + experimentName);
 
             if (reporterIntensityCorrected != null && NumberUtils.isNumber(reporterIntensityCorrected) && maxQuantSearchSettingsParser.getIsobaricLabels().size() >= i + 1) {
                 if (maxQuantSearchSettingsParser.getIsobaricLabels().get(i) != null) {
@@ -335,9 +335,9 @@ public class MaxQuantProteinGroupsParser {
             }
         }
 
-        String intensityL = values.get(ProteinGroupsHeader.INTENSITY_L + " " + experimentName);
-        String intensityM = values.get(ProteinGroupsHeader.INTENSITY_M + " " + experimentName);
-        String intensityH = values.get(ProteinGroupsHeader.INTENSITY_H + " " + experimentName);
+        String intensityL = values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_L) + " " + experimentName);
+        String intensityM = values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_M) + " " + experimentName);
+        String intensityH = values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_H) + " " + experimentName);
         // if there are 3 label mods, we have 3 sample experiment (L, M, H).
         // if 2, we have 2 sample experiment (L, H). There is no 1 sample option for SILAC.
         if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {

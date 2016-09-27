@@ -1,5 +1,4 @@
 use colims;
-      
 
     create table colims.analytical_run (
         id bigint not null auto_increment,
