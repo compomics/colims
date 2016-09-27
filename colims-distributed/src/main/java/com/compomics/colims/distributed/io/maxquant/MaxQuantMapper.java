@@ -5,13 +5,11 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
-import com.compomics.colims.distributed.io.QuantificationSettingsMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantQuantificationSettingsParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
-import com.compomics.colims.model.enums.QuantificationEngineType;
 import org.apache.log4j.Logger;
 import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,19 +34,16 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
     private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
     private final MaxQuantParser maxQuantParser;
-    private final QuantificationSettingsMapper quantificationSettingsMapper;
     private final MaxQuantQuantificationSettingsParser maxQuantQuantificationSettingsParser;
     private final FastaDbService fastaDbService;
 
     @Autowired
     public MaxQuantMapper(MaxQuantSearchSettingsParser maxQuantSearchSettingsParser,
                           MaxQuantParser maxQuantParser,
-                          QuantificationSettingsMapper quantificationSettingsMapper,
                           MaxQuantQuantificationSettingsParser maxQuantQuantificationSettingsParser,
                           FastaDbService fastaDbService) {
         this.maxQuantSearchSettingsParser = maxQuantSearchSettingsParser;
         this.maxQuantParser = maxQuantParser;
-        this.quantificationSettingsMapper = quantificationSettingsMapper;
         this.maxQuantQuantificationSettingsParser = maxQuantQuantificationSettingsParser;
         this.fastaDbService = fastaDbService;
     }
@@ -56,6 +51,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     @Override
     public void clear() {
         maxQuantSearchSettingsParser.clear();
+        maxQuantQuantificationSettingsParser.clear();
         maxQuantParser.clear();
     }
 
@@ -127,7 +123,6 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             // link quantification settings to analytical run
             analyticalRuns.forEach(analyticalRun -> {
                 analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun));
-                maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun).setAnalyticalRun(analyticalRun);
             });
 
         } catch (IOException | UnparseableException | MappingException ex) {
@@ -169,24 +164,5 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         }
 
         return spectrum;
-    }
-
-    /**
-     * Map the quantification settings.
-     *
-     * @param analyticalRun the AnalyticalRun instance onto the quantification settings will be mapped
-     * @return the imported QuantificationSettings instance
-     * @throws IOException thrown in case of an I/O related problem
-     */
-    private QuantificationSettings importQuantSettings(final AnalyticalRun analyticalRun) throws IOException {
-        QuantificationSettings quantificationSettings;
-
-        QuantificationMethodCvParam params = new QuantificationMethodCvParam();
-
-        quantificationSettings = quantificationSettingsMapper.map(QuantificationEngineType.MAXQUANT, maxQuantSearchSettingsParser.getVersion(), params);
-
-        quantificationSettings.setAnalyticalRun(analyticalRun);
-
-        return quantificationSettings;
     }
 }

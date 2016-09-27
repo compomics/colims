@@ -49,7 +49,7 @@ public class QuantificationMethodCvParamHibernateRepository extends GenericHiber
             }
             
             //check value
-            if(!exampleInstance.getValue().equals(quantificationMethodCvParam.getValue())){
+            if(!(exampleInstance.getValue() == null && quantificationMethodCvParam.getValue() == null) && !exampleInstance.getValue().equals(quantificationMethodCvParam.getValue())){
                 iterator.remove();
                 continue;
             }

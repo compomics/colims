@@ -83,7 +83,12 @@ public class MaxQuantQuantificationSettingsParser {
         quantificationSettings.setQuantificationMethodCvParam(quantificationMethodCvParam);
         quantificationSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(QuantificationEngineType.MAXQUANT, version));
         analyticalRuns.forEach(analyticalRun -> {
-            runsAndQuantificationSettings.put(analyticalRun, quantificationSettings);
+            QuantificationSettings quantSettings = new QuantificationSettings();
+            quantSettings.setAnalyticalRun(analyticalRun);
+            quantSettings.setQuantificationMethodCvParam(quantificationSettings.getQuantificationMethodCvParam());
+            quantSettings.setQuantificationEngine(quantificationSettings.getQuantificationEngine());
+            runsAndQuantificationSettings.put(analyticalRun, quantSettings);
+            
         });
     }
 
@@ -121,5 +126,11 @@ public class MaxQuantQuantificationSettingsParser {
         });
 
         return quantificationMethodHasReagents;
+    }
+    /**
+     * Clear resources
+     */
+    public void clear(){
+        runsAndQuantificationSettings.clear();
     }
 }
