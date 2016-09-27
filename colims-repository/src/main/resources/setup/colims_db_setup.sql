@@ -1,5 +1,6 @@
 use colims;
 
+
     create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
@@ -458,7 +459,6 @@ use colims;
     create table colims.search_params_has_modification (
         id bigint not null auto_increment,
         modification_type integer,
-        residues varchar(255),
         l_search_modification_id bigint,
         l_search_parameters_id bigint,
         primary key (id)

@@ -310,12 +310,6 @@ public class OlsServiceImpl implements OlsService {
     }
 
     @Override
-    public <T extends AbstractModification> T findModificationByNameAndUnimodAccession(final Class<T> clazz, final String name, final String unimodAccession) {
-        //@// TODO: 29/03/16 implement this as soon as this is available in the new OLS service
-        return null;
-    }
-
-    @Override
     public TypedCvParam findEnzymeByName(String name) throws RestClientException, IOException {
         TypedCvParam enzyme = null;
 
@@ -359,7 +353,7 @@ public class OlsServiceImpl implements OlsService {
      * @param clazz           the AbstractModification subclass (Modification or SearchModification)
      * @param psiModAccession the PSI MOD accession of the modification
      * @param <T>             the AbstractModification subclass instance
-     * @return
+     * @return the found modification
      * @throws IOException              in case of an I/O related problem
      * @throws HttpClientErrorException in case of a HTTP 4xx error was received
      */

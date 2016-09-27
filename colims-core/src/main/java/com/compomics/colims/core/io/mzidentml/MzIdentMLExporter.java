@@ -310,8 +310,6 @@ public class MzIdentMLExporter {
                 mzSearchMod.setFixedMod(searchHasMod.getModificationType() == ModificationType.FIXED);
                 mzSearchMod.setMassDelta(colimsSearchMod.getAverageMassShift().floatValue());
 
-                mzSearchMod.getResidues().addAll(Arrays.asList(searchHasMod.getResidues().split("")));
-
                 mzSearchMod.getCvParam().add(modificationToCvParam(colimsSearchMod));
 
                 spectrumProtocol.getModificationParams().getSearchModification().add(mzSearchMod);

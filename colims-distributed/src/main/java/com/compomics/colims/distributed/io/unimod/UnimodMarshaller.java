@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * This class is used to marshall and access the UNIMOD modifications from the unimod.xml file.
@@ -32,12 +33,36 @@ public class UnimodMarshaller {
 
     /**
      * This maps holds the modifications from the parsed UNIMOD .xml file. This map can contains instances of {@link
-     * com.compomics.colims.model.Modification} and {@link com.compomics.colims.model.SearchModification}.
+     * com.compomics.colims.model.Modification} and {@link com.compomics.colims.model.SearchModification}. The key is
+     * UNIMOD accession.
      */
     private final java.util.Map<String, AbstractModification> modifications = new HashMap<>();
 
     public Map<String, AbstractModification> getModifications() {
         return modifications;
+    }
+
+    /**
+     * Get the modification by accession. Returns null if nothing was found.
+     *
+     * @param clazz     the AbstractModification subclass (Modification or SearchModification)
+     * @param accession the modification accession
+     * @param <T>       AbstractModification subclass
+     * @return the found search modification, null if nothing was found
+     */
+    public <T extends AbstractModification> T getModificationByAccession(Class<T> clazz, String accession) {
+        T modification = null;
+
+        if (modifications.containsKey(accession)) {
+            AbstractModification foundModification = modifications.get(accession);
+            if (clazz.isInstance(foundModification)) {
+                modification = (T) foundModification;
+            } else {
+                modification = copyModification(clazz, foundModification);
+            }
+        }
+
+        return modification;
     }
 
     /**
@@ -51,12 +76,18 @@ public class UnimodMarshaller {
     public <T extends AbstractModification> T getModificationByName(Class<T> clazz, String name) {
         T modification = null;
 
-        if (modifications.containsKey(name)) {
-            AbstractModification foundModification = modifications.get(name);
-            if (clazz.isInstance(foundModification)) {
-                modification = (T) foundModification;
+        Optional<AbstractModification> foundModification = modifications
+                .values()
+                .stream()
+                .filter(abstractModification -> abstractModification.getName().equals(name))
+                .findFirst();
+
+        if (foundModification.isPresent()) {
+            AbstractModification abstractModification = foundModification.get();
+            if (clazz.isInstance(abstractModification)) {
+                modification = (T) abstractModification;
             } else {
-                modification = copyModification(clazz, foundModification);
+                modification = copyModification(clazz, abstractModification);
             }
         }
 
@@ -67,42 +98,38 @@ public class UnimodMarshaller {
      * This method marshals the UNIMOD file and puts all modifications in the map for later usage.
      *
      * @throws JDOMException top level exception that can be thrown in case of a problem in the JDOM classes.
+     * @throws IOException   in case of a problem with the unimod.xml recource
      */
     @PostConstruct
-    private void marshal() throws JDOMException {
+    private void marshal() throws JDOMException, IOException {
         Resource unimodResource = new ClassPathResource("unimod/unimod.xml");
         SAXBuilder builder = new SAXBuilder();
 
         Document document;
-        try {
-            document = builder.build(unimodResource.getInputStream());
+        document = builder.build(unimodResource.getInputStream());
 
-            Element root = document.getRootElement();
-            //get the modifications element
-            Element modificationsElement = root.getChild("modifications", NAMESPACE);
+        Element root = document.getRootElement();
+        //get the modifications element
+        Element modificationsElement = root.getChild("modifications", NAMESPACE);
 
-            for (Element modificationElement : modificationsElement.getChildren("mod", NAMESPACE)) {
-                //get the mod name and record ID
-                Attribute title = modificationElement.getAttribute("title");
-                Attribute record = modificationElement.getAttribute("record_id");
+        for (Element modificationElement : modificationsElement.getChildren("mod", NAMESPACE)) {
+            //get the mod name and record ID
+            Attribute title = modificationElement.getAttribute("title");
+            Attribute record = modificationElement.getAttribute("record_id");
 
-                SearchModification searchModification = new SearchModification(title.getValue());
-                //set the accession
-                searchModification.setAccession(String.format(UNIMOD_ACCESSION, record.getIntValue()));
+            SearchModification searchModification = new SearchModification(title.getValue());
+            //set the accession
+            searchModification.setAccession(String.format(UNIMOD_ACCESSION, record.getIntValue()));
 
-                //get the mono isotopic and average mass shift
-                Element delta = modificationElement.getChild("delta", NAMESPACE);
-                Attribute monoIsotopicMassShift = delta.getAttribute("mono_mass");
-                Attribute averageMassShift = delta.getAttribute("avge_mass");
+            //get the mono isotopic and average mass shift
+            Element delta = modificationElement.getChild("delta", NAMESPACE);
+            Attribute monoIsotopicMassShift = delta.getAttribute("mono_mass");
+            Attribute averageMassShift = delta.getAttribute("avge_mass");
 
-                searchModification.setMonoIsotopicMassShift(monoIsotopicMassShift.getDoubleValue());
-                searchModification.setAverageMassShift(averageMassShift.getDoubleValue());
+            searchModification.setMonoIsotopicMassShift(monoIsotopicMassShift.getDoubleValue());
+            searchModification.setAverageMassShift(averageMassShift.getDoubleValue());
 
-                modifications.put(searchModification.getName(), searchModification);
-            }
-
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            modifications.put(searchModification.getAccession(), searchModification);
         }
 
     }

@@ -1,6 +1,5 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
-import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.util.experiment.biology.Enzyme;
@@ -28,10 +27,9 @@ public class UtilitiesSearchParametersMapperTest {
 
     /**
      * Test the mapping of Utilities SearchParameters to Colims SearchParameters.
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case of a modification mapping problem
      */
     @Test
-    public void testMapSearchParameters() throws ModificationMappingException {
+    public void testMapSearchParameters() {
         //create SearchParameters
         com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters = new com.compomics.util.experiment.identification.identification_parameters.SearchParameters();
         Enzyme enzyme = new Enzyme(1, "trypsin", "A", "A", "A", "A");

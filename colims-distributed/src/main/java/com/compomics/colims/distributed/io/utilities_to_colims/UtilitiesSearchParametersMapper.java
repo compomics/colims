@@ -1,16 +1,23 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.Mapper;
-import com.compomics.colims.core.io.ModificationMappingException;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.TypedCvParamService;
+import com.compomics.colims.distributed.io.SearchModificationMapper;
 import com.compomics.colims.model.SearchCvParam;
+import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.compomics.util.experiment.biology.Enzyme;
+import com.compomics.util.experiment.biology.PTM;
+import com.compomics.util.experiment.biology.PTMFactory;
+import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.pride.CvTerm;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,7 +52,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     /**
      * The Utilities PTM settings mapper.
      */
-    private final UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper;
+    private final SearchModificationMapper searchModificationMapper;
     /**
      * The TypedCvParam class service.
      */
@@ -56,8 +63,8 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     private final OlsService olsService;
 
     @Autowired
-    public UtilitiesSearchParametersMapper(UtilitiesPtmSettingsMapper utilitiesPtmSettingsMapper, TypedCvParamService typedCvParamService, OlsService olsService) {
-        this.utilitiesPtmSettingsMapper = utilitiesPtmSettingsMapper;
+    public UtilitiesSearchParametersMapper(SearchModificationMapper searchModificationMapper, TypedCvParamService typedCvParamService, OlsService olsService) {
+        this.searchModificationMapper = searchModificationMapper;
         this.typedCvParamService = typedCvParamService;
         this.olsService = olsService;
     }
@@ -66,12 +73,10 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      * Map the Utilities SearchParameters to the Colims SearchParameters.
      *
      * @param utilitiesSearchParameters the Utilities search parameters
-     * @param searchParameters the Colims search parameters
-     * @throws com.compomics.colims.core.io.ModificationMappingException in case
-     * of a modification mapping problem
+     * @param searchParameters          the Colims search parameters
      */
     @Override
-    public void map(com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) throws ModificationMappingException {
+    public void map(final com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) {
         //set the default search type
         searchParameters.setSearchType(defaultSearchType);
         //map Utilities enzyme to a TypedCvParam instance
@@ -101,8 +106,70 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
         //fragment ion type 2
         searchParameters.setSecondSearchedIonType(utilitiesSearchParameters.getIonSearched2());
 
-        //map the PTM settings
-        utilitiesPtmSettingsMapper.map(utilitiesSearchParameters.getPtmSettings(), searchParameters);
+        //map the search modifications
+        mapSearchModifications(utilitiesSearchParameters.getPtmSettings(), searchParameters);
+    }
+
+    /**
+     * Get the default search type from the database and assign it to the class
+     * field.
+     */
+    @PostConstruct
+    private void getDefaultSearchType() {
+        //look for the default search type in the database
+        TypedCvParam searchType = typedCvParamService.findByAccession(DEFAULT_SEARCH_TYPE_ACCESSION, CvParamType.SEARCH_TYPE);
+        if (searchType != null) {
+            defaultSearchType = (SearchCvParam) searchType;
+        } else {
+            throw new IllegalStateException("The default search type CV term was not found in the database.");
+        }
+    }
+
+    /**
+     * Map the utilities modification profile to the Colims search parameters.
+     * The Utilities PTMs are matched first onto CV terms from PSI-MOD.
+     *
+     * @param ptmSettings      the Utilities modification profile with the modifications used for the searches.
+     * @param searchParameters the Colims search parameters
+     */
+    private void mapSearchModifications(final PtmSettings ptmSettings, final SearchParameters searchParameters) {
+        //iterate over all modifications
+        for (String modificationName : ptmSettings.getAllModifications()) {
+            //try to find the PTM and the associated CvTerm in the backed up PTMs
+            PTM ptm = ptmSettings.getBackedUpPtmsMap().get(modificationName);
+            CvTerm cvTerm = ptm.getCvTerm();
+
+            SearchModification searchModification;
+            if (cvTerm != null) {
+                searchModification = searchModificationMapper.mapByOntologyTerm(cvTerm.getOntology(), cvTerm.getAccession(), cvTerm.getName(), cvTerm.getValue(), modificationName);
+            } else {
+                searchModification = searchModificationMapper.mapByName(modificationName);
+            }
+
+            //set entity associations if the search modification could be mapped
+            if (searchModification != null) {
+                SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
+
+                //set the Utilities name if necessary
+                if (searchModification.getUtilitiesName() == null && PTMFactory.getInstance().containsPTM(modificationName)) {
+                    searchModification.setUtilitiesName(modificationName);
+                }
+
+                //set modification type
+                if (ptmSettings.getAllNotFixedModifications().contains(modificationName)) {
+                    searchParametersHasModification.setModificationType(ModificationType.VARIABLE);
+                } else {
+                    searchParametersHasModification.setModificationType(ModificationType.FIXED);
+                }
+
+                //set entity associations
+                searchParametersHasModification.setSearchModification(searchModification);
+                searchParametersHasModification.setSearchParameters(searchParameters);
+
+                searchParameters.getSearchParametersHasModifications().add(searchParametersHasModification);
+            }
+        }
+
     }
 
     /**
@@ -137,21 +204,6 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
         }
 
         return enzyme;
-    }
-
-    /**
-     * Get the default search type from the database and assign it to the class
-     * field.
-     */
-    @PostConstruct
-    private void getDefaultSearchType() {
-        //look for the default search type in the database
-        TypedCvParam searchType = typedCvParamService.findByAccession(DEFAULT_SEARCH_TYPE_ACCESSION, CvParamType.SEARCH_TYPE);
-        if (searchType != null) {
-            defaultSearchType = (SearchCvParam) searchType;
-        } else {
-            throw new IllegalStateException("The default search type CV term was not found in the database.");
-        }
     }
 
 }

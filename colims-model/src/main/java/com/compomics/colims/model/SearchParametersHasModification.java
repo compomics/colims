@@ -21,12 +21,6 @@ public class SearchParametersHasModification extends DatabaseEntity {
     @Enumerated(EnumType.ORDINAL)
     private ModificationType modificationType;
     /**
-     * The modification residue(s)
-     */
-    @Basic(optional = true)
-    @Column(name = "residues", nullable = true)
-    private String residues;
-    /**
      * The SearchParameters instance of this join entity.
      */
     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")
@@ -69,14 +63,6 @@ public class SearchParametersHasModification extends DatabaseEntity {
         this.modificationType = modificationType;
     }
 
-    public String getResidues() {
-        return residues;
-    }
-
-    public void setResidues(String residues) {
-        this.residues = residues;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,7 +71,6 @@ public class SearchParametersHasModification extends DatabaseEntity {
         SearchParametersHasModification that = (SearchParametersHasModification) o;
 
         if (modificationType != that.modificationType) return false;
-        if (residues != null ? !residues.equals(that.residues) : that.residues != null) return false;
         return !(searchModification != null ? !searchModification.equals(that.searchModification) : that.searchModification != null);
 
     }
@@ -93,7 +78,6 @@ public class SearchParametersHasModification extends DatabaseEntity {
     @Override
     public int hashCode() {
         int result = modificationType != null ? modificationType.hashCode() : 0;
-        result = 31 * result + (residues != null ? residues.hashCode() : 0);
         result = 31 * result + (searchModification != null ? searchModification.hashCode() : 0);
         return result;
     }
