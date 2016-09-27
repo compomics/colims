@@ -289,6 +289,13 @@ public class FastaDbManagementController implements Controllable {
         fastaDbManagementDialog.getFastaDbList().updateUI();
         return sortedFastaDbs.indexOf(fastaDb);
     }
+    /**
+     * update fasta db binding list and clear selection
+     */
+    public void updateFastaDb(){
+        fastaDbManagementDialog.getFastaDbList().updateUI();
+        fastaDbSelectionModel.clearSelection();
+    }
 
     /**
      * Get the row index of the selected fastaDB in the fastaDb management

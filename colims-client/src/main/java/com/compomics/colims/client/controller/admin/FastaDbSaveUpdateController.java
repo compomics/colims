@@ -177,8 +177,7 @@ public class FastaDbSaveUpdateController implements Controllable {
             if (validationMessages.isEmpty()) {
                 if (fastaDbToEdit.getId() != null) {
                     fastaDbToEdit = fastaDbService.merge(fastaDbToEdit);
-                    //add to fasta db list
-                    fastaDbManagementController.setSelectedFasta(fastaDbManagementController.addFastaDb(fastaDbToEdit));
+                    fastaDbManagementController.updateFastaDb();
                 } else {
                     fastaDbService.persist(fastaDbToEdit);
                     fastaDbManagementController.addFastaDb(fastaDbToEdit);
