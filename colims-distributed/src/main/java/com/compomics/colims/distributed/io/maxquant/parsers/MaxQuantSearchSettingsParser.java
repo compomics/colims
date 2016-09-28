@@ -1,5 +1,7 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.ontology.OntologyMapper;
+import com.compomics.colims.core.ontology.OntologyTerm;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.service.TypedCvParamService;
@@ -55,11 +57,13 @@ public class MaxQuantSearchSettingsParser {
     private static final String PARAM_GROUP_INDICES = "paramgroupindices";
     private static final String PARAMETER_GROUPS = "parametergroups";
     private static final String PARAMETER_DELIMITER = ";";
+    private static final String PPM = "ppm";
+    private static final String DALTON = "da";
 
     /**
      * The MaxQuant version.
      */
-    private String version = "N/A";
+    private String version = NOT_APPLICABLE;
     /**
      * The experiment multiplicity.
      */
@@ -104,6 +108,7 @@ public class MaxQuantSearchSettingsParser {
     private final TypedCvParamService typedCvParamService;
     private final OlsService olsService;
     private final SearchModificationMapper searchModificationMapper;
+    private final Map<String, OntologyTerm> modificationMappings;
 
     /**
      * Constructor.
@@ -111,14 +116,17 @@ public class MaxQuantSearchSettingsParser {
      * @param searchAndValidationSettingsService
      * @param typedCvParamService
      * @param olsService
-     * @param utilitiesPtmSettingsMapper
+     * @param searchModificationMapper
+     * @param ontologyMapper
      * @throws IOException in case of an Input/Output related problem while parsing the headers.
      */
-    public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, TypedCvParamService typedCvParamService, OlsService olsService, SearchModificationMapper searchModificationMapper) throws IOException {
+    public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, TypedCvParamService typedCvParamService, OlsService olsService, SearchModificationMapper searchModificationMapper, OntologyMapper ontologyMapper) throws IOException {
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.typedCvParamService = typedCvParamService;
         this.olsService = olsService;
         this.searchModificationMapper = searchModificationMapper;
+        //get the modification mappings from the OntologyMapper
+        modificationMappings = ontologyMapper.getMaxQuantMapping().getModifications();
         parametersHeaders = new ParametersHeaders();
         summaryHeaders = new SummaryHeaders();
         mqParHeaders = new MqParHeaders();
@@ -184,6 +192,10 @@ public class MaxQuantSearchSettingsParser {
      */
     public void clear() {
         runSettings.clear();
+        mqParParamsWithRawFile.clear();
+        analyticalRuns.clear();
+        isobaricLabels.clear();
+        labelMods.clear();
         multiplicity = null;
     }
 
@@ -197,6 +209,9 @@ public class MaxQuantSearchSettingsParser {
      * @throws IOException in case of of an I/O related problem
      */
     public void parse(Path combinedFolderDirectory, Path mqParFile, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean storeFiles) throws IOException, JDOMException {
+        multiplicity = null;
+        runSettings.clear();
+
         Path txtDirectory = Paths.get(combinedFolderDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         //parse the mxpar.xml file
         parseMqParFile(mqParFile);
@@ -255,19 +270,19 @@ public class MaxQuantSearchSettingsParser {
         String versionParameter = parameters.get(parametersHeaders.get(ParametersHeader.VERSION));
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
             version = versionParameter;
+        } else {
+            version = NOT_APPLICABLE;
         }
 
         //precursor mass tolerance and unit
         String precursorMassToleranceString = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE);
         searchParameters.setPrecMassTolerance(Double.parseDouble(precursorMassToleranceString));
 
-        String massToleranceUnit;
+        String massToleranceUnit = null;
         if (mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("true")) {
-            massToleranceUnit = "ppm";
+            massToleranceUnit = PPM;
         } else if (mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE_UNIT).equalsIgnoreCase("false")) {
-            massToleranceUnit = "da";
-        } else {
-            massToleranceUnit = "";
+            massToleranceUnit = DALTON;
         }
         searchParameters.setPrecMassToleranceUnit(MassAccuracyType.valueOf(massToleranceUnit.toUpperCase(Locale.ENGLISH)));
 
@@ -278,9 +293,9 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setFragMassToleranceUnit(MassAccuracyType.valueOf(massToleranceUnit.toUpperCase(Locale.ENGLISH)));
 
         //enzyme
-        TypedCvParam enzyme = mapEnzyme(mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.ENZYMES));
-        if (enzyme != null) {
-            searchParameters.setEnzyme((SearchCvParam) enzyme);
+        String enzymes = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.ENZYMES);
+        if (enzymes != null) {
+            searchParameters.setEnzymes(enzymes);
         }
 
         //missed cleavages
@@ -324,40 +339,6 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Map the given MaxQuant Enzyme instance to a TypedCvParam instance.
-     * Returns null if no mapping was possible.
-     *
-     * @param maxQuantEnzyme the MaxQuant enzyme
-     * @return the TypedCvParam instance
-     */
-    private TypedCvParam mapEnzyme(final String maxQuantEnzyme) {
-        TypedCvParam enzyme;
-
-        //look for the enzyme in the database
-        enzyme = typedCvParamService.findByName(maxQuantEnzyme, CvParamType.SEARCH_PARAM_ENZYME, true);
-
-        if (enzyme == null) {
-            try {
-                //the enzyme was not found by name in the database
-                //look for the enzyme in the MS ontology by name
-                enzyme = olsService.findEnzymeByName(maxQuantEnzyme);
-            } catch (RestClientException | IOException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-            }
-
-            if (enzyme == null) {
-                //the enzyme was not found by name in the MS ontology
-                enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, maxQuantEnzyme);
-            }
-
-            //persist the newly created enzyme
-            typedCvParamService.persist(enzyme);
-        }
-
-        return enzyme;
-    }
-
-    /**
      * Create modifications for the given search parameter and the raw file that
      * linked to that parameter.
      *
@@ -373,25 +354,18 @@ public class MaxQuantSearchSettingsParser {
         String variableModifications = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.VARIABLE_MODIFICATIONS);
 
         if (fixedModifications != null && !fixedModifications.isEmpty()) {
-            String[] split = fixedModifications.split(PARAMETER_DELIMITER);
-            for (String modification : split) {
-                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters);
-                SearchModification searchModification = searchModificationMapper.mapByName(modification.split(MODIFICATION_NAME_ONLY)[0]);
-                searchParametersHasModification.setModificationType(ModificationType.FIXED);
-                searchParametersHasModification.setSearchModification(searchModification);
+            String[] modifications = fixedModifications.split(PARAMETER_DELIMITER);
+            for (String modification : modifications) {
+                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, modification, ModificationType.FIXED);
+
                 searchParametersHasModifications.add(searchParametersHasModification);
             }
         }
 
         if (variableModifications != null && !variableModifications.isEmpty()) {
-            String[] modification = variableModifications.split(PARAMETER_DELIMITER);
-            for (String aSplit : modification) {
-                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters);
-
-                SearchModification searchModification = searchModificationMapper.mapByName(aSplit.split(MODIFICATION_NAME_ONLY)[0]);
-
-                searchParametersHasModification.setModificationType(ModificationType.VARIABLE);
-                searchParametersHasModification.setSearchModification(searchModification);
+            String[] modifications = variableModifications.split(PARAMETER_DELIMITER);
+            for (String modification : modifications) {
+                SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, modification, ModificationType.VARIABLE);
 
                 searchParametersHasModifications.add(searchParametersHasModification);
             }
@@ -404,12 +378,27 @@ public class MaxQuantSearchSettingsParser {
      * Create a {@link SearchParametersHasModification} instance.
      *
      * @param searchParameters
-     * @param residues
      * @return searchParametersHasModification instance
      */
-    private SearchParametersHasModification createSearchParametersHasModification(SearchParameters searchParameters) {
+    private SearchParametersHasModification createSearchParametersHasModification(SearchParameters searchParameters, String modificationName, ModificationType modificationType) {
         SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
 
+        SearchModification searchModification;
+        //look for the modification in the mapping file
+        if (modificationMappings.containsKey(modificationName)) {
+            OntologyTerm modificationTerm = modificationMappings.get(modificationName);
+            searchModification = searchModificationMapper.mapByOntologyTerm(
+                    modificationTerm.getOntologyPrefix(),
+                    modificationTerm.getOboId(),
+                    modificationTerm.getLabel());
+        } else {
+            searchModification = searchModificationMapper.mapByName(modificationName.split(MODIFICATION_NAME_ONLY)[0]);
+        }
+
+        searchParametersHasModification.setModificationType(modificationType);
+
+        //set entity relation
+        searchParametersHasModification.setSearchModification(searchModification);
         searchParametersHasModification.setSearchParameters(searchParameters);
 
         return searchParametersHasModification;
@@ -423,6 +412,11 @@ public class MaxQuantSearchSettingsParser {
      * @throws IOException   in case of an problem with the mqpar.xml file
      */
     private void parseMqParFile(Path mqParFile) throws JDOMException, IOException {
+        mqParParamsWithRawFile.clear();
+        analyticalRuns.clear();
+        isobaricLabels.clear();
+        labelMods.clear();
+
         // create a map to hold raw files for each run (key: group index; value: raw file).
         Map<Integer, String> rawFilePath = new HashMap<>();
         //create a map to hold raw file groups for each run (key: group index; value: group number).

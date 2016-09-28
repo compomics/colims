@@ -211,17 +211,6 @@ public class OlsServiceImpl implements OlsService {
 
             JsonNode ontologyTermNode = docsIterator.next();
             OntologyTerm ontologyTerm = objectReader.treeToValue(ontologyTermNode, OntologyTerm.class);
-            //get the ontology title as well
-            if (ontologiesCache.containsKey(ontologyTerm.getOntologyNamespace())) {
-                ontologyTerm.setOntologyTitle(ontologiesCache.get(ontologyTerm.getOntologyNamespace()).getTitle());
-            } else {
-                List<String> namespaces = new ArrayList<>();
-                namespaces.add(ontologyTerm.getOntologyNamespace());
-                List<Ontology> ontologies = getOntologiesByNamespace(namespaces);
-                if (!ontologies.isEmpty()) {
-                    ontologyTerm.setOntologyTitle(ontologies.get(0).getTitle());
-                }
-            }
             searchResult.setOntologyTerm(ontologyTerm);
 
             java.util.Map.Entry<String, JsonNode> highLightEntry = highlightingIterator.next();
@@ -310,8 +299,8 @@ public class OlsServiceImpl implements OlsService {
     }
 
     @Override
-    public TypedCvParam findEnzymeByName(String name) throws RestClientException, IOException {
-        TypedCvParam enzyme = null;
+    public OntologyTerm findEnzymeByName(String name) throws RestClientException, IOException {
+        OntologyTerm enzyme = null;
 
         //get the response
         ResponseEntity<String> response = restTemplate.getForEntity(MS_LABEL_QUERY, String.class, name);
@@ -331,13 +320,7 @@ public class OlsServiceImpl implements OlsService {
                 if (child.hasNonNull(LABEL)) {
                     String label = child.get(LABEL).asText();
                     if (label.equalsIgnoreCase(name)) {
-                        OntologyTerm ontologyTerm = objectReader.treeToValue(child, OntologyTerm.class);
-                        //get the ontology title
-                        List<String> namespaces = new ArrayList<>();
-                        namespaces.add(ontologyTerm.getOntologyNamespace());
-                        List<Ontology> ontologies = getOntologiesByNamespace(namespaces);
-                        ontologyTerm.setOntologyTitle(ontologies.get(0).getTitle());
-                        enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, ontologyTerm.getLabel(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+                        enzyme = objectReader.treeToValue(child, OntologyTerm.class);
                         break;
                     }
                 }

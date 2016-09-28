@@ -2,662 +2,662 @@
   "MaxQuant": {
     "modifications": {
       "Acetyl (K)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1",
         "label": "Acetyl"
       },
       "Acetyl (Protein N-term)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1",
         "label": "Acetyl"
       },
       "Carbamidomethyl (C)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:4",
         "label": "Carbamidomethyl"
       },
       "Oxidation (M)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:35",
         "label": "Oxidation"
       },
       "Phospho (STY)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:21",
         "label": "Phospho"
       },
       "Arg6": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:188",
         "label": "Label:13C(6)"
       },
       "Arg10": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:267",
         "label": "Label:13C(6)15N(4)"
       },
       "Lys4": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:188",
         "label": "Label:2H(4)"
       },
       "Lys6": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:481",
         "label": "Label:13C(6)"
       },
       "Lys8": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:259",
         "label": "Label:13C(6)15N(2)"
       },
       "GlyGly (K)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:121",
         "label": "GG"
       },
       "Methyl (KR)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:34",
         "label": "Methyl"
       },
       "Dimethyl (KR)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:36",
         "label": "Dimethyl"
       },
       "Trimethyl (K)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:37",
         "label": "Trimethyl"
       },
       "Pro5": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:772",
         "label": "Label:13C(5)"
       },
       "Glu-&gt;pyro-Glu": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:27",
         "label": "Glu-&gt;pyro-Glu"
       },
       "Glu->pyro-Glu": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:27",
         "label": "Glu-&gt;pyro-Glu"
       },
       "Gln-&gt;pyro-Glu": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:28",
         "label": "Gln-&gt;pyro-Glu"
       },
       "Gln->pyro-Glu": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:28",
         "label": "Gln-&gt;pyro-Glu"
       },
       "DimethLys4": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:481",
         "label": "Label:2H(4)"
       },
       "DimethNter4": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:199",
         "label": "Dimethyl:2H(4)"
       },
       "DimethLys8": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:330",
         "label": "Dimethyl:2H(6)13C(2)"
       },
       "DimethNter8": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:330",
         "label": "Dimethyl:2H(6)13C(2)"
       },
       "18O": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:258",
         "label": "Label:18O(1)"
       },
       "ICAT-0": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:105",
         "label": "ICAT-C"
       },
       "ICAT-9": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:106",
         "label": "ICAT-C:13C(9)"
       },
       "ICPL-Lys0": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:365",
         "label": "ICPL"
       },
       "ICPL-Lys4": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:687",
         "label": "ICPL:2H(4)"
       },
       "ICPL-Nter4": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:687",
         "label": "ICPL:2H(4)"
       },
       "ICPL-Lys6": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:364",
         "label": "ICPL:13C(6)"
       },
       "ICPL-Nter6": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:364",
         "label": "ICPL:13C(6)"
       },
       "ICPL-Lys10": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:866",
         "label": "ICPL:13C(6)2H(4)"
       },
       "ICPL-Nter10": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:866",
         "label": "ICPL:13C(6)2H(4)"
       },
       "mTRAQ-Lys0": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:888",
         "label": "mTRAQ"
       },
       "mTRAQ-Nter0": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:888",
         "label": "mTRAQ"
       },
       "mTRAQ-Lys4": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:889",
         "label": "mTRAQ:13C(3)15N(1)"
       },
       "mTRAQ-Nter4": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:889",
         "label": "mTRAQ:13C(3)15N(1)"
       },
       "mTRAQ-Lys8": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1302",
         "label": "mTRAQ:13C(6)15N(2)"
       },
       "mTRAQ-Nter8": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1302",
         "label": "mTRAQ:13C(6)15N(2)"
       },
       "DimethLys6": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1291",
         "label": "Dimethyl:2H(6)"
       },
       "DimethNter6": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1291",
         "label": "Dimethyl:2H(6)"
       },
       "Deamidation (N)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:7",
         "label": "Deamidated"
       },
       "Deamidation 18O (N)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:366",
         "label": "Deamidation in presence of O18"
       },
       "iTRAQ4plex-Nter114": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex"
       },
       "iTRAQ4plex-Nter115": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex"
       },
       "iTRAQ4plex-Nter116": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex"
       },
       "iTRAQ4plex-Nter117": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex"
       },
       "iTRAQ4plex-Lys114": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex"
       },
       "iTRAQ4plex-Lys115": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex"
       },
       "iTRAQ4plex-Lys116": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex"
       },
       "iTRAQ4plex-Lys117": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex"
       },
       "iTRAQ8plex-Nter113": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Nter114": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Nter115": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Nter116": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Nter117": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Nter118": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Nter119": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Nter121": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Lys113": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Lys114": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Lys115": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Lys116": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Lys117": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Lys118": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Lys119": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "iTRAQ8plex-Lys121": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex"
       },
       "TMT2plex-Nter126": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:738",
         "label": "TMT2plex"
       },
       "TMT2plex-Nter127": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:738",
         "label": "TMT2plex"
       },
       "TMT2plex-Lys126": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:738",
         "label": "TMT2plex"
       },
       "TMT2plex-Lys127": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:738",
         "label": "TMT2plex"
       },
       "TMT6plex-Nter126": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Nter127": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Nter128": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Nter129": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Nter130": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Nter131": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Lys126": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Lys127": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Lys128": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Lys129": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Lys130": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT6plex-Lys131": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT10plex-Nter128": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT10plex-Nter130": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT10plex-Lys128": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "TMT10plex-Lys130": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex"
       },
       "iodoTMT6plex-Cys126": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1342",
         "label": "iodoTMT6plex"
       },
       "iodoTMT6plex-Cys127": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1342",
         "label": "iodoTMT6plex"
       },
       "iodoTMT6plex-Cys128": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1342",
         "label": "iodoTMT6plex"
       },
       "iodoTMT6plex-Cys129": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1342",
         "label": "iodoTMT6plex"
       },
       "iodoTMT6plex-Cys130": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1342",
         "label": "iodoTMT6plex"
       },
       "iodoTMT6plex-Cys131": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1342",
         "label": "iodoTMT6plex"
       },
       "Deamidation (NQ)": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:7",
         "label": "Deamidated"
       },
       "Ala-&gt;Arg": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1052",
         "label": "Ala-&gt;Arg"
       },
       "Ala->Arg": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1052",
         "label": "Ala-&gt;Arg"
       },
       "Ala-&gt;Asn": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1050",
         "label": "Ala-&gt;Asn"
       },
       "Ala->Asn": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1050",
         "label": "Ala-&gt;Asn"
       },
       "Ala-&gt;Asp": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:542",
         "label": "Ala-&gt;Asp"
       },
       "Ala->Asp": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:542",
         "label": "Ala-&gt;Asp"
       },
       "Ala-&gt;Cys": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1044",
         "label": "Ala-&gt;Asp"
       },
       "Ala->Cys": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1044",
         "label": "Ala-&gt;Asp"
       },
       "Ala-&gt;Gln": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1051",
         "label": "Ala-&gt;Gln"
       },
       "Ala->Gln": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1051",
         "label": "Ala-&gt;Gln"
       },
       "Ala-&gt;Glu": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:545",
         "label": "Ala-&gt;Glu"
       },
       "Ala->Glu": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:545",
         "label": "Ala-&gt;Glu"
       },
       "Ala-&gt;Gly": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:544",
         "label": "Ala-&gt;Gly"
       },
       "Ala->Gly": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:544",
         "label": "Ala-&gt;Gly"
       },
       "Ala-&gt;His": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1046",
         "label": "Ala-&gt;His"
       },
       "Ala->His": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1046",
         "label": "Ala-&gt;His"
       },
       "Ala-&gt;Xle": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1047",
         "label": "Ala-&gt;His"
       },
       "Ala->Xle": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1047",
         "label": "Ala-&gt;His"
       },
       "Ala-&gt;Lys": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1048",
         "label": "Ala-&gt;Lys"
       },
       "Ala->Lys": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1048",
         "label": "Ala-&gt;Lys"
       },
       "Ala-&gt;Met": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1049",
         "label": "Ala-&gt;Met"
       },
       "Ala->Met": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1049",
         "label": "Ala-&gt;Met"
       },
       "Ala-&gt;Phe": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1045",
         "label": "Ala-&gt;Phe"
       },
       "Ala->Phe": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1045",
         "label": "Ala-&gt;Phe"
       },
       "Ala-&gt;Pro": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:543",
         "label": "Ala-&gt;Pro"
       },
       "Ala->Pro": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:543",
         "label": "Ala-&gt;Pro"
       },
       "Ala-&gt;Ser": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:540",
         "label": "Ala-&gt;Ser"
       },
       "Ala->Ser": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:540",
         "label": "Ala-&gt;Ser"
       },
       "Ala-&gt;Thr": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:541",
         "label": "Ala-&gt;Thr"
       },
       "Ala->Thr": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:541",
         "label": "Ala-&gt;Thr"
       },
       "Ala-&gt;Trp": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1053",
         "label": "Ala-&gt;Trp"
       },
       "Ala->Trp": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1053",
         "label": "Ala-&gt;Trp"
       },
       "Ala-&gt;Tyr": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1054",
         "label": "Ala-&gt;Tyr"
       },
       "Ala->Tyr": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1054",
         "label": "Ala-&gt;Tyr"
       },
       "Ala-&gt;Val": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:546",
         "label": "Ala-&gt;Val"
       },
       "Ala->Val": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:546",
         "label": "Ala-&gt;Val"
       },
       "Arg-&gt;Ala": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1189",
         "label": "Arg-&gt;Ala"
       },
       "Arg->Ala": {
-        "obo_namespace": "UNIMOD",
+        "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1189",
         "label": "Arg-&gt;Ala"
       }

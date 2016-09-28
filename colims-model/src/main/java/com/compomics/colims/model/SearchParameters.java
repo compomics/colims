@@ -25,11 +25,10 @@ public class SearchParameters extends DatabaseEntity {
     @JoinColumn(name = "l_search_type_cv_id", referencedColumnName = "id", nullable = true)
     private SearchCvParam searchType;
     /**
-     * The cleavage enzyme.
+     * The cleavage enzyme(s), separated by semicolon.
      */
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "l_search_enzyme_cv_id", referencedColumnName = "id", nullable = true)
-    private SearchCvParam enzyme;
+    @Column(name = "enzymes", nullable = true)
+    private String enzymes;
     /**
      * The number of missed cleavage sites allowed by the search.
      */
@@ -117,12 +116,12 @@ public class SearchParameters extends DatabaseEntity {
         this.searchType = searchType;
     }
 
-    public SearchCvParam getEnzyme() {
-        return enzyme;
+    public String getEnzymes() {
+        return enzymes;
     }
 
-    public void setEnzyme(SearchCvParam enzyme) {
-        this.enzyme = enzyme;
+    public void setEnzymes(String enzymes) {
+        this.enzymes = enzymes;
     }
 
     public Integer getNumberOfMissedCleavages() {
@@ -237,7 +236,7 @@ public class SearchParameters extends DatabaseEntity {
         SearchParameters that = (SearchParameters) o;
 
         if (searchType != null ? !searchType.equals(that.searchType) : that.searchType != null) return false;
-        if (enzyme != null ? !enzyme.equals(that.enzyme) : that.enzyme != null) return false;
+        if (enzymes != null ? !enzymes.equals(that.enzymes) : that.enzymes != null) return false;
         if (numberOfMissedCleavages != null ? !numberOfMissedCleavages.equals(that.numberOfMissedCleavages) : that.numberOfMissedCleavages != null)
             return false;
         if (threshold != null ? !CompareUtils.equals(threshold, that.threshold) : that.threshold != null) return false;
@@ -258,7 +257,7 @@ public class SearchParameters extends DatabaseEntity {
     @Override
     public int hashCode() {
         int result = searchType != null ? searchType.hashCode() : 0;
-        result = 31 * result + (enzyme != null ? enzyme.hashCode() : 0);
+        result = 31 * result + (enzymes != null ? enzymes.hashCode() : 0);
         result = 31 * result + (numberOfMissedCleavages != null ? numberOfMissedCleavages.hashCode() : 0);
         result = 31 * result + (threshold != null ? threshold.hashCode() : 0);
         result = 31 * result + (precMassTolerance != null ? precMassTolerance.hashCode() : 0);

@@ -53,7 +53,7 @@ public class SearchParameterHibernateRepository extends GenericHibernateReposito
         while (iterator.hasNext()) {
             SearchParameters searchParameters = iterator.next();
             //check search type
-            if (!exampleInstance.getEnzyme().equals(searchParameters.getEnzyme())) {
+            if (!exampleInstance.getSearchType().equals(searchParameters.getSearchType())) {
                 iterator.remove();
                 continue;
             }

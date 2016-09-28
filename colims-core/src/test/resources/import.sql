@@ -89,7 +89,6 @@ INSERT INTO taxonomy_cv_param (id, accession, label, name) VALUES (1,'ncbi:9606'
 INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_taxonomy_cv_id) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', '1.2.3', 1);
 
 -- insert test search parameter cv params
-INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (1, 'MS:1001251', 'PSI-MS', 'Trypsin', 'SEARCH_PARAM_ENZYME');
 INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'SEARCH_TYPE');
 
 -- insert test search modifications
@@ -105,7 +104,7 @@ INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_r
 INSERT INTO spectrum_file (id, content, l_spectrum_id) VALUES (1, 'AABBCC', 1);
 
 -- insert a search parameters
-INSERT INTO search_parameters (id, precursor_mass_tolerance, precursor_mass_tolerance_unit, fragment_mass_tolerance, fragment_mass_tolerance_unit, l_search_enzyme_cv_id) VALUES (1, 4, 1, 5, 1, 1);
+INSERT INTO search_parameters (id, precursor_mass_tolerance, precursor_mass_tolerance_unit, fragment_mass_tolerance, fragment_mass_tolerance_unit, enzymes) VALUES (1, 4, 1, 5, 1, "Trypsin");
 
 -- insert a search params has mod
 INSERT INTO search_params_has_modification (id, modification_type, l_search_modification_id, l_search_parameters_id) VALUES (1, 1, 3, 1);

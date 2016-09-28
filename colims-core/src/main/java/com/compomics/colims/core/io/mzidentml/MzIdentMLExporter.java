@@ -24,7 +24,6 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -320,29 +319,32 @@ public class MzIdentMLExporter {
         spectrumProtocol.setEnzymes(new Enzymes());
 
         Enzyme mzEnzyme = new Enzyme();
-        SearchCvParam colimsEnzyme = searchParameters.getEnzyme();
+        String colimsEnzymes = searchParameters.getEnzymes();
 
         CvParam cvEnzyme;
 
-        if (colimsEnzyme == null) {
+        if (colimsEnzymes != null) {
+            for (String colimsEnzyme : colimsEnzymes.split(";")) {
+                //@// TODO: 27/09/16 map the enyme name to an ontology term
+                cvEnzyme = getDataItem("GenericCV." + colimsEnzyme, CvParam.class);
+                cvEnzyme.setName(colimsEnzyme);
+                cvEnzyme.setAccession(colimsEnzyme);
+
+                mzEnzyme.setId("ENZYME-" + colimsEnzyme);
+                mzEnzyme.setEnzymeName(new ParamList());
+                mzEnzyme.setMissedCleavages(searchParameters.getNumberOfMissedCleavages() == null ? 0 : searchParameters.getNumberOfMissedCleavages());
+                mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
+
+                spectrumProtocol.getEnzymes().getEnzyme().add(mzEnzyme);
+            }
+        } else {
             cvEnzyme = getDataItem("GenericCV.PSI-MS", CvParam.class);
             cvEnzyme.setName("no enzyme");
             cvEnzyme.setAccession("MS:1001091");
 
             mzEnzyme.setId("ENZYME-1");
             mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
-        } else {
-            cvEnzyme = getDataItem("GenericCV." + colimsEnzyme.getLabel(), CvParam.class);
-            cvEnzyme.setName(colimsEnzyme.getName());
-            cvEnzyme.setAccession(colimsEnzyme.getAccession());
-
-            mzEnzyme.setId("ENZYME-" + colimsEnzyme.getId().toString());
-            mzEnzyme.setEnzymeName(new ParamList());
-            mzEnzyme.setMissedCleavages(searchParameters.getNumberOfMissedCleavages() == null ? 0 : searchParameters.getNumberOfMissedCleavages());
-            mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
         }
-
-        spectrumProtocol.getEnzymes().getEnzyme().add(mzEnzyme);
 
         // Fragment Tolerance
         CvParam fragmentMinus = getDataItem("Tolerance.minus", CvParam.class);
@@ -398,6 +400,7 @@ public class MzIdentMLExporter {
      * Iterate the spectrum data for this run and populate the necessary objects
      * with it.
      */
+
     private void assembleSpectrumData() throws IOException {
         SpectrumIdentificationList spectrumIdentificationList = new SpectrumIdentificationList();
         spectrumIdentificationList.setId("SIL-1");
@@ -589,7 +592,7 @@ public class MzIdentMLExporter {
      * Get the CV representation of a Colims modification.
      *
      * @param modification A colims modification
-     * @param <T> Subclass of AbstractModification
+     * @param <T>          Subclass of AbstractModification
      * @return Modification in CvParam form
      * @throws IOException
      */
@@ -612,7 +615,7 @@ public class MzIdentMLExporter {
      *
      * @param name Contact name
      * @param type Desired return type
-     * @param <T> Subclass of AbstractContact
+     * @param <T>  Subclass of AbstractContact
      * @return Contact as subclass of AbstractContact
      */
     private <T extends AbstractContact> T getContact(String name, Class<T> type) throws IOException {
@@ -640,7 +643,7 @@ public class MzIdentMLExporter {
      *
      * @param name Name of key or dot notation path to key
      * @param type Type of objects to return
-     * @param <T> Subclass of MzIdentMLObject
+     * @param <T>  Subclass of MzIdentMLObject
      * @return List of objects of type T
      * @throws java.io.IOException in case of an I/O related problem
      */
@@ -669,7 +672,7 @@ public class MzIdentMLExporter {
      *
      * @param name Name of key or dot notation path to key
      * @param type Type of object to be returned
-     * @param <T> Subclass of MzIdentMLObject
+     * @param <T>  Subclass of MzIdentMLObject
      * @return Object of type T
      * @throws java.io.IOException in case of an I/O related problem
      */

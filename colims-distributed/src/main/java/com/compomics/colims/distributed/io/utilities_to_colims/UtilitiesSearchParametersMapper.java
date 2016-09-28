@@ -12,8 +12,6 @@ import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.enums.ModificationType;
-import com.compomics.colims.model.factory.CvParamFactory;
-import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
@@ -21,10 +19,8 @@ import com.compomics.util.pride.CvTerm;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 
 /**
  * This class maps the Utilities search parameters onto the Colims search
@@ -79,12 +75,10 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     public void map(final com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) {
         //set the default search type
         searchParameters.setSearchType(defaultSearchType);
-        //map Utilities enzyme to a TypedCvParam instance
-        TypedCvParam enzyme = null;
+        //map Utilities enzyme
         if (utilitiesSearchParameters.getEnzyme() != null) {
-            enzyme = mapEnzyme(utilitiesSearchParameters.getEnzyme());
+            searchParameters.setEnzymes(utilitiesSearchParameters.getEnzyme().getName());
         }
-        searchParameters.setEnzyme((SearchCvParam) enzyme);
         //number of missed cleavages
         searchParameters.setNumberOfMissedCleavages(utilitiesSearchParameters.getnMissedCleavages());
         //precursor mass tolerance unit
@@ -170,40 +164,6 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
             }
         }
 
-    }
-
-    /**
-     * Map the given Utilities Enzyme instance to a TypedCvParam instance.
-     * Return null if no mapping was possible.
-     *
-     * @param utilitiesEnzyme the Utilities Enzyme instance
-     * @return the TypedCvParam instance
-     */
-    private TypedCvParam mapEnzyme(final Enzyme utilitiesEnzyme) {
-        TypedCvParam enzyme;
-
-        //look for the enzyme in the database
-        enzyme = typedCvParamService.findByName(utilitiesEnzyme.getName(), CvParamType.SEARCH_PARAM_ENZYME, true);
-
-        if (enzyme == null) {
-            try {
-                //the enzyme was not found by name in the database
-                //look for the enzyme in the MS ontology by name
-                enzyme = olsService.findEnzymeByName(utilitiesEnzyme.getName());
-            } catch (RestClientException | IOException ex) {
-                LOGGER.error(ex.getMessage(), ex);
-            }
-
-            if (enzyme == null) {
-                //the enzyme was not found by name in the MS ontology
-                enzyme = CvParamFactory.newTypedCvInstance(CvParamType.SEARCH_PARAM_ENZYME, MS_ONTOLOGY_LABEL, NOT_APPLICABLE, utilitiesEnzyme.getName());
-            }
-
-            //persist the newly created enzyme
-            typedCvParamService.persist(enzyme);
-        }
-
-        return enzyme;
     }
 
 }
