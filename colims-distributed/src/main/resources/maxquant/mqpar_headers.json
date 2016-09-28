@@ -5,7 +5,7 @@
       "mainSearchTol"
     ]
   },
-  "PEPTIDE_MASS_TOLERANCE_UNIT": {
+  "MASS_TOLERANCE_UNIT": {
     "mandatory": true,
     "values": [
       "searchTolInPpm"

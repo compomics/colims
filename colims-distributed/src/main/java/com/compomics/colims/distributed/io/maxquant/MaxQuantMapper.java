@@ -80,7 +80,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             });
 
             try {
-                maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedFolderDirectory(), maxQuantImport.getParameterFilePath(), fastaDbs, false);
+                maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedFolderDirectory(), maxQuantImport.getParameterFilePath(), fastaDbs);
             } catch (JDOMException e) {
                 LOGGER.error(e.getMessage(), e);
             }
