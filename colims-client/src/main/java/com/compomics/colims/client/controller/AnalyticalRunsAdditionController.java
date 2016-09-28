@@ -449,7 +449,6 @@ public class AnalyticalRunsAdditionController implements Controllable {
      */
     public List<String> findAllLabels(){
         List<String> quantificationMethods = new ArrayList<>();
-        quantificationMethods.add("Label free");
         quantificationMethods.addAll(ontologyMapper.getColimsMapping().getQuantificationMethods().keySet());
         
         return quantificationMethods;               
