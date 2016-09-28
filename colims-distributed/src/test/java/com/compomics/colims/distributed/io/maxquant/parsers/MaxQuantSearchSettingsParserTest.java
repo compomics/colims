@@ -32,7 +32,7 @@ public class MaxQuantSearchSettingsParserTest {
         EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
         fastaDbs.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb)));
 
-        maxQuantSearchSettingsParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.parameterDirectory, fastaDbs, false);
+        maxQuantSearchSettingsParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.parameterDirectory, fastaDbs);
         Map<String, SearchAndValidationSettings> runSettings = maxQuantSearchSettingsParser.getRunSettings();
 
         SearchAndValidationSettings searchAndValidationSettings = runSettings.get("V20262_3910_Eik_red_11");
