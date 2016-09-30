@@ -2,7 +2,6 @@ package com.compomics.colims.core.io.colims_to_utilities;
 
 import com.compomics.colims.core.io.Mapper;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -35,9 +34,9 @@ public class ColimsModificationMapper implements Mapper<List<PeptideHasModificat
         peptideHasModifications.stream().forEach((peptideHasModification) -> {
             String theoreticPTM = peptideHasModification.getModification().getAccession();
             if (theoreticPTM != null) {
-                boolean isVariable = peptideHasModification.getModificationType().equals(ModificationType.VARIABLE);
                 int modificationSite = peptideHasModification.getLocation();
-                ModificationMatch match = new ModificationMatch(theoreticPTM, isVariable, modificationSite);
+                //@todo do we need to get the modification type from the search settings here?
+                ModificationMatch match = new ModificationMatch(theoreticPTM, true, modificationSite);
                 modificationMatches.add(match);
             }
         });

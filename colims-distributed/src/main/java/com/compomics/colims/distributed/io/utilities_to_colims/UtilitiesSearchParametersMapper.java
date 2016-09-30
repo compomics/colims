@@ -32,13 +32,6 @@ import javax.annotation.PostConstruct;
 @Component("utilitiesSearchParametersMapper")
 public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.util.experiment.identification.identification_parameters.SearchParameters, SearchParameters> {
 
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilitiesSearchParametersMapper.class);
-
-    private static final String MS_ONTOLOGY_LABEL = "MS";
-    private static final String NOT_APPLICABLE = "N/A";
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
 
     /**
@@ -53,16 +46,11 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
      * The TypedCvParam class service.
      */
     private final TypedCvParamService typedCvParamService;
-    /**
-     * The Ontology Lookup Service service.
-     */
-    private final OlsService olsService;
 
     @Autowired
-    public UtilitiesSearchParametersMapper(SearchModificationMapper searchModificationMapper, TypedCvParamService typedCvParamService, OlsService olsService) {
+    public UtilitiesSearchParametersMapper(SearchModificationMapper searchModificationMapper, TypedCvParamService typedCvParamService) {
         this.searchModificationMapper = searchModificationMapper;
         this.typedCvParamService = typedCvParamService;
-        this.olsService = olsService;
     }
 
     /**

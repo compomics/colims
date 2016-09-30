@@ -4,7 +4,6 @@ import com.compomics.colims.distributed.io.ModificationMapper;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
@@ -141,8 +140,6 @@ public class UtilitiesPeptideMapper {
 
                 //set modification type
                 if (modificationMatch.isVariable()) {
-                    peptideHasModification.setModificationType(ModificationType.VARIABLE);
-
                     if (ptmScores != null) {
                         PtmScoring ptmScoring = ptmScores.getPtmScoring(modificationMatch.getTheoreticPtm());
                         if (ptmScoring != null) {
@@ -154,8 +151,6 @@ public class UtilitiesPeptideMapper {
                             }
                         }
                     }
-                } else {
-                    peptideHasModification.setModificationType(ModificationType.FIXED);
                 }
 
                 //set entity associations

@@ -84,6 +84,10 @@ public class MaxQuantSearchSettingsParser {
      */
     private final Map<Integer, String> labelMods = new HashMap<>();
     /**
+     * The MaxQuant to UNIMOD modification mappings.
+     */
+    private final Map<String, OntologyTerm> modificationMappings;
+    /**
      * The parsed files' headers of interest.
      */
     private final MqParHeaders mqParHeaders;
@@ -95,7 +99,6 @@ public class MaxQuantSearchSettingsParser {
     private final SearchAndValidationSettingsService searchAndValidationSettingsService;
     private final TypedCvParamService typedCvParamService;
     private final SearchModificationMapper searchModificationMapper;
-    private final Map<String, OntologyTerm> modificationMappings;
 
     /**
      * Constructor.

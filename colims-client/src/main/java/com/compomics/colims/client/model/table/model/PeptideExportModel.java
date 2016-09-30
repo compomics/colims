@@ -1,7 +1,6 @@
 package com.compomics.colims.client.model.table.model;
 
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.enums.ModificationType;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
@@ -50,11 +49,12 @@ public class PeptideExportModel extends AbstractTableModel {
             case 3:
             case 4:
                 for (PeptideHasModification peptideHasModification : peptideTableRow.getPeptideHasModifications()) {
-                    if (peptideHasModification.getModificationType() == (columnIndex == 3 ? ModificationType.FIXED : ModificationType.VARIABLE)) {
-                        modifications += (modifications.length() > 0 ? ", " : "")
-                                + "(" + peptideHasModification.getModification().getName()
-                                + ", " + peptideHasModification.getLocation() + ")";
-                    }
+                    //@// TODO: 30/09/16 remove if clause after refactoring
+//                    if (peptideHasModification.getModificationType() == (columnIndex == 3 ? ModificationType.FIXED : ModificationType.VARIABLE)) {
+                    modifications += (modifications.length() > 0 ? ", " : "")
+                            + "(" + peptideHasModification.getModification().getName()
+                            + ", " + peptideHasModification.getLocation() + ")";
+//                    }
                 }
 
                 return modifications;
