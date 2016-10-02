@@ -131,6 +131,9 @@
   "Threshold": {
     "no": {"cvRef": "PSI-MS", "accession": "MS:1001494", "name": "no threshold"}
   },
+  "Enzyme": {
+    "Trypsin": {"cvRef": "PSI-MS", "accession": "MS:1001313", "name": "Trypsin/P"}
+  },
   "Tolerance": {
     "minus":  {"cvRef": "PSI-MS", "accession": "MS:1001413", "name": "search tolerance minus value"},
     "plus":   {"cvRef": "PSI-MS", "accession": "MS:1001412", "name": "search tolerance plus value"}

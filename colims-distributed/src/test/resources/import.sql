@@ -132,7 +132,7 @@ INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'LENNART', 1, 1);
 
 -- insert a test peptide has modiciation
-INSERT INTO peptide_has_modification (id,  delta_score,  location,  modification_type,  prob_score,  l_modification_id,  l_peptide_id) VALUES (1, 0.5, 1, 1, 1, 1, 1);
+INSERT INTO peptide_has_modification (id,  delta_score,  location, prob_score,  l_modification_id,  l_peptide_id) VALUES (1, 0.5, 1, 1, 1, 1);
 
 -- insert test protein groups
 INSERT INTO protein_group (id) VALUES (1), (2);

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Niels Hulstaert
@@ -53,7 +54,7 @@ public class SearchParameterHibernateRepository extends GenericHibernateReposito
         while (iterator.hasNext()) {
             SearchParameters searchParameters = iterator.next();
             //check search type
-            if (!exampleInstance.getSearchType().equals(searchParameters.getSearchType())) {
+            if (!Objects.equals(exampleInstance.getSearchType(), searchParameters.getSearchType())) {
                 iterator.remove();
                 continue;
             }

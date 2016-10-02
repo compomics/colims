@@ -33,7 +33,7 @@ public class CvParamServiceTest {
         List<CvParam> searchCvParams = cvParamService.findByCvParamByClass(SearchCvParam.class);
 
         Assert.assertNotNull(searchCvParams);
-        Assert.assertEquals(2, searchCvParams.size());
+        Assert.assertEquals(1, searchCvParams.size());
     }
 
     @Test
