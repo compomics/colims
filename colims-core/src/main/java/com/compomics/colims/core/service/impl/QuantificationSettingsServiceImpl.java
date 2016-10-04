@@ -1,6 +1,7 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.QuantificationSettingsService;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.QuantificationEngine;
 import com.compomics.colims.model.QuantificationMethodCvParam;
 import com.compomics.colims.model.QuantificationSettings;
@@ -67,10 +68,20 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
         QuantificationEngine quantificationEngine = quantificationEngineRepository.findByNameAndVersion(quantificationEngineType, version);
 
         if (quantificationEngine == null) {
-            quantificationEngine = new QuantificationEngine(quantificationEngineType, version);
+            //check if the search engine can be found by type
+            quantificationEngine = quantificationEngineRepository.findByType(quantificationEngineType);
+
+            if (quantificationEngine != null) {
+                //copy the found SearchEngine fields and the given version onto a new instance
+                quantificationEngine = new QuantificationEngine(quantificationEngine, version);
+            } else {
+                //create a new instance with the type and version
+                quantificationEngine = new QuantificationEngine(quantificationEngineType, version);
+            }
+
             quantificationEngineRepository.persist(quantificationEngine);
         }
-
+        
         return quantificationEngine;
     }
 
@@ -85,6 +96,11 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
             quantificationMethodCvParamRepository.persist(quantificationMethodCvParam);
             return quantificationMethodCvParam;
         }
+    }
+
+    @Override
+    public QuantificationSettings getbyAnalyticalRun(AnalyticalRun analyticalRun) {
+        return quantificationSettingsRepository.findbyAnalyticalRunId(analyticalRun.getId());
     }
 
 }

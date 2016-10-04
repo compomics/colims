@@ -55,6 +55,20 @@
         where analyticalRun.id = :analyticalRunId
     </query>
     
+    <query name="QuantificationSettings.findByAnalyticalRunId">
+        select distinct quantificationSettings
+        from QuantificationSettings as quantificationSettings
+        join quantificationSettings.analyticalRun as analyticalRun
+        where analyticalRun.id = :analyticalRunId
+    </query>
+    
+    <query name="SearchAndValidationSettings.findByAnalyticalRunId">
+        select distinct searchAndValidationSettings
+        from SearchAndValidationSettings as searchAndValidationSettings
+        join searchAndValidationSettings.analyticalRun as analyticalRun
+        where analyticalRun.id = :analyticalRunId
+    </query>
+    
     <query name="FastaDb.findByFastaDbType">
         select distinct fastaDb
         from FastaDb as fastaDb

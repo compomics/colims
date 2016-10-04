@@ -20,4 +20,13 @@ public interface QuantificationEngineRepository extends GenericRepository<Quanti
      */
     QuantificationEngine findByNameAndVersion(QuantificationEngineType quantificationEngineType, String version);
 
+    
+    /**
+     * Find the quantification engine by type. If multiple were found (different
+     * versions), a random one is returned. Returns null if nothing was found.
+     *
+     * @param quantificationEngineType the quantification engine type
+     * @return the found QuantificationEngine instance
+     */
+    QuantificationEngine findByType(QuantificationEngineType quantificationEngineType);
 }

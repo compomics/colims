@@ -87,7 +87,6 @@ public class MaxQuantSearchSettingsParser {
      * The parsed files' headers of interest.
      */
     private final MqParHeaders mqParHeaders;
-    private final ParametersHeaders parametersHeaders;
     private final SummaryHeaders summaryHeaders;
     /**
      * Beans.
@@ -112,7 +111,6 @@ public class MaxQuantSearchSettingsParser {
         this.searchModificationMapper = searchModificationMapper;
         //get the modification mappings from the OntologyMapper
         modificationMappings = ontologyMapper.getMaxQuantMapping().getModifications();
-        parametersHeaders = new ParametersHeaders();
         summaryHeaders = new SummaryHeaders();
         mqParHeaders = new MqParHeaders();
     }
@@ -244,10 +242,10 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setSearchType(defaultSearchType);
 
         //parse the parameters file and iterate over the parameters
-        Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), MaxQuantConstants.PARAMETERS_FILE.value()), parametersHeaders.getMandatoryHeaders(), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
+        Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), MaxQuantConstants.PARAMETERS_FILE.value()), mqParHeaders.getMandatoryHeaders(), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
 
         //get the MaxQuant version
-        String versionParameter = parameters.get(parametersHeaders.get(ParametersHeader.VERSION));
+        String versionParameter = parameters.get(mqParHeaders.get(MqParHeader.VERSION));
         if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
             version = versionParameter;
         } else {

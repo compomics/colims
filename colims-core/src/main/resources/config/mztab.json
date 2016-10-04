@@ -9,10 +9,15 @@
         "accession": "MS:1002363",
         "name": "search engine specific score for proteins"
       },
-      "mascot": {
+      "maxQuant": {
         "ontology": "MS",
-        "accession": "MS:1001171",
-        "name": "Mascot:score"
+        "accession": "MS:1002338",
+        "name": "Andromeda:score"
+      },
+      "peptideshaker": {
+        "ontology": "MS",
+        "accession": "MS:1002468",
+        "name": "PeptideShaker peptide score"
       }
     }
   },
@@ -25,6 +30,11 @@
         "ontology": "MS",
         "accession": "MS:1002358",
         "name": "search engine specific score for distinct peptides"
+      },
+      "maxQuant": {
+        "ontology": "MS",
+        "accession": "MS:1002338",
+        "name": "Andromeda:score"
       },
       "peptideshaker": {
         "ontology": "MS",
@@ -43,15 +53,15 @@
         "accession": "MS:1001153",
         "name": "search engine specific score"
       },
+      "maxQuant": {
+        "ontology": "MS",
+        "accession": "MS:1002338",
+        "name": "Andromeda:score"
+      },
       "peptideshaker": {
         "ontology": "MS",
         "accession": "MS:1002466",
         "name": "PeptideShaker PSM score"
-      },
-      "mascot": {
-        "ontology": "MS",
-        "accession": "MS:1001171",
-        "name": "Mascot:score"
       }
     }
   },
@@ -82,15 +92,15 @@
       "user_friendly_name": "software"
     },
     "values": {
-      "PeptideShaker": {
-        "ontology": "MS",
-        "accession": "MS:1002458",
-        "name": "PeptideShaker"
-      },
       "MaxQuant": {
         "ontology": "MS",
         "accession": "MS:1001583",
         "name": "MaxQuant"
+      },
+      "PeptideShaker": {
+        "ontology": "MS",
+        "accession": "MS:1002458",
+        "name": "PeptideShaker"
       }
     }
   }

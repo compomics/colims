@@ -7,6 +7,7 @@ package com.compomics.colims.core.service;
 import com.compomics.colims.model.QuantificationEngine;
 import com.compomics.colims.model.QuantificationMethodCvParam;
 import com.compomics.colims.model.QuantificationSettings;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 
 /**
@@ -35,4 +36,11 @@ public interface QuantificationSettingsService extends GenericService<Quantifica
      */
     QuantificationMethodCvParam getQuantificationMethodCvParams(QuantificationMethodCvParam quantificationMethodCvParam);
 
+    /**
+     * Get the QuantificationSettings by analytical run instance from database.
+     * if nothing was found, send null value.
+     * @param analyticalRun
+     * @return the found QuantificationSettings
+     */
+    QuantificationSettings getbyAnalyticalRun(AnalyticalRun analyticalRun);
 }

@@ -913,7 +913,10 @@ INSERT INTO permission (id, creation_date, modification_date, user_name, descrip
 INSERT INTO role_has_permission (l_role_id, l_permission_id) VALUES (1,1),(1,2),(1,3),(1,4),(2,1),(2,2),(2,3);
 
 -- insert default search engines
-INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '0.0.0');
+INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '1.5.4.1');
+
+-- insert default quantification engines
+INSERT INTO quantification_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '1.5.4.1');
 
 -- insert some test data
 INSERT INTO project (id,creation_date,modification_date,user_name,description,label,title,l_owner_user_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:42:16','admin','test project 1 description','test project 1 label','test project 1',1);

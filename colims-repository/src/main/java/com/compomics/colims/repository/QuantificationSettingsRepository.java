@@ -13,4 +13,11 @@ import com.compomics.colims.model.QuantificationSettings;
  */
 public interface QuantificationSettingsRepository extends GenericRepository<QuantificationSettings, Long> {
 
+    /**
+     * Get the QuantificationSettings by analytical run id from database.
+     * if nothing was found, send null value.
+     * @param analyticalRunId
+     * @return the found QuantificationSettings
+     */
+    QuantificationSettings findbyAnalyticalRunId(Long analyticalRunId);
 }
