@@ -12,6 +12,7 @@ package com.compomics.colims.model.enums;
  */
 public enum QuantificationEngineType {
 
-    MAXQUANT
-
+    MAXQUANT,
+    
+    PEPTIDESHAKER   
 }

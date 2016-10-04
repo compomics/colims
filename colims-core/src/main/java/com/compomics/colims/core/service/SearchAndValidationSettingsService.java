@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
 import com.compomics.colims.model.SearchParameters;
@@ -34,4 +35,12 @@ public interface SearchAndValidationSettingsService extends GenericService<Searc
     SearchParameters getSearchParameters(SearchParameters searchParameters);
     
     void fetchSearchSettingsHasFastaDb(SearchAndValidationSettings searchAndValidationSettings);
+    
+    /**
+     * Get the SearchAndValidationSettings by analytical run instance from database.
+     * if nothing was found, send null value.
+     * @param analyticalRun
+     * @return the found SearchAndValidationSettings
+     */
+    SearchAndValidationSettings getbyAnalyticalRun(AnalyticalRun analyticalRun);
 }

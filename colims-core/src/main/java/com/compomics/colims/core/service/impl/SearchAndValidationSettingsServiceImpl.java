@@ -1,6 +1,7 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
 import com.compomics.colims.model.SearchParameters;
@@ -109,6 +110,11 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
             merge.getSearchSettingsHasFastaDbs().size();
             searchAndValidationSettings.setSearchSettingsHasFastaDbs(merge.getSearchSettingsHasFastaDbs());
         }
+    }
+
+    @Override
+    public SearchAndValidationSettings getbyAnalyticalRun(AnalyticalRun analyticalRun) {
+        return searchAndValidationSettingsRepository.findbyAnalyticalRunId(analyticalRun.getId());
     }
 
 }

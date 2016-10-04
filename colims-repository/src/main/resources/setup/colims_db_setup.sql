@@ -911,7 +911,10 @@ INSERT INTO permission (id, creation_date, modification_date, user_name, descrip
 INSERT INTO role_has_permission (l_role_id, l_permission_id) VALUES (1,1),(1,2),(1,3),(1,4),(2,1),(2,2),(2,3);
 
 -- insert default search engines
-INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '0.0.0');
+INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '1.5.4.1');
+
+-- insert default quantification engines
+INSERT INTO quantification_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '1.5.4.1');
 
 -- insert search parameter cv params
 INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (1, 'MS:1001251', 'PSI-MS', 'Trypsin', 'SEARCH_PARAM_ENZYME');

@@ -42,6 +42,7 @@ public class MaxQuantSearchSettingsParser {
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
     private static final String MODIFICATION_NAME_ONLY = " ";
+    private static final String VERSION = "maxQuantVersion";
     private static final String FILE_PATHS = "filepaths";
     private static final String EXPERIMENTS = "experiments";
     private static final String PARAM_GROUP_INDICES = "paramgroupindices";
@@ -87,7 +88,6 @@ public class MaxQuantSearchSettingsParser {
      * The parsed files' headers of interest.
      */
     private final MqParHeaders mqParHeaders;
-    private final ParametersHeaders parametersHeaders;
     private final SummaryHeaders summaryHeaders;
     /**
      * Beans.
@@ -111,7 +111,6 @@ public class MaxQuantSearchSettingsParser {
         this.searchModificationMapper = searchModificationMapper;
         //get the modification mappings from the OntologyMapper
         modificationMappings = ontologyMapper.getMaxQuantMapping().getModifications();
-        parametersHeaders = new ParametersHeaders();
         summaryHeaders = new SummaryHeaders();
         mqParHeaders = new MqParHeaders();
     }
@@ -227,17 +226,6 @@ public class MaxQuantSearchSettingsParser {
         //map the search parameters onto a Colims {@link SearchParameters} instance.
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setSearchType(defaultSearchType);
-
-        //parse the parameters file and iterate over the parameters
-        Map<String, String> parameters = ParseUtils.parseParameters(Paths.get(maxQuantTxtDirectory.toString(), MaxQuantConstants.PARAMETERS_FILE.value()), parametersHeaders.getMandatoryHeaders(), MaxQuantConstants.PARAM_TAB_DELIMITER.value(), true);
-
-        //get the MaxQuant version
-        String versionParameter = parameters.get(parametersHeaders.get(ParametersHeader.VERSION));
-        if (versionParameter != null && !versionParameter.isEmpty() && !version.equals(versionParameter)) {
-            version = versionParameter;
-        } else {
-            version = NOT_APPLICABLE;
-        }
 
         //precursor mass tolerance
         String precursorMassToleranceString = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE);
@@ -381,13 +369,13 @@ public class MaxQuantSearchSettingsParser {
         isobaricLabels.clear();
         labelMods.clear();
 
-        // create a map to hold raw files for each run (key: group index; value: raw file).
+        //create a map to hold raw files for each run (key: group index; value: raw file).
         Map<Integer, String> rawFilePath = new HashMap<>();
         //create a map to hold raw file groups for each run (key: group index; value: group number).
         Map<Integer, Integer> rawFileGroup = new HashMap<>();
         //create a map to hold enum map of spectrum parameters and their group(key: group number; value: enum map of spectrum parameters).
         Map<Integer, EnumMap<MqParHeader, String>> spectrumParamsWithGroup = new HashMap<>();
-        // create a map to hold experiment names for each run (key: group index; value: experiment name).
+        //create a map to hold experiment names for each run (key: group index; value: experiment name).
         Map<Integer, String> experimentsName = new HashMap<>();
 
         Resource mqParResource = new FileSystemResource(mqParFile.toFile());
@@ -396,7 +384,11 @@ public class MaxQuantSearchSettingsParser {
         document = builder.build(mqParResource.getInputStream());
 
         Element root = document.getRootElement();
-        // keep each raw file in a map (key: int, value: name of file).
+        //get the version
+        Element versionElement = getChildByName(root, VERSION);
+        version = versionElement.getText();
+
+        //keep each raw file in a map (key: int, value: name of file).
         Element filePathsElement = getChildByName(root, FILE_PATHS);
         int counter = 0;
         for (Element filePathElement : filePathsElement.getChildren()) {

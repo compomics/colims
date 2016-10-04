@@ -36,19 +36,18 @@ public class MaxQuantQuantificationSettingsParser {
      * The quantification settings indexed by analytical run (key: AnalyticalRun ; value: QuantificationSettings)
      */
     private final Map<AnalyticalRun, QuantificationSettings> runsAndQuantificationSettings = new HashMap<>();
-    /**
-     * The MaxQuant version.
-     */
-    private final String version = "N/A";
 
     private final OntologyMapper ontologyMapper;
     private final QuantificationSettingsService quantificationSettingsService;
     private final QuantificationReagentService quantificationReagentService;
+    private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
 
-    public MaxQuantQuantificationSettingsParser(QuantificationSettingsService quantificationSettingsService, OntologyMapper ontologyMapper, QuantificationReagentService quantificationReagentService) {
+    public MaxQuantQuantificationSettingsParser(QuantificationSettingsService quantificationSettingsService, OntologyMapper ontologyMapper,
+            QuantificationReagentService quantificationReagentService, MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) {
         this.quantificationSettingsService = quantificationSettingsService;
         this.ontologyMapper = ontologyMapper;
         this.quantificationReagentService = quantificationReagentService;
+        this.maxQuantSearchSettingsParser = maxQuantSearchSettingsParser;
     }
 
     /**
@@ -80,7 +79,7 @@ public class MaxQuantQuantificationSettingsParser {
         // create quantificationSettings
         QuantificationSettings quantificationSettings = new QuantificationSettings();
         quantificationSettings.setQuantificationMethodCvParam(quantificationMethodCvParam);
-        quantificationSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(QuantificationEngineType.MAXQUANT, version));
+        quantificationSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(QuantificationEngineType.MAXQUANT, maxQuantSearchSettingsParser.getVersion()));
         analyticalRuns.forEach(analyticalRun -> {
             QuantificationSettings quantSettings = new QuantificationSettings();
             quantSettings.setAnalyticalRun(analyticalRun);

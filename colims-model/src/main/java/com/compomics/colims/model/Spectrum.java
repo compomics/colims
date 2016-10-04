@@ -82,7 +82,7 @@ public class Spectrum extends DatabaseEntity {
     /**
      * The peptides that identify this spectrum.
      */
-    @OneToMany(mappedBy = "spectrum", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "spectrum", cascade = CascadeType.ALL)
     private List<Peptide> peptides = new ArrayList<>();
     /**
      * The SpectrumFile instances linked to this spectrum.

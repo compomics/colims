@@ -5,6 +5,8 @@
 package com.compomics.colims.core.io.mztab;
 
 import com.compomics.colims.core.io.MappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 /**
  * @author Niels Hulstaert
@@ -39,4 +45,5 @@ public class MzTabExporterTest {
 
         System.out.println("test");
     }
+
 }

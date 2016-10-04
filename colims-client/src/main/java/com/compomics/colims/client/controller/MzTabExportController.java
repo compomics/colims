@@ -10,6 +10,7 @@ import com.compomics.colims.core.io.mztab.MzTabExporter;
 import com.compomics.colims.core.io.mztab.enums.MzTabMode;
 import com.compomics.colims.core.io.mztab.enums.MzTabType;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.QuantificationMethodCvParam;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.google.common.eventbus.EventBus;
@@ -519,9 +520,16 @@ public class MzTabExportController implements Controllable {
         //ensure that all runs linked with assays have been searched with the same search engine
         List<AnalyticalRun> runs = mzTabExport.getRuns();
         SearchEngineType firstRunSearchEngineType = runs.get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType();
+        QuantificationMethodCvParam firstQuantificationMethodCvParam = runs.get(0).getQuantificationSettings().getQuantificationMethodCvParam();
         for (int i = 1; i < runs.size(); i++) {
             if (!firstRunSearchEngineType.equals(runs.get(i).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType())) {
                 validationMessages.add("All runs linked to assays must have the same search engine");
+            }
+            if(!firstQuantificationMethodCvParam.equals(runs.get(i).getQuantificationSettings().getQuantificationMethodCvParam())){
+                validationMessages.add("All runs should have the same quantification method");
+            }
+            if(runs.get(i).getQuantificationSettings().getQuantificationMethodCvParam().getQuantificationMethodHasReagents().size() != mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length){
+                validationMessages.add("Assay number should be the same with quantification reagent of the run " + runs.get(i).getName());
             }
         }
 
@@ -671,8 +679,7 @@ public class MzTabExportController implements Controllable {
      * Update the study variables to assays references.
      */
     private void updateStudyVariablesAssaysRefs() {
-        Map<String, int[]> studyVariablesAssaysRefs = mzTabExport.getStudyVariablesAssaysRefs();
-        studyVariablesAssaysRefs.clear();
+        mzTabExport.getStudyVariablesAssaysRefs().clear();
 
         Enumeration studyVariables = studyVariableRootNode.children();
         while (studyVariables.hasMoreElements()) {
@@ -684,8 +691,9 @@ public class MzTabExportController implements Controllable {
                 String assay = ((DefaultMutableTreeNode) assays.nextElement()).getUserObject().toString();
                 int assayNumber = Integer.valueOf(assay.substring(assay.indexOf(" ") + 1));
                 assayNumbers[index] = assayNumber;
+                index++;
             }
-            studyVariablesAssaysRefs.put(studyVariable.toString(), assayNumbers);
+            mzTabExport.getStudyVariablesAssaysRefs().put(studyVariable.toString(), assayNumbers);
         }
     }
 
@@ -694,10 +702,8 @@ public class MzTabExportController implements Controllable {
      * references in the MzTabExport instance.
      */
     private void updateAnalyticalRunsToExport() {
-        List<AnalyticalRun> analyticalRuns = mzTabExport.getRuns();
-        analyticalRuns.clear();
-        Map<AnalyticalRun, int[]> analyticalRunAssaysRefs = mzTabExport.getAnalyticalRunsAssaysRefs();
-        analyticalRunAssaysRefs.clear();
+        mzTabExport.getRuns().clear();
+        mzTabExport.getAnalyticalRunsAssaysRefs().clear();
 
         Enumeration nodes = analyticalRunRootNode.breadthFirstEnumeration();
         while (nodes.hasMoreElements()) {
@@ -714,10 +720,10 @@ public class MzTabExportController implements Controllable {
                     index++;
                 }
                 AnalyticalRun analyticalRun = (AnalyticalRun) node.getUserObject();
-                analyticalRuns.add(analyticalRun);
-                analyticalRunAssaysRefs.put(analyticalRun, assayNumbers);
+                mzTabExport.getRuns().add(analyticalRun);
+                mzTabExport.getAnalyticalRunsAssaysRefs().put(analyticalRun, assayNumbers);
             }
-        }
+        } 
     }
 
     /**

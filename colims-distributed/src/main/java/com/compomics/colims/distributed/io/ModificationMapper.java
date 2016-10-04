@@ -123,10 +123,9 @@ public class ModificationMapper {
                 if (utilitiesName != null && !utilitiesName.isEmpty()) {
                     modification.setUtilitiesName(utilitiesName);
                 }
-            } else {
-                //add the modification to the cached modifications
-                cachedModifications.put(accession, modification);
             }
+            //add the modification to the cached modifications
+            cachedModifications.put(accession, modification);
         }
 
         return modification;

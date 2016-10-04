@@ -81,7 +81,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                     maxQuantImport.isIncludeContaminants(),
                     maxQuantImport.isIncludeUnidentifiedSpectra(),
                     maxQuantImport.getSelectedProteinGroupHeaders());
-            
+
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
                 if (maxQuantSearchSettingsParser.getRunSettings().containsKey(analyticalRun.getName())) {
                     analyticalRun.setStorageLocation(maxQuantImport.getCombinedFolderDirectory().toString());

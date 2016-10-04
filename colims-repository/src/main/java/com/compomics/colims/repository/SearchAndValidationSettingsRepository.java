@@ -13,4 +13,11 @@ import com.compomics.colims.model.SearchAndValidationSettings;
  */
 public interface SearchAndValidationSettingsRepository extends GenericRepository<SearchAndValidationSettings, Long> {
 
+    /**
+     * Get the SearchAndValidationSettings by analytical run id from database.
+     * if nothing was found, send null value.
+     * @param analyticalRunId
+     * @return the found SearchAndValidationSettings
+     */
+    SearchAndValidationSettings findbyAnalyticalRunId(Long analyticalRunId);
 }
