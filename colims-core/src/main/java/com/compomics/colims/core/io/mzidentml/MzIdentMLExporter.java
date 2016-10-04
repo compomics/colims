@@ -325,8 +325,8 @@ public class MzIdentMLExporter {
 
         if (colimsEnzymes != null) {
             for (String colimsEnzyme : colimsEnzymes.split(";")) {
-                //@// TODO: 27/09/16 map the enyme name to an ontology term
-                cvEnzyme = getDataItem("GenericCV." + colimsEnzyme, CvParam.class);
+                //@// TODO: 27/09/16 refactor this
+                cvEnzyme = getDataItem("Enzyme." + colimsEnzyme, CvParam.class);
                 cvEnzyme.setName(colimsEnzyme);
                 cvEnzyme.setAccession(colimsEnzyme);
 

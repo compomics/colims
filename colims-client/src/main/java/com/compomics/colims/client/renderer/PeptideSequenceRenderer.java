@@ -2,7 +2,6 @@ package com.compomics.colims.client.renderer;
 
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.Util;
 import org.apache.commons.math.util.MathUtils;
 
@@ -35,7 +34,7 @@ public class PeptideSequenceRenderer {
      * Get the annotated peptide sequence in HTML format. Amino acids that carry
      * modifications are colored and bold.
      *
-     * @param peptideSequence the peptide sequence
+     * @param peptideSequence         the peptide sequence
      * @param peptideHasModifications the list of modifications
      * @return the annotated peptide sequence
      */
@@ -74,9 +73,9 @@ public class PeptideSequenceRenderer {
     /**
      * Get the tooltip string in HTML format.
      *
-     * @param peptideSequence the peptide sequence
+     * @param peptideSequence         the peptide sequence
      * @param peptideHasModifications the list of modifications
-     * @param showScore show the modification score or not
+     * @param showScore               show the modification score or not
      * @return the annotated peptide sequence
      */
     public static String getModificationsHtmlToolTip(String peptideSequence, List<PeptideHasModification> peptideHasModifications, boolean showScore) {
@@ -106,8 +105,7 @@ public class PeptideSequenceRenderer {
      * This method orders the list of PeptideHasModification instances and
      * returns an sorted map with the modification locations as keys.
      *
-     * @param peptideHasModifications the list of PeptideHasModification
-     * instances
+     * @param peptideHasModifications the list of PeptideHasModification instances
      * @return the sorted map
      */
     private static TreeMap<Integer, PeptideHasModification> getOrderedPeptideHasModifications(List<PeptideHasModification> peptideHasModifications) {
@@ -133,9 +131,7 @@ public class PeptideSequenceRenderer {
     private static String getModificationScore(PeptideHasModification peptideHasModification) {
         StringBuilder modificationScore = new StringBuilder(" (");
 
-        if (peptideHasModification.getModificationType().equals(ModificationType.FIXED)) {
-            modificationScore.append(FIXED_MOD);
-        } else if (peptideHasModification.getProbabilityScore() != null) {
+        if (peptideHasModification.getProbabilityScore() != null) {
             modificationScore.append(MathUtils.round(peptideHasModification.getProbabilityScore(), 2));
         } else {
             modificationScore.append(NOT_AVAILABLE);

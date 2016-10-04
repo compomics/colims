@@ -107,7 +107,6 @@ public class UtilitiesPeptideMapperTest {
             Assert.assertNotNull(peptideHasModification.getProbabilityScore());
             Assert.assertNotNull(peptideHasModification.getProbabilityScore());
             Assert.assertNotNull(peptideHasModification.getLocation());
-            Assert.assertNotNull(peptideHasModification.getModificationType());
 
             Assert.assertNotNull(peptideHasModification.getPeptide());
             Assert.assertNotNull(peptideHasModification.getModification());
