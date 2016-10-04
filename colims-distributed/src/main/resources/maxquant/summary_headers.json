@@ -1,10 +1,4 @@
 {
-  "MULTIPLICITY": {
-    "mandatory": true,
-    "values": [
-      "Multiplicity"
-    ]
-  },
   "RAW_FILE": {
     "mandatory": true,
     "values": [

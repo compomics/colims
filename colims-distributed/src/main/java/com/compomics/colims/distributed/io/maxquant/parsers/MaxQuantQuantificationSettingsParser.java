@@ -28,7 +28,6 @@ public class MaxQuantQuantificationSettingsParser {
     /**
      * Logger instance.
      */
-
     private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
 
     private static final String SILAC_LABEL = "SILAC";
@@ -62,13 +61,13 @@ public class MaxQuantQuantificationSettingsParser {
     }
 
     /**
-     * Parse the quantification parameters for a MaxQuant experiment
+     * Parse the quantification parameters for a MaxQuant experiment.
      *
      * @param analyticalRuns
      * @param quantificationLabel
      * @param reagents
      */
-    public void parse(List<AnalyticalRun> analyticalRuns, String quantificationLabel, List<String> reagents){
+    public void parse(List<AnalyticalRun> analyticalRuns, String quantificationLabel, List<String> reagents) {
 
         OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(quantificationLabel);
 
@@ -88,33 +87,33 @@ public class MaxQuantQuantificationSettingsParser {
             quantSettings.setQuantificationMethodCvParam(quantificationSettings.getQuantificationMethodCvParam());
             quantSettings.setQuantificationEngine(quantificationSettings.getQuantificationEngine());
             runsAndQuantificationSettings.put(analyticalRun, quantSettings);
-            
+
         });
     }
 
     /**
-     * This method is to create QuantificationReagent and its link to QuantificationMethodCvParam
+     * This method is to create QuantificationReagent and its link to QuantificationMethodCvParam.
      *
      * @param quantificationMethodCvParam
      * @param quantificationLabel
      * @param reagents
      * @return QuantificationMethodHasReagents list
      */
-    public List<QuantificationMethodHasReagent> createQuantificationReagent(QuantificationMethodCvParam quantificationMethodCvParam, String quantificationLabel, List<String> reagents){
+    public List<QuantificationMethodHasReagent> createQuantificationReagent(QuantificationMethodCvParam quantificationMethodCvParam, String quantificationLabel, List<String> reagents) {
         List<QuantificationMethodHasReagent> quantificationMethodHasReagents = new ArrayList<>();
 
         reagents.forEach(reagent -> {
             OntologyTerm ontologyTerm = null;
-            if(quantificationLabel.equals(SILAC_LABEL)){
+            if (quantificationLabel.equals(SILAC_LABEL)) {
                 ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationReagents().get(reagent);
-            }else{
+            } else {
                 ontologyTerm = ontologyMapper.getMaxQuantMapping().getQuantificationReagents().get(reagent);
             }
 
             QuantificationMethodHasReagent quantificationMethodHasReagent = new QuantificationMethodHasReagent();
-            if(ontologyTerm != null){
+            if (ontologyTerm != null) {
                 QuantificationReagent quantificationReagent =
-                    new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
+                        new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
 
                 // check if quantificationReagent is in the db
                 quantificationReagent = quantificationReagentService.getQuantificationReagent(quantificationReagent);
@@ -127,10 +126,11 @@ public class MaxQuantQuantificationSettingsParser {
 
         return quantificationMethodHasReagents;
     }
+
     /**
-     * Clear resources
+     * Clear resources.
      */
-    public void clear(){
+    public void clear() {
         runsAndQuantificationSettings.clear();
     }
 }

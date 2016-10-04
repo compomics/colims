@@ -52,8 +52,8 @@ public class MaxQuantProteinGroupsParser {
     /**
      * Parse a data file and return grouped proteins.
      *
-     * @param proteinGroupsFile MaxQuant protein groups file
-     * @param parsedFastas      FASTA files parsed into header/sequence pairs
+     * @param proteinGroupsFile   MaxQuant protein groups file
+     * @param parsedFastas        FASTA files parsed into header/sequence pairs
      * @param includeContaminants
      * @param optionalHeaders
      * @return Protein groups indexed by id
@@ -93,9 +93,7 @@ public class MaxQuantProteinGroupsParser {
     private ProteinGroup parseProteinGroup(Map<String, String> proteinGroupsEntry, Map<String, String> parsedFastas, boolean includeContaminants, List<String> optionalHeaders) {
         ProteinGroup proteinGroup = new ProteinGroup();
 
-        if (proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.PEP)) != null) {
-            proteinGroup.setProteinPostErrorProbability(Double.parseDouble(proteinGroupsHeaders.get(ProteinGroupsHeader.PEP)));
-        }
+        proteinGroup.setProteinPostErrorProbability(Double.parseDouble(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.SCORE))));
 
         String parsedAccession = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ACCESSION));
         List<String> filteredAccessions = new ArrayList<>();
@@ -322,7 +320,7 @@ public class MaxQuantProteinGroupsParser {
      * @param experimentName
      */
     private void parseLabeledQuantification(Map<String, String> values, ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String experimentName,
-            List<String> optionalHeaders) {
+                                            List<String> optionalHeaders) {
         for (int i = 0; i < 10; i++) {
             String reporterIntensityCorrected = values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.REPORTER_INTENSITY_CORRECTED) + " " + i + " " + experimentName);
 

@@ -37,7 +37,7 @@ public class MaxQuantParserTest {
         fastaDbs.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb)));
 
         maxQuantParser.clear();
-        maxQuantParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs, "2", false, false, new ArrayList<>());
+        maxQuantParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs, false, false, new ArrayList<>());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class MaxQuantParserTest {
     }
 
     /**
-     * Test of getAplSpectra method, of class MaxQuantParser.
+     * Test of getAplKeyToSpectrums method, of class MaxQuantParser.
      *
      * @throws java.lang.Exception in case of an exception
      */

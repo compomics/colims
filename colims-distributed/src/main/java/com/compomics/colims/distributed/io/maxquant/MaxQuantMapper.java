@@ -56,7 +56,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     }
 
     @Override
-    public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException, JDOMException {
+    public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException {
         LOGGER.info("started mapping folder: " + maxQuantImport.getParameterFilePath().toString());
 
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
@@ -75,23 +75,22 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                 fastaDbs.put(fastaDbType, fastaDbList);
             });
 
-            try {
-                maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedFolderDirectory(), maxQuantImport.getParameterFilePath(), fastaDbs);
-            } catch (JDOMException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
+            maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedFolderDirectory(), maxQuantImport.getParameterFilePath(), fastaDbs);
 
-            maxQuantParser.parse(maxQuantImport.getCombinedFolderDirectory(), fastaDbs, maxQuantSearchSettingsParser.getMultiplicity(),
-                    maxQuantImport.isIncludeContaminants(), maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantImport.getSelectedProteinGroupHeaders());
-
-            proteinGroups = maxQuantParser.getProteinGroupSet();
+            maxQuantParser.parse(maxQuantImport.getCombinedFolderDirectory(), fastaDbs,
+                    maxQuantImport.isIncludeContaminants(),
+                    maxQuantImport.isIncludeUnidentifiedSpectra(),
+                    maxQuantImport.getSelectedProteinGroupHeaders());
+            
             for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
                 if (maxQuantSearchSettingsParser.getRunSettings().containsKey(analyticalRun.getName())) {
                     analyticalRun.setStorageLocation(maxQuantImport.getCombinedFolderDirectory().toString());
                     SearchAndValidationSettings searchAndValidationSettings = maxQuantSearchSettingsParser.getRunSettings().get(analyticalRun.getName());
+
                     //set search and validation settings-run entity associations
                     analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
                     searchAndValidationSettings.setAnalyticalRun(analyticalRun);
+
                     List<Spectrum> mappedSpectra = new ArrayList<>(analyticalRun.getSpectrums().size());
                     //set spectrum-run entity associations
                     for (Spectrum spectrum : analyticalRun.getSpectrums()) {
@@ -102,11 +101,13 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
                     analyticalRuns.add(analyticalRun);
 
-                    //               analyticalRun.setQuantificationSettings(importQuantSettings(new File(txtDirectory.toFile(), QUANT_FILE), analyticalRun));
+                    //analyticalRun.setQuantificationSettings(importQuantSettings(new File(txtDirectory.toFile(), QUANT_FILE), analyticalRun));
                 }
             }
-            // parse quantification settings
-            // for silac experiment, we don't have any reagent name from maxquant. Colims gives reagent name due to number of sample.
+
+            //parse the quantification settings
+            //for a silac experiment, we don't have any reagent name from maxquant.
+            //Colims gives reagent name due to number of sample.
             if (maxQuantImport.getQuantificationLabel().equals("SILAC")) {
                 List<String> silacReagents = new ArrayList<>();
                 if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
@@ -125,12 +126,12 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                 analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun));
             });
 
-        } catch (IOException | UnparseableException | MappingException ex) {
+        } catch (IOException | UnparseableException | MappingException | JDOMException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
         }
 
-        return new MappedData(analyticalRuns, proteinGroups);
+        return new MappedData(analyticalRuns, maxQuantParser.getProteinGroupSet());
     }
 
     /**

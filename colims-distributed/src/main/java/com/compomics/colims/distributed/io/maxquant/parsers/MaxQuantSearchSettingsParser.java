@@ -53,10 +53,6 @@ public class MaxQuantSearchSettingsParser {
      */
     private String version = NOT_APPLICABLE;
     /**
-     * The experiment multiplicity.
-     */
-    private String multiplicity;
-    /**
      * The default search type.
      */
     private SearchCvParam defaultSearchType;
@@ -130,15 +126,6 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Get the multiplicity for this experiment.
-     *
-     * @return Parsed multiplicity value
-     */
-    public String getMultiplicity() {
-        return multiplicity;
-    }
-
-    /**
      * Get the run settings stored in this object
      *
      * @return Copy of the filename/settings map
@@ -184,7 +171,6 @@ public class MaxQuantSearchSettingsParser {
         analyticalRuns.clear();
         isobaricLabels.clear();
         labelMods.clear();
-        multiplicity = null;
     }
 
     /**
@@ -196,7 +182,6 @@ public class MaxQuantSearchSettingsParser {
      * @throws IOException in case of of an I/O related problem
      */
     public void parse(Path combinedFolderDirectory, Path mqParFile, EnumMap<FastaDbType, List<FastaDb>> fastaDbs) throws IOException, JDOMException {
-        multiplicity = null;
         runSettings.clear();
 
         Path txtDirectory = Paths.get(combinedFolderDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
@@ -212,9 +197,6 @@ public class MaxQuantSearchSettingsParser {
             if (mqParParamsWithRawFile.containsKey(summaryEntry.get(SummaryHeader.RAW_FILE))) {
                 SearchAndValidationSettings searchAndValidationSettings
                         = parseSearchSettings(txtDirectory, fastaDbs, summaryEntry.get(SummaryHeader.RAW_FILE));
-                if (multiplicity == null && summaryEntry.containsKey(SummaryHeader.MULTIPLICITY)) {
-                    multiplicity = summaryEntry.get(SummaryHeader.MULTIPLICITY);
-                }
 
                 runSettings.put(summaryEntry.get(SummaryHeader.RAW_FILE), searchAndValidationSettings);
             }

@@ -28,7 +28,7 @@ public class MaxQuantSpectraParserTest {
 
         MaxQuantSpectra maxQuantSpectra = maxQuantSpectraParser.getMaxQuantSpectra();
 
-        Assert.assertEquals(21, maxQuantSpectra.getSpectrumIDs().size());
+        Assert.assertEquals(21, maxQuantSpectra.getSpectrumToMsmsIds().size());
         Assert.assertTrue(maxQuantSpectra.getUnidentifiedSpectra().isEmpty());
 
         // test for the unidentified spectra
@@ -36,7 +36,7 @@ public class MaxQuantSpectraParserTest {
 
         MaxQuantSpectra maxQuantSpectra2 = maxQuantSpectraParser.getMaxQuantSpectra();
 
-        Assert.assertEquals(21, maxQuantSpectra2.getSpectrumIDs().size());
+        Assert.assertEquals(21, maxQuantSpectra2.getSpectrumToMsmsIds().size());
         Assert.assertEquals(18902, maxQuantSpectra2.getUnidentifiedSpectra().size());
     }
 }

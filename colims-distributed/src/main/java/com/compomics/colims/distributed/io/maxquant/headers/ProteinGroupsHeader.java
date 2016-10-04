@@ -12,7 +12,7 @@ public enum ProteinGroupsHeader {
     FASTAHEADER,
     ID,
     MSMSIDS,
-    PEP,
+    SCORE,
     PEPTIDEIDS,
     REVERSE,
     IBAQ,

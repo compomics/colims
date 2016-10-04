@@ -41,7 +41,7 @@ public class MaxQuantEvidenceParserTest {
 //        maxQuantEvidenceParser.parse(MaxQuantTestSuite.evidenceFile, ommittedProteinIds);
         maxQuantEvidenceParser.parse(evidenceFile, ommittedProteinIds);
 
-        assertThat(maxQuantEvidenceParser.getPeptides().size(), not(0));
+        assertThat(maxQuantEvidenceParser.getSpectrumToPeptides().size(), not(0));
     }
 
     @Ignore

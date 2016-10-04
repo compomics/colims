@@ -5,6 +5,5 @@ package com.compomics.colims.distributed.io.maxquant.headers;
  */
 public enum SummaryHeader {
 
-    MULTIPLICITY,
     RAW_FILE
 }
