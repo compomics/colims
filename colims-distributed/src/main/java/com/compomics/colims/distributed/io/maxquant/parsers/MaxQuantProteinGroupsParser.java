@@ -173,11 +173,8 @@ public class MaxQuantProteinGroupsParser {
             maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> {
 
                 String intensity = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY) + " " + v.toLowerCase());
-
                 String lfqIntensity = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.LFQ_INTENSITY) + " " + v.toLowerCase());
-
                 String ibaq = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.IBAQ) + " " + v.toLowerCase());
-
                 String msmsCount = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.MSMS_COUNT) + " " + v.toLowerCase());
 
                 if (intensity != null || lfqIntensity != null || ibaq != null || msmsCount != null) {
@@ -192,7 +189,7 @@ public class MaxQuantProteinGroupsParser {
     }
 
     /**
-     * Search sequence in FASTA map by using accession
+     * Search sequence in FASTA map by using accession.
      *
      * @param accession
      * @param parsedFastas
@@ -219,10 +216,10 @@ public class MaxQuantProteinGroupsParser {
     /**
      * Create a protein and it's relation to a protein group.
      *
-     * @param sequence  The sequence of the protein
-     * @param accession The accession of the protein
-     * @param mainGroup Whether this is the main protein of the group
-     * @return A ProteinGroupHasProtein object
+     * @param sequence  the sequence of the protein
+     * @param accession the accession of the protein
+     * @param mainGroup whether this is the main protein of the group
+     * @return a ProteinGroupHasProtein object
      */
     private ProteinGroupHasProtein createProteinGroupHasProtein(String sequence, String accession, boolean mainGroup, ProteinGroup proteinGroup) {
         ProteinGroupHasProtein proteinGroupHasProtein = new ProteinGroupHasProtein();
