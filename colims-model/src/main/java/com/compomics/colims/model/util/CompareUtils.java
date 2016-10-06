@@ -4,7 +4,7 @@ import org.apache.commons.math.util.MathUtils;
 
 /**
  * This class contains utilities methods for comparisons.
- *
+ * <p>
  * Created by Niels Hulstaert on 21/10/15.
  */
 public class CompareUtils {
@@ -21,14 +21,20 @@ public class CompareUtils {
     }
 
     /**
-     * Check whether the two Double values are the same, with the DOUBLE_EPSILON
-     * value used as maximum difference.
+     * Check whether the two Double values are the same, with the DOUBLE_EPSILON value used as maximum difference. This
+     * method takes null values into account (both null return true, only one of the arguments null returns false).
      *
      * @param one the first Double
      * @param two the second Double
      * @return equals or not
      */
     public static boolean equals(Double one, Double two) {
-        return MathUtils.equals(one, two, DOUBLE_EPSILON);
+        if (one == null) {
+            return two == null;
+        } else if (two == null) {
+            return one == null;
+        } else {
+            return MathUtils.equals(one, two, DOUBLE_EPSILON);
+        }
     }
 }
