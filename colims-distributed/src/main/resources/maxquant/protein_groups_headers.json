@@ -17,10 +17,10 @@
       "id"
     ]
   },
-  "PEP": {
-    "mandatory": false,
+  "SCORE": {
+    "mandatory": true,
     "values": [
-      "PEP"
+      "Score"
     ]
   },
   "BESTMSMS": {
@@ -38,7 +38,8 @@
   "FASTAHEADER": {
     "mandatory": true,
     "values": [
-      "Fasta headers"
+      "Fasta headers",
+      "Fasta headerValues"
     ]
   },
   "MSMSIDS": {

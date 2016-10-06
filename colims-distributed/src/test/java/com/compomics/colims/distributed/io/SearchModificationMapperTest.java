@@ -93,6 +93,25 @@ public class SearchModificationMapperTest {
     }
 
     /**
+     * Test the mapper for a modification that is found in the database.
+     */
+    @Test
+    public void testMapByOntologyTerm4() {
+        SearchModification searchModification = searchModificationMapper.mapByOntologyTerm(
+                "MOD",
+                "MOD:00696",
+                "Phosphorylation of S"
+        );
+
+        Assert.assertNotNull(searchModification);
+        Assert.assertEquals("MOD:00696", searchModification.getAccession());
+        Assert.assertEquals("phosphorylated residue", searchModification.getName());
+        Assert.assertNotNull(searchModification.getUtilitiesName());
+        Assert.assertNotNull(searchModification.getMonoIsotopicMassShift());
+        Assert.assertNotNull(searchModification.getAverageMassShift());
+    }
+
+    /**
      * Test the mapper for a modification that is present in the Compomics Utilities {@link PTMFactory}.
      */
     @Test

@@ -70,7 +70,6 @@ public class MaxQuantParser {
      *
      * @param maxQuantDirectory          File pointer to MaxQuant directory
      * @param fastaDbs                   the FASTA database map (key: FastaDb type; value: FastaDb instance)
-     * @param multiplicity               the multiplicity String
      * @param includeContaminants        whether to import proteins from contaminants file.
      * @param includeUnidentifiedSpectra whether to import unidentified spectra from APL files.
      * @param optionalHeaders            list of optional headers to store in protein group quantification labeled
@@ -79,46 +78,48 @@ public class MaxQuantParser {
      * @throws UnparseableException
      * @throws MappingException     thrown in case of a mapping related problem
      */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, String multiplicity, boolean includeContaminants,
+    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean includeContaminants,
                       boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, UnparseableException, MappingException {
         //look for the MaxQuant txt directory
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
-        if (!txtDirectory.toFile().exists()) {
-            throw new FileNotFoundException("The MaxQuant txt directory was not found.");
+        if (!Files.exists(txtDirectory)) {
+            throw new FileNotFoundException("The MaxQuant txt file " + txtDirectory.toString() + " was not found.");
         }
         //analyticalRuns.clear(); check if analytical run map is empty?
-        maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> {
-            analyticalRuns.put(k.getName(), k);
-        });
+        maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> analyticalRuns.put(k.getName(), k));
 
         //first, parse the protein groups file
-        LOGGER.debug("parsing protein groups");
+        LOGGER.debug("parsing proteinGroups.txt");
         List<FastaDb> fastaList = new ArrayList<>();
         fastaDbs.forEach((k, v) -> {
             v.forEach(fastaDb -> {
                 fastaList.add(fastaDb);
             });
         });
-        Path proteinGroupsFile = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value(),
-                MaxQuantConstants.PROTEIN_GROUPS_FILE.value());
+        //look for the proteinGroups.txt file
+        Path proteinGroupsFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value());
+        if (!Files.exists(proteinGroupsFile)) {
+            throw new FileNotFoundException("The proteinGroups.txt " + proteinGroupsFile.toString() + " was not found.");
+        }
         proteinGroups = maxQuantProteinGroupsParser.parse(proteinGroupsFile, parseFastas(fastaList), includeContaminants, optionalHeaders);
 
-        LOGGER.debug("parsing MSMS");
+        LOGGER.debug("parsing msms.txt");
         maxQuantSpectraParser.parse(maxQuantDirectory, includeUnidentifiedSpectra, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
-        // set spectra for analytical runs where spectra comes from msms file
-        getSpectra().forEach((k, v) -> {
-            String rawFile = k.getTitle().split("--")[0];
+        //set spectra for analytical runs where spectra comes from the msms.txt file
+        getSpectra().keySet().forEach(spectrum -> {
+            //get the raw file titles from the spectrum titles
+            String rawFile = spectrum.getTitle().split("--")[0];
             if (analyticalRuns.containsKey(rawFile)) {
-                analyticalRuns.get(rawFile).getSpectrums().add(k);
+                analyticalRuns.get(rawFile).getSpectrums().add(spectrum);
             } else {
                 AnalyticalRun analyticalRun = new AnalyticalRun();
                 analyticalRun.setName(rawFile);
-                analyticalRun.getSpectrums().add(k);
+                analyticalRun.getSpectrums().add(spectrum);
 
                 analyticalRuns.put(rawFile, analyticalRun);
             }
         });
-        // set unidentified spectra for analytical runs
+        //set unidentified spectra for analytical runs
         getUnidentifiedSpectra().forEach(unidentifiedSpectrum -> {
             Optional foundKey = analyticalRuns.keySet().stream()
                     .filter(runKey -> unidentifiedSpectrum.getAccession().contains(runKey))
@@ -132,11 +133,14 @@ public class MaxQuantParser {
             throw new UnparseableException("could not connect spectra to any run");
         }
 
-        LOGGER.debug("parsing evidence");
+        LOGGER.debug("parsing evidence.txt");
         Path evidenceFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.EVIDENCE_FILE.value());
+        if (!Files.exists(evidenceFile)) {
+            throw new FileNotFoundException("The evidence.txt " + evidenceFile.toString() + " was not found.");
+        }
         maxQuantEvidenceParser.parse(evidenceFile, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
-        if (getSpectra().isEmpty() || maxQuantEvidenceParser.getPeptides().isEmpty() || proteinGroups.isEmpty()) {
+        if (getSpectra().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");
         } else {
             parsed = true;
@@ -217,10 +221,10 @@ public class MaxQuantParser {
         List<Peptide> peptideList = new ArrayList<>();
         if (spectrumKeys != null) {
             for (int spectrumKey : spectrumKeys) {
-                if (!maxQuantEvidenceParser.getPeptides().isEmpty()) {
-                    peptideList.addAll(maxQuantEvidenceParser.getPeptides().get(spectrumKey));
+                if (!maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty()) {
+                    peptideList.addAll(maxQuantEvidenceParser.getSpectrumToPeptides().get(spectrumKey));
                 } else {
-                    throw new java.lang.IllegalStateException("At this stage peptites map is empty");
+                    throw new java.lang.IllegalStateException("At this stage peptides map is empty.");
                 }
             }
         }
@@ -233,7 +237,7 @@ public class MaxQuantParser {
      * @return Map of ids and spectra
      */
     public Map<Spectrum, List<Integer>> getSpectra() {
-        return Collections.unmodifiableMap(maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumIDs());
+        return Collections.unmodifiableMap(maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToMsmsIds());
     }
 
     /**
@@ -253,7 +257,7 @@ public class MaxQuantParser {
      * @throws NumberFormatException thrown in case of a String to numeric format conversion error.
      */
     public List<ProteinGroup> getProteinHitsForIdentification(Peptide peptide) throws NumberFormatException {
-        List<ProteinGroup> peptideProteinGroups = maxQuantEvidenceParser.getPeptideProteins().get(peptide)
+        List<ProteinGroup> peptideProteinGroups = maxQuantEvidenceParser.getPeptideToProteins().get(peptide)
                 .stream()
                 .map(proteinGroups::get)
                 .collect(Collectors.toList());

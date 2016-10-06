@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -42,9 +44,12 @@ public class MaxQuantSpectraParser {
     private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
 
     /**
-     * MaxQuantSpectra object to store identified and unidentified spectra
+     * MaxQuantSpectra object to store identified and unidentified spectra.
      */
     private final MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
+    /**
+     * The msms.txt headers.
+     */
     private final MsmsHeaders msmsHeaders;
     /**
      * The MaxQuantAndromedaParser for parsing the .apl spectra files.
@@ -63,7 +68,7 @@ public class MaxQuantSpectraParser {
     }
 
     /**
-     * Get maxQuantSpectra
+     * Get maxQuantSpectra.
      *
      * @return maxQuantSpectra
      */
@@ -82,7 +87,13 @@ public class MaxQuantSpectraParser {
      */
     public void parse(Path maxQuantDirectory, boolean includeUnidentifiedSpectra, List<String> removedProteinGroupIds) throws IOException {
         Path andromedaDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
+        if (!Files.exists(andromedaDirectory)) {
+            throw new FileNotFoundException("The andromeda directory " + andromedaDirectory.toString() + " was not found.");
+        }
         Path msmsFile = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value() + File.separator + MaxQuantConstants.MSMS_FILE.value());
+        if (!Files.exists(msmsFile)) {
+            throw new FileNotFoundException("The msms.txt file " + msmsFile.toString() + " was not found.");
+        }
 
         //parse the parameter files in the andromeda directory
         maxQuantAndromedaParser.parseParameters(andromedaDirectory);
@@ -92,7 +103,6 @@ public class MaxQuantSpectraParser {
 
         //parse the apl files containing the spectrum peak lists
         maxQuantAndromedaParser.parseSpectra(maxQuantSpectra, includeUnidentifiedSpectra);
-
     }
 
     /**
@@ -122,18 +132,18 @@ public class MaxQuantSpectraParser {
                     + msmsEntry.get(MsmsHeader.SCAN_NUMBER);
             if (!ommittedSpectrum) {
                 //map the spectrum
-                if (!maxQuantSpectra.getAplSpectra().containsKey(aplKey)) {
+                if (!maxQuantSpectra.getAplKeyToSpectrums().containsKey(aplKey)) {
                     spectrum = mapMsmsSpectrum(aplKey, msmsEntry);
                     //add to apl spectra map
-                    maxQuantSpectra.getAplSpectra().putIfAbsent(aplKey, spectrum);
+                    maxQuantSpectra.getAplKeyToSpectrums().putIfAbsent(aplKey, spectrum);
                     //map the spectrumIDS map where ID numbers are from msms file
-                    maxQuantSpectra.getSpectrumIDs().put(spectrum, new ArrayList<>(Collections.singletonList(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)))));
+                    maxQuantSpectra.getSpectrumToMsmsIds().put(spectrum, new ArrayList<>(Collections.singletonList(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)))));
                 } else {
                     // get the spectrum from aplSpectra and find that spectrum instance from spectrumIDs and add id to the list
-                    maxQuantSpectra.getSpectrumIDs().get(maxQuantSpectra.getAplSpectra().get(aplKey)).add(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)));
+                    maxQuantSpectra.getSpectrumToMsmsIds().get(maxQuantSpectra.getAplKeyToSpectrums().get(aplKey)).add(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)));
                 }
             } else {
-                maxQuantSpectra.getOmmittedSpectraKeys().add(aplKey);
+                maxQuantSpectra.getOmmittedSpectrumKeys().add(aplKey);
             }
         }
     }

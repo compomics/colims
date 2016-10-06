@@ -120,10 +120,10 @@ public class TabularFileIterator implements Iterable<Map<String, String>>, Itera
     private void advanceLine() {
         try {
             String readLine = lineReader.readLine();
-            if (readLine != null) {
+            if (readLine != null && !readLine.isEmpty()) {
                 //the -1 argument is for not discarding trailing empty fields
                 nextLine = readLine.split(String.valueOf(DELIMITER), -1);
-                return;
+                    return;
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

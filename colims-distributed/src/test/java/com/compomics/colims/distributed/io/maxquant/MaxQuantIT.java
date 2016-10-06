@@ -69,7 +69,7 @@ public class MaxQuantIT {
         fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb.getId())));
 
         MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.parameterDirectory, 
-                MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds, false, false, new ArrayList<>(), "Label free");
+                MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds, false, false, new ArrayList<>(), "label free");
         MappedData mappedData = maxQuantImporter.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 

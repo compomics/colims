@@ -20,7 +20,7 @@ public interface DataMapper<T extends DataImport> {
      * @return the mapped data (protein groups and analytical runs)
      * @throws MappingException thrown in case of an error during the mapping
      */
-    MappedData mapData(T dataImport) throws MappingException, JDOMException;
+    MappedData mapData(T dataImport) throws MappingException;
 
     /**
      * Clear resources used during the import.

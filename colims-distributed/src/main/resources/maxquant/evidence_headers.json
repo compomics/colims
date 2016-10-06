@@ -52,5 +52,11 @@
     "values": [
       "Sequence"
     ]
+  },
+  "MODIFIED_SEQUENCE": {
+    "mandatory": true,
+    "values": [
+      "Modified sequence"
+    ]
   }
 }

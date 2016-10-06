@@ -46,11 +46,5 @@
     "values": [
       "variableModifications"
     ]
-  },
-  "VERSION": {
-    "mandatory": true,
-    "values": [
-      "maxQuantVersion"
-    ]
   }
 }

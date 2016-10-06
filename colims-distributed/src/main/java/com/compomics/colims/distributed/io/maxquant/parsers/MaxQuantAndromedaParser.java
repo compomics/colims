@@ -37,10 +37,6 @@ public class MaxQuantAndromedaParser {
     private static final String ANALYZER_TYPE_DELIMITER = "\\.";
 
     /**
-     * The MaxQuant andromeda directory.
-     */
-    private Path andromedaDirectory;
-    /**
      * The apl spectrum file paths map (key: apl file path; value: apl param
      * file path);
      */
@@ -107,7 +103,6 @@ public class MaxQuantAndromedaParser {
         if (!Files.exists(andromedaDirectory)) {
             throw new FileNotFoundException("The andromeda directory " + andromedaDirectory.toString() + " could not be found.");
         }
-        this.andromedaDirectory = andromedaDirectory;
 
         Path aplSummaryPath = Paths.get(andromedaDirectory.toString(), MaxQuantConstants.APL_SUMMARY_FILE.value());
         if (!Files.exists(aplSummaryPath)) {

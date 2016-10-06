@@ -50,24 +50,24 @@ public class MaxQuantAplParserTest {
         Spectrum spectrum1 = new Spectrum();
         spectrum1.setAccession("acc_1");
         spectrum1.setRetentionTime(123.45);
-        maxQuantSpectra.getAplSpectra().put(spectrumKey1, spectrum1);
+        maxQuantSpectra.getAplKeyToSpectrums().put(spectrumKey1, spectrum1);
 
         //create another dummy spectrum one
         String spectrumKey2 = "RawFile: V20239_3911_Eik_green_10 Index: 1084";
         Spectrum spectrum2 = new Spectrum();
         spectrum2.setAccession("acc_2");
         spectrum2.setRetentionTime(123.46);
-        maxQuantSpectra.getAplSpectra().put(spectrumKey2, spectrum2);
+        maxQuantSpectra.getAplKeyToSpectrums().put(spectrumKey2, spectrum2);
 
         maxQuantAplParser.parseAplFile(testAplFile, maxQuantSpectra, false);
         //check the sizes
         //2 identified spectra
-        Assert.assertEquals(2, maxQuantSpectra.getAplSpectra().size());
+        Assert.assertEquals(2, maxQuantSpectra.getAplKeyToSpectrums().size());
         //don't include unidentified ones
         Assert.assertTrue(maxQuantSpectra.getUnidentifiedSpectra().isEmpty());
 
         //do some additional testing
-        byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getAplSpectra().get(spectrumKey1).getSpectrumFiles().get(0).getContent());
+        byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getAplKeyToSpectrums().get(spectrumKey1).getSpectrumFiles().get(0).getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
              InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
              BufferedReader br = new BufferedReader(isr)) {
@@ -104,15 +104,15 @@ public class MaxQuantAplParserTest {
         Spectrum spectrum = new Spectrum();
         spectrum.setAccession("acc_1");
         spectrum.setRetentionTime(123.45);
-        maxQuantSpectra.getAplSpectra().put(spectrumKey, spectrum);
-        maxQuantSpectra.getOmmittedSpectraKeys().add("RawFile: V20263_3910_Eik_red_12 Index: 1986");
-        maxQuantSpectra.getOmmittedSpectraKeys().add("RawFile: V20263_3910_Eik_red_12 Index: 1975");
+        maxQuantSpectra.getAplKeyToSpectrums().put(spectrumKey, spectrum);
+        maxQuantSpectra.getOmmittedSpectrumKeys().add("RawFile: V20263_3910_Eik_red_12 Index: 1986");
+        maxQuantSpectra.getOmmittedSpectrumKeys().add("RawFile: V20263_3910_Eik_red_12 Index: 1975");
 
         maxQuantAplParser.parseAplFile(testAplFile, maxQuantSpectra, true);
 
         //check the sizes
         //one identified
-        Assert.assertEquals(1, maxQuantSpectra.getAplSpectra().size());
+        Assert.assertEquals(1, maxQuantSpectra.getAplKeyToSpectrums().size());
         //6 unidentified
         Assert.assertEquals(15957, maxQuantSpectra.getUnidentifiedSpectra().size());
 
