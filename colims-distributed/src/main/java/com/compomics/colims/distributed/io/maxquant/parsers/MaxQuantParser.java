@@ -158,32 +158,34 @@ public class MaxQuantParser {
         Map<String, String> parsedFasta = new HashMap<>();
         try {
             final StringBuilder sequenceBuilder = new StringBuilder();
-            String header;
+            String header = "";
             String line;
             for (FastaDb fastaDb : fastaDbs) {
                 try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(FilenameUtils.separatorsToSystem(fastaDb.getFilePath())))) {
                     line = bufferedReader.readLine();
                     while (line != null) {
                         if (line.startsWith(BLOCK_SEPARATOR)) {
+                            //add limiting check for protein store to avoid growing
+                            if (sequenceBuilder.length() > 0) {
+                                //get parse rule from fastaDb and parse the key
+                                if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
+                                    fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);
+                                }
+                                Pattern pattern;
+                                if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
+                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
+                                } else {
+                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule());
+                                }
+                                Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
+                                if (matcher.find()) {
+                                    parsedFasta.put(matcher.group(1), sequenceBuilder.toString().trim());
+                                } else {
+                                    parsedFasta.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                                }
+                                sequenceBuilder.setLength(0);
+                            }
                             header = line;
-                            //get parse rule from fastaDb and parse the key
-                            if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
-                                fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);
-                            }
-                            Pattern pattern;
-                            if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
-                                pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
-                            } else {
-                                pattern = Pattern.compile(fastaDb.getHeaderParseRule());
-                            }
-                            Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
-                            if (matcher.find()) {
-                                parsedFasta.put(matcher.group(1), sequenceBuilder.toString().trim());
-                            } else {
-                                parsedFasta.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
-                            }
-                            sequenceBuilder.setLength(0);
-
                         } else {
                             sequenceBuilder.append(line);
                         }
