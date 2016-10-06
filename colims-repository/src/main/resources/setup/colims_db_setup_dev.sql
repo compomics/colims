@@ -187,6 +187,7 @@ use colims;
         id bigint not null auto_increment,
         delta_score double precision,
         location integer,
+        modification_type integer,
         prob_score double precision,
         l_modification_id bigint,
         l_peptide_id bigint,
