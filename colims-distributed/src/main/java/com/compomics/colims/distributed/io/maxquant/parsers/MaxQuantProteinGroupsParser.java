@@ -30,14 +30,19 @@ public class MaxQuantProteinGroupsParser {
      */
     private final List<String> omittedProteinGroupIds = new ArrayList<>();
     private final ProteinGroupsHeaders proteinGroupsHeaders;
+    /**
+     * Child beans.
+     */
     private final ProteinService proteinService;
     private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+    private final FastaDbParser fastaDbParser;
 
     @Autowired
-    public MaxQuantProteinGroupsParser(ProteinService proteinService, MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) throws IOException {
+    public MaxQuantProteinGroupsParser(ProteinService proteinService, MaxQuantSearchSettingsParser maxQuantSearchSettingsParser, FastaDbParser fastaDbParser) throws IOException {
         proteinGroupsHeaders = new ProteinGroupsHeaders();
         this.proteinService = proteinService;
         this.maxQuantSearchSettingsParser = maxQuantSearchSettingsParser;
+        this.fastaDbParser = fastaDbParser;
     }
 
     /**
@@ -53,20 +58,20 @@ public class MaxQuantProteinGroupsParser {
      * Parse a data file and return grouped proteins.
      *
      * @param proteinGroupsFile   MaxQuant protein groups file
-     * @param parsedFastas        FASTA files parsed into header/sequence pairs
-     * @param includeContaminants
-     * @param optionalHeaders
-     * @return Protein groups indexed by id
-     * @throws IOException
+     * @param fastaDbs            the list of {@link FastaDb} instances
+     * @param includeContaminants whether or not to include contaminants
+     * @param optionalHeaders     the list of optional headers
+     * @return the protein groups indexed by id
+     * @throws IOException in case of an Input/Output related problem
      */
-    public Map<Integer, ProteinGroup> parse(Path proteinGroupsFile, Map<String, String> parsedFastas, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
+    public Map<Integer, ProteinGroup> parse(Path proteinGroupsFile, List<FastaDb> fastaDbs, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
         Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
 
         TabularFileIterator iterator = new TabularFileIterator(proteinGroupsFile, proteinGroupsHeaders.getMandatoryHeaders());
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
-            ProteinGroup proteinGroup = parseProteinGroup(values, parsedFastas, includeContaminants, optionalHeaders);
+            ProteinGroup proteinGroup = parseProteinGroup(values, fastaDbParser.parseFastas(fastaDbs), includeContaminants, optionalHeaders);
             if (proteinGroup.getMainProtein() != null) {
                 proteinGroups.put(Integer.parseInt(values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))), proteinGroup);
             }

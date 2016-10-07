@@ -118,7 +118,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                     maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), silacReagents);
                 }
             } else {
-                List<String> reagents = new ArrayList<String>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
+                List<String> reagents = new ArrayList<>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
                 maxQuantQuantificationSettingsParser.parse(analyticalRuns, maxQuantImport.getQuantificationLabel(), reagents);
             }
             // link quantification settings to analytical run
@@ -126,7 +126,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                 analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun));
             });
 
-        } catch (IOException | UnparseableException | MappingException | JDOMException ex) {
+        } catch (IOException | UnparseableException | JDOMException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
         }
@@ -139,15 +139,15 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
      *
      * @param spectrum the spectrum object
      * @return The same object but with a bunch of relations
-     * @throws MappingException
+     * @throws MappingException in case
      */
-    private Spectrum mapSpectrum(Spectrum spectrum) throws MappingException {
+    private Spectrum mapSpectrum(Spectrum spectrum) {
         // TODO: 27/05/16 check if this still works with multiple peptides linked to one spectrum
         List<Peptide> peptides = maxQuantParser.getIdentificationForSpectrum(spectrum);
         for (Peptide peptide : peptides) {
             List<ProteinGroup> proteinGroups = new ArrayList<>(maxQuantParser.getProteinHitsForIdentification(peptide));
 
-            proteinGroups.stream().forEach(proteinGroup -> {
+            proteinGroups.forEach(proteinGroup -> {
                 PeptideHasProteinGroup phpGroup = new PeptideHasProteinGroup();
                 phpGroup.setPeptidePostErrorProbability(peptide.getPsmPostErrorProbability());
                 phpGroup.setPeptideProbability(peptide.getPsmProbability());

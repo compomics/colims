@@ -37,7 +37,7 @@
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="fastaDbDetailPanel" pref="283" max="32767" attributes="0"/>
+                  <Component id="fastaDbDetailPanel" pref="299" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -86,9 +86,9 @@
                               </Group>
                               <Component id="versionTextField" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="headerParseRuleComboBox" min="-2" pref="360" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="browseHeaderParseRuleButtton" max="32767" attributes="0"/>
+                                  <Component id="headerParseRuleComboBox" pref="350" max="32767" attributes="0"/>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Component id="browseHeaderParseRuleButtton" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -190,16 +190,16 @@
         </Component>
         <Component class="javax.swing.JButton" name="browseFastaButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="browse"/>
+            <Property name="text" type="java.lang.String" value="browse..."/>
             <Property name="toolTipText" type="java.lang.String" value="select a fasta file to set the file name and the file path text fields"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>
@@ -220,16 +220,16 @@
         </Component>
         <Component class="javax.swing.JButton" name="browseTaxonomyButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="browse"/>
+            <Property name="text" type="java.lang.String" value="browse..."/>
             <Property name="toolTipText" type="java.lang.String" value="select taxonomy ID and species from the NCBI taxonomy ontology"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
           <Events>
@@ -262,13 +262,13 @@
             <Property name="text" type="java.lang.String" value="back"/>
             <Property name="toolTipText" type="java.lang.String" value="go back to the fasta database overview panel"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>
@@ -297,13 +297,13 @@
             <Property name="text" type="java.lang.String" value="save"/>
             <Property name="toolTipText" type="java.lang.String" value="save a new fasta db or update an existing one"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>
@@ -324,15 +324,15 @@
         </Component>
         <Component class="javax.swing.JButton" name="browseHeaderParseRuleButtton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="browse"/>
+            <Property name="text" type="java.lang.String" value="browse..."/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>

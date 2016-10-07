@@ -15,5 +15,6 @@ public enum EvidenceHeader {
     SCORE,
     SEQUENCE,
     PROTEIN_GROUP_IDS,
-    MODIFIED_SEQUENCE
+    MODIFIED_SEQUENCE,
+    RAW_FILE
 }

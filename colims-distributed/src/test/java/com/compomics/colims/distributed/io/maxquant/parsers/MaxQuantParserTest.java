@@ -40,21 +40,6 @@ public class MaxQuantParserTest {
         maxQuantParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs, false, false, new ArrayList<>());
     }
 
-    @Test
-    public void testParseFasta() throws IOException {
-        List<FastaDb> fastaDbs = new ArrayList<>();
-        fastaDbs.add(MaxQuantTestSuite.testFastaDb);
-        fastaDbs.add(MaxQuantTestSuite.contaminantsFastaDb);
-
-        Map<String, String> parsedContaminantsFasta = maxQuantParser.parseFastas(fastaDbs);
-
-        Assert.assertEquals(33322, parsedContaminantsFasta.size());
-        //look for a protein
-        Assert.assertTrue(parsedContaminantsFasta.containsKey("sp|Q9D103|IFM1_MOUSE"));
-        //look for a contaminants protein
-        //     Assert.assertTrue(parsedContaminantsFasta.containsKey("CON__P09870"));
-    }
-
     /**
      * Test of getIdentificationForSpectrum method, of class MaxQuantParser.
      *
@@ -87,18 +72,6 @@ public class MaxQuantParserTest {
         maxQuantParser.clear();
         spectra = maxQuantParser.getSpectra();
         assertThat(spectra.size(), is(0));
-    }
-
-    /**
-     * Test of hasParsed method, of class MaxQuantParser
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testHasParsed() throws Exception {
-        assertThat(maxQuantParser.hasParsed(), is(true));
-        maxQuantParser.clear();
-        assertThat(maxQuantParser.hasParsed(), is(false));
     }
 
     @Test

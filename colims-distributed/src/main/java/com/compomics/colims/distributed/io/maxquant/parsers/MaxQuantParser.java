@@ -1,16 +1,13 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -18,8 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 //// TODO: 6/1/2016 make youtrack entry to separate concerns between mapper and parser class, i.e. remove all setting to parser class from mapper class
@@ -38,16 +33,11 @@ public class MaxQuantParser {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
 
-    private static final String BLOCK_SEPARATOR = ">";
-    private static final String SPLITTER = " ";
-    private static final String PARSE_RULE_SPLITTER = ";";
-    private static final String EMPTY_HEADER_PARSE_RULE = "&gt;([^ ]*)";
-
     private Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
     private final Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
-
-    private boolean parsed = false;
-
+    /**
+     * The child parsers.
+     */
     private final MaxQuantSpectraParser maxQuantSpectraParser;
     private final MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
     private final MaxQuantEvidenceParser maxQuantEvidenceParser;
@@ -65,6 +55,18 @@ public class MaxQuantParser {
     }
 
     /**
+     * Clear the parser.
+     */
+    public void clear() {
+        proteinGroups.clear();
+        analyticalRuns.clear();
+        maxQuantEvidenceParser.clear();
+        maxQuantSpectraParser.clear();
+        maxQuantProteinGroupsParser.clear();
+        maxQuantSearchSettingsParser.clear();
+    }
+
+    /**
      * Parse the MaxQuant output folder and map the content of the different
      * files to Colims entities.
      *
@@ -74,12 +76,11 @@ public class MaxQuantParser {
      * @param includeUnidentifiedSpectra whether to import unidentified spectra from APL files.
      * @param optionalHeaders            list of optional headers to store in protein group quantification labeled
      *                                   table.
-     * @throws IOException          thrown in case of an input/output related problem
-     * @throws UnparseableException
-     * @throws MappingException     thrown in case of a mapping related problem
+     * @throws IOException          in case of an input/output related problem
+     * @throws UnparseableException in case of a problem occured while parsing
      */
     public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean includeContaminants,
-                      boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, UnparseableException, MappingException {
+                      boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, UnparseableException {
         //look for the MaxQuant txt directory
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         if (!Files.exists(txtDirectory)) {
@@ -90,18 +91,19 @@ public class MaxQuantParser {
 
         //first, parse the protein groups file
         LOGGER.debug("parsing proteinGroups.txt");
-        List<FastaDb> fastaList = new ArrayList<>();
+        List<FastaDb> fastaDbList = new ArrayList<>();
         fastaDbs.forEach((k, v) -> {
             v.forEach(fastaDb -> {
-                fastaList.add(fastaDb);
+                fastaDbList.add(fastaDb);
             });
         });
+
         //look for the proteinGroups.txt file
         Path proteinGroupsFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value());
         if (!Files.exists(proteinGroupsFile)) {
             throw new FileNotFoundException("The proteinGroups.txt " + proteinGroupsFile.toString() + " was not found.");
         }
-        proteinGroups = maxQuantProteinGroupsParser.parse(proteinGroupsFile, parseFastas(fastaList), includeContaminants, optionalHeaders);
+        proteinGroups = maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbList, includeContaminants, optionalHeaders);
 
         LOGGER.debug("parsing msms.txt");
         maxQuantSpectraParser.parse(maxQuantDirectory, includeUnidentifiedSpectra, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
@@ -142,72 +144,7 @@ public class MaxQuantParser {
 
         if (getSpectra().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || proteinGroups.isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");
-        } else {
-            parsed = true;
         }
-    }
-
-    /**
-     * Parse the FASTA files into a map of protein -> sequence pairs.
-     *
-     * @param fastaDbs the FASTA files to parse
-     * @return String/String map of protein/sequence
-     * @throws IOException thrown in case of an input/output related problem
-     */
-    public Map<String, String> parseFastas(Collection<FastaDb> fastaDbs) throws IOException {
-        Map<String, String> parsedFasta = new HashMap<>();
-        try {
-            final StringBuilder sequenceBuilder = new StringBuilder();
-            String header = "";
-            String line;
-            for (FastaDb fastaDb : fastaDbs) {
-                try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(FilenameUtils.separatorsToSystem(fastaDb.getFilePath())))) {
-                    line = bufferedReader.readLine();
-                    while (line != null) {
-                        if (line.startsWith(BLOCK_SEPARATOR)) {
-                            //add limiting check for protein store to avoid growing
-                            if (sequenceBuilder.length() > 0) {
-                                //get parse rule from fastaDb and parse the key
-                                if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
-                                    fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);
-                                }
-                                Pattern pattern;
-                                if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
-                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
-                                } else {
-                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule());
-                                }
-                                Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
-                                if (matcher.find()) {
-                                    parsedFasta.put(matcher.group(1), sequenceBuilder.toString().trim());
-                                } else {
-                                    parsedFasta.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
-                                }
-                                sequenceBuilder.setLength(0);
-                            }
-                            header = line;
-                        } else {
-                            sequenceBuilder.append(line);
-                        }
-                        line = bufferedReader.readLine();
-                    }
-                }
-            }
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
-            throw new IOException("Error parsing FASTA file, please check that it contains valid data");
-        }
-
-        return parsedFasta;
-    }
-
-    /**
-     * If parser has parsed.
-     *
-     * @return Parsed
-     */
-    public boolean hasParsed() {
-        return parsed;
     }
 
     /**
@@ -247,7 +184,7 @@ public class MaxQuantParser {
      *
      * @return unidentified spectra list.
      */
-    public List<Spectrum> getUnidentifiedSpectra() {
+    private List<Spectrum> getUnidentifiedSpectra() {
         return Collections.unmodifiableList(maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra());
     }
 
@@ -287,15 +224,4 @@ public class MaxQuantParser {
         return proteinGroups.values().stream().collect(Collectors.toSet());
     }
 
-    /**
-     * Clear the parser.
-     */
-    public void clear() {
-        maxQuantEvidenceParser.clear();
-        proteinGroups.clear();
-        analyticalRuns.clear();
-        maxQuantSpectraParser.clear();
-        maxQuantProteinGroupsParser.clear();
-        parsed = false;
-    }
 }

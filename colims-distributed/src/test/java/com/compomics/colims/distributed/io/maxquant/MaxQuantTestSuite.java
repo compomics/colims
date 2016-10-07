@@ -23,7 +23,8 @@ import java.nio.file.Path;
         MaxQuantSpectraParserTest.class,
         TabularFileIteratorTest.class,
         FixedTabularFileIteratorTest.class,
-        MaxQuantHeadersTest.class
+        MaxQuantHeadersTest.class,
+        FastaDbParserTest.class
 })
 public class MaxQuantTestSuite {
 

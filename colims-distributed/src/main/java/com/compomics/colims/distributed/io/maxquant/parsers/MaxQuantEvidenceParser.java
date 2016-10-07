@@ -1,6 +1,5 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.OntologyTerm;
 import com.compomics.colims.distributed.io.ModificationMapper;
@@ -38,7 +37,7 @@ public class MaxQuantEvidenceParser {
     private static final String MODIFICATION_SCORE_DIFFS = " score diffs";
     static final String N_TERMINAL_MODIFICATION = "Protein N-term";
     static final String C_TERMINAL_MODIFICATION = "Protein C-term";
-    static final String MODIFIED_SEQUENCE_FIX = "_";
+    private static final String MODIFIED_SEQUENCE_FIX = "_";
 
     /**
      * Spectrum IDs and spectrumToPeptides.
@@ -49,9 +48,10 @@ public class MaxQuantEvidenceParser {
      */
     private final Map<Peptide, List<Integer>> peptideToProteins = new HashMap<>();
     /**
-     * The list of matching between runs (MBR) peptides.
+     * The map of matching between runs (MBR) peptides (key: RAW file name; value: the list of {@link Peptide}
+     * instances).
      */
-    private final List<Peptide> mbrPeptides = new ArrayList();
+    private final Map<String, List<Peptide>> mbrPeptides = new HashMap<>();
     /**
      * The MaxQuant to UNIMOD modification mappings.
      */
@@ -88,15 +88,18 @@ public class MaxQuantEvidenceParser {
         return peptideToProteins;
     }
 
+    public Map<String, List<Peptide>> getMbrPeptides() {
+        return mbrPeptides;
+    }
+
     /**
      * This method parses an evidence file.
      *
      * @param evidenceFilePath       the MaxQuant evidence file path
      * @param omittedProteinGroupIds removed protein group IDs.
-     * @throws IOException      in case of an I/O related problem
-     * @throws MappingException in case of a mapping problem
+     * @throws IOException in case of an I/O related problem
      */
-    public void parse(Path evidenceFilePath, List<String> omittedProteinGroupIds) throws IOException, MappingException {
+    public void parse(Path evidenceFilePath, List<String> omittedProteinGroupIds) throws IOException {
         TabularFileIterator evidenceIterator = new TabularFileIterator(evidenceFilePath, evidenceHeaders.getMandatoryHeaders());
 
         Map<String, String> evidenceEntry;
@@ -120,14 +123,18 @@ public class MaxQuantEvidenceParser {
                     Peptide peptide = createPeptide(evidenceEntry);
                     if (!msmsIdString.isEmpty()) {
                         Integer msmsId = Integer.parseInt(msmsIdString);
-
                         if (!spectrumToPeptides.containsKey(msmsId)) {
-                            spectrumToPeptides.put(msmsId, Arrays.asList(new Peptide[]{peptide}));
+                            spectrumToPeptides.put(msmsId, Arrays.asList(peptide));
                         } else {
                             spectrumToPeptides.get(msmsId).add(peptide);
                         }
                     } else {
-                        mbrPeptides.add(peptide);
+                        String rawFile = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MS_MS_IDS));
+                        if (!mbrPeptides.containsKey(rawFile)) {
+                            mbrPeptides.put(rawFile, Arrays.asList(peptide));
+                        } else {
+                            mbrPeptides.get(rawFile).add(peptide);
+                        }
                     }
                 }
             }
@@ -140,7 +147,7 @@ public class MaxQuantEvidenceParser {
      * @param evidenceEntry key-value pairs from an evidence entry
      * @return the mapped Peptide object
      */
-    public Peptide createPeptide(Map<String, String> evidenceEntry) {
+    private Peptide createPeptide(Map<String, String> evidenceEntry) {
         Peptide peptide = new Peptide();
 
         if (!evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.SCORE)).equalsIgnoreCase(NAN)) {
@@ -247,10 +254,9 @@ public class MaxQuantEvidenceParser {
                             probabilityOverhead += probabilities.end() - probabilities.start();
                         }
 
-                        /**
-                         * Check the modification occurrences;
-                         * if the number of scores is higher than the occurrences rate, take the one with the highest score.
-                         */
+
+                        //Check the modification occurrences;
+                        //if the number of scores is higher than the occurrences rate, take the one with the highest score.
                         if (evidenceModification.getOccurrences() != scoresAndLocations.size()) {
                             //sort the scores in descending order
                             scoresAndLocations.sort(((o1, o2) -> ((Double) o2[0]).compareTo((Double) o1[0])));
@@ -356,14 +362,6 @@ class EvidenceModification {
 
     String getFullModificationName() {
         return fullModificationName;
-    }
-
-    String getAffectedAminoAcid() {
-        return affectedAminoAcid;
-    }
-
-    String getModificationName() {
-        return modificationName;
     }
 
     int getOccurrences() {

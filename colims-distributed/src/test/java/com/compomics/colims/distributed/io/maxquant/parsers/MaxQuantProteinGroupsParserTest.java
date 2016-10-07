@@ -28,8 +28,6 @@ public class MaxQuantProteinGroupsParserTest {
 
     @Autowired
     private MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
-    @Autowired
-    private MaxQuantParser maxQuantParser;
 
     /**
      * Test of parseMaxQuantProteinGroups method, of class MaxQuantProteinGroupParser.
@@ -44,7 +42,7 @@ public class MaxQuantProteinGroupsParserTest {
         List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.proteinGroupsFile);
 
         Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
-                maxQuantParser.parseFastas(fastaDbs), false, new ArrayList<>());
+                fastaDbs, false, new ArrayList<>());
 
         // minus headers
         assertThat(result.size(), Matchers.lessThan(rawFile.size()));
