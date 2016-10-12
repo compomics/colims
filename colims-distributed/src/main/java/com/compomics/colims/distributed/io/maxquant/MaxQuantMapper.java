@@ -145,7 +145,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         // TODO: 27/05/16 check if this still works with multiple peptides linked to one spectrum
         List<Peptide> peptides = maxQuantParser.getIdentificationForSpectrum(spectrum);
         for (Peptide peptide : peptides) {
-            List<ProteinGroup> proteinGroups = new ArrayList<>(maxQuantParser.getProteinHitsForIdentification(peptide));
+            List<ProteinGroup> proteinGroups = new ArrayList<>(maxQuantParser.getProteinHits(peptide));
 
             proteinGroups.forEach(proteinGroup -> {
                 PeptideHasProteinGroup phpGroup = new PeptideHasProteinGroup();

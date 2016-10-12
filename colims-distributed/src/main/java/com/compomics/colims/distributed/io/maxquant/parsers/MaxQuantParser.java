@@ -33,7 +33,6 @@ public class MaxQuantParser {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
 
-    private Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
     private final Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
     /**
      * The child parsers.
@@ -58,7 +57,6 @@ public class MaxQuantParser {
      * Clear the parser.
      */
     public void clear() {
-        proteinGroups.clear();
         analyticalRuns.clear();
         maxQuantEvidenceParser.clear();
         maxQuantSpectraParser.clear();
@@ -103,11 +101,11 @@ public class MaxQuantParser {
         if (!Files.exists(proteinGroupsFile)) {
             throw new FileNotFoundException("The proteinGroups.txt " + proteinGroupsFile.toString() + " was not found.");
         }
-        proteinGroups = maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbList, includeContaminants, optionalHeaders);
+        maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbList, includeContaminants, optionalHeaders);
 
         LOGGER.debug("parsing msms.txt");
         maxQuantSpectraParser.parse(maxQuantDirectory, includeUnidentifiedSpectra, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
-        //set spectra for analytical runs where spectra comes from the msms.txt file
+        //set spectra for analytical runs where spectra come from the msms.txt file
         getSpectra().keySet().forEach(spectrum -> {
             //get the raw file titles from the spectrum titles
             String rawFile = spectrum.getTitle().split("--")[0];
@@ -142,31 +140,32 @@ public class MaxQuantParser {
         }
         maxQuantEvidenceParser.parse(evidenceFile, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
-        if (getSpectra().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || proteinGroups.isEmpty()) {
+        if (getSpectra().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || maxQuantProteinGroupsParser.getProteinGroups().isEmpty()) {
             throw new UnparseableException("one of the parsed files could not be read properly");
         }
     }
 
     /**
-     * Fetch the identification(s) associated with a spectrum.
+     * Fetch the PSM(s) associated with a spectrum.
      *
      * @param spectrum the spectrum
      * @return the peptide(s) connected to the spectrum
      * @throws NumberFormatException if the spectrum is not present in the parsed file
      */
     public List<Peptide> getIdentificationForSpectrum(Spectrum spectrum) throws NumberFormatException {
-        // TODO: 6/1/2016 move peptide list to this class.
+        //TODO: 6/1/2016 move peptide list to this class.
         List<Integer> spectrumKeys = getSpectra().get(spectrum);
         List<Peptide> peptideList = new ArrayList<>();
         if (spectrumKeys != null) {
             for (int spectrumKey : spectrumKeys) {
                 if (!maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty()) {
-                    peptideList.addAll(maxQuantEvidenceParser.getSpectrumToPeptides().get(spectrumKey));
+                    peptideList.addAll(maxQuantEvidenceParser.getPeptidesByMsmsId(spectrumKey));
                 } else {
-                    throw new java.lang.IllegalStateException("At this stage peptides map is empty.");
+                    throw new java.lang.IllegalStateException("Spectrum to peptides map should not be empty.");
                 }
             }
         }
+
         return peptideList;
     }
 
@@ -195,10 +194,10 @@ public class MaxQuantParser {
      * @return Collection of protein groups
      * @throws NumberFormatException thrown in case of a String to numeric format conversion error.
      */
-    public List<ProteinGroup> getProteinHitsForIdentification(Peptide peptide) throws NumberFormatException {
-        List<ProteinGroup> peptideProteinGroups = maxQuantEvidenceParser.getPeptideToProteins().get(peptide)
+    public List<ProteinGroup> getProteinHits(Peptide peptide) throws NumberFormatException {
+        List<ProteinGroup> peptideProteinGroups = maxQuantEvidenceParser.getPeptideToProteinGroups().get(peptide)
                 .stream()
-                .map(proteinGroups::get)
+                .map(maxQuantProteinGroupsParser.getProteinGroups()::get)
                 .collect(Collectors.toList());
 
         peptideProteinGroups.removeIf(p -> p == null);
@@ -221,7 +220,7 @@ public class MaxQuantParser {
      * @return the protein group set
      */
     public Set<ProteinGroup> getProteinGroupSet() {
-        return proteinGroups.values().stream().collect(Collectors.toSet());
+        return maxQuantProteinGroupsParser.getProteinGroups().values().stream().collect(Collectors.toSet());
     }
 
 }

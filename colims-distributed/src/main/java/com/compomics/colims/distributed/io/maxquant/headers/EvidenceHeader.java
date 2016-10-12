@@ -16,5 +16,6 @@ public enum EvidenceHeader {
     SEQUENCE,
     PROTEIN_GROUP_IDS,
     MODIFIED_SEQUENCE,
-    RAW_FILE
+    RAW_FILE,
+    ID
 }

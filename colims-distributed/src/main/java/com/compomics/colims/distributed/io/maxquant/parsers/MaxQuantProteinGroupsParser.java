@@ -25,6 +25,10 @@ import java.util.Map;
 public class MaxQuantProteinGroupsParser {
 
     /**
+     * The map of parsed protein groups (key: proteinGroups.txt entry ID; value: the {@link ProteinGroup} instance).
+     */
+    private final Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
+    /**
      * The list of omitted protein group IDs. The peptides, PSMs, spectra for
      * these protein groups are not stored in the database.
      */
@@ -45,6 +49,10 @@ public class MaxQuantProteinGroupsParser {
         this.fastaDbParser = fastaDbParser;
     }
 
+    public Map<Integer, ProteinGroup> getProteinGroups() {
+        return proteinGroups;
+    }
+
     /**
      * Getter for the list of omitted protein group IDs.
      *
@@ -55,18 +63,15 @@ public class MaxQuantProteinGroupsParser {
     }
 
     /**
-     * Parse a data file and return grouped proteins.
+     * Parse the proteinGroups.txt file.
      *
      * @param proteinGroupsFile   MaxQuant protein groups file
      * @param fastaDbs            the list of {@link FastaDb} instances
      * @param includeContaminants whether or not to include contaminants
      * @param optionalHeaders     the list of optional headers
-     * @return the protein groups indexed by id
      * @throws IOException in case of an Input/Output related problem
      */
-    public Map<Integer, ProteinGroup> parse(Path proteinGroupsFile, List<FastaDb> fastaDbs, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
-        Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
-
+    public void parse(Path proteinGroupsFile, List<FastaDb> fastaDbs, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
         TabularFileIterator iterator = new TabularFileIterator(proteinGroupsFile, proteinGroupsHeaders.getMandatoryHeaders());
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
@@ -76,16 +81,15 @@ public class MaxQuantProteinGroupsParser {
                 proteinGroups.put(Integer.parseInt(values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))), proteinGroup);
             }
         }
-
-        return proteinGroups;
     }
 
     /**
      * Clear resources.
      */
     public void clear() {
-        proteinService.clear();
+        proteinGroups.clear();
         omittedProteinGroupIds.clear();
+        proteinService.clear();
     }
 
     /**

@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Niels Hulstaert
  */
- @Table(name = "peptide")
+@Table(name = "peptide")
 @Entity
 //@Cacheable
 //@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -162,9 +162,6 @@ public class Peptide extends DatabaseEntity {
         if (!sequence.equals(peptide.sequence)) {
             return false;
         }
-//        if (theoreticalMass != null ? !CompareUtils.equals(theoreticalMass, peptide.theoreticalMass) : peptide.theoreticalMass != null) {
-//            return false;
-//        }
         if (peptideHasModifications.size() != peptide.peptideHasModifications.size()) {
             return false;
         }

@@ -41,8 +41,10 @@ public class MaxQuantProteinGroupsParserTest {
 
         List<String> rawFile = Files.readAllLines(MaxQuantTestSuite.proteinGroupsFile);
 
-        Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
+        maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
                 fastaDbs, false, new ArrayList<>());
+
+        Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
 
         // minus headers
         assertThat(result.size(), Matchers.lessThan(rawFile.size()));
