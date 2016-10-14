@@ -1,7 +1,7 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
-import java.util.ArrayList;
+import com.compomics.colims.model.Spectrum;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,7 +29,7 @@ public class MaxQuantSpectraParserTest {
 
         MaxQuantSpectra maxQuantSpectra = maxQuantSpectraParser.getMaxQuantSpectra();
 
-        Assert.assertEquals(21, maxQuantSpectra.getSpectrumToMsmsIds().size());
+        Assert.assertEquals(21, maxQuantSpectra.getSpectrumToPsms().size());
         Assert.assertTrue(maxQuantSpectra.getUnidentifiedSpectra().isEmpty());
 
         // test for the unidentified spectra
@@ -36,7 +37,11 @@ public class MaxQuantSpectraParserTest {
 
         MaxQuantSpectra maxQuantSpectra2 = maxQuantSpectraParser.getMaxQuantSpectra();
 
-        Assert.assertEquals(21, maxQuantSpectra2.getSpectrumToMsmsIds().size());
-        Assert.assertEquals(18902, maxQuantSpectra2.getUnidentifiedSpectra().size());
+        Assert.assertEquals(21, maxQuantSpectra2.getSpectrumToPsms().size());
+        int numberOfUnidentifiedSpectra = 0;
+        for (List<Spectrum> unidentifiedSpectra : maxQuantSpectra.getUnidentifiedSpectra().values()) {
+            numberOfUnidentifiedSpectra += unidentifiedSpectra.size();
+        }
+        Assert.assertEquals(18902, numberOfUnidentifiedSpectra);
     }
 }

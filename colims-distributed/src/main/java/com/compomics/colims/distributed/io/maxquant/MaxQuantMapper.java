@@ -8,7 +8,8 @@ import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantQuantificationSettingsParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import org.apache.log4j.Logger;
 import org.jdom2.JDOMException;
@@ -16,7 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
 
 /**
  * The DataMapper implementation for MaxQuant projects.
@@ -60,8 +64,6 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         LOGGER.info("started mapping folder: " + maxQuantImport.getParameterFilePath().toString());
 
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
-        Set<ProteinGroup> proteinGroups;
-
         try {
             maxQuantParser.clear();
 
@@ -75,35 +77,16 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
                 fastaDbs.put(fastaDbType, fastaDbList);
             });
 
+            //parse the search settings
             maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedFolderDirectory(), maxQuantImport.getParameterFilePath(), fastaDbs);
 
+            //parse the rest
             maxQuantParser.parse(maxQuantImport.getCombinedFolderDirectory(), fastaDbs,
                     maxQuantImport.isIncludeContaminants(),
                     maxQuantImport.isIncludeUnidentifiedSpectra(),
                     maxQuantImport.getSelectedProteinGroupHeaders());
 
-            for (AnalyticalRun analyticalRun : maxQuantParser.getRuns()) {
-                if (maxQuantSearchSettingsParser.getRunSettings().containsKey(analyticalRun.getName())) {
-                    analyticalRun.setStorageLocation(maxQuantImport.getCombinedFolderDirectory().toString());
-                    SearchAndValidationSettings searchAndValidationSettings = maxQuantSearchSettingsParser.getRunSettings().get(analyticalRun.getName());
-
-                    //set search and validation settings-run entity associations
-                    analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
-                    searchAndValidationSettings.setAnalyticalRun(analyticalRun);
-
-                    List<Spectrum> mappedSpectra = new ArrayList<>(analyticalRun.getSpectrums().size());
-                    //set spectrum-run entity associations
-                    for (Spectrum spectrum : analyticalRun.getSpectrums()) {
-                        spectrum.setAnalyticalRun(analyticalRun);
-                        mappedSpectra.add(mapSpectrum(spectrum));
-                    }
-                    analyticalRun.setSpectrums(mappedSpectra);
-
-                    analyticalRuns.add(analyticalRun);
-
-                    //analyticalRun.setQuantificationSettings(importQuantSettings(new File(txtDirectory.toFile(), QUANT_FILE), analyticalRun));
-                }
-            }
+            analyticalRuns = maxQuantParser.getRuns();
 
             //parse the quantification settings
             //for a silac experiment, we don't have any reagent name from maxquant.
@@ -134,36 +117,4 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         return new MappedData(analyticalRuns, maxQuantParser.getProteinGroupSet());
     }
 
-    /**
-     * Create relationships for the children of a spectrum.
-     *
-     * @param spectrum the spectrum object
-     * @return The same object but with a bunch of relations
-     * @throws MappingException in case
-     */
-    private Spectrum mapSpectrum(Spectrum spectrum) {
-        // TODO: 27/05/16 check if this still works with multiple peptides linked to one spectrum
-        List<Peptide> peptides = maxQuantParser.getIdentificationForSpectrum(spectrum);
-        for (Peptide peptide : peptides) {
-            List<ProteinGroup> proteinGroups = new ArrayList<>(maxQuantParser.getProteinHits(peptide));
-
-            proteinGroups.forEach(proteinGroup -> {
-                PeptideHasProteinGroup phpGroup = new PeptideHasProteinGroup();
-                phpGroup.setPeptidePostErrorProbability(peptide.getPsmPostErrorProbability());
-                phpGroup.setPeptideProbability(peptide.getPsmProbability());
-                phpGroup.setPeptide(peptide);
-                phpGroup.setProteinGroup(proteinGroup);
-
-                proteinGroup.getPeptideHasProteinGroups().add(phpGroup);
-                // set peptideHasProteinGroups in peptide
-                peptide.getPeptideHasProteinGroups().add(phpGroup);
-            });
-
-            //set entity relations between Spectrum and Peptide
-            spectrum.getPeptides().addAll(peptides);
-            peptide.setSpectrum(spectrum);
-        }
-
-        return spectrum;
-    }
 }

@@ -36,9 +36,9 @@ public class MaxQuantEvidenceParser {
     private static final Pattern MODIFICATION_PATTERN = Pattern.compile("\\(([^)]+)\\)");
     private static final String MODIFICATION_PROBABILITIES = " probabilities";
     private static final String MODIFICATION_SCORE_DIFFS = " score diffs";
+    private static final String MODIFIED_SEQUENCE_FIX = "_";
     static final String N_TERMINAL_MODIFICATION = "Protein N-term";
     static final String C_TERMINAL_MODIFICATION = "Protein C-term";
-    private static final String MODIFIED_SEQUENCE_FIX = "_";
 
     /**
      * The parsed peptides map (key: evidence ID; value: the {@link Peptide} object).
@@ -100,16 +100,6 @@ public class MaxQuantEvidenceParser {
 
     public Map<String, List<Peptide>> getMbrPeptides() {
         return mbrPeptides;
-    }
-
-    /**
-     * Get the {@link Peptide} instances by their msms ID>
-     *
-     * @param msmsId the msms ID
-     * @return the found peptides
-     */
-    public List<Peptide> getPeptidesByMsmsId(Integer msmsId) {
-        return spectrumToPeptides.get(msmsId).stream().map(peptides::get).collect(Collectors.toList());
     }
 
     /**
@@ -245,12 +235,12 @@ public class MaxQuantEvidenceParser {
                 //additional probabilities entry.
                 //@// TODO: 29/09/16 ask for a good value for the terminal modification score
                 if (evidenceModification.isNTerminal()) {
-                    PeptideHasModification peptideHasModification = createPeptideHasModification(0, 100.0, null, peptide);
+                    PeptideHasModification peptideHasModification = createPeptideHasModification(0, null, null, peptide);
 
                     peptideHasModification.setModification(modification);
                     peptideHasModifications.add(peptideHasModification);
                 } else if (evidenceModification.isCTerminal()) {
-                    PeptideHasModification peptideHasModification = createPeptideHasModification(values.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE)).length() - 1, 100.0, null, peptide);
+                    PeptideHasModification peptideHasModification = createPeptideHasModification(values.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE)).length() - 1, null, null, peptide);
 
                     peptideHasModification.setModification(modification);
                     peptideHasModifications.add(peptideHasModification);

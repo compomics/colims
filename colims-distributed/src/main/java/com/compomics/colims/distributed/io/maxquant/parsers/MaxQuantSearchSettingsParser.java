@@ -7,7 +7,10 @@ import com.compomics.colims.core.service.TypedCvParamService;
 import com.compomics.colims.distributed.io.SearchModificationMapper;
 import com.compomics.colims.distributed.io.maxquant.FixedTabularFileIterator;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
-import com.compomics.colims.distributed.io.maxquant.headers.*;
+import com.compomics.colims.distributed.io.maxquant.headers.MqParHeader;
+import com.compomics.colims.distributed.io.maxquant.headers.MqParHeaders;
+import com.compomics.colims.distributed.io.maxquant.headers.SummaryHeader;
+import com.compomics.colims.distributed.io.maxquant.headers.SummaryHeaders;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.*;
@@ -67,7 +70,7 @@ public class MaxQuantSearchSettingsParser {
      */
     private final Map<String, EnumMap<MqParHeader, String>> mqParParamsWithRawFile = new HashMap<>();
     /**
-     * The analytical run name with experiment name(key: analyticalRun ; value:
+     * The analytical run name with experiment name (key: analyticalRun ;value:
      * experiment name).
      */
     private final Map<AnalyticalRun, String> analyticalRuns = new HashMap<>();

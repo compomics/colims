@@ -33,6 +33,9 @@ public class MaxQuantParser {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
 
+    /**
+     * The map of analytical runs (key: run name; value: the {@link AnalyticalRun} instance);
+     */
     private final Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
     /**
      * The child parsers.
@@ -79,12 +82,14 @@ public class MaxQuantParser {
      */
     public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean includeContaminants,
                       boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, UnparseableException {
+
         //look for the MaxQuant txt directory
         Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         if (!Files.exists(txtDirectory)) {
             throw new FileNotFoundException("The MaxQuant txt file " + txtDirectory.toString() + " was not found.");
         }
-        //analyticalRuns.clear(); check if analytical run map is empty?
+
+        //populate the analytical runs map
         maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> analyticalRuns.put(k.getName(), k));
 
         //first, parse the protein groups file
@@ -105,33 +110,6 @@ public class MaxQuantParser {
 
         LOGGER.debug("parsing msms.txt");
         maxQuantSpectraParser.parse(maxQuantDirectory, includeUnidentifiedSpectra, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
-        //set spectra for analytical runs where spectra come from the msms.txt file
-        getSpectra().keySet().forEach(spectrum -> {
-            //get the raw file titles from the spectrum titles
-            String rawFile = spectrum.getTitle().split("--")[0];
-            if (analyticalRuns.containsKey(rawFile)) {
-                analyticalRuns.get(rawFile).getSpectrums().add(spectrum);
-            } else {
-                AnalyticalRun analyticalRun = new AnalyticalRun();
-                analyticalRun.setName(rawFile);
-                analyticalRun.getSpectrums().add(spectrum);
-
-                analyticalRuns.put(rawFile, analyticalRun);
-            }
-        });
-        //set unidentified spectra for analytical runs
-        getUnidentifiedSpectra().forEach(unidentifiedSpectrum -> {
-            Optional foundKey = analyticalRuns.keySet().stream()
-                    .filter(runKey -> unidentifiedSpectrum.getAccession().contains(runKey))
-                    .findFirst();
-            if (foundKey.isPresent()) {
-                analyticalRuns.get(foundKey.get()).getSpectrums().add(unidentifiedSpectrum);
-            }
-        });
-
-        if (analyticalRuns.isEmpty()) {
-            throw new UnparseableException("could not connect spectra to any run");
-        }
 
         LOGGER.debug("parsing evidence.txt");
         Path evidenceFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.EVIDENCE_FILE.value());
@@ -140,69 +118,38 @@ public class MaxQuantParser {
         }
         maxQuantEvidenceParser.parse(evidenceFile, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
-        if (getSpectra().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || maxQuantProteinGroupsParser.getProteinGroups().isEmpty()) {
-            throw new UnparseableException("one of the parsed files could not be read properly");
+        //add the identified spectra for each run and set the entity relations
+        analyticalRuns.forEach((runName, run) -> {
+            //get the spectrum apl keys for each run
+            List<String> aplKeys = maxQuantSpectraParser.getMaxQuantSpectra().getRunToSpectrums().get(runName);
+            aplKeys.forEach(aplKey -> {
+                //get the spectrum by it's key
+                Spectrum spectrum = maxQuantSpectraParser.getMaxQuantSpectra().getSpectra().get(aplKey);
+
+                //set the entity relations between run and spectrum
+                run.getSpectrums().add(spectrum);
+                spectrum.setAnalyticalRun(run);
+
+                //set the child entity relations for the spectrum
+                setSpectrumRelations(aplKey, spectrum);
+            });
+        });
+
+        //add the unidentified spectra for each run
+        getUnidentifiedSpectra().forEach((runName, spectrum) -> analyticalRuns.get(runName).getSpectrums().addAll(spectrum));
+
+        if (getSpectrumToPsms().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || maxQuantProteinGroupsParser.getProteinGroups().isEmpty()) {
+            throw new UnparseableException("One of the parsed files could not be read properly.");
         }
     }
 
     /**
-     * Fetch the PSM(s) associated with a spectrum.
+     * Get the map that links the apl spectra with msms.txt entries (key: apl key; value:).
      *
-     * @param spectrum the spectrum
-     * @return the peptide(s) connected to the spectrum
-     * @throws NumberFormatException if the spectrum is not present in the parsed file
+     * @return the link map
      */
-    public List<Peptide> getIdentificationForSpectrum(Spectrum spectrum) throws NumberFormatException {
-        //TODO: 6/1/2016 move peptide list to this class.
-        List<Integer> spectrumKeys = getSpectra().get(spectrum);
-        List<Peptide> peptideList = new ArrayList<>();
-        if (spectrumKeys != null) {
-            for (int spectrumKey : spectrumKeys) {
-                if (!maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty()) {
-                    peptideList.addAll(maxQuantEvidenceParser.getPeptidesByMsmsId(spectrumKey));
-                } else {
-                    throw new java.lang.IllegalStateException("Spectrum to peptides map should not be empty.");
-                }
-            }
-        }
-
-        return peptideList;
-    }
-
-    /**
-     * Return a copy of the spectra map.
-     *
-     * @return Map of ids and spectra
-     */
-    public Map<Spectrum, List<Integer>> getSpectra() {
-        return Collections.unmodifiableMap(maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToMsmsIds());
-    }
-
-    /**
-     * Return a copy of the unidentified spectra list.
-     *
-     * @return unidentified spectra list.
-     */
-    private List<Spectrum> getUnidentifiedSpectra() {
-        return Collections.unmodifiableList(maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra());
-    }
-
-    /**
-     * Return a list of protein group matches for a peptide
-     *
-     * @param peptide the given {@link Peptide} instance
-     * @return Collection of protein groups
-     * @throws NumberFormatException thrown in case of a String to numeric format conversion error.
-     */
-    public List<ProteinGroup> getProteinHits(Peptide peptide) throws NumberFormatException {
-        List<ProteinGroup> peptideProteinGroups = maxQuantEvidenceParser.getPeptideToProteinGroups().get(peptide)
-                .stream()
-                .map(maxQuantProteinGroupsParser.getProteinGroups()::get)
-                .collect(Collectors.toList());
-
-        peptideProteinGroups.removeIf(p -> p == null);
-
-        return peptideProteinGroups;
+    public Map<String, List<Integer>> getSpectrumToPsms() {
+        return maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToPsms();
     }
 
     /**
@@ -210,8 +157,8 @@ public class MaxQuantParser {
      *
      * @return Collection of runs
      */
-    public Collection<AnalyticalRun> getRuns() {
-        return Collections.unmodifiableCollection(analyticalRuns.values());
+    public List<AnalyticalRun> getRuns() {
+        return analyticalRuns.values().stream().collect(Collectors.toList());
     }
 
     /**
@@ -221,6 +168,55 @@ public class MaxQuantParser {
      */
     public Set<ProteinGroup> getProteinGroupSet() {
         return maxQuantProteinGroupsParser.getProteinGroups().values().stream().collect(Collectors.toSet());
+    }
+
+    /**
+     * Create the necessary relationships for the children of a spectrum.
+     *
+     * @param aplKey   the apl spectrum key
+     * @param spectrum the {@link Spectrum} instance
+     */
+    private void setSpectrumRelations(String aplKey, Spectrum spectrum) {
+        //get the msms.txt IDs associated with the given spectrum
+        List<Integer> msmsIds = maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToPsms().get(aplKey);
+        for (Integer msmsId : msmsIds) {
+            //get the evidence IDs associated with the msms ID
+            for (Integer evidenceId : maxQuantEvidenceParser.getSpectrumToPeptides().get(msmsId)) {
+                //get the peptide by it's evidence ID
+                Peptide peptide = maxQuantEvidenceParser.getPeptides().get(evidenceId);
+
+                //get the protein groups IDs for each peptide
+                List<Integer> proteinGroupIds = maxQuantEvidenceParser.getPeptideToProteinGroups().get(evidenceId);
+
+                proteinGroupIds.forEach(proteinGroupId -> {
+                    //get the protein group by it's ID
+                    ProteinGroup proteinGroup = maxQuantProteinGroupsParser.getProteinGroups().get(proteinGroupId);
+
+                    PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
+                    peptideHasProteinGroup.setPeptidePostErrorProbability(peptide.getPsmPostErrorProbability());
+                    peptideHasProteinGroup.setPeptideProbability(peptide.getPsmProbability());
+                    peptideHasProteinGroup.setPeptide(peptide);
+                    peptideHasProteinGroup.setProteinGroup(proteinGroup);
+
+                    proteinGroup.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+                    //set peptideHasProteinGroups in peptide
+                    peptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+                });
+
+                //set entity relations between Spectrum and Peptide
+                spectrum.getPeptides().add(peptide);
+                peptide.setSpectrum(spectrum);
+            }
+        }
+    }
+
+    /**
+     * Get the unidentified spectra.
+     *
+     * @return the unidentified spectra list.
+     */
+    private Map<String, List<Spectrum>> getUnidentifiedSpectra() {
+        return maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra();
     }
 
 }
