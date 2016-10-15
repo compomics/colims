@@ -186,8 +186,8 @@ public class MaxQuantDataImportController implements Controllable {
 
     public void showEditView(MaxQuantImport maxQuantImport){
         showView();
-        maxQuantDataImportPanel.getParameterDirectoryTextField().setText(maxQuantImport.getParameterFilePath().toString());
-        maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(maxQuantImport.getCombinedFolderDirectory().toString());
+        maxQuantDataImportPanel.getParameterDirectoryTextField().setText(maxQuantImport.getMqParFile().toString());
+        maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(maxQuantImport.getCombinedDirectory().toString());
         if(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0) != null){
             primaryFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
             maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText(primaryFastaDb.getFilePath());

@@ -1,10 +1,13 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.io.MaxQuantImport;
+import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
 import org.apache.log4j.Logger;
+import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,16 +47,22 @@ public class MaxQuantParser {
     private final MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
     private final MaxQuantEvidenceParser maxQuantEvidenceParser;
     private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+    private final MaxQuantQuantificationSettingsParser maxQuantQuantificationSettingsParser;
+    private final FastaDbService fastaDbService;
 
     @Autowired
     public MaxQuantParser(MaxQuantSpectraParser maxQuantSpectraParser,
                           MaxQuantProteinGroupsParser maxQuantProteinGroupsParser,
                           MaxQuantEvidenceParser maxQuantEvidenceParser,
-                          MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) {
+                          MaxQuantSearchSettingsParser maxQuantSearchSettingsParser,
+                          MaxQuantQuantificationSettingsParser maxQuantQuantificationSettingsParser,
+                          FastaDbService fastaDbService) {
         this.maxQuantSpectraParser = maxQuantSpectraParser;
         this.maxQuantProteinGroupsParser = maxQuantProteinGroupsParser;
         this.maxQuantEvidenceParser = maxQuantEvidenceParser;
         this.maxQuantSearchSettingsParser = maxQuantSearchSettingsParser;
+        this.maxQuantQuantificationSettingsParser = maxQuantQuantificationSettingsParser;
+        this.fastaDbService = fastaDbService;
     }
 
     /**
@@ -71,20 +80,28 @@ public class MaxQuantParser {
      * Parse the MaxQuant output folder and map the content of the different
      * files to Colims entities.
      *
-     * @param maxQuantDirectory          File pointer to MaxQuant directory
-     * @param fastaDbs                   the FASTA database map (key: FastaDb type; value: FastaDb instance)
-     * @param includeContaminants        whether to import proteins from contaminants file.
-     * @param includeUnidentifiedSpectra whether to import unidentified spectra from APL files.
-     * @param optionalHeaders            list of optional headers to store in protein group quantification labeled
-     *                                   table.
+     * @param maxQuantImport the {@link MaxQuantImport} instance
      * @throws IOException          in case of an input/output related problem
      * @throws UnparseableException in case of a problem occured while parsing
+     * @throws JDOMException        in case of an XML parsing related problem
      */
-    public void parse(Path maxQuantDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, boolean includeContaminants,
-                      boolean includeUnidentifiedSpectra, List<String> optionalHeaders) throws IOException, UnparseableException {
+    public void parse(MaxQuantImport maxQuantImport) throws IOException, UnparseableException, JDOMException {
+        EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
+        //get the FASTA db entities from the database
+        maxQuantImport.getFastaDbIds().forEach((FastaDbType fastaDbType, List<Long> fastaDbIds) -> {
+            List<FastaDb> fastaDbList = new ArrayList<>();
+            fastaDbIds.forEach(fastaDbId -> {
+                fastaDbList.add(fastaDbService.findById(fastaDbId));
+            });
+            fastaDbs.put(fastaDbType, fastaDbList);
+        });
+
+        //parse the search settings
+        LOGGER.debug("parsing search settings");
+        maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedDirectory(), maxQuantImport.getMqParFile(), fastaDbs);
 
         //look for the MaxQuant txt directory
-        Path txtDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
+        Path txtDirectory = Paths.get(maxQuantImport.getCombinedDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         if (!Files.exists(txtDirectory)) {
             throw new FileNotFoundException("The MaxQuant txt file " + txtDirectory.toString() + " was not found.");
         }
@@ -92,7 +109,7 @@ public class MaxQuantParser {
         //populate the analytical runs map
         maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> analyticalRuns.put(k.getName(), k));
 
-        //first, parse the protein groups file
+        //parse the protein groups file
         LOGGER.debug("parsing proteinGroups.txt");
         List<FastaDb> fastaDbList = new ArrayList<>();
         fastaDbs.forEach((k, v) -> {
@@ -106,10 +123,10 @@ public class MaxQuantParser {
         if (!Files.exists(proteinGroupsFile)) {
             throw new FileNotFoundException("The proteinGroups.txt " + proteinGroupsFile.toString() + " was not found.");
         }
-        maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbList, includeContaminants, optionalHeaders);
+        maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbList, maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupHeaders());
 
         LOGGER.debug("parsing msms.txt");
-        maxQuantSpectraParser.parse(maxQuantDirectory, includeUnidentifiedSpectra, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
+        maxQuantSpectraParser.parse(maxQuantImport.getCombinedDirectory(), maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
         LOGGER.debug("parsing evidence.txt");
         Path evidenceFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.EVIDENCE_FILE.value());
@@ -138,6 +155,27 @@ public class MaxQuantParser {
         //add the unidentified spectra for each run
         getUnidentifiedSpectra().forEach((runName, spectrum) -> analyticalRuns.get(runName).getSpectrums().addAll(spectrum));
 
+        //parse the quantification settings
+        //for a silac experiment, we don't have any reagent name from maxquant.
+        //Colims gives reagent name due to number of sample.
+        if (maxQuantImport.getQuantificationLabel().equals("SILAC")) {
+            List<String> silacReagents = new ArrayList<>();
+            if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
+                silacReagents.addAll(Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
+                maxQuantQuantificationSettingsParser.parse((List<AnalyticalRun>) analyticalRuns.values(), maxQuantImport.getQuantificationLabel(), silacReagents);
+            } else if (maxQuantSearchSettingsParser.getLabelMods().size() == 2) {
+                silacReagents.addAll(Arrays.asList("SILAC light", "SILAC heavy"));
+                maxQuantQuantificationSettingsParser.parse((List<AnalyticalRun>) analyticalRuns.values(), maxQuantImport.getQuantificationLabel(), silacReagents);
+            }
+        } else {
+            List<String> reagents = new ArrayList<>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
+            maxQuantQuantificationSettingsParser.parse((List<AnalyticalRun>) analyticalRuns.values(), maxQuantImport.getQuantificationLabel(), reagents);
+        }
+        //link the quantification settings to each analytical run
+        analyticalRuns.values().forEach(analyticalRun -> {
+            analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun));
+        });
+
         if (getSpectrumToPsms().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || maxQuantProteinGroupsParser.getProteinGroups().isEmpty()) {
             throw new UnparseableException("One of the parsed files could not be read properly.");
         }
@@ -157,7 +195,7 @@ public class MaxQuantParser {
      *
      * @return Collection of runs
      */
-    public List<AnalyticalRun> getRuns() {
+    public List<AnalyticalRun> getAnalyticalRuns() {
         return analyticalRuns.values().stream().collect(Collectors.toList());
     }
 

@@ -37,11 +37,10 @@ public class MaxQuantTestSuite {
     public static Path msmsFile;
     public static Path proteinGroupsFile;
     public static Path evidenceFile;
-    public static Path parameterFile;
+    public static Path mqparFile;
     public static Path peptidesFile;
     public static FastaDb testFastaDb;
     public static FastaDb contaminantsFastaDb;
-    public static Path parameterDirectory;
 
     static {
         try {
@@ -54,10 +53,9 @@ public class MaxQuantTestSuite {
             msmsFile = new ClassPathResource(txtDirectoryPath + "msms.txt").getFile().toPath();
             proteinGroupsFile = new ClassPathResource(txtDirectoryPath + "proteinGroups.txt").getFile().toPath();
             evidenceFile = new ClassPathResource(txtDirectoryPath + "evidence.txt").getFile().toPath();
-            parameterFile = new ClassPathResource(txtDirectoryPath + "parameters.txt").getFile().toPath();
             peptidesFile = new ClassPathResource(txtDirectoryPath + "peptides.txt").getFile().toPath();
-            String txtParameterDirectory = "data" + File.separator + "maxquant_" + MAXQUANT_VERSION + File.separator + "mqpar.xml";
-            parameterDirectory = new ClassPathResource(txtParameterDirectory).getFile().toPath();
+            String mqparFileString = "data" + File.separator + "maxquant_" + MAXQUANT_VERSION + File.separator + "mqpar.xml";
+            mqparFile = new ClassPathResource(mqparFileString).getFile().toPath();
             testFastaDb = new FastaDb();
             testFastaDb.setName("test fasta");
             testFastaDb.setFileName("uniprot-mouse.fasta");

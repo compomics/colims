@@ -1,12 +1,12 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.enums.FastaDbType;
+import org.jdom2.JDOMException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,10 +16,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
-import java.util.*;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
 
 /**
  * @author Davy
@@ -32,12 +32,14 @@ public class MaxQuantParserTest {
     MaxQuantParser maxQuantParser;
 
     @Before
-    public void setUp() throws MappingException, UnparseableException, IOException {
+    public void setUp() throws MappingException, UnparseableException, IOException, JDOMException {
         EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
         fastaDbs.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb)));
 
         maxQuantParser.clear();
-        maxQuantParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs, false, false, new ArrayList<>());
+        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.mqparFile,
+                MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs, false, false, new ArrayList<>());
+        maxQuantParser.parse(maxQuantImport);
     }
 
     /**
