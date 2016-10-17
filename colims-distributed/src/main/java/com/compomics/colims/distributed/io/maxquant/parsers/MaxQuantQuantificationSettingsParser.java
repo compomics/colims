@@ -43,7 +43,7 @@ public class MaxQuantQuantificationSettingsParser {
     private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
 
     public MaxQuantQuantificationSettingsParser(QuantificationSettingsService quantificationSettingsService, OntologyMapper ontologyMapper,
-            QuantificationReagentService quantificationReagentService, MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) {
+                                                QuantificationReagentService quantificationReagentService, MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) {
         this.quantificationSettingsService = quantificationSettingsService;
         this.ontologyMapper = ontologyMapper;
         this.quantificationReagentService = quantificationReagentService;

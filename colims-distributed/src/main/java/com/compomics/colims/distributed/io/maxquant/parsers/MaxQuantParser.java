@@ -36,6 +36,9 @@ public class MaxQuantParser {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
 
+    private static final String MBR_SPECTRUM_ACCESSION = "MBR";
+    private static final String MBR_SPECTRUM_SCAN_NUMBER = "MBR";
+
     /**
      * The map of analytical runs (key: run name; value: the {@link AnalyticalRun} instance);
      */
@@ -100,14 +103,14 @@ public class MaxQuantParser {
         LOGGER.debug("parsing search settings");
         maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedDirectory(), maxQuantImport.getMqParFile(), fastaDbs);
 
+        //populate the analytical runs map
+        maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> analyticalRuns.put(k.getName(), k));
+
         //look for the MaxQuant txt directory
         Path txtDirectory = Paths.get(maxQuantImport.getCombinedDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         if (!Files.exists(txtDirectory)) {
             throw new FileNotFoundException("The MaxQuant txt file " + txtDirectory.toString() + " was not found.");
         }
-
-        //populate the analytical runs map
-        maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((k, v) -> analyticalRuns.put(k.getName(), k));
 
         //parse the protein groups file
         LOGGER.debug("parsing proteinGroups.txt");
@@ -152,8 +155,28 @@ public class MaxQuantParser {
             });
         });
 
+        //add the matching between runs peptides for each run
+        Map<String, List<Integer>> runToMbrPeptides = maxQuantEvidenceParser.getRunToMbrPeptides();
+        runToMbrPeptides.forEach((runName, evidenceIds) -> {
+            //get the run by name
+            AnalyticalRun run = analyticalRuns.get(runName);
+
+            evidenceIds.forEach(evidenceId -> {
+                //create a dummy spectrum for each peptide
+                Spectrum spectrum = createDummySpectrum();
+
+                //set the entity relations between run and spectrum
+                run.getSpectrums().add(spectrum);
+                spectrum.setAnalyticalRun(run);
+
+                //set the child relations for the spectrum
+                setPeptideRelations(spectrum, evidenceId);
+            });
+
+        });
+
         //add the unidentified spectra for each run
-        getUnidentifiedSpectra().forEach((runName, spectrum) -> analyticalRuns.get(runName).getSpectrums().addAll(spectrum));
+        maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra().forEach((runName, spectrum) -> analyticalRuns.get(runName).getSpectrums().addAll(spectrum));
 
         //parse the quantification settings
         //for a silac experiment, we don't have any reagent name from maxquant.
@@ -162,14 +185,14 @@ public class MaxQuantParser {
             List<String> silacReagents = new ArrayList<>();
             if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
                 silacReagents.addAll(Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
-                maxQuantQuantificationSettingsParser.parse((List<AnalyticalRun>) analyticalRuns.values(), maxQuantImport.getQuantificationLabel(), silacReagents);
+                maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), silacReagents);
             } else if (maxQuantSearchSettingsParser.getLabelMods().size() == 2) {
                 silacReagents.addAll(Arrays.asList("SILAC light", "SILAC heavy"));
-                maxQuantQuantificationSettingsParser.parse((List<AnalyticalRun>) analyticalRuns.values(), maxQuantImport.getQuantificationLabel(), silacReagents);
+                maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), silacReagents);
             }
         } else {
             List<String> reagents = new ArrayList<>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
-            maxQuantQuantificationSettingsParser.parse((List<AnalyticalRun>) analyticalRuns.values(), maxQuantImport.getQuantificationLabel(), reagents);
+            maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), reagents);
         }
         //link the quantification settings to each analytical run
         analyticalRuns.values().forEach(analyticalRun -> {
@@ -220,41 +243,55 @@ public class MaxQuantParser {
         for (Integer msmsId : msmsIds) {
             //get the evidence IDs associated with the msms ID
             for (Integer evidenceId : maxQuantEvidenceParser.getSpectrumToPeptides().get(msmsId)) {
-                //get the peptide by it's evidence ID
-                Peptide peptide = maxQuantEvidenceParser.getPeptides().get(evidenceId);
-
-                //get the protein groups IDs for each peptide
-                List<Integer> proteinGroupIds = maxQuantEvidenceParser.getPeptideToProteinGroups().get(evidenceId);
-
-                proteinGroupIds.forEach(proteinGroupId -> {
-                    //get the protein group by it's ID
-                    ProteinGroup proteinGroup = maxQuantProteinGroupsParser.getProteinGroups().get(proteinGroupId);
-
-                    PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
-                    peptideHasProteinGroup.setPeptidePostErrorProbability(peptide.getPsmPostErrorProbability());
-                    peptideHasProteinGroup.setPeptideProbability(peptide.getPsmProbability());
-                    peptideHasProteinGroup.setPeptide(peptide);
-                    peptideHasProteinGroup.setProteinGroup(proteinGroup);
-
-                    proteinGroup.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
-                    //set peptideHasProteinGroups in peptide
-                    peptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
-                });
-
-                //set entity relations between Spectrum and Peptide
-                spectrum.getPeptides().add(peptide);
-                peptide.setSpectrum(spectrum);
+                setPeptideRelations(spectrum, evidenceId);
             }
         }
     }
 
     /**
-     * Get the unidentified spectra.
+     * Create the necessary relationships for the children of a peptide.
      *
-     * @return the unidentified spectra list.
+     * @param spectrum   the associated {@link Spectrum} instance
+     * @param evidenceId the peptide evidence ID
      */
-    private Map<String, List<Spectrum>> getUnidentifiedSpectra() {
-        return maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra();
+    private void setPeptideRelations(Spectrum spectrum, Integer evidenceId) {
+        //get the peptide by it's evidence ID
+        Peptide peptide = maxQuantEvidenceParser.getPeptides().get(evidenceId);
+
+        //get the protein groups IDs for each peptide
+        List<Integer> proteinGroupIds = maxQuantEvidenceParser.getPeptideToProteinGroups().get(evidenceId);
+
+        proteinGroupIds.forEach(proteinGroupId -> {
+            //get the protein group by it's ID
+            ProteinGroup proteinGroup = maxQuantProteinGroupsParser.getProteinGroups().get(proteinGroupId);
+
+            PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
+            peptideHasProteinGroup.setPeptidePostErrorProbability(peptide.getPsmPostErrorProbability());
+            peptideHasProteinGroup.setPeptideProbability(peptide.getPsmProbability());
+            peptideHasProteinGroup.setPeptide(peptide);
+            peptideHasProteinGroup.setProteinGroup(proteinGroup);
+
+            proteinGroup.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+            //set peptideHasProteinGroups in peptide
+            peptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+        });
+
+        //set entity relations between Spectrum and Peptide
+        spectrum.getPeptides().add(peptide);
+        peptide.setSpectrum(spectrum);
     }
 
+    /**
+     * Create a dummy spectrum for a matching between runs (MBR) identification.
+     *
+     * @return the dummy {@link Spectrum} instance
+     */
+    private Spectrum createDummySpectrum() {
+        Spectrum spectrum = new Spectrum();
+
+        spectrum.setAccession(MBR_SPECTRUM_ACCESSION);
+        spectrum.setScanNumber(MBR_SPECTRUM_SCAN_NUMBER);
+
+        return spectrum;
+    }
 }

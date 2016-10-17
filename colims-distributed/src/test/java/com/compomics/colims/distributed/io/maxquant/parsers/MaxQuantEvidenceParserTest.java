@@ -42,7 +42,7 @@ public class MaxQuantEvidenceParserTest {
         maxQuantEvidenceParser.parse(evidenceFile, ommittedProteinIds);
 
         //check the number of MBR identifications
-        Assert.assertEquals(9, maxQuantEvidenceParser.getMbrPeptides().size());
+        Assert.assertEquals(9, maxQuantEvidenceParser.getRunToMbrPeptides().size());
 
         //check the size of the spectrumToPeptides map
         Assert.assertEquals(13, maxQuantEvidenceParser.getSpectrumToPeptides().size());

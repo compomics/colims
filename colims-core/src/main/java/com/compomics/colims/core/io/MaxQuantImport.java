@@ -63,8 +63,13 @@ public class MaxQuantImport extends DataImport {
      *                                    table.
      * @param quantificationLabel         the quantification label
      */
-    public MaxQuantImport(final Path mqParFile, final Path combinedDirectory, final EnumMap<FastaDbType,
-            List<Long>> fastaDbIds, boolean includeContaminants, boolean includeUnidentifiedSpectra, List<String> selectedProteinGroupHeaders, String quantificationLabel) {
+    public MaxQuantImport(final Path mqParFile,
+                          final Path combinedDirectory,
+                          final EnumMap<FastaDbType, List<Long>> fastaDbIds,
+                          boolean includeContaminants,
+                          boolean includeUnidentifiedSpectra,
+                          List<String> selectedProteinGroupHeaders,
+                          String quantificationLabel) {
         super(fastaDbIds);
         this.mqParFile = mqParFile;
         this.combinedDirectory = combinedDirectory;

@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Parser class for the MaxQuant evidence file.
@@ -54,10 +53,9 @@ public class MaxQuantEvidenceParser {
      */
     private final Map<Integer, List<Integer>> peptideToProteinGroups = new HashMap<>();
     /**
-     * The map of matching between runs (MBR) peptides (key: RAW file name; value: the list of {@link Peptide}
-     * instances).
+     * The map of matching between runs and (MBR) peptides (key: RAW file name; value: the list of evidence IDs).
      */
-    private final Map<String, List<Peptide>> mbrPeptides = new HashMap<>();
+    private final Map<String, List<Integer>> runToMbrPeptides = new HashMap<>();
     /**
      * The MaxQuant to UNIMOD modification mappings.
      */
@@ -98,8 +96,8 @@ public class MaxQuantEvidenceParser {
         return peptideToProteinGroups;
     }
 
-    public Map<String, List<Peptide>> getMbrPeptides() {
-        return mbrPeptides;
+    public Map<String, List<Integer>> getRunToMbrPeptides() {
+        return runToMbrPeptides;
     }
 
     /**
@@ -143,10 +141,10 @@ public class MaxQuantEvidenceParser {
                         }
                     } else {
                         String rawFile = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.RAW_FILE));
-                        if (!mbrPeptides.containsKey(rawFile)) {
-                            mbrPeptides.put(rawFile, Arrays.asList(peptide));
+                        if (!runToMbrPeptides.containsKey(rawFile)) {
+                            runToMbrPeptides.put(rawFile, Arrays.asList(evidenceId));
                         } else {
-                            mbrPeptides.get(rawFile).add(peptide);
+                            runToMbrPeptides.get(rawFile).add(evidenceId);
                         }
                     }
                 }
@@ -199,7 +197,7 @@ public class MaxQuantEvidenceParser {
     public void clear() {
         peptideToProteinGroups.clear();
         spectrumToPeptides.clear();
-        mbrPeptides.clear();
+        runToMbrPeptides.clear();
     }
 
     /**
