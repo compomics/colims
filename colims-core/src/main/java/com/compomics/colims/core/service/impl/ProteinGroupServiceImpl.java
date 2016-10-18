@@ -72,4 +72,9 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
         proteinGroupRepository.remove(entity);
     }
 
+    @Override
+    public List<ProteinGroupDTO> getProteinGroupsForRuns(List<Long> analyticalRunIds) {
+         return proteinGroupRepository.getProteinGroupsForRun(analyticalRunIds);
+    }
+
 }

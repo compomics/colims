@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * This interface provides service methods for the ProteinGroup class.
- * <p/>
+ * 
  * Created by Iain on 08/09/2015.
  */
 public interface ProteinGroupService extends GenericService<ProteinGroup, Long> {
@@ -27,6 +27,15 @@ public interface ProteinGroupService extends GenericService<ProteinGroup, Long> 
      */
     List<ProteinGroupDTO> getPagedProteinGroupsForRuns(List<Long> analyticalRunIds, final int start, final int length, final String orderBy, final SortDirection sortDirection, final String filter);
 
+    /**
+     * Fetch a list of protein groups associated with the given analytical runs.
+     *
+     * @param analyticalRunIds the list of analytical run IDs
+     * @return the list of protein groups
+     */
+    List<ProteinGroupDTO> getProteinGroupsForRuns(List<Long> analyticalRunIds);
+
+    
     /**
      * Count the number of proteins groups related to the given analytical runs, including optional filter term.
      *

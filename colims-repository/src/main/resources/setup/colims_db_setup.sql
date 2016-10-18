@@ -66,6 +66,7 @@ use colims;
 
     create table colims.fasta_db (
         id bigint not null auto_increment,
+        database_name varchar(255) not null,
         file_name varchar(200) not null,
         file_path varchar(250) not null,
         header_parse_rule varchar(255),

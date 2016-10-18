@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class represents a FASTA database in the database.
+ * This class represents a FASTA databaseName in the databaseName.
  *
  * @author Niels Hulstaert
  */
@@ -43,6 +43,12 @@ public class FastaDb extends DatabaseEntity {
     @Length(min = 5, max = 250, message = "File path must be between {min} and {max} characters.")
     @Column(name = "file_path", nullable = false)
     private String filePath;
+    /**
+     * The databaseName of the FASTA db.
+     */
+    @Basic(optional = false)
+    @Column(name = "database_name", nullable = false)
+    private String databaseName;
     /**
      * The version of the FASTA db.
      */
@@ -125,6 +131,14 @@ public class FastaDb extends DatabaseEntity {
         this.headerParseRule = headerParseRule;
     }
 
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
+    }
+
     public TaxonomyCvParam getTaxonomy() {
         return taxonomy;
     }
@@ -142,21 +156,17 @@ public class FastaDb extends DatabaseEntity {
     }
 
     @Override
-    public String toString() {
-        String taxonomyAccession = (taxonomy != null) ? taxonomy.getAccession() : "none";
-        return name + ", accession: " + taxonomyAccession + ", version: " + version;
-    }
-
-    @Override
     public int hashCode() {
         int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.name);
-        hash = 53 * hash + Objects.hashCode(this.fileName);
-        hash = 53 * hash + Objects.hashCode(this.filePath);
-        hash = 53 * hash + Objects.hashCode(this.version);
-        hash = 53 * hash + Objects.hashCode(this.md5CheckSum);
-        hash = 53 * hash + Objects.hashCode(this.headerParseRule);
-        hash = 53 * hash + Objects.hashCode(this.taxonomy);
+        hash = 89 * hash + Objects.hashCode(this.name);
+        hash = 89 * hash + Objects.hashCode(this.fileName);
+        hash = 89 * hash + Objects.hashCode(this.filePath);
+        hash = 89 * hash + Objects.hashCode(this.databaseName);
+        hash = 89 * hash + Objects.hashCode(this.version);
+        hash = 89 * hash + Objects.hashCode(this.md5CheckSum);
+        hash = 89 * hash + Objects.hashCode(this.headerParseRule);
+        hash = 89 * hash + Objects.hashCode(this.taxonomy);
+        hash = 89 * hash + Objects.hashCode(this.searchSettingsHasFastaDbs);
         return hash;
     }
 
@@ -181,6 +191,9 @@ public class FastaDb extends DatabaseEntity {
         if (!Objects.equals(this.filePath, other.filePath)) {
             return false;
         }
+        if (!Objects.equals(this.databaseName, other.databaseName)) {
+            return false;
+        }
         if (!Objects.equals(this.version, other.version)) {
             return false;
         }
@@ -193,7 +206,16 @@ public class FastaDb extends DatabaseEntity {
         if (!Objects.equals(this.taxonomy, other.taxonomy)) {
             return false;
         }
+        if (!Objects.equals(this.searchSettingsHasFastaDbs, other.searchSettingsHasFastaDbs)) {
+            return false;
+        }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        String taxonomyAccession = (taxonomy != null) ? taxonomy.getAccession() : "none";
+        return name + ", accession: " + taxonomyAccession + ", version: " + version;
     }
 
 }

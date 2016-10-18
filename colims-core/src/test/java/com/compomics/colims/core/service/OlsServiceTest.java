@@ -6,16 +6,13 @@ import com.compomics.colims.core.ontology.ols.OntologyTerm;
 import com.compomics.colims.core.ontology.ols.SearchResultMetadata;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.SearchModification;
-import com.compomics.colims.model.cv.TypedCvParam;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.io.IOException;
@@ -54,7 +51,7 @@ public class OlsServiceTest {
         List<String> namespaces = new ArrayList<>();
         namespaces.add("ms");
         //add one nonsense namespace
-        namespaces.add("nonsense");
+        namespaces.add("nonsemsnse");
         List<Ontology> foundOntologies = olsService.getOntologiesByNamespace(namespaces);
 
         Assert.assertFalse(foundOntologies.isEmpty());

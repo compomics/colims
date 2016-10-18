@@ -7,9 +7,6 @@ import com.compomics.colims.core.ontology.ols.SearchResultMetadata;
 import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.Modification;
-import com.compomics.colims.model.cv.TypedCvParam;
-import com.compomics.colims.model.enums.CvParamType;
-import com.compomics.colims.model.factory.CvParamFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -136,7 +133,7 @@ public class OlsServiceImpl implements OlsService {
     @Override
     public List<Ontology> getOntologiesByNamespace(List<String> namespaces) throws RestClientException, IOException {
         List<Ontology> ontologies = new ArrayList<>();
-
+        
         for (String namespace : namespaces) {
             if (ontologiesCache.containsKey(namespace)) {
                 ontologies.add(ontologiesCache.get(namespace));

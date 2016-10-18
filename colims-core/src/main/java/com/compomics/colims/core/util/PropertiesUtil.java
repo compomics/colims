@@ -1,7 +1,6 @@
 
-package com.compomics.colims.client.util;
+package com.compomics.colims.core.util;
 
-import com.compomics.colims.core.util.ResourceUtils;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.apache.commons.configuration.ConfigurationException;
