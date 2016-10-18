@@ -102,7 +102,6 @@ public class ParseUtils {
      * @param parameters      the parameters map
      * @param delimiter       the delimiter between the parameter name and value
      * @param toLowerCase     whether or not to convert the parameter names to lowercase
-     * @return the map of parsed parameters (key: the parameter name; value: the parameter value)
      */
     public static void parseParameter(String parameterString, Map<String, String> parameters, String delimiter, boolean toLowerCase) {
         String[] split = parameterString.split(delimiter);
@@ -129,7 +128,6 @@ public class ParseUtils {
      * @param parameterString the given parameters String
      * @param parameters      the parameters map
      * @param delimiter       the delimiter between the parameter name and value
-     * @return the map of parsed parameters (key: the parameter name; value: the parameter value)
      */
     public static void parseParameter(String parameterString, Map<String, String> parameters, String delimiter) {
         parseParameter(parameterString, parameters, delimiter, false);

@@ -6,7 +6,11 @@
     <bean name="ontologyMapper" class="com.compomics.colims.core.ontology.OntologyMapper"/>
 
     <bean name="olsService" class="com.compomics.colims.core.service.impl.OlsServiceImpl"/>
+    
+    <bean name="uniProtService" class="com.compomics.colims.core.service.impl.UniProtServiceImpl"/>
 
     <bean id="restTemplate" class="org.springframework.web.client.RestTemplate"/>
+    
+    <bean name="accessionConverter" class="com.compomics.colims.core.util.AccessionConverter"/>
 
 </beans>

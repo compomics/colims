@@ -33,11 +33,11 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <EmptySpace min="0" pref="295" max="32767" attributes="0"/>
+          <EmptySpace min="0" pref="327" max="32767" attributes="0"/>
           <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="fastaDbDetailPanel" pref="283" max="32767" attributes="0"/>
+                  <Component id="fastaDbDetailPanel" pref="315" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -61,8 +61,8 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="fastaDbStateInfoLabel" min="-2" pref="1" max="-2" attributes="0"/>
@@ -70,27 +70,6 @@
                           <Component id="backButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="saveOrUpdateButton" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="versionLabel" alignment="0" max="32767" attributes="0"/>
-                              <Component id="taxonomyLabel" alignment="0" max="32767" attributes="0"/>
-                              <Component id="HeaderParseRuleLabel" pref="74" max="32767" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="taxomomyComboBox" max="32767" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="browseTaxonomyButton" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="versionTextField" alignment="0" max="32767" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="headerParseRuleComboBox" min="-2" pref="360" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="browseHeaderParseRuleButtton" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -109,8 +88,32 @@
                               <Component id="filePathTextField" alignment="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="versionLabel" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="taxonomyLabel" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="HeaderParseRuleLabel" pref="74" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="databaseLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="taxomomyComboBox" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="browseTaxonomyButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="versionTextField" alignment="0" max="32767" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="headerParseRuleComboBox" min="-2" pref="360" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="browseHeaderParseRuleButtton" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="databaseComboBox" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
-                  <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -122,23 +125,28 @@
                       <Component id="nameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="nameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="fileNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="fileNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="browseFastaButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="fileNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="filePathLabel" alignment="3" min="-2" pref="15" max="-2" attributes="0"/>
                       <Component id="filePathTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="versionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="versionLabel" alignment="3" max="32767" attributes="0"/>
+                      <Component id="databaseLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="databaseComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="versionTextField" max="32767" attributes="0"/>
+                      <Component id="versionLabel" min="-2" pref="28" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="browseTaxonomyButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="taxonomyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -150,7 +158,7 @@
                       <Component id="headerParseRuleComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="browseHeaderParseRuleButtton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                           <Component id="backButton" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -335,6 +343,26 @@
               <Dimension value="[80, 25]"/>
             </Property>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="databaseLabel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Database"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="databaseComboBox">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="4">
+                <StringItem index="0" value="Item 1"/>
+                <StringItem index="1" value="Item 2"/>
+                <StringItem index="2" value="Item 3"/>
+                <StringItem index="3" value="Item 4"/>
+              </StringArray>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

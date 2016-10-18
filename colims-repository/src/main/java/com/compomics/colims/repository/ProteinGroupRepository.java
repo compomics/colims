@@ -26,7 +26,16 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @return the list of protein groups
      */
     List<ProteinGroupDTO> getPagedProteinGroupsForRun(List<Long> analyticalRunIds, final int start, final int length, final String orderBy, final SortDirection sortDirection, final String filter);
+    
+    /**
+     * Fetch a list of ProteinGroupForRun instances associated with a given analytical run.
+     *
+     * @param analyticalRunIds the list of analytical run IDs
+     * @return the list of protein groups
+     */
+    List<ProteinGroupDTO> getProteinGroupsForRun(List<Long> analyticalRunIds);
 
+    
     /**
      * Count the number of proteins groups related to a given analytical run, including optional filter term.
      *

@@ -111,4 +111,36 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     public void saveOrUpdate(ProteinGroup proteinGroup) {
         getCurrentSession().saveOrUpdate(proteinGroup);
     }
+
+    @Override
+    public List<ProteinGroupDTO> getProteinGroupsForRun(List<Long> analyticalRunIds) {
+        Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
+
+        //joins
+        criteria.createAlias("peptide.spectrum", "spectrum");
+        criteria.createAlias("peptideHasProteinGroup.peptide", "peptide");
+        criteria.createAlias("proteinGroup.peptideHasProteinGroups", "peptideHasProteinGroup");
+        criteria.createAlias("proteinGroup.proteinGroupHasProteins", "proteinGroupHasProtein");
+        criteria.createAlias("proteinGroupHasProtein.protein", "protein");
+
+        //restrictions
+        criteria.add(Restrictions.in("spectrum.analyticalRun.id", analyticalRunIds));
+        criteria.add(Restrictions.eq("proteinGroupHasProtein.isMainGroupProtein", true));
+
+        //projections
+        ProjectionList projectionList = Projections.projectionList();
+        projectionList.add(Projections.groupProperty("id").as("id"));
+        projectionList.add(Projections.count("spectrum.id").as("spectrumCount"));
+        projectionList.add(Projections.countDistinct("peptide.sequence").as("distinctPeptideSequenceCount"));
+        projectionList.add(Projections.property("proteinGroup.proteinProbability").as("proteinProbability"));
+        projectionList.add(Projections.property("proteinGroup.proteinPostErrorProbability").as("proteinPostErrorProbability"));
+        projectionList.add(Projections.property("proteinGroupHasProtein.proteinAccession").as("mainAccession"));
+        projectionList.add(Projections.property("protein.sequence").as("mainSequence"));
+        criteria.setProjection(projectionList);
+
+        //transform results into ProteinGroupForRun instances
+        criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroupDTO.class));
+
+        return criteria.list();
+    }
 }

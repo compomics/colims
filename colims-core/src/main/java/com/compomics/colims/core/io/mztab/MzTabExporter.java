@@ -5,6 +5,7 @@
  */
 package com.compomics.colims.core.io.mztab;
 
+import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.core.service.QuantificationSettingsService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.QuantificationMethodHasReagent;
@@ -12,6 +13,7 @@ import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchParametersHasModification;
 import com.compomics.colims.model.enums.ModificationType;
+import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
@@ -126,13 +128,15 @@ public class MzTabExporter {
     private final ObjectMapper mapper = new ObjectMapper();
     private List<MzTabParam> mzTabParams = new ArrayList<>();
     private final QuantificationSettingsService quantificationSettingsService;
+    private final ProteinGroupService proteinGroupService;
     /**
      * The MzTabExport instance.
      */
     private MzTabExport mzTabExport;
 
-    public MzTabExporter(QuantificationSettingsService quantificationSettingsService) {
+    public MzTabExporter(QuantificationSettingsService quantificationSettingsService, ProteinGroupService proteinGroupService) {
         this.quantificationSettingsService = quantificationSettingsService;
+        this.proteinGroupService = proteinGroupService;
     }
 
     /**
@@ -300,11 +304,71 @@ public class MzTabExporter {
     private String constructProteins(){
         StringBuilder proteins = new StringBuilder();
         // protein headers
-        proteins.append(PROTEINS_HEADER_PREFIX).append(COLUMN_DELIMITER).append(MZTAB_VERSION).append(COLUMN_DELIMITER).append(VERSION).append(System.lineSeparator());
+        proteins.append(PROTEINS_HEADER_PREFIX).append(COLUMN_DELIMITER).append(ACCESSION).append(COLUMN_DELIMITER).append(DESCRIPTION)
+                .append(COLUMN_DELIMITER).append(TAXID).append(COLUMN_DELIMITER).append(SPECIES).append(COLUMN_DELIMITER).append(DATABASE)
+                .append(COLUMN_DELIMITER).append(DATABASE_VERSION).append(COLUMN_DELIMITER).append(SEARCH_ENGINE).append(COLUMN_DELIMITER);
+        // create best search engine score headers. Check if there is different search engine
+        List<String> softwares = new ArrayList<>(); 
+        int counter = 1;
+        for(int i = 0; i< mzTabExport.getRuns().size(); i++){
+            String software = getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationEngine().getName();
+            if(!softwares.contains(software)){
+                proteins.append(String.format(BEST_SEARCH_ENGINE_SCORE, counter)).append(COLUMN_DELIMITER);
+                counter++;
+                softwares.add(software);
+            }
+        }
+        proteins.append(AMBIGUITY_MEMBERS).append(COLUMN_DELIMITER).append(MODIFICATIONS).append(COLUMN_DELIMITER).append(PROTEIN_COVERAGE).append(COLUMN_DELIMITER);
+                
+        for(int i = 0; i< mzTabExport.getStudyVariablesAssaysRefs().size(); i++){
+            proteins.append(String.format(PROTEIN_ABUNDANCE_STUDY_VARIABLE, i+1)).append(COLUMN_DELIMITER);
+        }
+        for(int i = 0; i< mzTabExport.getStudyVariablesAssaysRefs().size(); i++){
+            proteins.append(String.format(PROTEIN_ABUNDANCE_STDEV_STUDY_VARIABLE, i+1)).append(COLUMN_DELIMITER);
+        }
+        for(int i = 0; i< mzTabExport.getStudyVariablesAssaysRefs().size(); i++){
+            proteins.append(String.format(PROTEIN_ABUNDANCE_STD_ERROR_STUDY_VARIABLE, i+1)).append(COLUMN_DELIMITER);
+        }
+        // add search engine score per run
+        for(int i=1; i<counter; i++){
+            for(int run = 0; run< mzTabExport.getRuns().size(); run++){
+                proteins.append(String.format(SEARCH_ENGINE_SCORE_MS_RUN, i, run+1)).append(COLUMN_DELIMITER);
+            }  
+        }
+        for(int i = 0; i< mzTabExport.getRuns().size(); i++){
+            proteins.append(String.format(NUM_PSMS_MS_RUN, i+1)).append(COLUMN_DELIMITER);
+        }
+        for(int i = 0; i< mzTabExport.getRuns().size(); i++){
+            proteins.append(String.format(NUM_PEPTIDES_DISTINCT_MS_RUN, i+1)).append(COLUMN_DELIMITER);
+        }
+        for(int i = 0; i< mzTabExport.getRuns().size(); i++){
+            proteins.append(String.format(NUM_PEPTIDE_UNIQUE_MS_RUN, i+1)).append(COLUMN_DELIMITER);
+        }
+        for(int i = 0; i< mzTabExport.getRuns().size(); i++){
+            for(int j=0; j<mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length; j++){
+                proteins.append(String.format(PROTEIN_ABUNDANCE_ASSAY, mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[j])).append(COLUMN_DELIMITER);
+            }
+        }
+        proteins.append(System.lineSeparator());
         
         return proteins.toString();
     }
 
+    /**
+     * Fill protein section by adding data.
+     * @return proteins
+     */
+    private String addProteinData(){
+        StringBuilder proteins = new StringBuilder();
+        List<Long> analyticalRunIds = new ArrayList<>();
+        mzTabExport.getRuns().forEach(analyticalRun ->{analyticalRunIds.add(analyticalRun.getId());});
+        List<ProteinGroupDTO> proteinList = getProteinGroupsForAnalyticalRuns(analyticalRunIds);
+        for(int i=0; i<proteinList.size(); i++){
+           proteins.append(PROTEINS_PREFIX).append(COLUMN_DELIMITER).append(proteinList.get(i).getMainAccession()) ;
+        }
+        return proteins.toString();
+    }
+    
     /**
      * This method parses the JSON root node and returns a list of MzTabParam instances.
      *
@@ -338,7 +402,6 @@ public class MzTabExporter {
 
     /**
      * Set software and engine scores of the meta data section.
-     * @param metadata
      * @param field
      * @param alignment
      * @return 
@@ -395,5 +458,9 @@ public class MzTabExporter {
     private SearchAndValidationSettings getSearchAndValidationSettings(AnalyticalRun analyticalRun){
         //return quantificationSettingsService.getbyAnalyticalRun(analyticalRun);
         return analyticalRun.getSearchAndValidationSettings();
+    }
+    
+    private List<ProteinGroupDTO> getProteinGroupsForAnalyticalRuns(List<Long> analyticalRunIds){
+        return proteinGroupService.getProteinGroupsForRuns(analyticalRunIds);
     }
 }
