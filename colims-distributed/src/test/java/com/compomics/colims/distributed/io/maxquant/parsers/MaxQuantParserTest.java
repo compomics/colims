@@ -10,6 +10,7 @@ import com.compomics.colims.model.User;
 import com.compomics.colims.model.UserBean;
 import com.compomics.colims.model.enums.FastaDbType;
 import org.jdom2.JDOMException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,7 +56,6 @@ public class MaxQuantParserTest {
     public void testParse() throws MappingException, UnparseableException, IOException, JDOMException {
         //@// TODO: 17/10/16 add relevant tests
 
-
         //save the test fasta to the database first
         fastaDbService.persist(MaxQuantTestSuite.testFastaDb);
 
@@ -64,10 +64,10 @@ public class MaxQuantParserTest {
 
         maxQuantParser.clear();
         MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.mqparFile,
-                MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs, false, false, new ArrayList<>(), "");
+                MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs, false, false, new ArrayList<>(), "label free");
         maxQuantParser.parse(maxQuantImport);
 
-        System.out.println("test");
+        Assert.assertFalse(maxQuantParser.getAnalyticalRuns().isEmpty());
     }
 
 }
