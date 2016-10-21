@@ -2,6 +2,7 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.colims.repository.hibernate.SortDirection;
 
@@ -60,5 +61,13 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param proteinGroup the ProteinGroup instance to save or update
      */
     void saveOrUpdate(final ProteinGroup proteinGroup);
+    
+    /**
+     * Get ambiguity members of the given protein group.
+     * if nothing found, return empty list
+     * @param proteinGroupId
+     * @return list of ambiguity members
+     */
+    List<ProteinGroupHasProtein> getAmbiguityMembers(final Long proteinGroupId);
 
 }

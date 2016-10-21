@@ -2,6 +2,7 @@ package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.colims.repository.hibernate.SortDirection;
@@ -140,6 +141,15 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
 
         //transform results into ProteinGroupForRun instances
         criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroupDTO.class));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<ProteinGroupHasProtein> getAmbiguityMembers(Long proteinGroupId) {
+        Criteria criteria = getCurrentSession().createCriteria(ProteinGroupHasProtein.class);
+
+        criteria.add(Restrictions.eq("proteinGroup.id", proteinGroupId));
 
         return criteria.list();
     }

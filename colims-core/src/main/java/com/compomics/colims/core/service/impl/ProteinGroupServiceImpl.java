@@ -3,6 +3,7 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
@@ -75,6 +76,11 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     @Override
     public List<ProteinGroupDTO> getProteinGroupsForRuns(List<Long> analyticalRunIds) {
          return proteinGroupRepository.getProteinGroupsForRun(analyticalRunIds);
+    }
+
+    @Override
+    public List<ProteinGroupHasProtein> getAmbiguityMembers(Long proteinGroupId) {
+        return proteinGroupRepository.getAmbiguityMembers(proteinGroupId);
     }
 
 }

@@ -117,7 +117,9 @@ public class FastaDbManagementController implements Controllable {
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.headerParseRule"), fastaDbManagementDialog.getHeaderParseRuleTextField(), ELProperty.create("${text}"), "headerParseRuleBinding");
         bindingGroup.addBinding(binding);
-
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, fastaDbManagementDialog.getFastaDbList(), BeanProperty.create("selectedElement.databaseName"), fastaDbManagementDialog.getDatabaseTextField(), ELProperty.create("${text}"), "databaseNameBinding");
+        bindingGroup.addBinding(binding); 
+        
         bindingGroup.bind();
 
         fastaDbManagementDialog.getFastaDbList().getSelectionModel().addListSelectionListener(e -> {
@@ -348,6 +350,7 @@ public class FastaDbManagementController implements Controllable {
         fastaDbManagementDialog.getVersionTextField().setText("");
         fastaDbManagementDialog.getTaxonomyTextField().setText("");
         fastaDbManagementDialog.getHeaderParseRuleTextField().setText("");
+        fastaDbManagementDialog.getDatabaseTextField().setText("");
     }
 
     /**

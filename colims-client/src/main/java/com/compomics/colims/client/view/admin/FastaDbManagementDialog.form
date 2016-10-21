@@ -346,36 +346,40 @@
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
-                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
-                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="taxonomyLabel" alignment="0" pref="67" max="32767" attributes="0"/>
-                                              <Component id="versionLabel" alignment="0" max="32767" attributes="0"/>
-                                              <Component id="HeaderParseRuleLabel" alignment="0" max="32767" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="versionTextField" max="32767" attributes="0"/>
-                                              <Component id="headerParseRuleTextField" max="32767" attributes="0"/>
-                                              <Component id="taxonomyTextField" alignment="0" max="32767" attributes="0"/>
-                                          </Group>
-                                      </Group>
-                                      <Group type="102" alignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
                                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                               <Component id="nameLabel" alignment="0" max="32767" attributes="0"/>
                                               <Component id="fileNameLabel" alignment="0" max="32767" attributes="0"/>
                                               <Component id="filePathLabel" alignment="0" max="32767" attributes="0"/>
                                           </Group>
-                                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="nameTextField" alignment="1" pref="429" max="32767" attributes="0"/>
+                                              <Component id="fileNameTextField" alignment="1" pref="428" max="32767" attributes="0"/>
                                               <Component id="filePathTextField" max="32767" attributes="0"/>
-                                              <Component id="fileNameTextField" alignment="0" max="32767" attributes="0"/>
+                                              <Component id="nameTextField" max="32767" attributes="0"/>
+                                          </Group>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
+                                                  <Component id="taxonomyLabel" alignment="0" pref="67" max="32767" attributes="0"/>
+                                                  <Component id="versionLabel" alignment="0" max="32767" attributes="0"/>
+                                                  <Component id="HeaderParseRuleLabel" alignment="0" max="32767" attributes="0"/>
+                                              </Group>
+                                              <Component id="databaseLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="databaseTextField" max="32767" attributes="0"/>
+                                              <Component id="versionTextField" max="32767" attributes="0"/>
+                                              <Component id="headerParseRuleTextField" max="32767" attributes="0"/>
+                                              <Component id="taxonomyTextField" alignment="0" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
-                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -387,30 +391,35 @@
                                       <Component id="nameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="nameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="fileNameLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="fileNameTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="filePathTextField" min="-2" max="-2" attributes="0"/>
-                                      <Group type="102" attributes="0">
+                                      <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                                           <Component id="filePathLabel" min="-2" pref="15" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="3" attributes="0">
+                                      <Component id="databaseLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="databaseTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="versionTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="versionLabel" alignment="3" max="32767" attributes="0"/>
                                   </Group>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="taxonomyLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="taxonomyTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="3" attributes="0">
                                       <Component id="HeaderParseRuleLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="headerParseRuleTextField" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -489,6 +498,16 @@
                           <Properties>
                             <Property name="editable" type="boolean" value="false"/>
                           </Properties>
+                        </Component>
+                        <Component class="javax.swing.JLabel" name="databaseLabel">
+                          <Properties>
+                            <Property name="text" type="java.lang.String" value="Database*"/>
+                          </Properties>
+                        </Component>
+                        <Component class="javax.swing.JTextField" name="databaseTextField">
+                          <Events>
+                            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="databaseTextFieldActionPerformed"/>
+                          </Events>
                         </Component>
                       </SubComponents>
                     </Container>

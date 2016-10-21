@@ -2,7 +2,7 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.ProteinAccession;
+//import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.repository.ProteinRepository;
 import java.util.HashMap;
 import org.hibernate.LazyInitializationException;
@@ -37,16 +37,6 @@ public class ProteinServiceImpl implements ProteinService {
     }
 
     @Override
-    public void fetchAccessions(Protein protein) {
-        try {
-            protein.getProteinAccessions().size();
-        } catch (LazyInitializationException e) {
-            List<ProteinAccession> proteinAccessions = proteinRepository.fetchProteinAccessions(protein.getId());
-            protein.setProteinAccessions(proteinAccessions);
-        }
-    }
-
-    @Override
     public Protein findById(final Long id) {
         return proteinRepository.findById(id);
     }
@@ -77,7 +67,7 @@ public class ProteinServiceImpl implements ProteinService {
     }
 
     @Override
-    public Protein getProtein(String sequence, String accession) {
+    public Protein getProtein(String sequence) {
         Protein targetProtein;
 
         //first, look in the newly added proteins map
@@ -90,57 +80,17 @@ public class ProteinServiceImpl implements ProteinService {
             if (targetProtein == null) {
                 //map the utilities protein onto the Colims protein
                 targetProtein = new Protein(sequence);
-                ProteinAccession proteinAccession = new ProteinAccession(accession);
 
-                //set entity associations
-                proteinAccession.setProtein(targetProtein);
-                targetProtein.getProteinAccessions().add(proteinAccession);
-            } else {
-                updateAccessions(targetProtein, accession);
             }
-
             //add to cached proteins
             cachedProteins.put(sequence, targetProtein);
-        } else {
-            updateAccessions(targetProtein, accession);
         }
-
         return targetProtein;
     }
 
     @Override
     public void clear() {
         cachedProteins.clear();
-    }
-
-    /**
-     * Update the ProteinAccessions linked to a Protein.
-     *
-     * @param protein the Protein instance
-     * @param accession the protein accession
-     */
-    private void updateAccessions(final Protein protein, final String accession) {
-        //check if the protein accession is already linked to the protein
-        boolean proteinAccessionPresent = false;
-
-        //fetch the accessions if necessary
-        fetchAccessions(protein);
-
-        for (ProteinAccession proteinAccession : protein.getProteinAccessions()) {
-            if (proteinAccession.getAccession().equals(accession)) {
-                proteinAccessionPresent = true;
-                break;
-            }
-        }
-
-        if (!proteinAccessionPresent) {
-            ProteinAccession proteinAccession = new ProteinAccession(accession);
-            protein.getProteinAccessions().add(proteinAccession);
-
-            //set entity associations
-            proteinAccession.setProtein(protein);
-            protein.getProteinAccessions().add(proteinAccession);
-        }
     }
 
 }

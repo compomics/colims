@@ -1,8 +1,10 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.enums.FastaDbType;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface provides repository methods for the FastaDb class.
@@ -25,5 +27,13 @@ public interface FastaDbRepository extends GenericRepository<FastaDb, Long> {
      * @return list of distinct parse rules
      */
     List<String> getAllParseRules();
+    
+    /**
+     * Find the FastaDb instances by Search and Validation Settings.
+     * 
+     * @param searchAndValidationSettings
+     * @return the found FastaDb instances and their type
+     */
+    Map<FastaDb, FastaDbType> findBySearchAndValidationSettings(SearchAndValidationSettings searchAndValidationSettings);
 
 }

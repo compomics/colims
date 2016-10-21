@@ -18,7 +18,8 @@ public interface UniProtService {
     
     /**
      * Retrieve uniProt protein sequence and functional information by accession
-     * Returns an empty list when nothing was found.
+     * (description, species, TAXID)
+     * Returns an empty map when nothing was found.
      * @param accession
      * @return the map of the information needed.
      * @throws IOException              in case of an I/O related problem

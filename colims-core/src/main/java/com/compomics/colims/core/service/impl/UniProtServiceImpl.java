@@ -88,18 +88,23 @@ public class UniProtServiceImpl implements UniProtService {
 
             Node node = recommendedName.item(0);
             Element element = (Element) node;
-
-            uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
+            if(element.getElementsByTagName("fullName").item(0).getTextContent() != null && element.getElementsByTagName("fullName").item(0).getTextContent().equals("")){
+                uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
+            }
 
             NodeList organism = document.getElementsByTagName("organism");
             node = organism.item(0);
             element = (Element) node;
-            uniProt.put("species", element.getElementsByTagName("name").item(0).getTextContent());
-
+            if(element.getElementsByTagName("name").item(0).getTextContent() != null && element.getElementsByTagName("name").item(0).getTextContent().equals("")){
+                uniProt.put("species", element.getElementsByTagName("name").item(0).getTextContent());
+            }
+           
             NodeList dbReference = document.getElementsByTagName("dbReference");
             node = dbReference.item(0);
             element = (Element) node;
-            uniProt.put("taxid", element.getAttribute("id"));
+            if(element.getAttribute("id") != null && element.getAttribute("id").equals("")){
+                uniProt.put("taxid", element.getAttribute("id"));
+            }  
 
         } catch (HttpClientErrorException ex) {
             LOGGER.error(ex.getMessage(), ex);

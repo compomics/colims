@@ -100,17 +100,17 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="taxomomyComboBox" max="32767" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="browseTaxonomyButton" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="versionTextField" alignment="0" max="32767" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
                                   <Component id="headerParseRuleComboBox" min="-2" pref="360" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="browseHeaderParseRuleButtton" max="32767" attributes="0"/>
                               </Group>
                               <Component id="databaseComboBox" alignment="0" max="32767" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="taxomomyComboBox" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="browseTaxonomyButton" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="versionTextField" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -143,7 +143,7 @@
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="versionTextField" max="32767" attributes="0"/>
+                      <Component id="versionTextField" min="-2" max="-2" attributes="0"/>
                       <Component id="versionLabel" min="-2" pref="28" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -220,6 +220,9 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="versionTextField">
+          <Properties>
+            <Property name="toolTipText" type="java.lang.String" value="Important field for Mztab export. If you don&apos;t have version, type N/A"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="taxonomyLabel">
           <Properties>
@@ -346,7 +349,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="databaseLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Database"/>
+            <Property name="text" type="java.lang.String" value="Database*"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="databaseComboBox">

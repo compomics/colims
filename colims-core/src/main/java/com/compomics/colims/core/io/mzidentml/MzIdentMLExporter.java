@@ -581,7 +581,7 @@ public class MzIdentMLExporter {
         dbSequence.setSearchDatabase(inputs.getSearchDatabase().get(0));
 
         CvParam cvParam = getDataItem("DBSequence.description", CvParam.class);
-        cvParam.setValue(protein.getProteinAccessions().get(0).toString());
+        cvParam.setValue(proteinGroupHasProtein.getProteinAccession());
 
         dbSequence.getCvParam().add(cvParam);
 

@@ -44,10 +44,10 @@ public class AccessionConverter {
     public static List<String> convertToUniProt(String accession, String databaseName) throws IOException {
         List<String> accessions = new ArrayList<>();
         StringBuilder url = new StringBuilder();
-        url.append("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=").append(accession);
+        url.append("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=");
         // if database is defined, search using given database
         if (!databaseName.equals("CONTAMINANTS")) {
-            url.append("&database=").append(databaseName);
+            url.append(accession).append("&database=").append(databaseName);
             String xmlPage = getPage(url.toString());
             int startIndex = 0;
             while (xmlPage.indexOf("<databaseName>" + databaseName + "</databaseName>", startIndex) != -1) {
@@ -63,6 +63,10 @@ public class AccessionConverter {
             }
         // if protein is from contaminants fasta file, search using all database in the properties file
         } else {
+            if (accession.contains("CON")) {
+                accession = org.apache.commons.lang3.StringUtils.substringAfter(accession, "CON__");
+            }
+            url.append(accession);
             // read the database properties file
             try {
                 config = PropertiesUtil.parsePropertiesFile("config/embl-ebi-database.properties");

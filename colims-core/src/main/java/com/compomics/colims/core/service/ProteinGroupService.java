@@ -2,6 +2,7 @@ package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 
@@ -53,4 +54,12 @@ public interface ProteinGroupService extends GenericService<ProteinGroup, Long> 
      * @return the protein groups projection values for the given run
      */
     Object[] getProteinGroupsProjections(final AnalyticalRun analyticalRun);
+    
+    /**
+     * Get ambiguity members of the given protein group.
+     * if nothing found, return empty list
+     * @param proteinGroupId
+     * @return list of ambiguity members
+     */
+    List<ProteinGroupHasProtein> getAmbiguityMembers(final Long proteinGroupId);
 }
