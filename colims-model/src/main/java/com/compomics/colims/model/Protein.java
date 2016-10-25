@@ -33,11 +33,7 @@ public class Protein extends DatabaseEntity {
      */
     @OneToMany(mappedBy = "protein")
     private List<ProteinGroupHasProtein> proteinGroupHasProteins = new ArrayList<>();
-    /**
-     * The list of protein accessions linked to this protein.
-     */
-    @OneToMany(mappedBy = "protein", cascade = CascadeType.ALL)
-    private List<ProteinAccession> proteinAccessions = new ArrayList<>();
+
 
     /**
      * No-arg constructor.
@@ -70,13 +66,6 @@ public class Protein extends DatabaseEntity {
         this.proteinGroupHasProteins = proteinGroupHasProteins;
     }
 
-    public List<ProteinAccession> getProteinAccessions() {
-        return proteinAccessions;
-    }
-
-    public void setProteinAccessions(List<ProteinAccession> proteinAccessions) {
-        this.proteinAccessions = proteinAccessions;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -53,10 +53,10 @@ public class FastaDb extends DatabaseEntity {
      * The version of the FASTA db.
      */
     @Basic(optional = false)
-    @NotBlank(message = "Please insert a fasta DB version.")
+    @NotBlank(message = "Please insert a fasta DB version. If you do not know, type N/A")
     @Length(min = 3, max = 20, message = "Version must be between {min} and {max} characters.")
     @Column(name = "version", nullable = false)
-    private String version = "N/A";
+    private String version;
     /**
      * The MD5 checksum of the FASTA db.
      */

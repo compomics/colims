@@ -135,7 +135,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
             allProperties.load(loader.getResourceAsStream("config/embl-ebi-database.properties"));
-            databaseSet = allProperties.keySet();
+            databaseSet = new TreeSet(allProperties.keySet());
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(FastaDbSaveUpdateController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -333,6 +333,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbSaveUpdatePanel.getTaxomomyComboBox().setSelectedIndex(0);
         fastaDbSaveUpdatePanel.getFastaDbStateInfoLabel().setText("");
         fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().setSelectedIndex(0);
+        fastaDbSaveUpdatePanel.getDatabaseComboBox().setSelectedIndex(0);
     }
     
     /**

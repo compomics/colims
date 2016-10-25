@@ -2,6 +2,7 @@ package com.compomics.colims.core.service.impl.interceptable;
 
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.repository.FastaDbRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Niels Hulstaert
@@ -64,6 +66,11 @@ public class FastaDbServiceImpl implements FastaDbService {
     @Override
     public List<String> getAllParseRules() {
         return fastaDbRepository.getAllParseRules();
+    }
+
+    @Override
+    public Map<FastaDb, FastaDbType> findBySearchAndValidationSettings(SearchAndValidationSettings searchAndValidationSettings) {
+        return fastaDbRepository.findBySearchAndValidationSettings(searchAndValidationSettings);
     }
 
 }

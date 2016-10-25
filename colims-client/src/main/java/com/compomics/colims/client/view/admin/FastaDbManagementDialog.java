@@ -94,6 +94,10 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         return updateButton;
     }
 
+    public JTextField getDatabaseTextField() {
+        return databaseTextField;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -135,6 +139,8 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         headerParseRuleTextField = new javax.swing.JTextField();
         HeaderParseRuleLabel = new javax.swing.JLabel();
         taxonomyTextField = new javax.swing.JTextField();
+        databaseLabel = new javax.swing.JLabel();
+        databaseTextField = new javax.swing.JTextField();
         fastaDbSaveUpdatePanel = new com.compomics.colims.client.view.admin.FastaDbSaveUpdatePanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -308,6 +314,14 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
 
         taxonomyTextField.setEditable(false);
 
+        databaseLabel.setText("Database*");
+
+        databaseTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                databaseTextFieldActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout fastaDbDetailPanelLayout = new javax.swing.GroupLayout(fastaDbDetailPanel);
         fastaDbDetailPanel.setLayout(fastaDbDetailPanelLayout);
         fastaDbDetailPanelLayout.setHorizontalGroup(
@@ -317,24 +331,27 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
                         .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(taxonomyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
-                            .addComponent(versionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(HeaderParseRuleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(versionTextField)
-                            .addComponent(headerParseRuleTextField)
-                            .addComponent(taxonomyTextField)))
-                    .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
-                        .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(fileNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(filePathLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(12, 12, 12)
+                        .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(fileNameTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
+                            .addComponent(filePathTextField)
+                            .addComponent(nameTextField)))
+                    .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
+                        .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(taxonomyLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
+                                .addComponent(versionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(HeaderParseRuleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(databaseLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nameTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
-                            .addComponent(filePathTextField)
-                            .addComponent(fileNameTextField))))
+                            .addComponent(databaseTextField)
+                            .addComponent(versionTextField)
+                            .addComponent(headerParseRuleTextField)
+                            .addComponent(taxonomyTextField))))
                 .addContainerGap())
         );
         fastaDbDetailPanelLayout.setVerticalGroup(
@@ -344,25 +361,29 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fileNameLabel)
                     .addComponent(fileNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(filePathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(filePathLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(databaseLabel)
+                    .addComponent(databaseTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(3, 3, 3)
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(versionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(versionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(taxonomyLabel)
                     .addComponent(taxonomyTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(HeaderParseRuleLabel)
                     .addComponent(headerParseRuleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -437,12 +458,18 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_nameTextFieldActionPerformed
 
+    private void databaseTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_databaseTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_databaseTextFieldActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel HeaderParseRuleLabel;
     private javax.swing.JButton addButton;
     private javax.swing.JCheckBox additionalCheckBox;
     private javax.swing.JButton closeButton;
     private javax.swing.JCheckBox contaminantsCheckBox;
+    private javax.swing.JLabel databaseLabel;
+    private javax.swing.JTextField databaseTextField;
     private javax.swing.JButton deleteButton;
     private javax.swing.JLabel descriptionLabel;
     private javax.swing.JPanel fastaDbDetailPanel;

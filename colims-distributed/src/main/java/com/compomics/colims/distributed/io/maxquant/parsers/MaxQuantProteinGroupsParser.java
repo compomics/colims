@@ -231,7 +231,7 @@ public class MaxQuantProteinGroupsParser {
         proteinGroupHasProtein.setIsMainGroupProtein(mainGroup);
 
         //get protein
-        Protein protein = proteinService.getProtein(sequence, accession);
+        Protein protein = proteinService.getProtein(sequence);
 
         //set protein accession
         proteinGroupHasProtein.setProteinAccession(accession);

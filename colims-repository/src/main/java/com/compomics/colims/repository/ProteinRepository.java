@@ -1,7 +1,6 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.Protein;
-import com.compomics.colims.model.ProteinAccession;
 
 import java.util.List;
 
@@ -34,7 +33,7 @@ public interface ProteinRepository extends GenericRepository<Protein, Long> {
      * @param proteinId the protein ID
      * @return the list of ProteinAccession instances
      */
-    List<ProteinAccession> fetchProteinAccessions(Long proteinId);
+//    List<ProteinAccession> fetchProteinAccessions(Long proteinId);
 
 //    /**
 //     * Find a protein with hibernate search by the sequence.
