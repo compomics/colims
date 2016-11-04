@@ -22,7 +22,7 @@ public class QuantificationReagent extends CvParam{
     public QuantificationReagent() {
     }
 
-    public QuantificationReagent(String label, String accession, String name, String value) {
-        super(label, accession, name, value);
+    public QuantificationReagent(String label, String accession, String name) {
+        super(label, accession, name);
     }
 }

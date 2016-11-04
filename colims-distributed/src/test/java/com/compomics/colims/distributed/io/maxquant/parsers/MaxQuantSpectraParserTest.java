@@ -9,8 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
@@ -21,9 +22,9 @@ public class MaxQuantSpectraParserTest {
 
     @Test
     public void testParse() throws Exception {
-        List<String> omittedProteinIds = new ArrayList<>();
-        omittedProteinIds.add("0");
-        omittedProteinIds.add("1");
+        Set<Integer> omittedProteinIds = new HashSet<>();
+        omittedProteinIds.add(0);
+        omittedProteinIds.add(1);
 
         maxQuantSpectraParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, false, omittedProteinIds);
 

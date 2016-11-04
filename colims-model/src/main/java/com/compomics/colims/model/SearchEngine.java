@@ -51,7 +51,7 @@ public class SearchEngine extends CvParam {
      * @param version          the search engine version
      */
     public SearchEngine(final SearchEngineType searchEngineType, final String version) {
-        super(NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE);
+        super(NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE);
         this.searchEngineType = searchEngineType;
         this.version = version;
     }

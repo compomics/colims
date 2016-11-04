@@ -68,13 +68,6 @@ INSERT INTO protein (id, protein_sequence) VALUES (2, 'AAMAAAAAAAAAAAAAAAAAAAABL
 INSERT INTO protein (id, protein_sequence) VALUES (3, 'AACAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
 INSERT INTO protein (id, protein_sequence) VALUES (4, 'AABAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
 
--- insert test protein accession
-INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (1, 'PROT_ACC_11', 1);
-INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (2, 'PROT_ACC_12', 1);
-INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (3, 'PROT_ACC_2', 2);
-INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (4, 'PROT_ACC_3', 3);
-INSERT INTO protein_accession (id, accession, l_protein_id) VALUES (5, 'PROT_ACC_4', 4);
-
 -- insert test search engine
 INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER','0.35.0-beta');
 INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (2,'MS:1001583','MS','MaxQuant','MAXQUANT','0.0.0');

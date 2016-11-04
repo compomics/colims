@@ -46,11 +46,6 @@ public class QuantificationReagentHibernateRepository extends GenericHibernateRe
                 iterator.remove();
                 continue;
             }
-            
-            //check value
-            if(!(exampleInstance.getValue() == null && quantificationReagent.getValue() == null) &&  !exampleInstance.getValue().equals(quantificationReagent.getValue())){
-                iterator.remove();
-            }
         }
         
         return quantificationReagents;

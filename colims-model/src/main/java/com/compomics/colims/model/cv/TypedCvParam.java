@@ -41,20 +41,6 @@ public abstract class TypedCvParam extends CvParam {
         this.cvParamType = cvParamType;
     }
 
-    /**
-     * Constructor.
-     *
-     * @param cvParamType the CV parameter type
-     * @param label       the ontology label
-     * @param accession   the CV term accession
-     * @param name        the CV term name
-     * @param value       the CV term value
-     */
-    public TypedCvParam(final CvParamType cvParamType, final String label, final String accession, final String name, final String value) {
-        super(label, accession, name, value);
-        this.cvParamType = cvParamType;
-    }
-
     public CvParamType getCvParamType() {
         return cvParamType;
     }

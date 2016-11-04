@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Iain on 19/05/2015.
@@ -35,11 +35,12 @@ public class MaxQuantEvidenceParserTest {
     @Test
     public void testParse() throws Exception {
         maxQuantEvidenceParser.clear();
-        List<String> ommittedProteinIds = new ArrayList<>();
-        ommittedProteinIds.add("0");
-        ommittedProteinIds.add("1");
 
-        maxQuantEvidenceParser.parse(evidenceFile, ommittedProteinIds);
+        Set<Integer> omittedProteinIds = new HashSet<>();
+        omittedProteinIds.add(0);
+        omittedProteinIds.add(1);
+
+        maxQuantEvidenceParser.parse(evidenceFile, omittedProteinIds);
 
         //check the number of MBR identifications
         Assert.assertEquals(9, maxQuantEvidenceParser.getRunToMbrPeptides().size());

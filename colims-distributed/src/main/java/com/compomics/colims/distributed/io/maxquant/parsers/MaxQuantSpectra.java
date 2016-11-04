@@ -2,10 +2,7 @@ package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.model.Spectrum;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Object to hold identified and unidentified spectra.
@@ -21,13 +18,13 @@ public class MaxQuantSpectra {
     private final Map<String, Spectrum> spectra = new HashMap<>();
     /**
      * This map links spectra apl keys with the msms.txt IDs.
-     * The spectrumToPsms map (key: apl key; value: list of msms IDs)
+     * The spectrumToPsms map (key: apl key; value: set of msms IDs)
      */
-    private final Map<String, List<Integer>> spectrumToPsms = new HashMap<>();
+    private final Map<String, Set<Integer>> spectrumToPsms = new HashMap<>();
     /**
      * This map links run names with the associated spectrum apl keys.
      */
-    private final Map<String, List<String>> runToSpectrums = new HashMap<>();
+    private final Map<String, Set<String>> runToSpectrums = new HashMap<>();
     /**
      * The map of unidentified spectra (key: RAW file name; value: the list of associated unidentified {@link Spectrum}
      * instances).
@@ -58,7 +55,7 @@ public class MaxQuantSpectra {
      *
      * @return spectrumToPsms
      */
-    public Map<String, List<Integer>> getSpectrumToPsms() {
+    public Map<String, Set<Integer>> getSpectrumToPsms() {
         return spectrumToPsms;
     }
 
@@ -85,7 +82,7 @@ public class MaxQuantSpectra {
      *
      * @return the runToSpectrums
      */
-    public Map<String, List<String>> getRunToSpectrums() {
+    public Map<String, Set<String>> getRunToSpectrums() {
         return runToSpectrums;
     }
 }

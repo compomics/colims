@@ -48,12 +48,6 @@ public class QuantificationMethodCvParamHibernateRepository extends GenericHiber
                 continue;
             }
             
-            //check value
-            if(!(exampleInstance.getValue() == null && quantificationMethodCvParam.getValue() == null) && !exampleInstance.getValue().equals(quantificationMethodCvParam.getValue())){
-                iterator.remove();
-                continue;
-            }
-            
             //check QuantificationMethodHasReagents size
             if(exampleInstance.getQuantificationMethodHasReagents().size() != quantificationMethodCvParam.getQuantificationMethodHasReagents().size()){
                 iterator.remove();

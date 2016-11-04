@@ -46,7 +46,7 @@ public class QuantificationEngine extends CvParam {
      * @param version the quantification engine version
      */
     public QuantificationEngine(final QuantificationEngineType quantificationEngineType, final String version) {
-        super(NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE);
+        super(NOT_APPLICABLE, NOT_APPLICABLE, NOT_APPLICABLE);
         this.quantificationEngineType = quantificationEngineType;
         this.version = version;
     }

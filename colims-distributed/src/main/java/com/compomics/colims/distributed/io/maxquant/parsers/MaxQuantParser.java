@@ -141,7 +141,7 @@ public class MaxQuantParser {
         //add the identified spectra for each run and set the entity relations
         analyticalRuns.forEach((runName, run) -> {
             //get the spectrum apl keys for each run
-            List<String> aplKeys = maxQuantSpectraParser.getMaxQuantSpectra().getRunToSpectrums().get(runName);
+            Set<String> aplKeys = maxQuantSpectraParser.getMaxQuantSpectra().getRunToSpectrums().get(runName);
             aplKeys.forEach(aplKey -> {
                 //get the spectrum by it's key
                 Spectrum spectrum = maxQuantSpectraParser.getMaxQuantSpectra().getSpectra().get(aplKey);
@@ -156,7 +156,7 @@ public class MaxQuantParser {
         });
 
         //add the matching between runs peptides for each run
-        Map<String, List<Integer>> runToMbrPeptides = maxQuantEvidenceParser.getRunToMbrPeptides();
+        Map<String, Set<Integer>> runToMbrPeptides = maxQuantEvidenceParser.getRunToMbrPeptides();
         runToMbrPeptides.forEach((runName, evidenceIds) -> {
             //get the run by name
             AnalyticalRun run = analyticalRuns.get(runName);
@@ -209,7 +209,7 @@ public class MaxQuantParser {
      *
      * @return the link map
      */
-    public Map<String, List<Integer>> getSpectrumToPsms() {
+    public Map<String, Set<Integer>> getSpectrumToPsms() {
         return maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToPsms();
     }
 
@@ -239,9 +239,12 @@ public class MaxQuantParser {
      */
     private void setSpectrumRelations(String aplKey, Spectrum spectrum) {
         //get the msms.txt IDs associated with the given spectrum
-        List<Integer> msmsIds = maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToPsms().get(aplKey);
+        Set<Integer> msmsIds = maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToPsms().get(aplKey);
         for (Integer msmsId : msmsIds) {
             //get the evidence IDs associated with the msms ID
+            if (!maxQuantEvidenceParser.getSpectrumToPeptides().containsKey(msmsId)) {
+                System.out.println("------------------");
+            }
             for (Integer evidenceId : maxQuantEvidenceParser.getSpectrumToPeptides().get(msmsId)) {
                 setPeptideRelations(spectrum, evidenceId);
             }
@@ -259,11 +262,15 @@ public class MaxQuantParser {
         Peptide peptide = maxQuantEvidenceParser.getPeptides().get(evidenceId);
 
         //get the protein groups IDs for each peptide
-        List<Integer> proteinGroupIds = maxQuantEvidenceParser.getPeptideToProteinGroups().get(evidenceId);
+        Set<Integer> proteinGroupIds = maxQuantEvidenceParser.getPeptideToProteinGroups().get(evidenceId);
 
         proteinGroupIds.forEach(proteinGroupId -> {
             //get the protein group by it's ID
             ProteinGroup proteinGroup = maxQuantProteinGroupsParser.getProteinGroups().get(proteinGroupId);
+
+            if (proteinGroup == null) {
+                System.out.println("test");
+            }
 
             PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
             peptideHasProteinGroup.setPeptidePostErrorProbability(peptide.getPsmPostErrorProbability());

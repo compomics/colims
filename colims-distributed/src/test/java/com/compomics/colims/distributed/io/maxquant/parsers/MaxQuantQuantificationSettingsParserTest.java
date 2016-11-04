@@ -54,7 +54,7 @@ public class MaxQuantQuantificationSettingsParserTest {
 
     @Test
     public void testCreateQuantificationReagent(){
-        QuantificationMethodCvParam quantificationMethodCvParam = new QuantificationMethodCvParam("PRIDE", "PRIDE:0000315", "SILAC", null);
+        QuantificationMethodCvParam quantificationMethodCvParam = new QuantificationMethodCvParam("PRIDE", "PRIDE:0000315", "SILAC");
         String experimentLabel = "SILAC";
         List<String> reagents = new ArrayList<>();
         reagents.add("SILAC heavy");

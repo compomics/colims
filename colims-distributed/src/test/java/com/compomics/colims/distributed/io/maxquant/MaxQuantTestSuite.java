@@ -28,9 +28,10 @@ import java.nio.file.Path;
 })
 public class MaxQuantTestSuite {
 
-    private static final String MAXQUANT_VERSION = "1528";
+    private static final String MAXQUANT_INTEGRATION_PROJECT = "maxquant_SILAC_integration";
 
-    public static Path maxQuantDirectory;
+    public static Path maxQuantTestDataDirectory;
+    public static Path maxQuantIntegrationProjectDirectory;
     public static Path maxQuantCombinedDirectory;
     public static Path maxQuantTextDirectory;
     public static Path maxQuantAndromedaDirectory;
@@ -44,27 +45,29 @@ public class MaxQuantTestSuite {
 
     static {
         try {
-            maxQuantDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + MAXQUANT_VERSION).getFile().toPath();
-            maxQuantCombinedDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + MAXQUANT_VERSION + File.separator + "combined").getFile().toPath();
-            maxQuantAndromedaDirectory = new ClassPathResource("data" + File.separator + "maxquant_" + MAXQUANT_VERSION + File.separator + "combined" + File.separator + "andromeda").getFile().toPath();
-            String txtDirectoryPath = "data" + File.separator + "maxquant_" + MAXQUANT_VERSION + File.separator + "combined" + File.separator + "txt";
-            maxQuantTextDirectory = new ClassPathResource(txtDirectoryPath).getFile().toPath();
-            txtDirectoryPath += File.separator;
-            msmsFile = new ClassPathResource(txtDirectoryPath + "msms.txt").getFile().toPath();
-            proteinGroupsFile = new ClassPathResource(txtDirectoryPath + "proteinGroups.txt").getFile().toPath();
-            evidenceFile = new ClassPathResource(txtDirectoryPath + "evidence.txt").getFile().toPath();
-            peptidesFile = new ClassPathResource(txtDirectoryPath + "peptides.txt").getFile().toPath();
-            String mqparFileString = "data" + File.separator + "maxquant_" + MAXQUANT_VERSION + File.separator + "mqpar.xml";
-            mqparFile = new ClassPathResource(mqparFileString).getFile().toPath();
+            maxQuantTestDataDirectory = new ClassPathResource("data" + File.separator + "maxquant").getFile().toPath();
+            maxQuantIntegrationProjectDirectory = maxQuantTestDataDirectory.resolve(MAXQUANT_INTEGRATION_PROJECT);
+            maxQuantCombinedDirectory = maxQuantIntegrationProjectDirectory.resolve("combined");
+            maxQuantAndromedaDirectory = maxQuantCombinedDirectory.resolve("andromeda");
+            maxQuantTextDirectory = maxQuantCombinedDirectory.resolve("txt");
+            msmsFile = maxQuantTextDirectory.resolve("msms.txt");
+            proteinGroupsFile = maxQuantTextDirectory.resolve("proteinGroups.txt");
+            evidenceFile = maxQuantTextDirectory.resolve("evidence.txt");
+            peptidesFile = maxQuantTextDirectory.resolve("peptides.txt");
+            mqparFile = maxQuantIntegrationProjectDirectory.resolve("mqpar.xml");
             testFastaDb = new FastaDb();
             testFastaDb.setName("test fasta");
-            testFastaDb.setFileName("uniprot-mouse.fasta");
-            testFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "uniprot-mouse.fasta").getFile().getAbsolutePath());
-            testFastaDb.setHeaderParseRule("&gt;([^ ]*)");
+            testFastaDb.setFileName("SP_human.fasta");
+            testFastaDb.setFilePath(maxQuantIntegrationProjectDirectory.resolve(testFastaDb.getFileName()).toString());
+            testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+            testFastaDb.setVersion("N/A");
+            testFastaDb.setDatabaseName("test db");
             contaminantsFastaDb = new FastaDb();
             contaminantsFastaDb.setName("test contaminants fasta");
             contaminantsFastaDb.setFileName("contaminants.fasta");
-            contaminantsFastaDb.setFilePath(new ClassPathResource(txtDirectoryPath + "contaminants.fasta").getFile().getAbsolutePath());
+            contaminantsFastaDb.setFilePath(maxQuantIntegrationProjectDirectory.resolve(contaminantsFastaDb.getFileName()).toString());
+            contaminantsFastaDb.setVersion("N/A");
+            contaminantsFastaDb.setDatabaseName("N/A");
         } catch (IOException e) {
             //do nothing
         }

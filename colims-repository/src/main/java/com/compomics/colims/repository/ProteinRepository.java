@@ -27,14 +27,6 @@ public interface ProteinRepository extends GenericRepository<Protein, Long> {
      */
     List<Long> getConstraintLessProteinIdsForRuns(List<Long> analyticalRunIds);
 
-    /**
-     * Fetch the protein accessions associated with the given protein.
-     *
-     * @param proteinId the protein ID
-     * @return the list of ProteinAccession instances
-     */
-//    List<ProteinAccession> fetchProteinAccessions(Long proteinId);
-
 //    /**
 //     * Find a protein with hibernate search by the sequence.
 //     *

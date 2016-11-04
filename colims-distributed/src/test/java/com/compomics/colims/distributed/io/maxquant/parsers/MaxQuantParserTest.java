@@ -58,13 +58,16 @@ public class MaxQuantParserTest {
 
         //save the test fasta to the database first
         fastaDbService.persist(MaxQuantTestSuite.testFastaDb);
+        //save the contaminants fasta to the database first
+        fastaDbService.persist(MaxQuantTestSuite.contaminantsFastaDb);
 
         EnumMap<FastaDbType, List<Long>> fastaDbs = new EnumMap<>(FastaDbType.class);
         fastaDbs.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb.getId())));
+        fastaDbs.put(FastaDbType.CONTAMINANTS, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb.getId())));
 
         maxQuantParser.clear();
         MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.mqparFile,
-                MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs, false, false, new ArrayList<>(), "label free");
+                MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbs, false, false, new ArrayList<>(), "SILAC");
         maxQuantParser.parse(maxQuantImport);
 
         Assert.assertFalse(maxQuantParser.getAnalyticalRuns().isEmpty());

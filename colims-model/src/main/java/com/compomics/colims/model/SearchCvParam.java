@@ -35,17 +35,4 @@ public class SearchCvParam extends TypedCvParam {
         super(cvParamType, label, accession, name);
     }
 
-    /**
-     * Constructor.
-     *
-     * @param cvParamType the CV parameter type
-     * @param label       the ontology label
-     * @param accession   the CV term accession
-     * @param name        the CV term name
-     * @param value       the CV term value
-     */
-    public SearchCvParam(CvParamType cvParamType,String label, String accession, String name, String value) {
-        super(cvParamType, label, accession, name, value);
-    }
-
 }

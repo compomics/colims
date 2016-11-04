@@ -11,10 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Create grouped proteins from the protein groups file output by MaxQuant.
@@ -37,7 +34,7 @@ public class MaxQuantProteinGroupsParser {
      * The list of omitted protein group IDs. The peptides, PSMs, spectra for
      * these protein groups are not stored in the database.
      */
-    private final List<String> omittedProteinGroupIds = new ArrayList<>();
+    private final Set<Integer> omittedProteinGroupIds = new HashSet<>();
     private final ProteinGroupsHeaders proteinGroupsHeaders;
     /**
      * Child beans.
@@ -63,7 +60,7 @@ public class MaxQuantProteinGroupsParser {
      *
      * @return omittedProteinGroupIds
      */
-    public List<String> getOmittedProteinGroupIds() {
+    public Set<Integer> getOmittedProteinGroupIds() {
         return omittedProteinGroupIds;
     }
 
@@ -114,7 +111,7 @@ public class MaxQuantProteinGroupsParser {
 
         boolean omittedProteinGroup = false;
 
-        if (parsedAccession.contains(";")) {
+        if (parsedAccession.contains(ACCESSION_DELIMITER)) {
             String[] accessions = parsedAccession.split(ACCESSION_DELIMITER);
             // if select to omit contaminants and main protein is contaminant exclude that protein group.
             if (!includeContaminants) {
@@ -157,7 +154,7 @@ public class MaxQuantProteinGroupsParser {
                     }
                 }
             } else {
-                omittedProteinGroupIds.add(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID)));
+                omittedProteinGroupIds.add(Integer.valueOf(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))));
             }
 
         } else {
@@ -165,7 +162,7 @@ public class MaxQuantProteinGroupsParser {
                 if (!parsedAccession.contains(REVERSE_PREFIX) && !parsedAccession.contains(CONTAMINANT_PREFIX)) {
                     proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequenceInFasta(parsedAccession, fastaEntries), parsedAccession, true, proteinGroup));
                 } else {
-                    omittedProteinGroupIds.add(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID)));
+                    omittedProteinGroupIds.add(Integer.valueOf(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))));
                     omittedProteinGroup = true;
                 }
             } else {
@@ -176,7 +173,7 @@ public class MaxQuantProteinGroupsParser {
                     }
                     proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequenceInFasta(accToSearchSeq, fastaEntries), parsedAccession, true, proteinGroup));
                 } else {
-                    omittedProteinGroupIds.add(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID)));
+                    omittedProteinGroupIds.add(Integer.valueOf(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))));
                     omittedProteinGroup = true;
                 }
             }

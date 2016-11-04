@@ -30,16 +30,17 @@ public class FastaDbParserTest {
         fastaDbs.add(MaxQuantTestSuite.testFastaDb);
         fastaDbs.add(MaxQuantTestSuite.contaminantsFastaDb);
 
-        Map<String, String> parsedContaminantsFasta = fastaDbParser.parseFastas(fastaDbs);
+        Map<String, String> parsedFastas = fastaDbParser.parseFastas(fastaDbs);
 
-        Assert.assertEquals(33322, parsedContaminantsFasta.size());
+        Assert.assertEquals(20380, parsedFastas.size());
         //look for the first protein
-        Assert.assertTrue(parsedContaminantsFasta.containsKey("sp|Q9D103|IFM1_MOUSE"));
+        Assert.assertTrue(parsedFastas.containsKey("P24844"));
         //look for a protein
-        Assert.assertTrue(parsedContaminantsFasta.containsKey("sp|P59764|DOCK4_MOUSE"));
+        Assert.assertTrue(parsedFastas.containsKey("O00571"));
         //look for the last protein
-        Assert.assertTrue(parsedContaminantsFasta.containsKey("sp|Q6IUF9|Z_MACHU"));
-        //look for a contaminants protein
-        Assert.assertTrue(parsedContaminantsFasta.containsKey("P09870"));
+        Assert.assertTrue(parsedFastas.containsKey("E9PAV3"));
+        //look for 2 contaminants proteins
+        Assert.assertTrue(parsedFastas.containsKey("P09870"));
+        Assert.assertTrue(parsedFastas.containsKey("P05784"));
     }
 }
