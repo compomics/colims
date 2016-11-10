@@ -77,4 +77,14 @@ public class PeptideServiceImpl implements PeptideService {
     public List<PeptideDTO> getPeptideDTO(Long proteinGroupId, List<Long> analyticalRunIds) {
         return peptideRepository.getPeptideDTOByProteinGroupIdAnalyticalRunId(proteinGroupId, analyticalRunIds);
     }
+
+    @Override
+    public List<String> getDistinctPeptideSequence(Long proteinGroupId, List<Long> analyticalRunIds) {
+        return peptideRepository.getDistinctPeptideSequenceByProteinGroupIdAnalyticalRunId(proteinGroupId, analyticalRunIds);
+    }
+
+    @Override
+    public List<Peptide> getUniquePeptides(Long proteinGroupId, List<Long> analyticalRunIds) {
+        return peptideRepository.getUniquePeptideByProteinGroupIdAnalyticalRunId(proteinGroupId, analyticalRunIds);
+    }
 }

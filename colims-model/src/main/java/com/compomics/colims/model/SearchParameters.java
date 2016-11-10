@@ -93,7 +93,7 @@ public class SearchParameters extends DatabaseEntity {
      * The SearchParametersHasModification instances from the join table between the search parameters and search
      * modifications.
      */
-    @OneToMany(mappedBy = "searchParameters", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "searchParameters", cascade = CascadeType.ALL)
     private List<SearchParametersHasModification> searchParametersHasModifications = new ArrayList<>();
     @OneToMany(mappedBy = "searchParameters")
     private List<SearchAndValidationSettings> searchAndValidationSettingses = new ArrayList<>();

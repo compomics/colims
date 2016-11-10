@@ -5,10 +5,8 @@
  */
 package com.compomics.colims.core.util;
 
-import com.compomics.colims.core.service.UniProtService;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import org.junit.Test;

@@ -88,21 +88,21 @@ public class UniProtServiceImpl implements UniProtService {
 
             Node node = recommendedName.item(0);
             Element element = (Element) node;
-            if(element.getElementsByTagName("fullName").item(0).getTextContent() != null && element.getElementsByTagName("fullName").item(0).getTextContent().equals("")){
+            if(element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")){
                 uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
             }
 
             NodeList organism = document.getElementsByTagName("organism");
             node = organism.item(0);
             element = (Element) node;
-            if(element.getElementsByTagName("name").item(0).getTextContent() != null && element.getElementsByTagName("name").item(0).getTextContent().equals("")){
+            if(element.getElementsByTagName("name").item(0).getTextContent() != null && !element.getElementsByTagName("name").item(0).getTextContent().equals("")){
                 uniProt.put("species", element.getElementsByTagName("name").item(0).getTextContent());
             }
            
             NodeList dbReference = document.getElementsByTagName("dbReference");
             node = dbReference.item(0);
             element = (Element) node;
-            if(element.getAttribute("id") != null && element.getAttribute("id").equals("")){
+            if(element.getAttribute("id") != null && !element.getAttribute("id").equals("")){
                 uniProt.put("taxid", element.getAttribute("id"));
             }  
 

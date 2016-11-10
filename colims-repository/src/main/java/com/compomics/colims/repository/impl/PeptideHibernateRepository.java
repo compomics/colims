@@ -75,4 +75,30 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
 
         return criteria.list();
     }
+
+    @Override
+    public List<String> getDistinctPeptideSequenceByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds) {
+        Query query = getCurrentSession().getNamedQuery("Peptide.getDistinctPeptideSequenceByProteinGroupIdAndAnalyticalRunIds");
+        
+        query.setLong("proteinGroupId", proteinGroupId);
+        query.setParameterList("analyticalRunId", analyticalRunIds);
+
+        return query.list();
+    }
+
+    @Override
+    public List<Peptide> getUniquePeptideByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds) {
+        List<Peptide> peptides = new ArrayList<>();
+        List<PeptideDTO> peptideDTOs = getPeptideDTOByProteinGroupIdAnalyticalRunId(proteinGroupId, analyticalRunIds);
+        peptideDTOs.forEach(peptideDto -> {
+            Criteria criteria = getCurrentSession().createCriteria(PeptideHasProteinGroup.class);
+            criteria.add(Restrictions.eq("peptide.id", peptideDto.getPeptide().getId()));
+            if(criteria.list().size() == 1){
+                peptides.add(peptideDto.getPeptide());
+            }
+        });
+        
+        return peptides;
+    }
+
 }

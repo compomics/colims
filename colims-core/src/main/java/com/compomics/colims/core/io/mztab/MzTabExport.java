@@ -55,6 +55,10 @@ public class MzTabExport {
      * Link between analytical runs and assays.
      */
     private Map<AnalyticalRun, int[]> analyticalRunsAssaysRefs = new HashMap<>();
+    /**
+     * Match between quantification labels and Reagents (key: reagent, value: label)
+     */
+    private Map<String, String> quantificationReagentLabelMatch = new HashMap<>();
 
     public MzTabMode getMzTabMode() {
         return mzTabMode;
@@ -126,6 +130,14 @@ public class MzTabExport {
 
     public void setAnalyticalRunsAssaysRefs(Map<AnalyticalRun, int[]> analyticalRunsAssaysRefs) {
         this.analyticalRunsAssaysRefs = analyticalRunsAssaysRefs;
+    }
+
+    public Map<String, String> getQuantificationReagentLabelMatch() {
+        return quantificationReagentLabelMatch;
+    }
+
+    public void setQuantificationReagentLabelMatch(Map<String, String> quantificationReagentLabelMatch) {
+        this.quantificationReagentLabelMatch = quantificationReagentLabelMatch;
     }
 
 }

@@ -31,7 +31,7 @@ public class ProteinGroup extends DatabaseEntity {
     /**
      * The PeptideHasProteinGroup instances from the join table between the peptide and protein group tables.
      */
-    @OneToMany(mappedBy = "proteinGroup")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "proteinGroup")
     private List<PeptideHasProteinGroup> peptideHasProteinGroups = new ArrayList<>();
     /**
      * The ProteinGroupHasProtein instances from the join table between the protein group and protein tables.
