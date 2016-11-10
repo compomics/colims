@@ -43,7 +43,7 @@ public class MaxQuantQuantificationSettingsParser {
     private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
 
     public MaxQuantQuantificationSettingsParser(QuantificationSettingsService quantificationSettingsService, OntologyMapper ontologyMapper,
-            QuantificationReagentService quantificationReagentService, MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) {
+                                                QuantificationReagentService quantificationReagentService, MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) {
         this.quantificationSettingsService = quantificationSettingsService;
         this.ontologyMapper = ontologyMapper;
         this.quantificationReagentService = quantificationReagentService;
@@ -72,7 +72,7 @@ public class MaxQuantQuantificationSettingsParser {
 
         // create quantificationCvParam
         QuantificationMethodCvParam quantificationMethodCvParam =
-                new QuantificationMethodCvParam(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
+                new QuantificationMethodCvParam(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
         quantificationMethodCvParam.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethodCvParam, quantificationLabel, reagents));
         // check if quantificationMethodCvParam is in the db
         quantificationMethodCvParam = quantificationSettingsService.getQuantificationMethodCvParams(quantificationMethodCvParam);
@@ -112,7 +112,7 @@ public class MaxQuantQuantificationSettingsParser {
             QuantificationMethodHasReagent quantificationMethodHasReagent = new QuantificationMethodHasReagent();
             if (ontologyTerm != null) {
                 QuantificationReagent quantificationReagent =
-                        new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel(), null);
+                        new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
                 // check if quantificationReagent is in the db
                 quantificationReagent = quantificationReagentService.getQuantificationReagent(quantificationReagent);

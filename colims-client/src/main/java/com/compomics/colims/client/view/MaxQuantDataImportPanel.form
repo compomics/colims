@@ -117,13 +117,13 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="browse..."/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>
@@ -200,7 +200,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="primaryFastaDbTextField" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="selectPrimaryFastaDbButton" min="-2" pref="92" max="-2" attributes="0"/>
+                          <Component id="selectPrimaryFastaDbButton" min="-2" pref="90" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
@@ -217,7 +217,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="additionalFastaFileSelectionLabel" min="-2" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Component id="additionalFastaDbScrollPane" pref="369" max="32767" attributes="0"/>
+                          <Component id="additionalFastaDbScrollPane" pref="447" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="selectAdditionalFastaDbButton" min="-2" pref="92" max="-2" attributes="0"/>
@@ -251,15 +251,14 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           <Component id="selectAdditionalFastaDbButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="removeAdditionalFastaDbButton" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="39" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="additionalFastaDbScrollPane" alignment="0" pref="93" max="32767" attributes="0"/>
+                      <Component id="additionalFastaDbScrollPane" pref="93" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="11" max="32767" attributes="0"/>
+                  <EmptySpace pref="14" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -269,13 +268,13 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="browse..."/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>
@@ -369,13 +368,13 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="remove"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[80, 25]"/>
+              <Dimension value="[90, 25]"/>
             </Property>
           </Properties>
         </Component>

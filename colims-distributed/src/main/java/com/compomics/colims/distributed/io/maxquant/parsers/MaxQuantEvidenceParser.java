@@ -1,6 +1,5 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.OntologyTerm;
 import com.compomics.colims.distributed.io.ModificationMapper;
@@ -19,6 +18,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Parser class for the MaxQuant evidence file.
@@ -36,22 +36,27 @@ public class MaxQuantEvidenceParser {
     private static final Pattern MODIFICATION_PATTERN = Pattern.compile("\\(([^)]+)\\)");
     private static final String MODIFICATION_PROBABILITIES = " probabilities";
     private static final String MODIFICATION_SCORE_DIFFS = " score diffs";
+    private static final String MODIFIED_SEQUENCE_FIX = "_";
     static final String N_TERMINAL_MODIFICATION = "Protein N-term";
     static final String C_TERMINAL_MODIFICATION = "Protein C-term";
-    static final String MODIFIED_SEQUENCE_FIX = "_";
 
     /**
-     * Spectrum IDs and spectrumToPeptides.
+     * The parsed peptides map (key: evidence ID; value: the {@link Peptide} object).
      */
-    private final Map<Integer, List<Peptide>> spectrumToPeptides = new HashMap<>();
+    private final Map<Integer, Peptide> peptides = new HashMap<>();
     /**
-     * Peptides and associated protein group IDs.
+     * This map holds the links between spectrum and associated peptides (key: msms ID; value: set of evidence IDs).
      */
-    private final Map<Peptide, List<Integer>> peptideToProteins = new HashMap<>();
+    private final Map<Integer, Set<Integer>> spectrumToPeptides = new HashMap<>();
     /**
-     * The list of matching between runs (MBR) peptides.
+     * This map holds the links between a peptide and associated proteins (key: evidence ID; value: set of protein
+     * groups IDs).
      */
-    private final List<Peptide> mbrPeptides = new ArrayList();
+    private final Map<Integer, Set<Integer>> peptideToProteinGroups = new HashMap<>();
+    /**
+     * The map of matching between runs and (MBR) peptides (key: RAW file name; value: the set of evidence IDs).
+     */
+    private final Map<String, Set<Integer>> runToMbrPeptides = new HashMap<>();
     /**
      * The MaxQuant to UNIMOD modification mappings.
      */
@@ -80,23 +85,30 @@ public class MaxQuantEvidenceParser {
         evidenceHeaders = new EvidenceHeaders();
     }
 
-    public Map<Integer, List<Peptide>> getSpectrumToPeptides() {
+    public Map<Integer, Peptide> getPeptides() {
+        return peptides;
+    }
+
+    public Map<Integer, Set<Integer>> getSpectrumToPeptides() {
         return spectrumToPeptides;
     }
 
-    public Map<Peptide, List<Integer>> getPeptideToProteins() {
-        return peptideToProteins;
+    public Map<Integer, Set<Integer>> getPeptideToProteinGroups() {
+        return peptideToProteinGroups;
+    }
+
+    public Map<String, Set<Integer>> getRunToMbrPeptides() {
+        return runToMbrPeptides;
     }
 
     /**
      * This method parses an evidence file.
      *
      * @param evidenceFilePath       the MaxQuant evidence file path
-     * @param omittedProteinGroupIds removed protein group IDs.
-     * @throws IOException      in case of an I/O related problem
-     * @throws MappingException in case of a mapping problem
+     * @param omittedProteinGroupIds removed protein group IDs
+     * @throws IOException in case of an I/O related problem
      */
-    public void parse(Path evidenceFilePath, List<String> omittedProteinGroupIds) throws IOException, MappingException {
+    public void parse(Path evidenceFilePath, Set<Integer> omittedProteinGroupIds) throws IOException {
         TabularFileIterator evidenceIterator = new TabularFileIterator(evidenceFilePath, evidenceHeaders.getMandatoryHeaders());
 
         Map<String, String> evidenceEntry;
@@ -107,27 +119,40 @@ public class MaxQuantEvidenceParser {
 
             //check for spectrumToPeptides coming from omitted protein groups
             //if one of the protein groups is not in the omitted list, include the peptide
-            boolean omitPeptide = true;
-            for (String proteinGroupId : proteinGroupIds) {
-                if (!omittedProteinGroupIds.contains(proteinGroupId)) {
-                    omitPeptide = false;
-                    break;
-                }
-            }
-            if (!omitPeptide) {
+            Set<Integer> nonOmittedProteinIds = Arrays.stream(proteinGroupIds)
+                    .map(Integer::valueOf)
+                    .filter(proteinGroupsId -> !omittedProteinGroupIds.contains(proteinGroupsId))
+                    .collect(Collectors.toSet());
+
+            if (!nonOmittedProteinIds.isEmpty()) {
                 String[] msmsIds = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MS_MS_IDS)).split(MS_MS_IDS_DELIMITER);
                 for (String msmsIdString : msmsIds) {
-                    Peptide peptide = createPeptide(evidenceEntry);
+                    //get the evidence ID
+                    Integer evidenceId = Integer.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.ID)));
+                    //create the peptide
+                    createPeptide(evidenceId, evidenceEntry, nonOmittedProteinIds);
+                    //check if the peptide has a spectrum (PSM)
                     if (!msmsIdString.isEmpty()) {
                         Integer msmsId = Integer.parseInt(msmsIdString);
-
                         if (!spectrumToPeptides.containsKey(msmsId)) {
-                            spectrumToPeptides.put(msmsId, Arrays.asList(new Peptide[]{peptide}));
+                            Set<Integer> evidenceIds = new HashSet<>();
+                            evidenceIds.add(evidenceId);
+                            spectrumToPeptides.put(msmsId, evidenceIds);
                         } else {
-                            spectrumToPeptides.get(msmsId).add(peptide);
+                            spectrumToPeptides.get(msmsId).add(evidenceId);
                         }
-                    } else {
-                        mbrPeptides.add(peptide);
+
+                    }
+                    //otherwise it's a matching between runs (MBR) peptide
+                    else {
+                        String rawFile = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.RAW_FILE));
+                        if (!runToMbrPeptides.containsKey(rawFile)) {
+                            Set<Integer> evidenceIds = new HashSet<>();
+                            evidenceIds.add(evidenceId);
+                            runToMbrPeptides.put(rawFile, evidenceIds);
+                        } else {
+                            runToMbrPeptides.get(rawFile).add(evidenceId);
+                        }
                     }
                 }
             }
@@ -137,10 +162,11 @@ public class MaxQuantEvidenceParser {
     /**
      * Create a Peptide from a row entry in the evidence file.
      *
-     * @param evidenceEntry key-value pairs from an evidence entry
-     * @return the mapped Peptide object
+     * @param evidenceId                 the evidence ID
+     * @param evidenceEntry              key-value pairs from an evidence entry
+     * @param nonOmittedProteinGroupsIds the set of non omitted protein group IDs for the given evidence entry
      */
-    public Peptide createPeptide(Map<String, String> evidenceEntry) {
+    private void createPeptide(Integer evidenceId, Map<String, String> evidenceEntry, Set<Integer> nonOmittedProteinGroupsIds) {
         Peptide peptide = new Peptide();
 
         if (!evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.SCORE)).equalsIgnoreCase(NAN)) {
@@ -158,26 +184,18 @@ public class MaxQuantEvidenceParser {
         peptide.setTheoreticalMass(Double.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS))));
         peptide.getPeptideHasModifications().addAll(createModifications(peptide, evidenceEntry));
 
-        List<Integer> proteinGroups = new ArrayList<>();
-        if (evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.PROTEIN_GROUP_IDS)) != null) {
-            for (String id : evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.PROTEIN_GROUP_IDS)).split(PROTEIN_GROUP_ID_DELIMITER)) {
-                proteinGroups.add(Integer.parseInt(id));
-            }
-        }
-
-        //add to the peptideToProteins map
-        peptideToProteins.put(peptide, proteinGroups);
-
-        return peptide;
+        //add to the peptideToProteinGroups map
+        peptideToProteinGroups.put(evidenceId, nonOmittedProteinGroupsIds);
+        peptides.put(evidenceId, peptide);
     }
 
     /**
      * Clear run data from parser.
      */
     public void clear() {
-        peptideToProteins.clear();
+        peptideToProteinGroups.clear();
         spectrumToPeptides.clear();
-        mbrPeptides.clear();
+        runToMbrPeptides.clear();
     }
 
     /**
@@ -213,12 +231,12 @@ public class MaxQuantEvidenceParser {
                 //additional probabilities entry.
                 //@// TODO: 29/09/16 ask for a good value for the terminal modification score
                 if (evidenceModification.isNTerminal()) {
-                    PeptideHasModification peptideHasModification = createPeptideHasModification(0, 100.0, null, peptide);
+                    PeptideHasModification peptideHasModification = createPeptideHasModification(0, null, null, peptide);
 
                     peptideHasModification.setModification(modification);
                     peptideHasModifications.add(peptideHasModification);
                 } else if (evidenceModification.isCTerminal()) {
-                    PeptideHasModification peptideHasModification = createPeptideHasModification(values.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE)).length() - 1, 100.0, null, peptide);
+                    PeptideHasModification peptideHasModification = createPeptideHasModification(values.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE)).length() - 1, null, null, peptide);
 
                     peptideHasModification.setModification(modification);
                     peptideHasModifications.add(peptideHasModification);
@@ -247,10 +265,9 @@ public class MaxQuantEvidenceParser {
                             probabilityOverhead += probabilities.end() - probabilities.start();
                         }
 
-                        /**
-                         * Check the modification occurrences;
-                         * if the number of scores is higher than the occurrences rate, take the one with the highest score.
-                         */
+
+                        //Check the modification occurrences;
+                        //if the number of scores is higher than the occurrences rate, take the one with the highest score.
                         if (evidenceModification.getOccurrences() != scoresAndLocations.size()) {
                             //sort the scores in descending order
                             scoresAndLocations.sort(((o1, o2) -> ((Double) o2[0]).compareTo((Double) o1[0])));
@@ -356,14 +373,6 @@ class EvidenceModification {
 
     String getFullModificationName() {
         return fullModificationName;
-    }
-
-    String getAffectedAminoAcid() {
-        return affectedAminoAcid;
-    }
-
-    String getModificationName() {
-        return modificationName;
     }
 
     int getOccurrences() {

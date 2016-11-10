@@ -34,8 +34,8 @@ public class QuantificationMethodCvParam extends CvParam{
     public QuantificationMethodCvParam() {
     }
 
-    public QuantificationMethodCvParam(final String label, final String accession, final String name, final String value) {
-        super(label, accession, name, value);
+    public QuantificationMethodCvParam(final String label, final String accession, final String name) {
+        super(label, accession, name);
     }
 
     public List<QuantificationMethodHasReagent> getQuantificationMethodHasReagents() {

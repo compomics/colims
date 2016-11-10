@@ -18,13 +18,6 @@ public interface ProteinService extends GenericService<Protein, Long> {
     Protein findBySequence(String sequence);
 
     /**
-     * Fetch the protein accession.
-     *
-     * @param protein the Protein instance
-     */
-//    void fetchAccessions(Protein protein);
-
-    /**
      * Get the Colims protein by accession and sequence. This method
      * looks for the protein in the cache first before querying the database.
      *

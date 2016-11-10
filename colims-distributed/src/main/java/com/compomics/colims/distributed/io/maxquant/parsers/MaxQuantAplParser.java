@@ -4,6 +4,7 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
+import org.apache.axis.utils.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,9 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
@@ -24,25 +27,26 @@ import java.util.zip.GZIPOutputStream;
 @Component("maxQuantAplParser")
 public class MaxQuantAplParser {
 
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantAplParser.class);
-
-    private static final String APL_SPECTUM_START = "peaklist start";
-    private static final String APL_SPECTUM_END = "peaklist end";
+    private static final String APL_SPECTRUM_START = "peaklist start";
+    private static final String APL_SPECTRUM_END = "peaklist end";
     private static final String APL_HEADER_DELIMITER = "=";
     private static final String APL_MZ = "mz";
     private static final String APL_HEADER = "header";
     private static final String APL_CHARGE = "charge";
     private static final String APL_FRAGMENTATION = "fragmentation";
+    private static final String APL_PRECURSOR = " Precursor";
+    private static final String APL_INDEX = "Index: ";
     private static final String MGF_SPECTRUM_START = "BEGIN IONS";
     private static final String MGF_SPECTRUM_END = "END IONS";
     private static final String MGF_MZ = "PEPMASS=";
     private static final String MGF_RETENTION_TIME = "RTINSECONDS=";
     private static final String MGF_CHARGE = "CHARGE=";
+    private static final String MGF_CHARGE_PLUS = "+";
     private static final String MGF_TITLE = "TITLE=";
-
+    private static final String MGF_DELIMITER = " ";
+    private static final String ENCODING = "UTF-8";
+    private static final String HEADER_RAW_FILE = "RawFile: ";
+    private static final String HEADER_INDEX = " Index: ";
 
     /**
      * Parse the give MaqQuant .apl spectrum file and update the spectra map.
@@ -54,11 +58,11 @@ public class MaxQuantAplParser {
     public void parseAplFile(Path aplFilePath, MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
         try (BufferedReader bufferedReader = Files.newBufferedReader(aplFilePath)) {
             String line;
-            Map<String, String> headers = new HashMap<>();
 
+            Map<String, String> headers = new HashMap<>();
             while ((line = bufferedReader.readLine()) != null) {
                 //look for a spectrum entry
-                if (line.startsWith(APL_SPECTUM_START)) {
+                if (line.startsWith(APL_SPECTRUM_START)) {
                     //go to the next line
                     line = bufferedReader.readLine();
                     //parse spectrum header part
@@ -68,26 +72,34 @@ public class MaxQuantAplParser {
                         line = bufferedReader.readLine();
                     }
                     //" Precursor: 0 _multi_" is removed before looking up the key in the spectra map
-                    String header = org.apache.commons.lang3.StringUtils.substringBefore(headers.get(APL_HEADER), " Precursor");
+                    String header = org.apache.commons.lang3.StringUtils.substringBefore(headers.get(APL_HEADER), APL_PRECURSOR);
                     Spectrum spectrum = null;
                     //check if the spectrum was identified and therefore can be found in the spectra map
-                    if (maxQuantSpectra.getAplKeyToSpectrums().containsKey(header)) {
-                        spectrum = maxQuantSpectra.getAplKeyToSpectrums().get(header);
-                    } else if (spectrum == null && includeUnidentifiedSpectra && !maxQuantSpectra.getOmmittedSpectrumKeys().contains(header)) {
+                    if (maxQuantSpectra.getSpectra().containsKey(header)) {
+                        spectrum = maxQuantSpectra.getSpectra().get(header);
+                    } else if (spectrum == null && includeUnidentifiedSpectra && !maxQuantSpectra.getOmittedSpectrumKeys().contains(header)) {
                         //make new Spectrum instance and add it to the unidentified ones
                         spectrum = new Spectrum();
                         spectrum.setAccession(header);
                         spectrum.setMzRatio(Double.valueOf(headers.get(APL_MZ)));
                         spectrum.setFragmentationType(FragmentationType.valueOf(headers.get(APL_FRAGMENTATION)));
                         spectrum.setCharge(Integer.valueOf(headers.get(APL_CHARGE)));
-                        spectrum.setScanNumber(org.apache.commons.lang3.StringUtils.substringAfter(header, "Index: "));
-                        maxQuantSpectra.getUnidentifiedSpectra().add(spectrum);
+                        spectrum.setScanNumber(org.apache.commons.lang3.StringUtils.substringAfter(header, APL_INDEX));
+
+                        //get the RAW file name from the header
+                        String rawFileName = org.apache.commons.lang3.StringUtils.substringBetween(header, HEADER_RAW_FILE, HEADER_INDEX);
+                        if (!maxQuantSpectra.getUnidentifiedSpectra().containsKey(rawFileName)) {
+                            List<Spectrum> spectra = new ArrayList<>();
+                            spectra.add(spectrum);
+                            maxQuantSpectra.getUnidentifiedSpectra().put(rawFileName, spectra);
+                        } else {
+                            maxQuantSpectra.getUnidentifiedSpectra().get(rawFileName).add(spectrum);
+                        }
                     }
 
-                    //parse the spectrum
                     if (spectrum != null) {
                         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                             OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
+                             OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName(ENCODING).newEncoder());
                              BufferedWriter bw = new BufferedWriter(osw);
                              ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
                              GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
@@ -103,10 +115,10 @@ public class MaxQuantAplParser {
                             bw.newLine();
                             bw.write(MGF_MZ + headers.get(APL_MZ));
                             bw.newLine();
-                            bw.write(MGF_CHARGE + headers.get(APL_CHARGE) + "+");
-                            while (!line.startsWith(APL_SPECTUM_END)) {
+                            bw.write(MGF_CHARGE + headers.get(APL_CHARGE) + MGF_CHARGE_PLUS);
+                            while (!line.startsWith(APL_SPECTRUM_END)) {
                                 bw.newLine();
-                                bw.write(line.replace(MaxQuantConstants.PARAM_TAB_DELIMITER.value(), " "));
+                                bw.write(line.replace(MaxQuantConstants.PARAM_TAB_DELIMITER.value(), MGF_DELIMITER));
                                 line = bufferedReader.readLine();
                             }
                             bw.newLine();

@@ -33,7 +33,6 @@ public class MaxQuantAndromedaParser {
     private static final Logger LOGGER = Logger.getLogger(MaxQuantAndromedaParser.class);
 
     private static final String ALL_SPECTRA = "allSpectra.";
-    private static final String ISO = ".iso";
     private static final String ANALYZER_TYPE_DELIMITER = "\\.";
 
     /**
@@ -84,6 +83,13 @@ public class MaxQuantAndromedaParser {
      */
     public Map<Path, Path> getAplFilePaths() {
         return aplFilePaths;
+    }
+
+    /**
+     * Clear run data from parser.
+     */
+    public void clear() {
+        aplFilePaths.clear();
     }
 
     /**
@@ -169,10 +175,4 @@ public class MaxQuantAndromedaParser {
         }
     }
 
-    /**
-     * Clear run data from parser.
-     */
-    public void clear() {
-        aplFilePaths.clear();
-    }
 }

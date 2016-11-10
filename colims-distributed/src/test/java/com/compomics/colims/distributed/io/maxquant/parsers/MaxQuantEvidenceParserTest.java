@@ -1,6 +1,9 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import org.junit.Ignore;
+import com.compomics.colims.model.Modification;
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Iain on 19/05/2015.
@@ -35,86 +35,73 @@ public class MaxQuantEvidenceParserTest {
     @Test
     public void testParse() throws Exception {
         maxQuantEvidenceParser.clear();
-        List<String> ommittedProteinIds = new ArrayList<>();
-        ommittedProteinIds.add("0");
-        ommittedProteinIds.add("1");
-//        maxQuantEvidenceParser.parse(MaxQuantTestSuite.evidenceFile, ommittedProteinIds);
-        maxQuantEvidenceParser.parse(evidenceFile, ommittedProteinIds);
 
-        assertThat(maxQuantEvidenceParser.getSpectrumToPeptides().size(), not(0));
+        Set<Integer> omittedProteinIds = new HashSet<>();
+        omittedProteinIds.add(0);
+        omittedProteinIds.add(1);
+
+        maxQuantEvidenceParser.parse(evidenceFile, omittedProteinIds);
+
+        //check the number of MBR identifications
+        Assert.assertEquals(9, maxQuantEvidenceParser.getRunToMbrPeptides().size());
+
+        //check the size of the spectrumToPeptides map
+        Assert.assertEquals(13, maxQuantEvidenceParser.getSpectrumToPeptides().size());
+
+        //check the size of the peptideToProteins map
+        Assert.assertEquals(22, maxQuantEvidenceParser.getPeptideToProteinGroups().size());
+
+        //check the parsed modifications
+        //check a peptide with a terminal modification
+        Peptide peptide = maxQuantEvidenceParser.getPeptides().get(737);
+        Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
+        PeptideHasModification peptideHasModification = peptide.getPeptideHasModifications().get(0);
+        Assert.assertEquals(0, peptideHasModification.getLocation().intValue());
+        Assert.assertNull(peptideHasModification.getProbabilityScore());
+        Assert.assertNull(peptideHasModification.getDeltaScore());
+        Modification modification = peptide.getPeptideHasModifications().get(0).getModification();
+        Assert.assertNotNull(modification);
+        Assert.assertEquals("UNIMOD:1", modification.getAccession());
+
+        //check a peptide with a non-terminal modification
+        peptide = maxQuantEvidenceParser.getPeptides().get(1154);
+        Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
+        peptideHasModification = peptide.getPeptideHasModifications().get(0);
+        Assert.assertEquals(7, peptideHasModification.getLocation().intValue());
+        Assert.assertEquals(0.999, peptideHasModification.getProbabilityScore(), 0.001);
+        Assert.assertEquals(29.93, peptideHasModification.getDeltaScore(), 0.001);
+        modification = peptideHasModification.getModification();
+        Assert.assertNotNull(modification);
+        Assert.assertEquals("UNIMOD:35", modification.getAccession());
+
+        //check a peptide with 2 modifications
+        peptide = maxQuantEvidenceParser.getPeptides().get(6239);
+        Assert.assertEquals(2, peptide.getPeptideHasModifications().size());
+        peptideHasModification = peptide.getPeptideHasModifications().get(0);
+        Assert.assertEquals(5, peptideHasModification.getLocation().intValue());
+        Assert.assertEquals(1.0, peptideHasModification.getProbabilityScore(), 0.001);
+        Assert.assertEquals(43.07, peptideHasModification.getDeltaScore(), 0.001);
+        modification = peptideHasModification.getModification();
+        Assert.assertNotNull(modification);
+        Assert.assertEquals("UNIMOD:35", modification.getAccession());
+        peptideHasModification = peptide.getPeptideHasModifications().get(1);
+        Assert.assertEquals(6, peptideHasModification.getLocation().intValue());
+        Assert.assertEquals(1.0, peptideHasModification.getProbabilityScore(), 0.001);
+        Assert.assertEquals(43.07, peptideHasModification.getDeltaScore(), 0.001);
+        modification = peptideHasModification.getModification();
+        Assert.assertNotNull(modification);
+        Assert.assertEquals("UNIMOD:21", modification.getAccession());
+
+        //check a MBR peptide, modification scores should be empty
+        peptide = maxQuantEvidenceParser.getPeptides().get(2619);
+        Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
+        peptideHasModification = peptide.getPeptideHasModifications().get(0);
+        Assert.assertEquals(3, peptideHasModification.getLocation().intValue());
+        Assert.assertNull(peptideHasModification.getProbabilityScore());
+        Assert.assertNull(peptideHasModification.getDeltaScore());
+        modification = peptideHasModification.getModification();
+        Assert.assertNotNull(modification);
+        Assert.assertEquals("UNIMOD:21", modification.getAccession());
     }
 
-    @Ignore
-    @Test
-    public void testCreatePeptide() throws Exception {
-//        maxQuantEvidenceParser.clear();
-//
-//        Map<String, String> values = new HashMap<>();
-//
-//        values.put(EvidenceHeader.SCORE, "106.2");
-//        values.put(EvidenceHeader.CHARGE, "2");
-//        values.put(EvidenceHeader.SEQUENCE, "TAVCDIPPR");
-//        values.put(EvidenceHeader.MASS, "1027.51206");
-//        values.put(EvidenceHeader.PROTEINS, "tr|B2RSN3|B2RSN3_MOUSE;sp|Q9CWF2|TBB2B_MOUSE;sp|Q7TMM9|TBB2A_MOUSE;tr|Q99J49|Q99J49_MOUSE;tr|Q62363|Q62363_MOUSE;sp|P68372|TBB4B_MOUSE;tr|Q9DCR1|Q9DCR1_MOUSE;tr|Q80ZV2|Q80ZV2_MOUSE;sp|Q9D6F9|TBB4A_MOUSE;sp|P99024|TBB5_MOUSE");
-//        values.put(EvidenceHeader.PROTEIN_GROUP_IDS, "218;407;234;295");
-//        values.put(EvidenceHeader.MS_MS_IDS, "982;983;984");
-//        values.put(EvidenceHeader.PEP, "0.9");
-//        values.put(EvidenceHeader.MODIFICATIONS, "Unmodified");
-//
-//        Peptide peptide = maxQuantEvidenceParser.createPeptide(values);
-//
-//        // check assumption details
-//        assertThat(peptide.getPsmProbability(), is(106.2));
-//        assertThat(peptide.getPsmPostErrorProbability(), is(0.9));
-//        assertThat(peptide.getTheoreticalMass(), is(1027.51206));
-//        assertThat(peptide.getCharge(), is(2));
-//        assertThat(peptide.getSequence(), is("TAVCDIPPR"));
-    }
-
-    @Ignore
-    @Test
-    public void testCreateSingleModification() {
-//        maxQuantEvidenceParser.clear();
-//
-//        Map<String, String> values = new HashMap<>();
-//
-//        values.put(EvidenceHeader.SCORE, "106.2");
-//        values.put(EvidenceHeader.CHARGE, "2");
-//        values.put(EvidenceHeader.SEQUENCE, "TAVCDIPPR");
-//        values.put(EvidenceHeader.MASS, "1027.51206");
-//        values.put(EvidenceHeader.MODIFICATIONS, "Acetyl (Protein N-term)");
-//        values.put(EvidenceHeader.ACETYL_PROTEIN_N_TERM, "1");
-//
-//        Peptide peptide = maxQuantEvidenceParser.createPeptide(values);
-//
-//        assertThat(peptide.getPeptideHasModifications().size(), not(0));
-//        assertThat(peptide.getPeptideHasModifications().get(0).getProbabilityScore(), is(100.0));
-//        assertThat(peptide.getPeptideHasModifications().get(0).getLocation(), is(0));
-    }
-
-    @Ignore
-    @Test
-    public void testCreateMultipleModifications() {
-//        maxQuantEvidenceParser.clear();
-//
-//        Map<String, String> values = new HashMap<>();
-//
-//        values.put(EvidenceHeader.SCORE, "106.2");
-//        values.put(EvidenceHeader.CHARGE, "2");
-//        values.put(EvidenceHeader.SEQUENCE, "TAVCDIPPR");
-//        values.put(EvidenceHeader.MASS, "1027.51206");
-//        values.put(EvidenceHeader.MODIFICATIONS, "3 Oxidation (M)");
-//        values.put(EvidenceHeader.OXIDATION_M_PROBABILITIES, "GFM(0.852)VTRSYTVGVM(0.716)M(0.716)M(0.716)HR");
-//        values.put(EvidenceHeader.OXIDATION_M_SCORE_DIFFS, "GFM(2.82)VTRSYTVGVM(0)M(0)M(0)HR");
-//        values.put(EvidenceHeader.OXIDATION_M, "3");
-//
-//        Peptide peptide = maxQuantEvidenceParser.createPeptide(values);
-//
-//        assertThat(peptide.getPeptideHasModifications().size(), not(0));
-//        assertThat(peptide.getPeptideHasModifications().get(0).getDeltaScore(), is(2.82));
-//        assertThat(peptide.getPeptideHasModifications().get(0).getLocation(), is(3));
-//        assertThat(peptide.getPeptideHasModifications().get(1).getLocation(), is(13));
-//        assertThat(peptide.getPeptideHasModifications().get(2).getLocation(), is(14));
-//        assertThat(peptide.getPeptideHasModifications().get(3).getLocation(), is(15));
-    }
 }

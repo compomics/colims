@@ -58,5 +58,17 @@
     "values": [
       "Modified sequence"
     ]
+  },
+  "RAW_FILE": {
+    "mandatory": true,
+    "values": [
+      "Raw file"
+    ]
+  },
+  "ID": {
+    "mandatory": true,
+    "values": [
+      "id"
+    ]
   }
 }

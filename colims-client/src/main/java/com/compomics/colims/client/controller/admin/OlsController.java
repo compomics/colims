@@ -279,7 +279,7 @@ public class OlsController implements Controllable {
             clear();
 
             //dereference callback instance
-            ontologyTerm = null;
+            ontologyTerm.setIri(OntologyTerm.DEREFERENCE_IRI);
 
             olsDialog.dispose();
         });
@@ -358,7 +358,6 @@ public class OlsController implements Controllable {
         //clear search results
         searchResults.clear();
         olsDialog.getSearchResultPageLabel().setText("");
-        ontologyTerm = null;
 
         //disable paged result table buttons
         olsDialog.getFirstResultPageButton().setEnabled(false);

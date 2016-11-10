@@ -7,6 +7,7 @@ package com.compomics.colims.core.ontology.ols;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 /**
@@ -16,6 +17,11 @@ import java.util.List;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OntologyTerm {
+
+    /**
+     * Dummy iri for callback dereference.
+     */
+    public static final String DEREFERENCE_IRI = "http://null";
 
     private String iri;
     private String label;
@@ -37,6 +43,10 @@ public class OntologyTerm {
 
     public String getIri() {
         return iri;
+    }
+
+    public void setIri(String iri) {
+        this.iri = iri;
     }
 
     public String getLabel() {

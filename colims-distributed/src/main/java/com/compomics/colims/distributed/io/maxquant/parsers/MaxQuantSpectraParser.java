@@ -5,7 +5,6 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.headers.MsmsHeader;
 import com.compomics.colims.distributed.io.maxquant.headers.MsmsHeaders;
 import com.compomics.colims.model.Spectrum;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,11 +28,6 @@ import java.util.*;
 public class MaxQuantSpectraParser {
 
     /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantSpectraParser.class);
-
-    /**
      * The start of the spectrum header in the apl file.
      */
     private static final String KEY_START = "RawFile: ";
@@ -46,7 +40,7 @@ public class MaxQuantSpectraParser {
     /**
      * MaxQuantSpectra object to store identified and unidentified spectra.
      */
-    private final MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
+    private MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
     /**
      * The msms.txt headers.
      */
@@ -68,6 +62,14 @@ public class MaxQuantSpectraParser {
     }
 
     /**
+     * Clear run data from parser.
+     */
+    public void clear() {
+        maxQuantSpectra = new MaxQuantSpectra();
+        maxQuantAndromedaParser.clear();
+    }
+
+    /**
      * Get maxQuantSpectra.
      *
      * @return maxQuantSpectra
@@ -82,10 +84,10 @@ public class MaxQuantSpectraParser {
      *
      * @param maxQuantDirectory          the MaxQuant parent directory
      * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
-     * @param removedProteinGroupIds     removed protein group IDs.
+     * @param omittedProteinGroupIds     removed protein group IDs
      * @throws IOException in case of an Input/Output related problem
      */
-    public void parse(Path maxQuantDirectory, boolean includeUnidentifiedSpectra, List<String> removedProteinGroupIds) throws IOException {
+    public void parse(Path maxQuantDirectory, boolean includeUnidentifiedSpectra, Set<Integer> omittedProteinGroupIds) throws IOException {
         Path andromedaDirectory = Paths.get(maxQuantDirectory.toString() + File.separator + MaxQuantConstants.ANDROMEDA_DIRECTORY.value());
         if (!Files.exists(andromedaDirectory)) {
             throw new FileNotFoundException("The andromeda directory " + andromedaDirectory.toString() + " was not found.");
@@ -99,7 +101,7 @@ public class MaxQuantSpectraParser {
         maxQuantAndromedaParser.parseParameters(andromedaDirectory);
 
         //parse the msms.txt file
-        parse(msmsFile, maxQuantSpectra, removedProteinGroupIds);
+        parse(msmsFile, maxQuantSpectra, omittedProteinGroupIds);
 
         //parse the apl files containing the spectrum peak lists
         maxQuantAndromedaParser.parseSpectra(maxQuantSpectra, includeUnidentifiedSpectra);
@@ -109,41 +111,51 @@ public class MaxQuantSpectraParser {
      * Parse the msms.txt file.
      *
      * @param msmsFile               the MaxQuant msms.txt file path
-     * @param omittedProteinGroupIds the list of omitted protein group IDs
+     * @param omittedProteinGroupIds the set of omitted protein group IDs
      */
-    private void parse(Path msmsFile, MaxQuantSpectra maxQuantSpectra, List<String> omittedProteinGroupIds) throws IOException {
-        FixedTabularFileIterator valuesIterator = new FixedTabularFileIterator(msmsFile, msmsHeaders);
+    private void parse(Path msmsFile, MaxQuantSpectra maxQuantSpectra, Set<Integer> omittedProteinGroupIds) throws IOException {
+        FixedTabularFileIterator<MsmsHeader> valuesIterator = new FixedTabularFileIterator(msmsFile, msmsHeaders);
 
         Spectrum spectrum;
         EnumMap<MsmsHeader, String> msmsEntry;
         while (valuesIterator.hasNext()) {
             msmsEntry = valuesIterator.next();
-            String[] split = msmsEntry.get(MsmsHeader.PROTEIN_GROUP_IDS).split(PROTEIN_GROUP_ID_DELIMITER);
+            String[] proteinGroupsIds = msmsEntry.get(MsmsHeader.PROTEIN_GROUP_IDS).split(PROTEIN_GROUP_ID_DELIMITER);
 
-            boolean ommittedSpectrum = true;
-            for (String proteinGroupID : split) {
-                if (!omittedProteinGroupIds.contains(proteinGroupID)) {
-                    ommittedSpectrum = false;
-                }
-            }
+            Optional<Integer> anyNonOmittedProteinId = Arrays.stream(proteinGroupsIds).map(Integer::valueOf).filter(proteinGroupId -> !omittedProteinGroupIds.contains(proteinGroupId)).findAny();
+
             //concatenate the RAW file name and scan index
-            String aplKey = KEY_START + msmsEntry.get(MsmsHeader.RAW_FILE)
+            String rawFileName = msmsEntry.get(MsmsHeader.RAW_FILE);
+            String aplKey = KEY_START + rawFileName
                     + KEY_MIDDLE
                     + msmsEntry.get(MsmsHeader.SCAN_NUMBER);
-            if (!ommittedSpectrum) {
+            if (anyNonOmittedProteinId.isPresent()) {
                 //map the spectrum
-                if (!maxQuantSpectra.getAplKeyToSpectrums().containsKey(aplKey)) {
+                if (!maxQuantSpectra.getSpectra().containsKey(aplKey)) {
                     spectrum = mapMsmsSpectrum(aplKey, msmsEntry);
-                    //add to apl spectra map
-                    maxQuantSpectra.getAplKeyToSpectrums().putIfAbsent(aplKey, spectrum);
-                    //map the spectrumIDS map where ID numbers are from msms file
-                    maxQuantSpectra.getSpectrumToMsmsIds().put(spectrum, new ArrayList<>(Collections.singletonList(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)))));
+                    //add the apl key to it's corresponding run
+                    if (!maxQuantSpectra.getRunToSpectrums().containsKey(rawFileName)) {
+                        Set<String> aplKeys = new HashSet<>();
+                        aplKeys.add(aplKey);
+                        maxQuantSpectra.getRunToSpectrums().put(rawFileName, aplKeys);
+                    } else {
+                        maxQuantSpectra.getRunToSpectrums().get(rawFileName).add(aplKey);
+                    }
+                    //add the Spectrum instance to the aplKeyToSpectrums with the aplKey as a key
+                    maxQuantSpectra.getSpectra().put(aplKey, spectrum);
+                    //add the msms.txt ID to the aplKeyToMsmsIds map with the aplKey as a key
+                    Set<Integer> msmsIds = new HashSet<>();
+                    msmsIds.add(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)));
+                    Set<Integer> put = maxQuantSpectra.getSpectrumToPsms().put(aplKey, msmsIds);
+                    if (put != null) {
+                        throw new IllegalStateException("The same spectrum has already been added to the map.");
+                    }
                 } else {
-                    // get the spectrum from aplSpectra and find that spectrum instance from spectrumIDs and add id to the list
-                    maxQuantSpectra.getSpectrumToMsmsIds().get(maxQuantSpectra.getAplKeyToSpectrums().get(aplKey)).add(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)));
+                    //add the msms.txt ID to the list of already existing msms.txt IDs for the given apl key
+                    maxQuantSpectra.getSpectrumToPsms().get(aplKey).add(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)));
                 }
             } else {
-                maxQuantSpectra.getOmmittedSpectrumKeys().add(aplKey);
+                maxQuantSpectra.getOmittedSpectrumKeys().add(aplKey);
             }
         }
     }
@@ -181,11 +193,4 @@ public class MaxQuantSpectraParser {
         return spectrum;
     }
 
-    /**
-     * Clear run data from parser.
-     */
-    public void clear() {
-        maxQuantSpectra.clear();
-        maxQuantAndromedaParser.clear();
-    }
 }
