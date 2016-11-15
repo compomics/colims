@@ -279,7 +279,7 @@ public class TypedCvParamManagementController implements Controllable {
         OntologyTerm ontologyTerm = new OntologyTerm();
         olsController.showView(ontologyTerm, preselectedOntologyNamespaces);
 
-        if (!ontologyTerm.getIri().equals(OntologyTerm.DEREFERENCE_IRI)) {
+        if (!ontologyTerm.getIri().equals(OlsController.DEREFERENCE_IRI)) {
             //check whether a CV param has to be added or updated
             if (newCvParam) {
                 AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());

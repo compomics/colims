@@ -18,11 +18,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OntologyTerm {
 
-    /**
-     * Dummy iri for callback dereference.
-     */
-    public static final String DEREFERENCE_IRI = "http://null";
-
     private String iri;
     private String label;
     private List<String> description;

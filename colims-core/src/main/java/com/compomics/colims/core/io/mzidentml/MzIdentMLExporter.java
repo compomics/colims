@@ -98,6 +98,7 @@ public class MzIdentMLExporter {
         this.analyticalRun = analyticalRun;
 
         MzIdentMLMarshaller marshaller = new MzIdentMLMarshaller();
+
         return marshaller.marshal(base());
     }
 

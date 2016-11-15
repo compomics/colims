@@ -12,16 +12,19 @@ import com.compomics.colims.client.model.table.model.OlsSearchResultTableModel;
 import com.compomics.colims.client.model.table.model.OntologySearchResultTableModel;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.OlsDialog;
-import com.compomics.colims.core.ontology.ols.Ontology;
-import com.compomics.colims.core.ontology.ols.OntologyTerm;
-import com.compomics.colims.core.ontology.ols.OntologyTitleComparator;
-import com.compomics.colims.core.ontology.ols.OlsSearchResult;
-import com.compomics.colims.core.ontology.ols.SearchResultMetadata;
+import com.compomics.colims.core.ontology.ols.*;
 import com.compomics.colims.core.service.OlsService;
 import com.google.common.eventbus.EventBus;
-import java.awt.Cursor;
-import java.awt.Desktop;
-import java.awt.Point;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -32,15 +35,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import javax.swing.JOptionPane;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * @author Niels Hulstaert
@@ -62,6 +56,10 @@ public class OlsController implements Controllable {
      * The Ontology Lookup Service page retrieval size.
      */
     private static final int PAGE_SIZE = 10;
+    /**
+     * Dummy iri for callback dereference.
+     */
+    public static final String DEREFERENCE_IRI = "http://null";
 
     //model
     /**
@@ -279,7 +277,7 @@ public class OlsController implements Controllable {
             clear();
 
             //dereference callback instance
-            ontologyTerm.setIri(OntologyTerm.DEREFERENCE_IRI);
+            ontologyTerm.setIri(DEREFERENCE_IRI);
 
             olsDialog.dispose();
         });
@@ -296,8 +294,8 @@ public class OlsController implements Controllable {
     /**
      * Show the OLS dialog with an OntologyTerm passed as callback.
      *
-     * @param ontologyTerm the OntologyTerm callback instance. If the user has
-     * cancelled the OLS dialog, null is assigned to this instance.
+     * @param ontologyTerm the OntologyTerm callback instance. If the user has cancelled the OLS dialog, null is
+     *                     assigned to this instance.
      */
     public void showView(OntologyTerm ontologyTerm) {
         this.showView(ontologyTerm, new ArrayList<>());
@@ -307,10 +305,10 @@ public class OlsController implements Controllable {
      * Show the OLS dialog with an OntologyTerm instance passed as callback and
      * a list of preselected ontology namespaces.
      *
-     * @param ontologyTerm the OntologyTerm callback instance. If the user has
-     * cancelled the OLS dialog, null is assigned to this instance.
-     * @param viewPreselectedOntologyNamespaces the namespaces of the
-     * preselected view ontologies that will be preselected
+     * @param ontologyTerm                      the OntologyTerm callback instance. If the user has cancelled the OLS
+     *                                          dialog, null is assigned to this instance.
+     * @param viewPreselectedOntologyNamespaces the namespaces of the preselected view ontologies that will be
+     *                                          preselected
      */
     public void showView(OntologyTerm ontologyTerm, List<String> viewPreselectedOntologyNamespaces) {
         //keep a callback reference for the result of the search
@@ -470,7 +468,7 @@ public class OlsController implements Controllable {
      * Do a paged search request to the Ontology Lookup Service. Convenience
      * method to avoid duplicate error catching.
      *
-     * @param startIndex the result start index
+     * @param startIndex   the result start index
      * @param newPageIndex the index of the new page
      */
     private void doPagedSearch(int startIndex, int newPageIndex) {
