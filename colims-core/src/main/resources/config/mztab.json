@@ -103,5 +103,18 @@
         "name": "PeptideShaker"
       }
     }
+  },
+  "mass spectrometry vocabularies" : {
+      "name": {
+      "user_friendly_name": "mass spectrometry vocabularies"
+    },
+    "values": {
+      "unlabeled sample": {
+        "ontology": "MS",
+        "accession": "MS:1002038",
+        "name": "unlabeled sample"
+      } 
+    }
   }
+  
 }

@@ -86,6 +86,16 @@
         where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
         and spectrum.analyticalRun.id in (:analyticalRunId)
     </query>
+    
+    <query name="Peptide.getDistinctPeptideSequenceByProteinGroupIdAndAnalyticalRunIds">
+        select peptide.sequence
+        from Peptide as peptide
+        join peptide.peptideHasProteinGroups as peptideHasProteinGroup
+        join peptide.spectrum as spectrum
+        where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
+        and spectrum.analyticalRun.id in (:analyticalRunId)
+        group by peptide.sequence
+    </query>
 
     <query name="ProteinGroup.getProteinGroupsProjections">
         select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability

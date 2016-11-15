@@ -150,6 +150,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroupHasProtein.class);
 
         criteria.add(Restrictions.eq("proteinGroup.id", proteinGroupId));
+        criteria.add(Restrictions.eq("isMainGroupProtein", false));
 
         return criteria.list();
     }

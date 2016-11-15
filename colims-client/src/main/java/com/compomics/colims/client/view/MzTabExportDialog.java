@@ -8,7 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -92,10 +91,6 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         return descriptionTextArea;
     }
 
-    public JSpinner getNumberOfAssaysSpinner() {
-        return numberOfAssaysSpinner;
-    }
-
     public JButton getAddStudyVariableButton() {
         return addStudyVariableButton;
     }
@@ -124,22 +119,6 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         return studyVariableTree;
     }
 
-    public JButton getAddAssaysToRunsButton() {
-        return addAssaysToRunsButton;
-    }
-
-    public JTree getAnalyticalRunTree() {
-        return analyticalRunTree;
-    }
-
-    public JList<String> getAssaysToRunsList() {
-        return assaysToRunsList;
-    }
-
-    public JButton getRemoveAssaysToRunsButton() {
-        return removeAssaysToRunsButton;
-    }
-
     public JButton getExportDirectoryBrowseButton() {
         return exportDirectoryBrowseButton;
     }
@@ -154,6 +133,26 @@ public class MzTabExportDialog extends javax.swing.JDialog {
 
     public JFileChooser getExportDirectoryChooser() {
         return exportDirectoryChooser;
+    }
+
+    public JTree getAssayWithRunsTree() {
+        return AssayWithRunsTree;
+    }
+
+    public JButton getMatchReagentAndLabelButton() {
+        return matchReagentAndLabelButton;
+    }
+
+    public JList<String> getQuantificationLabelList() {
+        return quantificationLabelList;
+    }
+
+    public JTree getQuantificationReagentTree() {
+        return quantificationReagentTree;
+    }
+
+    public JButton getRemoveReagentAndLabelButton() {
+        return removeReagentAndLabelButton;
     }
 
     /**
@@ -186,9 +185,15 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         descriptionScrollPane = new javax.swing.JScrollPane();
         descriptionTextArea = new javax.swing.JTextArea();
         numberOfAssaysPanel = new javax.swing.JPanel();
-        assaysDescriptionLabel = new javax.swing.JLabel();
-        numberOfAssaysLabel = new javax.swing.JLabel();
-        numberOfAssaysSpinner = new javax.swing.JSpinner();
+        AssayWithRunsScrollPane = new javax.swing.JScrollPane();
+        AssayWithRunsTree = new javax.swing.JTree();
+        explanationLabel = new javax.swing.JLabel();
+        quantificationLabelScrollPane = new javax.swing.JScrollPane();
+        quantificationLabelList = new javax.swing.JList<>();
+        matchReagentAndLabelButton = new javax.swing.JButton();
+        removeReagentAndLabelButton = new javax.swing.JButton();
+        quantificationReagentScrollPane = new javax.swing.JScrollPane();
+        quantificationReagentTree = new javax.swing.JTree();
         separator = new javax.swing.JSeparator();
         secondPanel = new javax.swing.JPanel();
         studyVariablesPanel = new javax.swing.JPanel();
@@ -205,17 +210,6 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         assaysToSVButtonsPanel = new javax.swing.JPanel();
         addAssaysToSVButton = new javax.swing.JButton();
         removeAssaysToSVButton = new javax.swing.JButton();
-        thirdPanel = new javax.swing.JPanel();
-        analyticalRunsPanel = new javax.swing.JPanel();
-        analyticalRunTreeScrollPane = new javax.swing.JScrollPane();
-        analyticalRunTree = new javax.swing.JTree();
-        assaysToRunsPanel = new javax.swing.JPanel();
-        assaysToRunsListScrollPane = new javax.swing.JScrollPane();
-        assaysToRunsList = new javax.swing.JList<>();
-        assayToRunsButtonsParentPanel = new javax.swing.JPanel();
-        assaysToRunsButtonsPanel = new javax.swing.JPanel();
-        addAssaysToRunsButton = new javax.swing.JButton();
-        removeAssaysToRunsButton = new javax.swing.JButton();
         lastPanel = new javax.swing.JPanel();
         fileNameLabel = new javax.swing.JLabel();
         fileNameTextField = new javax.swing.JTextField();
@@ -230,7 +224,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("MzTab exort");
+        setTitle("MzTab export");
 
         parentPanel.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -248,6 +242,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         leftPanel.setLayout(new java.awt.GridBagLayout());
 
         typePanel.setOpaque(false);
+        typePanel.setPreferredSize(new java.awt.Dimension(248, 76));
 
         typeButtonGroup.add(identificationRadioButton);
         identificationRadioButton.setText("Identification");
@@ -290,6 +285,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         leftPanel.add(typePanel, gridBagConstraints);
 
         modePanel.setOpaque(false);
+        modePanel.setPreferredSize(new java.awt.Dimension(248, 76));
 
         modeButtonGroup.add(summaryRadioButton);
         summaryRadioButton.setText("Summary");
@@ -335,7 +331,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.weightx = 0.2;
         gridBagConstraints.weighty = 1.0;
         firstPanel.add(leftPanel, gridBagConstraints);
 
@@ -361,7 +357,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                     .addGroup(descriptionPanelLayout.createSequentialGroup()
                         .addComponent(descriptionLabel)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(descriptionScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 683, Short.MAX_VALUE))
+                    .addComponent(descriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
         descriptionPanelLayout.setVerticalGroup(
@@ -370,7 +366,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(descriptionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(descriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(descriptionScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -379,14 +375,35 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.weighty = 0.2;
         rightPanel.add(descriptionPanel, gridBagConstraints);
 
         numberOfAssaysPanel.setOpaque(false);
 
-        assaysDescriptionLabel.setText("<html>Assays: the application of a measurement about the sample<br>– producing values about small molecules, peptides or proteins.<br>One assay is typically mapped to one MS run in the case of label-free MS analysis<br>or multiple assays are mapped to one MS run for multiplexed techniques,<br>along with a description of the label or tag applied.</html>");
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        AssayWithRunsTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        AssayWithRunsTree.setToolTipText("");
+        AssayWithRunsScrollPane.setViewportView(AssayWithRunsTree);
 
-        numberOfAssaysLabel.setText("Number of assays*:");
+        explanationLabel.setText("Please match quantification reagents and quantification labels");
+
+        quantificationLabelScrollPane.setViewportView(quantificationLabelList);
+
+        matchReagentAndLabelButton.setText(">>");
+        matchReagentAndLabelButton.setToolTipText("add one or more assays to the selected study variable");
+        matchReagentAndLabelButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        matchReagentAndLabelButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        matchReagentAndLabelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
+        removeReagentAndLabelButton.setText("<<");
+        removeReagentAndLabelButton.setToolTipText("remove on or more assays from study variable(s)");
+        removeReagentAndLabelButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        removeReagentAndLabelButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        removeReagentAndLabelButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
+        treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        quantificationReagentTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        quantificationReagentScrollPane.setViewportView(quantificationReagentTree);
 
         javax.swing.GroupLayout numberOfAssaysPanelLayout = new javax.swing.GroupLayout(numberOfAssaysPanel);
         numberOfAssaysPanel.setLayout(numberOfAssaysPanelLayout);
@@ -394,24 +411,42 @@ public class MzTabExportDialog extends javax.swing.JDialog {
             numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(numberOfAssaysPanelLayout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(AssayWithRunsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(assaysDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(numberOfAssaysPanelLayout.createSequentialGroup()
-                        .addComponent(numberOfAssaysLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(numberOfAssaysSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(181, Short.MAX_VALUE))
+                        .addComponent(quantificationLabelScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(matchReagentAndLabelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(removeReagentAndLabelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(quantificationReagentScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, numberOfAssaysPanelLayout.createSequentialGroup()
+                        .addComponent(explanationLabel)
+                        .addGap(181, 181, 181))))
         );
         numberOfAssaysPanelLayout.setVerticalGroup(
             numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(numberOfAssaysPanelLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, numberOfAssaysPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(numberOfAssaysLabel)
-                    .addComponent(numberOfAssaysSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(assaysDescriptionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addComponent(explanationLabel)
+                .addGroup(numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(numberOfAssaysPanelLayout.createSequentialGroup()
+                        .addGap(76, 76, 76)
+                        .addComponent(matchReagentAndLabelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(removeReagentAndLabelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, numberOfAssaysPanelLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(quantificationReagentScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, numberOfAssaysPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(AssayWithRunsScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(quantificationLabelScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -419,14 +454,14 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.weighty = 0.8;
         rightPanel.add(numberOfAssaysPanel, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.weightx = 0.8;
         gridBagConstraints.weighty = 1.0;
         firstPanel.add(rightPanel, gridBagConstraints);
 
@@ -447,7 +482,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         studyVariablesPanel.setOpaque(false);
 
         studyVariableTree.setBorder(javax.swing.BorderFactory.createTitledBorder("study variables"));
-        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         studyVariableTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
         studyVariableTreeScrollPane.setViewportView(studyVariableTree);
 
@@ -483,13 +518,13 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                             .addComponent(studyVariableTextField))
                         .addContainerGap())
                     .addGroup(studyVariablesPanelLayout.createSequentialGroup()
-                        .addComponent(studyVariablesAddLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
+                        .addComponent(studyVariablesAddLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(119, 119, 119))))
         );
         studyVariablesPanelLayout.setVerticalGroup(
             studyVariablesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(studyVariablesPanelLayout.createSequentialGroup()
-                .addComponent(studyVariableTreeScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                .addComponent(studyVariableTreeScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(studyVariablesAddLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -561,7 +596,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         assaysToSVPanelLayout.setHorizontalGroup(
             assaysToSVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(assaysToSVPanelLayout.createSequentialGroup()
-                .addComponent(assaysToSVListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                .addComponent(assaysToSVListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(assaysToSVButtonsParentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -583,116 +618,6 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         secondPanel.add(assaysToSVPanel, gridBagConstraints);
 
         topPanel.add(secondPanel, "secondPanel");
-
-        thirdPanel.setName("thirdPanel"); // NOI18N
-        thirdPanel.setOpaque(false);
-        thirdPanel.setLayout(new java.awt.GridBagLayout());
-
-        analyticalRunsPanel.setOpaque(false);
-
-        analyticalRunTree.setBorder(javax.swing.BorderFactory.createTitledBorder("samples & analytical runs"));
-        treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
-        analyticalRunTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        analyticalRunTreeScrollPane.setViewportView(analyticalRunTree);
-
-        javax.swing.GroupLayout analyticalRunsPanelLayout = new javax.swing.GroupLayout(analyticalRunsPanel);
-        analyticalRunsPanel.setLayout(analyticalRunsPanelLayout);
-        analyticalRunsPanelLayout.setHorizontalGroup(
-            analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(analyticalRunTreeScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        analyticalRunsPanelLayout.setVerticalGroup(
-            analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
-                .addComponent(analyticalRunTreeScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.65;
-        gridBagConstraints.weighty = 1.0;
-        thirdPanel.add(analyticalRunsPanel, gridBagConstraints);
-
-        assaysToRunsPanel.setOpaque(false);
-
-        assaysToRunsList.setBorder(javax.swing.BorderFactory.createTitledBorder("assays"));
-        assaysToRunsListScrollPane.setViewportView(assaysToRunsList);
-
-        assayToRunsButtonsParentPanel.setOpaque(false);
-        assayToRunsButtonsParentPanel.setLayout(new java.awt.GridBagLayout());
-
-        assaysToRunsButtonsPanel.setOpaque(false);
-
-        addAssaysToRunsButton.setText(">>");
-        addAssaysToRunsButton.setToolTipText("add one or more assays to the selected study variable");
-        addAssaysToRunsButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        addAssaysToRunsButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        addAssaysToRunsButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        removeAssaysToRunsButton.setText("<<");
-        removeAssaysToRunsButton.setToolTipText("remove on or more assays from study variable(s)");
-        removeAssaysToRunsButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        removeAssaysToRunsButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        removeAssaysToRunsButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
-        javax.swing.GroupLayout assaysToRunsButtonsPanelLayout = new javax.swing.GroupLayout(assaysToRunsButtonsPanel);
-        assaysToRunsButtonsPanel.setLayout(assaysToRunsButtonsPanelLayout);
-        assaysToRunsButtonsPanelLayout.setHorizontalGroup(
-            assaysToRunsButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(assaysToRunsButtonsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(removeAssaysToRunsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, assaysToRunsButtonsPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(addAssaysToRunsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        assaysToRunsButtonsPanelLayout.setVerticalGroup(
-            assaysToRunsButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(assaysToRunsButtonsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(addAssaysToRunsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(removeAssaysToRunsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        assayToRunsButtonsParentPanel.add(assaysToRunsButtonsPanel, new java.awt.GridBagConstraints());
-
-        javax.swing.GroupLayout assaysToRunsPanelLayout = new javax.swing.GroupLayout(assaysToRunsPanel);
-        assaysToRunsPanel.setLayout(assaysToRunsPanelLayout);
-        assaysToRunsPanelLayout.setHorizontalGroup(
-            assaysToRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(assaysToRunsPanelLayout.createSequentialGroup()
-                .addComponent(assaysToRunsListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(assayToRunsButtonsParentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        assaysToRunsPanelLayout.setVerticalGroup(
-            assaysToRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(assaysToRunsListScrollPane)
-            .addGroup(assaysToRunsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(assayToRunsButtonsParentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 0.35;
-        gridBagConstraints.weighty = 1.0;
-        thirdPanel.add(assaysToRunsPanel, gridBagConstraints);
-
-        topPanel.add(thirdPanel, "thirdPanel");
 
         lastPanel.setName("lastPanel"); // NOI18N
         lastPanel.setOpaque(false);
@@ -720,7 +645,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                         .addComponent(exportDirectoryBrowseButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(exportDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(604, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         lastPanelLayout.setVerticalGroup(
             lastPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -735,7 +660,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                 .addGroup(lastPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(exportDirectoryBrowseButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(exportDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addContainerGap(191, Short.MAX_VALUE))
         );
 
         topPanel.add(lastPanel, "lastPanel");
@@ -773,7 +698,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
             bottomPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bottomPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
+                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -806,8 +731,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(bottomPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(topPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         parentPanelLayout.setVerticalGroup(
             parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -837,18 +761,10 @@ public class MzTabExportDialog extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton addAssaysToRunsButton;
+    private javax.swing.JScrollPane AssayWithRunsScrollPane;
+    private javax.swing.JTree AssayWithRunsTree;
     private javax.swing.JButton addAssaysToSVButton;
     private javax.swing.JButton addStudyVariableButton;
-    private javax.swing.JTree analyticalRunTree;
-    private javax.swing.JScrollPane analyticalRunTreeScrollPane;
-    private javax.swing.JPanel analyticalRunsPanel;
-    private javax.swing.JPanel assayToRunsButtonsParentPanel;
-    private javax.swing.JLabel assaysDescriptionLabel;
-    private javax.swing.JPanel assaysToRunsButtonsPanel;
-    private javax.swing.JList<String> assaysToRunsList;
-    private javax.swing.JScrollPane assaysToRunsListScrollPane;
-    private javax.swing.JPanel assaysToRunsPanel;
     private javax.swing.JPanel assaysToSVButtonsPanel;
     private javax.swing.JPanel assaysToSVButtonsParentPanel;
     private javax.swing.JList<String> assaysToSVList;
@@ -863,6 +779,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     private javax.swing.JPanel descriptionPanel;
     private javax.swing.JScrollPane descriptionScrollPane;
     private javax.swing.JTextArea descriptionTextArea;
+    private javax.swing.JLabel explanationLabel;
     private javax.swing.JButton exportDirectoryBrowseButton;
     private javax.swing.JLabel exportDirectoryLabel;
     private javax.swing.JTextField exportDirectoryTextField;
@@ -874,17 +791,20 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     private javax.swing.JLabel infoLabel;
     private javax.swing.JPanel lastPanel;
     private javax.swing.JPanel leftPanel;
+    private javax.swing.JButton matchReagentAndLabelButton;
     private javax.swing.ButtonGroup modeButtonGroup;
     private javax.swing.JPanel modePanel;
     private javax.swing.JLabel modeSelectionLabel;
-    private javax.swing.JLabel numberOfAssaysLabel;
     private javax.swing.JPanel numberOfAssaysPanel;
-    private javax.swing.JSpinner numberOfAssaysSpinner;
     private javax.swing.JPanel parentPanel;
     private javax.swing.JButton proceedButton;
+    private javax.swing.JList<String> quantificationLabelList;
+    private javax.swing.JScrollPane quantificationLabelScrollPane;
     private javax.swing.JRadioButton quantificationRadioButton;
-    private javax.swing.JButton removeAssaysToRunsButton;
+    private javax.swing.JScrollPane quantificationReagentScrollPane;
+    private javax.swing.JTree quantificationReagentTree;
     private javax.swing.JButton removeAssaysToSVButton;
+    private javax.swing.JButton removeReagentAndLabelButton;
     private javax.swing.JPanel rightPanel;
     private javax.swing.JPanel secondPanel;
     private javax.swing.JSeparator separator;
@@ -894,7 +814,6 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     private javax.swing.JLabel studyVariablesAddLabel;
     private javax.swing.JPanel studyVariablesPanel;
     private javax.swing.JRadioButton summaryRadioButton;
-    private javax.swing.JPanel thirdPanel;
     private javax.swing.JPanel topPanel;
     private javax.swing.ButtonGroup typeButtonGroup;
     private javax.swing.JPanel typePanel;
