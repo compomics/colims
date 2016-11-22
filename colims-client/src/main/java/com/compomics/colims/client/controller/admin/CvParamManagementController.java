@@ -41,6 +41,8 @@ public class CvParamManagementController implements Controllable {
      */
     private static final Logger LOGGER = Logger.getLogger(CvParamManagementController.class);
 
+    private static final String DIALOG_TITLE_SUFFIX = " ontology terms management";
+
     //model
     private CvParamTableModel2 cvParamTableModel2;
     /**
@@ -221,15 +223,19 @@ public class CvParamManagementController implements Controllable {
     /**
      * Update the CV param list and set the current cvParamType.
      *
+     * @param dialogTitle                   the dialog title
      * @param cvParamSubClass               the cvParamType of the CV params in the list
      * @param preselectedOntologyNamespaces the list of preselected ontology namespaces
      * @param cvParams                      the list of CV params
      */
-    public void updateDialog(final Class cvParamSubClass, final List<String> preselectedOntologyNamespaces, final List<CvParam> cvParams) {
+    public void updateDialog(final String dialogTitle, final Class cvParamSubClass, final List<String> preselectedOntologyNamespaces, final List<CvParam> cvParams) {
         this.cvParamSubClass = cvParamSubClass;
         this.preselectedOntologyNamespaces = preselectedOntologyNamespaces;
 
         cvParamTableModel2.setCvParams(cvParams);
+
+        //set the title
+        cvParamManagementDialog.setTitle(dialogTitle + DIALOG_TITLE_SUFFIX);
 
         //clear selection
         cvParamManagementDialog.getCvParamTable().getSelectionModel().clearSelection();

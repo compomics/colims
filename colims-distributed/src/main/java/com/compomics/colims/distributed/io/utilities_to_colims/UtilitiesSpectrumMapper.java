@@ -32,9 +32,9 @@ public class UtilitiesSpectrumMapper {
     /**
      * Map the utilities spectrum onto the Colims spectrum.
      *
-     * @param sourceSpectrum    the Utilities spectrum
+     * @param sourceSpectrum the Utilities spectrum
      * @param fragmentationType the fragmentation type of the spectrum
-     * @param targetSpectrum    the Colims spectrum
+     * @param targetSpectrum the Colims spectrum
      * @throws MappingException thrown in case of a mapping related problem
      */
     public void map(final MSnSpectrum sourceSpectrum, final FragmentationType fragmentationType, final Spectrum targetSpectrum) throws MappingException {
@@ -51,7 +51,9 @@ public class UtilitiesSpectrumMapper {
         //@todo is spectrum key the correct accession property?
         targetSpectrum.setAccession(sourceSpectrum.getSpectrumKey());
         targetSpectrum.setTitle(sourceSpectrum.getSpectrumTitle());
-        targetSpectrum.setScanNumber(sourceSpectrum.getScanNumber());
+        if (sourceSpectrum.getScanNumber() != null && !sourceSpectrum.getScanNumber().isEmpty()) {
+            targetSpectrum.setScanNumber(Long.valueOf(sourceSpectrum.getScanNumber()));
+        }
         targetSpectrum.setScanTime(sourceSpectrum.getScanStartTime());
         targetSpectrum.setMzRatio(precursor.getMz());
         targetSpectrum.setIntensity(precursor.getIntensity());
@@ -68,10 +70,10 @@ public class UtilitiesSpectrumMapper {
         spectrumFile.setSpectrum(targetSpectrum);
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
-             BufferedWriter bw = new BufferedWriter(osw);
-             ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
-             GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
+                OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName("UTF-8").newEncoder());
+                BufferedWriter bw = new BufferedWriter(osw);
+                ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
+                GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
 
             //write MSnSpectum to a byte array output stream
             sourceSpectrum.writeMgf(bw);

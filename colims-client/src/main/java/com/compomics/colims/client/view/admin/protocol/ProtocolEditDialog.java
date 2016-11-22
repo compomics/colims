@@ -80,7 +80,7 @@ public class ProtocolEditDialog extends javax.swing.JDialog {
         protocolStateInfoLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("protocol management");
+        setTitle("Protocol management");
         setPreferredSize(new java.awt.Dimension(720, 377));
 
         protocolEditPanel.setBackground(new java.awt.Color(255, 255, 255));

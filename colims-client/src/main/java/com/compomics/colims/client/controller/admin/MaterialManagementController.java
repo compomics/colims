@@ -197,7 +197,7 @@ public class MaterialManagementController implements Controllable {
             if (materialManagementDialog.getMaterialList().getSelectedIndex() != -1) {
                 updateMaterialEditDialog(getSelectedMaterial());
                 //show dialog
-                GuiUtils.centerDialogOnComponent(materialManagementDialog, materialEditDialog);
+                GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), materialEditDialog);
                 materialEditDialog.setVisible(true);
             } else {
                 eventBus.post(new MessageEvent("Material selection", "Please select a material to edit.", JOptionPane.INFORMATION_MESSAGE));
@@ -371,7 +371,7 @@ public class MaterialManagementController implements Controllable {
                 List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedcvParamType);
 
                 //update the CV param list
-                typedCvParamManagementController.updateDialog(selectedcvParamType, PRESELECTED_ONTOLOGY_NAMESPACES, cvParams);
+                typedCvParamManagementController.updateDialog("Material", selectedcvParamType, PRESELECTED_ONTOLOGY_NAMESPACES, cvParams);
 
                 typedCvParamManagementController.showView();
             } else {

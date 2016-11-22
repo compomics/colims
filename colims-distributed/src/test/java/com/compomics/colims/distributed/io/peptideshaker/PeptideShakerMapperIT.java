@@ -86,6 +86,8 @@ public class PeptideShakerMapperIT {
         fastaDb.setName(fastaFile.getName());
         fastaDb.setFileName(fastaFile.getName());
         fastaDb.setFilePath(fastaFile.getAbsolutePath());
+        fastaDb.setVersion("test_version");
+        fastaDb.setDatabaseName("UNIPROT");
 
         //save the fasta db. We don't have it as an insert statement in the import.sql file
         //as the file path might be different depending on the OS

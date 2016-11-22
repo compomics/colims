@@ -30,19 +30,28 @@ public class MaxQuantSpectraParserTest {
 
         MaxQuantSpectra maxQuantSpectra = maxQuantSpectraParser.getMaxQuantSpectra();
 
-        Assert.assertEquals(21, maxQuantSpectra.getSpectrumToPsms().size());
+        Assert.assertEquals(2864, maxQuantSpectra.getSpectrumToPsms().size());
         Assert.assertTrue(maxQuantSpectra.getUnidentifiedSpectra().isEmpty());
+    }
+
+    @Test
+    public void testParseIncludeUnIdentified() throws Exception {
+        Set<Integer> omittedProteinIds = new HashSet<>();
+        omittedProteinIds.add(0);
+        omittedProteinIds.add(1);
 
         // test for the unidentified spectra
+        maxQuantSpectraParser.clear();
         maxQuantSpectraParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, true, omittedProteinIds);
 
-        MaxQuantSpectra maxQuantSpectra2 = maxQuantSpectraParser.getMaxQuantSpectra();
+        MaxQuantSpectra maxQuantSpectra = maxQuantSpectraParser.getMaxQuantSpectra();
 
-        Assert.assertEquals(21, maxQuantSpectra2.getSpectrumToPsms().size());
+        Assert.assertEquals(2864, maxQuantSpectra.getSpectrumToPsms().size());
         int numberOfUnidentifiedSpectra = 0;
         for (List<Spectrum> unidentifiedSpectra : maxQuantSpectra.getUnidentifiedSpectra().values()) {
             numberOfUnidentifiedSpectra += unidentifiedSpectra.size();
         }
-        Assert.assertEquals(18902, numberOfUnidentifiedSpectra);
+        Assert.assertEquals(11307, numberOfUnidentifiedSpectra);
     }
+
 }

@@ -164,6 +164,11 @@
         </dependency>
 
         <dependency>
+            <groupId>uk.ac.ebi.jmzidml</groupId>
+            <artifactId>jmzidentml</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
@@ -193,6 +198,6 @@
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
         </dependency>
-        
+
     </dependencies>
 </project>

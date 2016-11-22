@@ -72,7 +72,7 @@ public class ProtocolManagementDialog extends javax.swing.JDialog {
         closeProtocolManagementButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("protocol management overview");
+        setTitle("Protocol management overview");
 
         protocolCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
 

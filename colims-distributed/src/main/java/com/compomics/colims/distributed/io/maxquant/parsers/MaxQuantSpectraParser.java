@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import org.apache.commons.lang3.CharSetUtils;
 
 /**
  * Parser for the MaxQuant msms.txt output and .apl files that creates
@@ -32,9 +33,7 @@ public class MaxQuantSpectraParser {
      */
     private static final String KEY_START = "RawFile: ";
     private static final String KEY_MIDDLE = " Index: ";
-    private static final String TITLE_DELIMITER = "--";
     private static final String NOT_A_NUMBER = "nan";
-    private static final String NO_INTENSITY = "-1";
     private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
 
     /**
@@ -51,9 +50,10 @@ public class MaxQuantSpectraParser {
     private final MaxQuantAndromedaParser maxQuantAndromedaParser;
 
     /**
-     * No-arg constructor.
+     * Constructor.
      *
-     * @throws IOException in case of an Input/Output related problem while parsing the headers.
+     * @throws IOException in case of an Input/Output related problem while
+     * parsing the headers.
      */
     @Autowired
     public MaxQuantSpectraParser(MaxQuantAndromedaParser maxQuantAndromedaParser) throws IOException {
@@ -82,9 +82,10 @@ public class MaxQuantSpectraParser {
      * This method parses the msms.txt and .apl spectrum files and returns the
      * result in a map.
      *
-     * @param maxQuantDirectory          the MaxQuant parent directory
-     * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
-     * @param omittedProteinGroupIds     removed protein group IDs
+     * @param maxQuantDirectory the MaxQuant parent directory
+     * @param includeUnidentifiedSpectra whether or not to include the
+     * unidentified spectra
+     * @param omittedProteinGroupIds removed protein group IDs
      * @throws IOException in case of an Input/Output related problem
      */
     public void parse(Path maxQuantDirectory, boolean includeUnidentifiedSpectra, Set<Integer> omittedProteinGroupIds) throws IOException {
@@ -110,7 +111,7 @@ public class MaxQuantSpectraParser {
     /**
      * Parse the msms.txt file.
      *
-     * @param msmsFile               the MaxQuant msms.txt file path
+     * @param msmsFile the MaxQuant msms.txt file path
      * @param omittedProteinGroupIds the set of omitted protein group IDs
      */
     private void parse(Path msmsFile, MaxQuantSpectra maxQuantSpectra, Set<Integer> omittedProteinGroupIds) throws IOException {
@@ -164,31 +165,27 @@ public class MaxQuantSpectraParser {
      * Map the spectrum values from a parsed msms.txt row entry onto a Colims
      * {@link Spectrum}.
      *
-     * @param aplKey         the apl key to use as spectrum accession
-     * @param spectrumValues the map of spectrum values (key: {@link MsmsHeader} instance; value: column value)
+     * @param aplKey the apl key to use as spectrum accession
+     * @param spectrumValues the map of spectrum values (key: {@link MsmsHeader}
+     * instance; value: column value)
      * @return the mapped Spectrum instance
      */
     private Spectrum mapMsmsSpectrum(String aplKey, Map<MsmsHeader, String> spectrumValues) {
-        String spectrumTitle = spectrumValues.get(MsmsHeader.RAW_FILE)
-                + TITLE_DELIMITER
-                + spectrumValues.get(MsmsHeader.SCAN_NUMBER);
-        String intensity = spectrumValues.get(MsmsHeader.PRECURSOR_INTENSITY);
-        if (intensity.equalsIgnoreCase(NOT_A_NUMBER)) {
-            intensity = NO_INTENSITY;
-        }
-
         //create Colims Spectrum instance and map the fields
         Spectrum spectrum = new com.compomics.colims.model.Spectrum();
         spectrum.setAccession(aplKey);
         spectrum.setCharge(Integer.valueOf(spectrumValues.get(MsmsHeader.CHARGE)));
         spectrum.setFragmentationType(maxQuantAndromedaParser.getFragmentationType());
-        spectrum.setIntensity(Double.parseDouble(intensity));
+        String intensity = spectrumValues.get(MsmsHeader.PRECURSOR_INTENSITY);
+        if (!intensity.equalsIgnoreCase(NOT_A_NUMBER)) {
+            spectrum.setIntensity(Double.parseDouble(intensity));
+        }
         spectrum.setMzRatio(Double.valueOf(spectrumValues.get(MsmsHeader.M_Z)));
         spectrum.setRetentionTime(Double.valueOf(spectrumValues.get(MsmsHeader.RETENTION_TIME)));
-        spectrum.setScanNumber(spectrumValues.get(MsmsHeader.SCAN_NUMBER));
+        spectrum.setScanNumber(Long.valueOf(spectrumValues.get(MsmsHeader.SCAN_NUMBER)));
+        spectrum.setScanIndex(Long.valueOf(spectrumValues.get(MsmsHeader.SCAN_INDEX)));
         //use the scan event number for the scan time field
         spectrum.setScanTime(Double.valueOf(spectrumValues.get(MsmsHeader.SCAN_EVENT_NUMBER)));
-        spectrum.setTitle(spectrumTitle);
 
         return spectrum;
     }

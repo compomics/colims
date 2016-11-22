@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.mzidentml;
 
 import com.compomics.colims.core.util.PeptidePosition;
+import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.core.util.SequenceUtils;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.SearchModification;
@@ -8,11 +9,12 @@ import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.jmzidml.model.MzIdentMLObject;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
@@ -43,23 +45,18 @@ public class MzIdentMLExporter {
 
     private static final String PSI_MOD_PREFIX = "MOD";
     private static final String UNIMOD_PREFIX = "UNIMOD";
-    /**
-     * The JSON file that contains the MzIdentML controlled vocabulary terms.
-     */
-    private static final String DATA_FILE = "config/mzidentml.json";   // TODO: a better name
 
-    // TODO: are these only filled in on production build?
     @Value("${mzidentml.version}")
     private final String MZIDENTML_VERSION = "1.1.0";
     @Value("${colims-core.version}")
     private final String COLIMS_VERSION = "latest";
-
-    private final ObjectMapper mapper = new ObjectMapper();
-    private JsonNode mzIdentMLParamList;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectReader objectReader = objectMapper.reader();
+    private JsonNode ontologyTerms;
     /**
-     * The analytical run to export.
+     * The list is analytical runs to export.
      */
-    private AnalyticalRun analyticalRun;
+    private List<AnalyticalRun> analyticalRuns;
     /**
      * The MzIdentML instance from the MzIdentML object model.
      */
@@ -77,38 +74,38 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Read in the JSON file that contains controlled vocabulary terms.
+     * Read in the JSON file that contains mzIdentML related controlled vocabulary terms.
      *
-     * @throws IOException error thrown in case of a I/O related problem
+     * @throws IOException in case of a I/O related problem
      */
     @PostConstruct
     public void init() throws IOException {
-        ClassPathResource jsonFile = new ClassPathResource(DATA_FILE);
-        mzIdentMLParamList = mapper.readTree(jsonFile.getURL());
+        Resource ontologyMapping = ResourceUtils.getResourceByRelativePath("config/mzidentml.json");
+        ontologyTerms = objectReader.readTree(ontologyMapping.getInputStream());
     }
 
     /**
-     * Export a run in MzIdentML format.
+     * Export the given analytical runs in mzIdentML format.
      *
-     * @param analyticalRun the analytical run to export.
-     * @return the MzIdentML String
+     * @param analyticalRuns the analytical runs to export.
+     * @return the mzIdentML String
      * @throws IOException error thrown in case of a I/O related problem
      */
-    public String export(AnalyticalRun analyticalRun) throws IOException {
-        this.analyticalRun = analyticalRun;
+    public String export(List<AnalyticalRun> analyticalRuns) throws IOException {
+        this.analyticalRuns = analyticalRuns;
 
         MzIdentMLMarshaller marshaller = new MzIdentMLMarshaller();
 
-        return marshaller.marshal(base());
+        return marshaller.marshal(populate());
     }
 
     /**
-     * Assemble necessary data into an MZIdentML object and it's many
+     * Assemble necessary data into an mzIdentML object and it's many
      * properties.
      *
-     * @return MZIdentML a fully furnished (hopefully) object
+     * @return a fully furnished {@link MzIdentML} object
      */
-    private MzIdentML base() throws IOException {
+    private MzIdentML populate() throws IOException {
         mzIdentML = new MzIdentML();
         mzIdentML.setAuditCollection(new AuditCollection());
 
@@ -135,7 +132,7 @@ public class MzIdentMLExporter {
     private CvList cvList() throws IOException {
         CvList cvList = new CvList();
 
-        cvList.getCv().addAll(getDataList("CvList", Cv.class));
+        cvList.getCv().addAll(getMzIdentMlElements("CvList", Cv.class));
 
         return cvList;
     }
@@ -150,7 +147,7 @@ public class MzIdentMLExporter {
 
         AuditCollection auditCollection = mzIdentML.getAuditCollection();
 
-        User user = userRepository.findByName(analyticalRun.getUserName());
+        User user = userRepository.findByName(analyticalRuns.get(0).getUserName());
 
         Person person = new Person();
         person.setId(user.getId().toString());
@@ -217,7 +214,7 @@ public class MzIdentMLExporter {
     private AnalysisSoftwareList analysisSoftwareList() throws IOException {
         AnalysisSoftwareList list = new AnalysisSoftwareList();
 
-        SearchAndValidationSettings settings = analyticalRun.getSearchAndValidationSettings();
+        SearchAndValidationSettings settings = analyticalRuns.get(0).getSearchAndValidationSettings();
 
         AnalysisSoftware software = getDataItem("AnalysisSoftware." + settings.getSearchEngine().getName(), AnalysisSoftware.class);
         software.setVersion(settings.getSearchEngine().getVersion());
@@ -249,7 +246,7 @@ public class MzIdentMLExporter {
         inputs = dataCollection.getInputs();
 
         //iterate over the different FASTA databases used for the searches
-        for (SearchSettingsHasFastaDb searchSettingsHasFastaDb : analyticalRun.getSearchAndValidationSettings().getSearchSettingsHasFastaDbs()) {
+        for (SearchSettingsHasFastaDb searchSettingsHasFastaDb : analyticalRuns.get(0).getSearchAndValidationSettings().getSearchSettingsHasFastaDbs()) {
             FastaDb fasta = searchSettingsHasFastaDb.getFastaDb();
 
             SearchDatabase searchDatabase = new SearchDatabase();
@@ -284,7 +281,7 @@ public class MzIdentMLExporter {
     private AnalysisProtocolCollection analysisProtocolCollection() throws IOException {
         AnalysisProtocolCollection collection = new AnalysisProtocolCollection();
 
-        SearchAndValidationSettings settings = analyticalRun.getSearchAndValidationSettings();
+        SearchAndValidationSettings settings = analyticalRuns.get(0).getSearchAndValidationSettings();
         SearchParameters searchParameters = settings.getSearchParameters();
 
         // Spectrum Identification Protocol
@@ -421,7 +418,7 @@ public class MzIdentMLExporter {
         SearchDatabaseRef dbRef = new SearchDatabaseRef();
         dbRef.setSearchDatabase(inputs.getSearchDatabase().get(0));
 
-        for (Spectrum spectrum : analyticalRun.getSpectrums()) {
+        for (Spectrum spectrum : analyticalRuns.get(0).getSpectrums()) {
             SpectrumIdentification spectrumIdentification = new SpectrumIdentification();
             spectrumIdentification.setId("SPECTRUM-" + spectrum.getId().toString());
 
@@ -631,7 +628,7 @@ public class MzIdentMLExporter {
 
         if (contact != null) {
             contact.setId(name);
-            contact.getCvParam().addAll(getDataList(type.getSimpleName() + "." + name, CvParam.class));
+            contact.getCvParam().addAll(getMzIdentMlElements(type.getSimpleName() + "." + name, CvParam.class));
 
             mzIdentML.getAuditCollection().getPersonOrOrganization().add(contact);
         }
@@ -642,14 +639,14 @@ public class MzIdentMLExporter {
     /**
      * Get a list of data items mapped to the specified object type.
      *
-     * @param name Name of key or dot notation path to key
-     * @param type Type of objects to return
-     * @param <T>  Subclass of MzIdentMLObject
-     * @return List of objects of type T
-     * @throws java.io.IOException in case of an I/O related problem
+     * @param name name of key or dot notation path to key
+     * @param type type of objects to return
+     * @param <T>  subclass of MzIdentMLObject
+     * @return list of objects of type T
+     * @throws IOException in case of an I/O related problem
      */
-    public <T extends MzIdentMLObject> List<T> getDataList(String name, Class<T> type) throws IOException {
-        JsonNode listNode = getTargetNode(name);
+    public <T extends MzIdentMLObject> List<T> getMzIdentMlElements(String name, Class<T> type) throws IOException {
+        JsonNode listNode = getTermNode(name);
         List<T> data = new ArrayList<>();
 
         if (listNode == null) {
@@ -657,7 +654,7 @@ public class MzIdentMLExporter {
         } else {
             try {
                 for (JsonNode node : listNode) {
-                    data.add(mapper.treeToValue(node, type));
+                    data.add(objectReader.treeToValue(node, type));
                 }
             } catch (IOException e) {
                 LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
@@ -678,12 +675,12 @@ public class MzIdentMLExporter {
      * @throws java.io.IOException in case of an I/O related problem
      */
     public <T extends MzIdentMLObject> T getDataItem(String name, Class<T> type) throws IOException {
-        JsonNode node = getTargetNode(name);
+        JsonNode node = getTermNode(name);
 
         List<T> item = new ArrayList<>();
 
         try {
-            item.add(mapper.treeToValue(node, type));
+            item.add(objectReader.treeToValue(node, type));
         } catch (IOException e) {
             LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
         }
@@ -694,26 +691,28 @@ public class MzIdentMLExporter {
     /**
      * Find a node by name or dot notation path.
      *
-     * @param name Name or path
-     * @return The node
+     * @param name name or path
+     * @return the found JsonNode instance
      */
-    private JsonNode getTargetNode(String name) throws IOException {
+    private JsonNode getTermNode(String name) throws IOException {
         JsonNode node;
 
         if (name.contains(".")) {
             String[] path = name.split("\\.");
 
-            node = mzIdentMLParamList.get(path[0]);
+            //get the parent node
+            node = ontologyTerms.get(path[0]);
 
+            //iterate over the child nodes
             for (int i = 1; i < path.length; ++i) {
                 node = node.get(path[i]);
 
                 if (node == null) {
-                    throw new IOException("Node " + name + " not found in data file.");
+                    throw new IOException("Node " + name + " not found in the mzIdentML ontology terms file.");
                 }
             }
         } else {
-            node = mzIdentMLParamList.get(name);
+            node = ontologyTerms.get(name);
         }
 
         return node;

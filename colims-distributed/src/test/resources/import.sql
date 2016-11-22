@@ -88,7 +88,7 @@ INSERT INTO search_modification (id, name, accession, utilities_name, average_ma
 INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1);
 
 -- insert a test spectrum
-INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000000', 1, 'CID', 1, 1, 5, 'no', 3, 'Test Spectrum', 1);
+INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000000', 1, 'CID', 1, 1, 5, 44, 3, 'Test Spectrum', 1);
 
 -- insert a spectrum file
 INSERT INTO spectrum_file (id, content, l_spectrum_id) VALUES (1, 'AABBCC', 1);
@@ -103,7 +103,7 @@ INSERT INTO search_params_has_modification (id, modification_type, l_search_modi
 INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1);
 
 -- insert test search and val settings has fasta db
-INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_idsk, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 0);
+INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 0);
 
 -- insert test quantification method cv param
 INSERT INTO quantification_method_cv_param (id, accession, label, name) VALUES (1, 'PRIDE', 'PRIDE:0000315', 'SILAC');

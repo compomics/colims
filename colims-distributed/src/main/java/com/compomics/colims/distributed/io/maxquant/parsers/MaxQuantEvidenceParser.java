@@ -41,20 +41,23 @@ public class MaxQuantEvidenceParser {
     static final String C_TERMINAL_MODIFICATION = "Protein C-term";
 
     /**
-     * The parsed peptides map (key: evidence ID; value: the {@link Peptide} object).
+     * The parsed peptides map (key: evidence ID; value: the {@link Peptide}
+     * object).
      */
     private final Map<Integer, Peptide> peptides = new HashMap<>();
     /**
-     * This map holds the links between spectrum and associated peptides (key: msms ID; value: set of evidence IDs).
+     * This map holds the links between spectrum and associated peptides (key:
+     * msms ID; value: set of evidence IDs).
      */
     private final Map<Integer, Set<Integer>> spectrumToPeptides = new HashMap<>();
     /**
-     * This map holds the links between a peptide and associated proteins (key: evidence ID; value: set of protein
-     * groups IDs).
+     * This map holds the links between a peptide and associated proteins (key:
+     * evidence ID; value: set of protein groups IDs).
      */
     private final Map<Integer, Set<Integer>> peptideToProteinGroups = new HashMap<>();
     /**
-     * The map of matching between runs and (MBR) peptides (key: RAW file name; value: the set of evidence IDs).
+     * The map of matching between runs and (MBR) peptides (key: RAW file name;
+     * value: the set of evidence IDs).
      */
     private final Map<String, Set<Integer>> runToMbrPeptides = new HashMap<>();
     /**
@@ -74,8 +77,9 @@ public class MaxQuantEvidenceParser {
      * No-arg constructor.
      *
      * @param modificationMapper the modification mapper
-     * @param ontologyMapper     the ontology mapper
-     * @throws IOException in case of an Input/Output related problem while parsing the headers.
+     * @param ontologyMapper the ontology mapper
+     * @throws IOException in case of an Input/Output related problem while
+     * parsing the headers.
      */
     @Autowired
     public MaxQuantEvidenceParser(ModificationMapper modificationMapper, OntologyMapper ontologyMapper) throws IOException {
@@ -104,7 +108,7 @@ public class MaxQuantEvidenceParser {
     /**
      * This method parses an evidence file.
      *
-     * @param evidenceFilePath       the MaxQuant evidence file path
+     * @param evidenceFilePath the MaxQuant evidence file path
      * @param omittedProteinGroupIds removed protein group IDs
      * @throws IOException in case of an I/O related problem
      */
@@ -142,8 +146,7 @@ public class MaxQuantEvidenceParser {
                             spectrumToPeptides.get(msmsId).add(evidenceId);
                         }
 
-                    }
-                    //otherwise it's a matching between runs (MBR) peptide
+                    } //otherwise it's a matching between runs (MBR) peptide
                     else {
                         String rawFile = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.RAW_FILE));
                         if (!runToMbrPeptides.containsKey(rawFile)) {
@@ -162,9 +165,10 @@ public class MaxQuantEvidenceParser {
     /**
      * Create a Peptide from a row entry in the evidence file.
      *
-     * @param evidenceId                 the evidence ID
-     * @param evidenceEntry              key-value pairs from an evidence entry
-     * @param nonOmittedProteinGroupsIds the set of non omitted protein group IDs for the given evidence entry
+     * @param evidenceId the evidence ID
+     * @param evidenceEntry key-value pairs from an evidence entry
+     * @param nonOmittedProteinGroupsIds the set of non omitted protein group
+     * IDs for the given evidence entry
      */
     private void createPeptide(Integer evidenceId, Map<String, String> evidenceEntry, Set<Integer> nonOmittedProteinGroupsIds) {
         Peptide peptide = new Peptide();
@@ -202,7 +206,7 @@ public class MaxQuantEvidenceParser {
      * Create modifications for the given peptide.
      *
      * @param peptide Peptide to associate with modifications
-     * @param values  Row of data from evidence file
+     * @param values Row of data from evidence file
      * @return List of PeptideHasModification objects
      */
     private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) {
@@ -265,7 +269,6 @@ public class MaxQuantEvidenceParser {
                             probabilityOverhead += probabilities.end() - probabilities.start();
                         }
 
-
                         //Check the modification occurrences;
                         //if the number of scores is higher than the occurrences rate, take the one with the highest score.
                         if (evidenceModification.getOccurrences() != scoresAndLocations.size()) {
@@ -314,10 +317,10 @@ public class MaxQuantEvidenceParser {
     /**
      * Create a PeptideHasModification instance for the given peptide.
      *
-     * @param location    the modification location
+     * @param location the modification location
      * @param probability the probability score
-     * @param deltaScore  the delta score value
-     * @param peptide     the Peptide instance
+     * @param deltaScore the delta score value
+     * @param peptide the Peptide instance
      * @return the PeptideHasModification instance
      */
     private PeptideHasModification createPeptideHasModification(Integer location, Double probability, Double deltaScore, Peptide peptide) {
@@ -353,8 +356,8 @@ class EvidenceModification {
      */
     private String affectedAminoAcid;
     /**
-     * The number of occurrences of the modification in the peptide. This value is null if
-     * the modification occurs only once.
+     * The number of occurrences of the modification in the peptide. This value
+     * is null if the modification occurs only once.
      */
     private Integer occurrences = 1;
 

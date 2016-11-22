@@ -197,7 +197,7 @@ public class InstrumentManagementController implements Controllable {
                 updateInstrumentEditDialog(getSelectedInstrument());
 
                 //show dialog
-                GuiUtils.centerDialogOnComponent(instrumentManagementDialog, instrumentEditDialog);
+                GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), instrumentEditDialog);
                 instrumentEditDialog.setVisible(true);
             } else {
                 eventBus.post(new MessageEvent("Instrument selection", "Please select an instrument to edit.", JOptionPane.INFORMATION_MESSAGE));
@@ -362,7 +362,7 @@ public class InstrumentManagementController implements Controllable {
                 List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedcvParamType);
 
                 //update the CV param list
-                typedCvParamManagementController.updateDialog(selectedcvParamType, PRESELECTED_ONTOLOGY_NAMESPACES, cvParams);
+                typedCvParamManagementController.updateDialog("Instrument", selectedcvParamType, PRESELECTED_ONTOLOGY_NAMESPACES, cvParams);
 
                 typedCvParamManagementController.showView();
             } else {

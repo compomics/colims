@@ -57,14 +57,14 @@ public class ColimsSpectrumMapperTest {
         spectrum.setMzRatio(123.12);
         spectrum.setCharge(3);
         spectrum.setSpectrumFiles(spectrumFileList);
-        spectrum.setScanNumber("12");
+        spectrum.setScanNumber(12L);
         spectrum.setScanTime(11231.1);
         spectrum.setPeptides(new ArrayList<>());
 
         MSnSpectrum targetSpectrum = new MSnSpectrum();
         colimsSpectrumMapper.map(spectrum, targetSpectrum);
         Assert.assertEquals(677, targetSpectrum.getPeakList().size());
-        Assert.assertEquals("12", targetSpectrum.getScanNumber());
+        Assert.assertEquals(12L, targetSpectrum.getScanNumber());
         Assert.assertEquals(1233123.32, targetSpectrum.getPrecursor().getIntensity(), 0.01);
         Assert.assertEquals(123.12, targetSpectrum.getPrecursor().getMz(), 0.01);
         Assert.assertEquals(new Charge(1, 3), targetSpectrum.getPrecursor().getPossibleCharges().get(0));

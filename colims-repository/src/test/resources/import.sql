@@ -96,8 +96,8 @@ INSERT INTO search_and_validation_settings (id, creation_date, modification_date
 INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 0), (2, 2, 1, 1);
 
 -- insert test spectra
-INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000000', 1, 'CID', 100.5, 555.3, 24.3, 'no', 3, 'Test Spectrum', 1);
-INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (2, 'MS:00000004', 3, 'CID', 600.3, 1300.1, 26, 'no', 3, 'Test Spectrum 2', 1);
+INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000000', 1, 'CID', 100.5, 555.3, 24.3, 44, 3, 'Test Spectrum', 1);
+INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (2, 'MS:00000004', 3, 'CID', 600.3, 1300.1, 26, 45, 3, 'Test Spectrum 2', 1);
 
 -- insert test peptides
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1);

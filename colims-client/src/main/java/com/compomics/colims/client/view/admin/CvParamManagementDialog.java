@@ -103,7 +103,7 @@ public class CvParamManagementDialog extends javax.swing.JDialog {
         closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("CV param management");
+        setTitle("ontology terms management");
 
         cvParamCrudPanel.setBackground(new java.awt.Color(255, 255, 255));
 

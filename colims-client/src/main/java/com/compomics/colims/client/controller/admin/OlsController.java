@@ -271,6 +271,9 @@ public class OlsController implements Controllable {
                 clear();
                 olsDialog.dispose();
             }
+            else {
+                eventBus.post(new MessageEvent("Term selection", "Please select an ontology term.", JOptionPane.INFORMATION_MESSAGE));
+            }
         });
 
         olsDialog.getCloseButton().addActionListener(e -> {

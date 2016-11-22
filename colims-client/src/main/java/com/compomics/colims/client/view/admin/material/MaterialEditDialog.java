@@ -78,7 +78,7 @@ public class MaterialEditDialog extends javax.swing.JDialog {
         materialStateInfoLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("material management");
+        setTitle("Material management");
 
         materialEditPanel.setBackground(new java.awt.Color(255, 255, 255));
 

@@ -4,8 +4,6 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
-import org.apache.axis.utils.StringUtils;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -19,7 +17,8 @@ import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Parser for the MaxQuant apl output files; the apl summary file and the actual apl files containing the spectra.
+ * Parser for the MaxQuant apl output files; the apl summary file and the actual
+ * apl files containing the spectra.
  * <p/>
  *
  * @author Niels Hulstaert
@@ -51,9 +50,10 @@ public class MaxQuantAplParser {
     /**
      * Parse the give MaqQuant .apl spectrum file and update the spectra map.
      *
-     * @param aplFilePath                the MaqQuant .apl spectrum file path
-     * @param maxQuantSpectra            the spectra map
-     * @param includeUnidentifiedSpectra whether or not to include unidentified spectra
+     * @param aplFilePath the MaqQuant .apl spectrum file path
+     * @param maxQuantSpectra the spectra map
+     * @param includeUnidentifiedSpectra whether or not to include unidentified
+     * spectra
      */
     public void parseAplFile(Path aplFilePath, MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
         try (BufferedReader bufferedReader = Files.newBufferedReader(aplFilePath)) {
@@ -71,6 +71,7 @@ public class MaxQuantAplParser {
                         headers.put(split[0], split[1]);
                         line = bufferedReader.readLine();
                     }
+                    String completeHeader = headers.get(APL_HEADER);
                     //" Precursor: 0 _multi_" is removed before looking up the key in the spectra map
                     String header = org.apache.commons.lang3.StringUtils.substringBefore(headers.get(APL_HEADER), APL_PRECURSOR);
                     Spectrum spectrum = null;
@@ -84,7 +85,7 @@ public class MaxQuantAplParser {
                         spectrum.setMzRatio(Double.valueOf(headers.get(APL_MZ)));
                         spectrum.setFragmentationType(FragmentationType.valueOf(headers.get(APL_FRAGMENTATION)));
                         spectrum.setCharge(Integer.valueOf(headers.get(APL_CHARGE)));
-                        spectrum.setScanNumber(org.apache.commons.lang3.StringUtils.substringAfter(header, APL_INDEX));
+                        spectrum.setScanIndex(Long.valueOf(org.apache.commons.lang3.StringUtils.substringAfter(header, APL_INDEX)));
 
                         //get the RAW file name from the header
                         String rawFileName = org.apache.commons.lang3.StringUtils.substringBetween(header, HEADER_RAW_FILE, HEADER_INDEX);
@@ -98,11 +99,14 @@ public class MaxQuantAplParser {
                     }
 
                     if (spectrum != null) {
+                        //set the complete spectrum header as title
+                        spectrum.setTitle(completeHeader);
+
                         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                             OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName(ENCODING).newEncoder());
-                             BufferedWriter bw = new BufferedWriter(osw);
-                             ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
-                             GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
+                                OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName(ENCODING).newEncoder());
+                                BufferedWriter bw = new BufferedWriter(osw);
+                                ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
+                                GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
 
                             //write the spectrum in MGF format
                             bw.write(MGF_SPECTRUM_START);

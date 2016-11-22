@@ -198,7 +198,7 @@ public class ProtocolManagementController implements Controllable {
             if (protocolManagementDialog.getProtocolList().getSelectedIndex() != -1) {
                 updateProtocolEditDialog(getSelectedProtocol());
                 //show dialog
-                GuiUtils.centerDialogOnComponent(protocolManagementDialog, protocolEditDialog);
+                GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), protocolEditDialog);
                 protocolEditDialog.setVisible(true);
             } else {
                 eventBus.post(new MessageEvent("Protocol selection", "Please select a protocol to edit.", JOptionPane.INFORMATION_MESSAGE));
@@ -373,7 +373,7 @@ public class ProtocolManagementController implements Controllable {
                 List<AuditableTypedCvParam> cvParams = cvParamService.findByCvParamByType(selectedCvParamType);
 
                 //update the CV param list
-                typedCvParamManagementController.updateDialog(selectedCvParamType, PRESELECTED_ONTOLOGY_NAMESPACES, cvParams);
+                typedCvParamManagementController.updateDialog("Protocol", selectedCvParamType, PRESELECTED_ONTOLOGY_NAMESPACES, cvParams);
 
                 typedCvParamManagementController.showView();
             } else {

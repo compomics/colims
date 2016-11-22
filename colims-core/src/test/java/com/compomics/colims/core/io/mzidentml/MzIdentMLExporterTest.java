@@ -15,6 +15,8 @@ import uk.ac.ebi.jmzidml.model.mzidml.Cv;
 import uk.ac.ebi.jmzidml.model.mzidml.CvList;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Iain
@@ -38,8 +40,11 @@ public class MzIdentMLExporterTest {
      */
     @Test
     public void testExport() throws IOException {
+        List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         AnalyticalRun run = repository.findById(1L);
-        String export = exporter.export(run);
+        analyticalRuns.add(run);
+
+        String export = exporter.export(analyticalRuns);
 //        System.out.println(export);
 //
 //        FileWriter testFileWriter = new FileWriter("/home/niels/Desktop/testMzIdentMl.xml", false);
@@ -52,7 +57,7 @@ public class MzIdentMLExporterTest {
     @Test
     public void testClassListMapping() throws IOException {
         CvList cvList = new CvList();
-        cvList.getCv().addAll(exporter.getDataList("CvList", Cv.class));
+        cvList.getCv().addAll(exporter.getMzIdentMlElements("CvList", Cv.class));
         Assert.assertEquals(2, cvList.getCv().size());
     }
 

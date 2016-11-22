@@ -1,12 +1,12 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.util.IOUtils;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.model.Spectrum;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -22,7 +22,7 @@ import java.util.Map;
 public class MaxQuantAplParserTest {
 
     private static final String APL_HEADER_DELIMITER = "=";
-    private Path testAplFile;
+    private final Path testAplFile;
 
     @Autowired
     private MaxQuantAplParser maxQuantAplParser;
@@ -33,7 +33,7 @@ public class MaxQuantAplParserTest {
      * @throws IOException in case of an I/O related problem
      */
     public MaxQuantAplParserTest() throws IOException {
-        testAplFile = new ClassPathResource("data" + File.separator + "maxquant_test1" + File.separator + "combined" + File.separator + "andromeda" + File.separator + "allSpectra.CID.ITMS.iso_0.apl").getFile().toPath();
+        testAplFile = MaxQuantTestSuite.maxQuantAndromedaDirectory.resolve("allSpectra.CID.ITMS.sil1_0.apl");
     }
 
     /**
@@ -47,14 +47,14 @@ public class MaxQuantAplParserTest {
         MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
 
         //create dummy spectrum one
-        String spectrumKey1 = "RawFile: V20239_3911_Eik_green_10 Index: 4047";
+        String spectrumKey1 = "RawFile: 20130607_FI_Ubiquitin_7 Index: 2425";
         Spectrum spectrum1 = new Spectrum();
         spectrum1.setAccession("acc_1");
         spectrum1.setRetentionTime(123.45);
         maxQuantSpectra.getSpectra().put(spectrumKey1, spectrum1);
 
         //create another dummy spectrum one
-        String spectrumKey2 = "RawFile: V20239_3911_Eik_green_10 Index: 1084";
+        String spectrumKey2 = "RawFile: 20130607_FI_Ubiquitin_7 Index: 3175";
         Spectrum spectrum2 = new Spectrum();
         spectrum2.setAccession("acc_2");
         spectrum2.setRetentionTime(123.46);
@@ -70,8 +70,8 @@ public class MaxQuantAplParserTest {
         //do some additional testing
         byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getSpectra().get(spectrumKey1).getSpectrumFiles().get(0).getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
-             InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
-             BufferedReader br = new BufferedReader(isr)) {
+                InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
+                BufferedReader br = new BufferedReader(isr)) {
             String line;
             Map<String, String> headers = new HashMap<>();
             //go to the next line
@@ -81,10 +81,10 @@ public class MaxQuantAplParserTest {
                 String[] split = line.split(APL_HEADER_DELIMITER);
                 headers.put(split[0], split[1]);
             }
-            Assert.assertEquals("RawFile: V20239_3911_Eik_green_10 Index: 4047 Precursor: 0 _multi_", headers.get("TITLE"));
+            Assert.assertEquals("RawFile: 20130607_FI_Ubiquitin_7 Index: 2425 Precursor: 0 _multi_", headers.get("TITLE"));
             Assert.assertEquals(spectrum1.getRetentionTime().toString(), headers.get("RTINSECONDS"));
-            Assert.assertEquals("300.178852107217", headers.get("PEPMASS"));
-            Assert.assertEquals("1+", headers.get("CHARGE"));
+            Assert.assertEquals("529.26796896253", headers.get("PEPMASS"));
+            Assert.assertEquals("2+", headers.get("CHARGE"));
         }
 
     }
@@ -100,13 +100,13 @@ public class MaxQuantAplParserTest {
         MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
 
         //create dummy spectrum one
-        String spectrumKey = "RawFile: V20239_3911_Eik_green_10 Index: 4047";
+        String spectrumKey = "RawFile: 20130607_FI_Ubiquitin_7 Index: 3175";
         Spectrum spectrum = new Spectrum();
         spectrum.setAccession("acc_1");
         spectrum.setRetentionTime(123.45);
         maxQuantSpectra.getSpectra().put(spectrumKey, spectrum);
-        maxQuantSpectra.getOmittedSpectrumKeys().add("RawFile: V20263_3910_Eik_red_12 Index: 1986");
-        maxQuantSpectra.getOmittedSpectrumKeys().add("RawFile: V20263_3910_Eik_red_12 Index: 1975");
+        maxQuantSpectra.getOmittedSpectrumKeys().add("RawFile: 20130607_FI_Ubiquitin_7 Index: 1966");
+        maxQuantSpectra.getOmittedSpectrumKeys().add("RawFile: 20130607_FI_Ubiquitin_9 Index: 3841");
 
         maxQuantAplParser.parseAplFile(testAplFile, maxQuantSpectra, true);
 
@@ -118,18 +118,18 @@ public class MaxQuantAplParserTest {
         for (List<Spectrum> unidentifiedSpectra : maxQuantSpectra.getUnidentifiedSpectra().values()) {
             numberOfUnidentifiedSpectra += unidentifiedSpectra.size();
         }
-        Assert.assertEquals(15957, numberOfUnidentifiedSpectra);
+        Assert.assertEquals(2586, numberOfUnidentifiedSpectra);
 
         //some additional testing
         byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getUnidentifiedSpectra()
-                .get("V20239_3911_Eik_green_10")
+                .get("20130607_FI_Ubiquitin_9")
                 .get(0)
                 .getSpectrumFiles()
                 .get(0)
                 .getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
-             InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
-             BufferedReader br = new BufferedReader(isr)) {
+                InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
+                BufferedReader br = new BufferedReader(isr)) {
             String line;
             Map<String, String> headers = new HashMap<>();
             //go to the next line
@@ -139,8 +139,8 @@ public class MaxQuantAplParserTest {
                 String[] split = line.split(APL_HEADER_DELIMITER);
                 headers.put(split[0], split[1]);
             }
-            Assert.assertEquals("RawFile: V20239_3911_Eik_green_10 Index: 1084 Precursor: 0 _multi_", headers.get("TITLE"));
-            Assert.assertEquals("300.202816933043", headers.get("PEPMASS"));
+            Assert.assertEquals("RawFile: 20130607_FI_Ubiquitin_9 Index: 4442 Precursor: 0 _multi_", headers.get("TITLE"));
+            Assert.assertEquals("435.272924239981", headers.get("PEPMASS"));
             Assert.assertEquals("1+", headers.get("CHARGE"));
         }
     }

@@ -33,9 +33,15 @@ public class Spectrum extends DatabaseEntity {
     /**
      * The scan number.
      */
-    @Basic(optional = false)
-    @Column(name = "scan_number", nullable = false)
-    private String scanNumber;
+    @Basic(optional = true)
+    @Column(name = "scan_number", nullable = true)
+    private Long scanNumber;
+    /**
+     * The scan index.
+     */
+    @Basic(optional = true)
+    @Column(name = "scan_index", nullable = true)
+    private Long scanIndex;
     /**
      * The precursor m/z value.
      */
@@ -88,7 +94,7 @@ public class Spectrum extends DatabaseEntity {
      * The SpectrumFile instances linked to this spectrum.
      */
     @OneToMany(mappedBy = "spectrum", cascade = CascadeType.ALL)
-    private List<SpectrumFile>  spectrumFiles = new ArrayList<>();
+    private List<SpectrumFile> spectrumFiles = new ArrayList<>();
 
     /**
      * No-arg constructor.
@@ -112,12 +118,20 @@ public class Spectrum extends DatabaseEntity {
         this.title = title;
     }
 
-    public String getScanNumber() {
+    public Long getScanNumber() {
         return scanNumber;
     }
 
-    public void setScanNumber(String scanNumber) {
+    public void setScanNumber(Long scanNumber) {
         this.scanNumber = scanNumber;
+    }
+
+    public Long getScanIndex() {
+        return scanIndex;
+    }
+
+    public void setScanIndex(Long scanIndex) {
+        this.scanIndex = scanIndex;
     }
 
     public Double getMzRatio() {
@@ -194,22 +208,42 @@ public class Spectrum extends DatabaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Spectrum spectrum = (Spectrum) o;
 
-        if (!accession.equals(spectrum.accession)) return false;
-        if (title != null ? !title.equals(spectrum.title) : spectrum.title != null) return false;
-        if (scanNumber != null ? !scanNumber.equals(spectrum.scanNumber) : spectrum.scanNumber != null) return false;
-        if (mzRatio != null ? !CompareUtils.equals(mzRatio, spectrum.mzRatio) : spectrum.mzRatio != null) return false;
-        if (charge != null ? !charge.equals(spectrum.charge) : spectrum.charge != null) return false;
-        if (scanTime != null ? !CompareUtils.equals(scanTime, spectrum.scanTime) : spectrum.scanTime != null)
+        if (!accession.equals(spectrum.accession)) {
             return false;
-        if (intensity != null ? !CompareUtils.equals(intensity, spectrum.intensity) : spectrum.intensity != null)
+        }
+        if (title != null ? !title.equals(spectrum.title) : spectrum.title != null) {
             return false;
-        if (retentionTime != null ? !CompareUtils.equals(retentionTime, spectrum.retentionTime) : spectrum.retentionTime != null)
+        }
+        if (scanNumber != null ? !scanNumber.equals(spectrum.scanNumber) : spectrum.scanNumber != null) {
             return false;
+        }
+        if (scanIndex != null ? !scanIndex.equals(spectrum.scanIndex) : spectrum.scanIndex != null) {
+            return true;
+        }
+        if (mzRatio != null ? !CompareUtils.equals(mzRatio, spectrum.mzRatio) : spectrum.mzRatio != null) {
+            return false;
+        }
+        if (charge != null ? !charge.equals(spectrum.charge) : spectrum.charge != null) {
+            return false;
+        }
+        if (scanTime != null ? !CompareUtils.equals(scanTime, spectrum.scanTime) : spectrum.scanTime != null) {
+            return false;
+        }
+        if (intensity != null ? !CompareUtils.equals(intensity, spectrum.intensity) : spectrum.intensity != null) {
+            return false;
+        }
+        if (retentionTime != null ? !CompareUtils.equals(retentionTime, spectrum.retentionTime) : spectrum.retentionTime != null) {
+            return false;
+        }
         return fragmentationType == spectrum.fragmentationType;
 
     }
@@ -219,6 +253,7 @@ public class Spectrum extends DatabaseEntity {
         int result = accession.hashCode();
         result = 31 * result + (title != null ? title.hashCode() : 0);
         result = 31 * result + (scanNumber != null ? scanNumber.hashCode() : 0);
+        result = 31 * result + (scanIndex != null ? scanIndex.hashCode() : 0);
         result = 31 * result + (mzRatio != null ? mzRatio.hashCode() : 0);
         result = 31 * result + (charge != null ? charge.hashCode() : 0);
         result = 31 * result + (scanTime != null ? scanTime.hashCode() : 0);
