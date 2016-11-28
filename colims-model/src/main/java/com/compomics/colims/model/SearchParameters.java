@@ -35,11 +35,23 @@ public class SearchParameters extends DatabaseEntity {
     @Column(name = "missed_cleavages", nullable = true)
     private Integer numberOfMissedCleavages;
     /**
-     * The threshold(s) applied to determine that a result is significant.
+     * The PSM sequence-level global FDR.
      */
     @Basic(optional = true)
-    @Column(name = "threshold", nullable = true)
-    private Double threshold;
+    @Column(name = "psm_threshold", nullable = true)
+    private Double psmThreshold;
+    /**
+     * The peptide sequence-level global FDR.
+     */
+    @Basic(optional = true)
+    @Column(name = "peptide_threshold", nullable = true)
+    private Double peptideThreshold;
+    /**
+     * The protein sequence-level global FDR.
+     */
+    @Basic(optional = true)
+    @Column(name = "protein_threshold", nullable = true)
+    private Double proteinThreshold;
     /**
      * The precursor mass tolerance value.
      */
@@ -132,12 +144,28 @@ public class SearchParameters extends DatabaseEntity {
         this.numberOfMissedCleavages = numberOfMissedCleavages;
     }
 
-    public Double getThreshold() {
-        return threshold;
+    public Double getPsmThreshold() {
+        return psmThreshold;
     }
 
-    public void setThreshold(Double threshold) {
-        this.threshold = threshold;
+    public void setPsmThreshold(Double psmThreshold) {
+        this.psmThreshold = psmThreshold;
+    }
+
+    public Double getPeptideThreshold() {
+        return peptideThreshold;
+    }
+
+    public void setPeptideThreshold(Double peptideThreshold) {
+        this.peptideThreshold = peptideThreshold;
+    }
+
+    public Double getProteinThreshold() {
+        return proteinThreshold;
+    }
+
+    public void setProteinThreshold(Double proteinThreshold) {
+        this.proteinThreshold = proteinThreshold;
     }
 
     public Double getPrecMassTolerance() {
@@ -239,7 +267,9 @@ public class SearchParameters extends DatabaseEntity {
         if (enzymes != null ? !enzymes.equals(that.enzymes) : that.enzymes != null) return false;
         if (numberOfMissedCleavages != null ? !numberOfMissedCleavages.equals(that.numberOfMissedCleavages) : that.numberOfMissedCleavages != null)
             return false;
-        if (threshold != null ? !CompareUtils.equals(threshold, that.threshold) : that.threshold != null) return false;
+        if (psmThreshold != null ? !CompareUtils.equals(psmThreshold, that.psmThreshold) : that.psmThreshold != null) return false;
+        if (peptideThreshold != null ? !CompareUtils.equals(peptideThreshold, that.peptideThreshold) : that.peptideThreshold != null) return false;
+        if (proteinThreshold != null ? !CompareUtils.equals(proteinThreshold, that.proteinThreshold) : that.proteinThreshold != null) return false;
         if (precMassTolerance != null ? !CompareUtils.equals(precMassTolerance, that.precMassTolerance) : that.precMassTolerance != null)
             return false;
         if (precMassToleranceUnit != that.precMassToleranceUnit) return false;
@@ -259,7 +289,9 @@ public class SearchParameters extends DatabaseEntity {
         int result = searchType != null ? searchType.hashCode() : 0;
         result = 31 * result + (enzymes != null ? enzymes.hashCode() : 0);
         result = 31 * result + (numberOfMissedCleavages != null ? numberOfMissedCleavages.hashCode() : 0);
-        result = 31 * result + (threshold != null ? threshold.hashCode() : 0);
+        result = 31 * result + (psmThreshold != null ? psmThreshold.hashCode() : 0);
+        result = 31 * result + (peptideThreshold != null ? peptideThreshold.hashCode() : 0);
+        result = 31 * result + (proteinThreshold != null ? proteinThreshold.hashCode() : 0);
         result = 31 * result + (precMassTolerance != null ? precMassTolerance.hashCode() : 0);
         result = 31 * result + (precMassToleranceUnit != null ? precMassToleranceUnit.hashCode() : 0);
         result = 31 * result + (fragMassTolerance != null ? fragMassTolerance.hashCode() : 0);

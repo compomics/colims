@@ -46,5 +46,17 @@
     "values": [
       "variableModifications"
     ]
+  },
+  "PEPTIDE_FDR": {
+    "mandatory": true,
+    "values": [
+      "peptideFdr"
+    ]
+  },
+  "PROTEIN_FDR": {
+    "mandatory": true,
+    "values": [
+      "proteinFdr"
+    ]
   }
 }

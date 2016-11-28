@@ -70,7 +70,7 @@ public class MaxQuantSearchSettingsParser {
      */
     private final Map<String, EnumMap<MqParHeader, String>> mqParParamsWithRawFile = new HashMap<>();
     /**
-     * The analytical run name with experiment name (key: analyticalRun ;value:
+     * The analytical run name with experiment name (key: analyticalRun ; value:
      * experiment name).
      */
     private final Map<AnalyticalRun, String> analyticalRuns = new HashMap<>();
@@ -83,6 +83,14 @@ public class MaxQuantSearchSettingsParser {
      * label mods for SILAC experiments.(key: index , value : isobaric label)
      */
     private final Map<Integer, String> labelMods = new HashMap<>();
+    /**
+     * The peptide FDR threshold.
+     */
+    private Double peptideFdr;
+    /**
+     * The protein FDR threshold.
+     */
+    private Double proteinFdr;
     /**
      * The MaxQuant to UNIMOD modification mappings.
      */
@@ -198,7 +206,7 @@ public class MaxQuantSearchSettingsParser {
             //parse the search settings
             if (mqParParamsWithRawFile.containsKey(summaryEntry.get(SummaryHeader.RAW_FILE))) {
                 SearchAndValidationSettings searchAndValidationSettings
-                        = parseSearchSettings(txtDirectory, fastaDbs, summaryEntry.get(SummaryHeader.RAW_FILE));
+                        = parseSearchSettings(fastaDbs, summaryEntry.get(SummaryHeader.RAW_FILE));
 
                 runSettings.put(summaryEntry.get(SummaryHeader.RAW_FILE), searchAndValidationSettings);
             }
@@ -210,12 +218,11 @@ public class MaxQuantSearchSettingsParser {
      * Parse the search settings for the given experiment and map them onto a
      * Colims SearchAndValidationSettings instance.
      *
-     * @param maxQuantTxtDirectory the MaxQuant txt directory path
-     * @param fastaDbs             the FASTA databases used in the experiment
+     * @param fastaDbs the FASTA databases used in the experiment
      * @return the mapped SearchAndValidationSettings instance
      * @throws IOException thrown in case of of an I/O related problem
      */
-    private SearchAndValidationSettings parseSearchSettings(Path maxQuantTxtDirectory, EnumMap<FastaDbType, List<FastaDb>> fastaDbs, String rawFileName) throws IOException {
+    private SearchAndValidationSettings parseSearchSettings(EnumMap<FastaDbType, List<FastaDb>> fastaDbs, String rawFileName) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         //set the FASTA databases entity associations
@@ -246,6 +253,10 @@ public class MaxQuantSearchSettingsParser {
         }
         searchParameters.setPrecMassToleranceUnit(massAccuracyType);
         searchParameters.setFragMassToleranceUnit(massAccuracyType);
+
+        //peptide and protein FDR
+        searchParameters.setPeptideThreshold(peptideFdr);
+        searchParameters.setProteinThreshold(proteinFdr);
 
         //enzyme
         String enzymes = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.ENZYMES);
@@ -371,6 +382,8 @@ public class MaxQuantSearchSettingsParser {
         analyticalRuns.clear();
         isobaricLabels.clear();
         labelMods.clear();
+        peptideFdr = null;
+        proteinFdr = null;
 
         //create a map to hold raw files for each run (key: group index; value: raw file).
         Map<Integer, String> rawFilePath = new HashMap<>();
@@ -418,6 +431,12 @@ public class MaxQuantSearchSettingsParser {
             rawFileGroup.put(counter, groupNo);
             counter++;
         }
+
+        //get the values for the different levels of FDR
+        Element peptideFdrElement = getChildByName(root, mqParHeaders.get(MqParHeader.PEPTIDE_FDR));
+        peptideFdr = Double.valueOf(peptideFdrElement.getText());
+        Element proteinFdrElement = getChildByName(root, mqParHeaders.get(MqParHeader.PROTEIN_FDR));
+        proteinFdr = Double.valueOf(proteinFdrElement.getText());
 
         // keep each search parameters in a map (key: group number; value = maxQuantSpectrumParameterHeaders)
         Element parameterGroupsElement = getChildByName(root, PARAMETER_GROUPS);

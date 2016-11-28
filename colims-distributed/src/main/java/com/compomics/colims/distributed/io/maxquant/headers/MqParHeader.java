@@ -13,5 +13,7 @@ public enum MqParHeader {
     FRAGMENT_MASS_TOLERANCE,
     MAX_MISSED_CLEAVAGES,
     MAX_CHARGE,
-    VERSION
+    VERSION,
+    PEPTIDE_FDR,
+    PROTEIN_FDR
 }
