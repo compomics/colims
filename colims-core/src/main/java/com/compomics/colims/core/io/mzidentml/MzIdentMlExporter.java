@@ -10,7 +10,6 @@ import com.compomics.colims.repository.UserRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,10 +23,11 @@ import uk.ac.ebi.jmzidml.xml.io.MzIdentMLMarshaller;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * MzIdentML exporter class, populates models from the jmzidml library then uses
@@ -36,12 +36,12 @@ import java.util.List;
  * @author Iain
  */
 @Component
-public class MzIdentMLExporter {
+public class MzIdentMlExporter {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MzIdentMLExporter.class);
+    private static final Logger LOGGER = Logger.getLogger(MzIdentMlExporter.class);
 
     private static final String PSI_MOD_PREFIX = "MOD";
     private static final String UNIMOD_PREFIX = "UNIMOD";
@@ -58,6 +58,10 @@ public class MzIdentMLExporter {
      */
     private List<AnalyticalRun> analyticalRuns;
     /**
+     * The used search engine.
+     */
+    private SearchEngine searchEngine;
+    /**
      * The MzIdentML instance from the MzIdentML object model.
      */
     private MzIdentML mzIdentML;
@@ -69,18 +73,19 @@ public class MzIdentMLExporter {
     private final UserRepository userRepository;
 
     @Autowired
-    public MzIdentMLExporter(UserRepository userRepository) {
+    public MzIdentMlExporter(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     /**
-     * Read in the JSON file that contains mzIdentML related controlled vocabulary terms.
+     * Read in the JSON file that contains mzIdentML related controlled
+     * vocabulary terms.
      *
      * @throws IOException in case of a I/O related problem
      */
     @PostConstruct
     public void init() throws IOException {
-        Resource ontologyMapping = ResourceUtils.getResourceByRelativePath("config/mzidentml.json");
+        Resource ontologyMapping = ResourceUtils.getResourceByRelativePath("config/mzidentml-ontology-terms.json");
         ontologyTerms = objectReader.readTree(ontologyMapping.getInputStream());
     }
 
@@ -93,6 +98,7 @@ public class MzIdentMLExporter {
      */
     public String export(List<AnalyticalRun> analyticalRuns) throws IOException {
         this.analyticalRuns = analyticalRuns;
+        this.searchEngine = analyticalRuns.get(0).getSearchAndValidationSettings().getSearchEngine();
 
         MzIdentMLMarshaller marshaller = new MzIdentMLMarshaller();
 
@@ -107,20 +113,31 @@ public class MzIdentMLExporter {
      */
     private MzIdentML populate() throws IOException {
         mzIdentML = new MzIdentML();
-        mzIdentML.setAuditCollection(new AuditCollection());
 
         mzIdentML.setId("colims-" + COLIMS_VERSION);
         mzIdentML.setVersion(MZIDENTML_VERSION);
         mzIdentML.setCreationDate(new GregorianCalendar());
-        mzIdentML.setCvList(cvList());
-        auditCollection();
-        mzIdentML.setProvider(provider());
-        mzIdentML.setDataCollection(dataCollection());
-        mzIdentML.setAnalysisSoftwareList(analysisSoftwareList());
-        mzIdentML.setAnalysisProtocolCollection(analysisProtocolCollection());
 
-        assembleSpectrumData();
+        CvList cvList = populateCvList();
+        mzIdentML.setCvList(cvList);
 
+        AuditCollection auditCollection = populateAuditCollection();
+        mzIdentML.setAuditCollection(auditCollection);
+
+        Provider provider = populateProvider(auditCollection.getPerson().get(0));
+        mzIdentML.setProvider(provider);
+
+        AnalysisSoftwareList analysisSoftwareList = populateAnalysisSoftwareList(auditCollection);
+        mzIdentML.setAnalysisSoftwareList(analysisSoftwareList);
+
+        DataCollection dataCollection = populateDataCollection();
+        mzIdentML.setDataCollection(dataCollection);
+
+        AnalysisSoftware analysisSoftware = analysisSoftwareList.getAnalysisSoftware().get(0);
+        AnalysisProtocolCollection analysisProtocolCollection = populateAnalysisProtocolCollection(analysisSoftware);
+        mzIdentML.setAnalysisProtocolCollection(analysisProtocolCollection);
+
+//        assembleSpectrumData();
         return mzIdentML;
     }
 
@@ -129,78 +146,95 @@ public class MzIdentMLExporter {
      *
      * @return CvList List of CV sources
      */
-    private CvList cvList() throws IOException {
+    private CvList populateCvList() throws IOException {
         CvList cvList = new CvList();
 
-        cvList.getCv().addAll(getMzIdentMlElements("CvList", Cv.class));
+        cvList.getCv().addAll(getChildMzIdentMlElements("/CvList", Cv.class));
 
         return cvList;
     }
 
     /**
-     * Create collection for associated entities, add the owner of this run.
+     * Populate the audit collection for associated entities, add the owner of
+     * the run's project.
      */
-    private void auditCollection() throws IOException {
-        // TODO: currently all users are associated with a placeholder org
-        // but surely this needs to be the place they do the science
-        // which they would have to input manually, somewhere
+    private AuditCollection populateAuditCollection() throws IOException {
+        AuditCollection auditCollection = new AuditCollection();
 
-        AuditCollection auditCollection = mzIdentML.getAuditCollection();
+        //get the owner of the project by the first run
+        //@TODO provide an option to choose the user during the export process?
+        User owner = analyticalRuns.get(0).getSample().getExperiment().getProject().getOwner();
 
-        User user = userRepository.findByName(analyticalRuns.get(0).getUserName());
-
+        //create the owner person
         Person person = new Person();
-        person.setId(user.getId().toString());
-        person.setFirstName(user.getFirstName());
-        person.setLastName(user.getLastName());
+        person.setId("PERSON_DOC_OWNER");
+        person.setFirstName(owner.getFirstName());
+        person.setLastName(owner.getLastName());
 
-        CvParam email = getDataItem("Person.email", CvParam.class);
-        email.setValue(user.getEmail());
+        CvParam email = getMzIdentMlElement("/Person/email", CvParam.class);
+        email.setValue(owner.getEmail());
 
         person.getCvParam().add(email);
 
-        Institution institution = user.getInstitution();
-
-        // TODO: if instiution does not have at least name or address then throw error (will be invalid)
-        Organization org = new Organization(); //getContact("LAB_PLACEHOLDER", Organization.class);
-        org.setId(institution.getName());
-
-        CvParam cvParam = getDataItem("Organization.TEMPLATE.address", CvParam.class);
-        // TODO: replace with stream
-        cvParam.setValue(StringUtils.join(institution.getAddress(), ", "));
-        org.getCvParam().add(cvParam);
-
-        cvParam = getDataItem("Organization.TEMPLATE.name", CvParam.class);
-        cvParam.setValue(institution.getName());
-        org.getCvParam().add(cvParam);
-
-        org.getCvParam().add(getDataItem("Organization.TEMPLATE.affiliation", CvParam.class));
-
-        auditCollection.getOrganization().add(org);
-
-        Affiliation affiliation = new Affiliation();
-        affiliation.setOrganization(org);
-
-        person.getAffiliation().add(affiliation);
-
         auditCollection.getPerson().add(person);
+
+        //create the owner organisation from the associated institution
+        Institution institution = owner.getInstitution();
+
+        Organization organization = new Organization();
+        //getContact("LAB_PLACEHOLDER", Organization.class);
+        organization.setId(institution.getName());
+
+        CvParam address = getMzIdentMlElement("/Organization/TEMPLATE/address", CvParam.class);
+        address.setValue(Arrays.stream(institution.getAddress()).collect(Collectors.joining(", ")));
+        organization.getCvParam().add(address);
+
+        CvParam name = getMzIdentMlElement("/Organization/TEMPLATE/name", CvParam.class);
+        name.setValue(institution.getName());
+        organization.getCvParam().add(name);
+
+        if (institution.getEmail() != null && !institution.getEmail().isEmpty()) {
+            CvParam institutionEmail = getMzIdentMlElement("/Organization/TEMPLATE/email", CvParam.class);
+            institutionEmail.setValue(institution.getEmail());
+            organization.getCvParam().add(institutionEmail);
+        }
+
+        if (institution.getUrl() != null && !institution.getUrl().isEmpty()) {
+            CvParam url = getMzIdentMlElement("/Organization/TEMPLATE/url", CvParam.class);
+            url.setValue(institution.getUrl());
+            organization.getCvParam().add(url);
+        }
+
+        auditCollection.getOrganization().add(organization);
+
+        //set the person's organisation affiliation
+        Affiliation organisationAffiliation = new Affiliation();
+        organisationAffiliation.setOrganization(organization);
+
+        person.getAffiliation().add(organisationAffiliation);
+
+        return auditCollection;
     }
 
     /**
-     * Create the contact and software provider element.
+     * Populate the provider element.
      *
-     * @return Provider element
+     * @param person the contact person
+     * @return the provider MzIdentML element
      */
-    private Provider provider() throws IOException {
+    private Provider populateProvider(Person person) throws IOException {
         Provider provider = new Provider();
         provider.setId("PROVIDER");
+
         provider.setContactRole(new ContactRole());
 
+        provider.getContactRole().setContact(mzIdentML.getAuditCollection().getPerson().get(0));
+
+        //set the researcher role
         Role role = new Role();
-        role.setCvParam(getDataItem("Role.researcher", CvParam.class));
+        role.setCvParam(getMzIdentMlElement("/Role/researcher", CvParam.class));
 
         provider.getContactRole().setRole(role);
-        provider.getContactRole().setContact(mzIdentML.getAuditCollection().getPerson().get(0));
 
         return provider;
     }
@@ -208,42 +242,50 @@ public class MzIdentMLExporter {
     /**
      * Construct the list of analysis software.
      *
-     * @return AnalysisSoftwareList the list
-     * @throws IOException
+     * @param auditCollection the {@link AuditCollection} to add the software organization to
+     * @return the populated {@link AnalysisSoftware} instance
+     * @throws IOException in case of an JSON parsing related problem
      */
-    private AnalysisSoftwareList analysisSoftwareList() throws IOException {
-        AnalysisSoftwareList list = new AnalysisSoftwareList();
+    private AnalysisSoftwareList populateAnalysisSoftwareList(AuditCollection auditCollection) throws IOException {
+        AnalysisSoftwareList analysisSoftwareList = new AnalysisSoftwareList();
 
-        SearchAndValidationSettings settings = analyticalRuns.get(0).getSearchAndValidationSettings();
+        AnalysisSoftware analysisSoftware = getMzIdentMlElement("/AnalysisSoftware/" + searchEngine.getName(), AnalysisSoftware.class);
+        analysisSoftware.setVersion(searchEngine.getVersion());
 
-        AnalysisSoftware software = getDataItem("AnalysisSoftware." + settings.getSearchEngine().getName(), AnalysisSoftware.class);
-        software.setVersion(settings.getSearchEngine().getVersion());
-        software.setSoftwareName(new Param());
-        software.getSoftwareName().setParam(getDataItem("AnalysisSoftwareCV." + settings.getSearchEngine().getName(), CvParam.class));
+        analysisSoftware.setSoftwareName(new Param());
+        CvParam softwareName = getMzIdentMlElement("/AnalysisSoftwareCV/" + searchEngine.getName(), CvParam.class);
+        analysisSoftware.getSoftwareName().setParam(softwareName);
+
+        //create the software organisation
+        Organization organization = new Organization();
+        organization.setId(searchEngine.getName());
+        List<CvParam> organizationCvParams = getChildMzIdentMlElements("/Organization/" + searchEngine.getName(), CvParam.class);
+        organization.getCvParam().addAll(organizationCvParams);
+        //and add it to the audit collection
+        auditCollection.getOrganization().add(organization);
 
         ContactRole contactRole = new ContactRole();
-        contactRole.setContact(getContact(settings.getSearchEngine().getName(), Organization.class));
+        contactRole.setContact(organization);
         contactRole.setRole(new Role());
-        contactRole.getRole().setCvParam(getDataItem("Role.software vendor", CvParam.class));
+        contactRole.getRole().setCvParam(getMzIdentMlElement("/Role/software vendor", CvParam.class));
+        analysisSoftware.setContactRole(contactRole);
 
-        software.setContactRole(contactRole);
+        analysisSoftwareList.getAnalysisSoftware().add(analysisSoftware);
 
-        list.getAnalysisSoftware().add(software);
-
-        return list;
+        return analysisSoftwareList;
     }
 
     /**
      * Details of the data source for the experiment.
      *
-     * @return Populated DataCollection object
-     * @throws IOException if something is missing from the JSON
+     * @return the populated {@link DataCollection} object
+     * @throws IOException in case of a JSON parsing related problem
      */
-    private DataCollection dataCollection() throws IOException {
+    private DataCollection populateDataCollection() throws IOException {
         DataCollection dataCollection = new DataCollection();
-        dataCollection.setInputs(new Inputs());
 
-        inputs = dataCollection.getInputs();
+        inputs = new Inputs();
+        dataCollection.setInputs(inputs);
 
         //iterate over the different FASTA databases used for the searches
         for (SearchSettingsHasFastaDb searchSettingsHasFastaDb : analyticalRuns.get(0).getSearchAndValidationSettings().getSearchSettingsHasFastaDbs()) {
@@ -255,14 +297,13 @@ public class MzIdentMLExporter {
             searchDatabase.setName(fasta.getName());
             searchDatabase.setVersion(fasta.getVersion());
             searchDatabase.setFileFormat(new FileFormat());
+            searchDatabase.getFileFormat().setCvParam(getMzIdentMlElement("/FileFormat/FASTA", CvParam.class));
             searchDatabase.setDatabaseName(new Param());
-            searchDatabase.getFileFormat().setCvParam(getDataItem("FileFormat.FASTA", CvParam.class));
-            searchDatabase.getCvParam().add(getDataItem("SearchDatabase.type", CvParam.class));
+            searchDatabase.getCvParam().add(getMzIdentMlElement("/SearchDatabase/type", CvParam.class));
 
-            // NOTE: if decoy database used then cv param should be child of MS:1001450 here
+            //NOTE: if decoy database used then cv param should be child of MS:1001450 here
             UserParam databaseName = new UserParam();
             databaseName.setName(fasta.getName());
-
             searchDatabase.getDatabaseName().setParam(databaseName);
 
             inputs.getSearchDatabase().add(searchDatabase);
@@ -276,40 +317,43 @@ public class MzIdentMLExporter {
     /**
      * Gather all data relating to search and protein protocol settings.
      *
-     * @return Analysis Protocol object
+     * @param analysisSoftware the analysis software
+     * @return the populated {@link AnalysisProtocolCollection} object
      */
-    private AnalysisProtocolCollection analysisProtocolCollection() throws IOException {
+    private AnalysisProtocolCollection populateAnalysisProtocolCollection(AnalysisSoftware analysisSoftware) throws IOException {
         AnalysisProtocolCollection collection = new AnalysisProtocolCollection();
 
         SearchAndValidationSettings settings = analyticalRuns.get(0).getSearchAndValidationSettings();
         SearchParameters searchParameters = settings.getSearchParameters();
 
-        // Spectrum Identification Protocol
         SpectrumIdentificationProtocol spectrumProtocol = new SpectrumIdentificationProtocol();
 
+        //set analysis software and search type
         spectrumProtocol.setId("SP-1");
-        spectrumProtocol.setAnalysisSoftware(mzIdentML.getAnalysisSoftwareList().getAnalysisSoftware().get(0)); // bad
+        spectrumProtocol.setAnalysisSoftware(analysisSoftware);
         spectrumProtocol.setSearchType(new Param());
-        spectrumProtocol.getSearchType().setParam(getDataItem("SearchType.ms-ms", CvParam.class));
+        spectrumProtocol.getSearchType().setParam(getMzIdentMlElement("/SearchType/ms-ms", CvParam.class));
 
-        // Threshold
+        //@// TODO: 28/11/16 check the other CV params from PeptideShaker
+        //set the threshold values
         spectrumProtocol.setThreshold(new ParamList());
-        spectrumProtocol.getThreshold().getCvParam().add(getDataItem("Threshold.no", CvParam.class));
+        spectrumProtocol.getThreshold().getCvParam().add(getMzIdentMlElement("/Threshold/no", CvParam.class));
+
 
         // TODO: threshold value and type as cv param
         if (searchParameters.getSearchParametersHasModifications().size() > 0) {
             spectrumProtocol.setModificationParams(new ModificationParams());
 
-            for (SearchParametersHasModification searchHasMod : searchParameters.getSearchParametersHasModifications()) {
-                SearchModification colimsSearchMod = searchHasMod.getSearchModification();
+            for (SearchParametersHasModification searchParametersHasModification : searchParameters.getSearchParametersHasModifications()) {
+                SearchModification colimsSearchModification = searchParametersHasModification.getSearchModification();
 
-                uk.ac.ebi.jmzidml.model.mzidml.SearchModification mzSearchMod = new uk.ac.ebi.jmzidml.model.mzidml.SearchModification();
-                mzSearchMod.setFixedMod(searchHasMod.getModificationType() == ModificationType.FIXED);
-                mzSearchMod.setMassDelta(colimsSearchMod.getAverageMassShift().floatValue());
+                uk.ac.ebi.jmzidml.model.mzidml.SearchModification mzSearchModification = new uk.ac.ebi.jmzidml.model.mzidml.SearchModification();
+                mzSearchModification.setFixedMod(searchParametersHasModification.getModificationType() == ModificationType.FIXED);
+                mzSearchModification.setMassDelta(colimsSearchModification.getAverageMassShift().floatValue());
 
-                mzSearchMod.getCvParam().add(modificationToCvParam(colimsSearchMod));
+                mzSearchModification.getCvParam().add(modificationToCvParam(colimsSearchModification));
 
-                spectrumProtocol.getModificationParams().getSearchModification().add(mzSearchMod);
+                spectrumProtocol.getModificationParams().getSearchModification().add(mzSearchModification);
             }
         }
 
@@ -324,7 +368,7 @@ public class MzIdentMLExporter {
         if (colimsEnzymes != null) {
             for (String colimsEnzyme : colimsEnzymes.split(";")) {
                 //@// TODO: 27/09/16 refactor this
-                cvEnzyme = getDataItem("Enzyme." + colimsEnzyme, CvParam.class);
+                cvEnzyme = getMzIdentMlElement("/Enzyme/" + colimsEnzyme, CvParam.class);
                 cvEnzyme.setName(colimsEnzyme);
                 cvEnzyme.setAccession(colimsEnzyme);
 
@@ -336,7 +380,7 @@ public class MzIdentMLExporter {
                 spectrumProtocol.getEnzymes().getEnzyme().add(mzEnzyme);
             }
         } else {
-            cvEnzyme = getDataItem("GenericCV.PSI-MS", CvParam.class);
+            cvEnzyme = getMzIdentMlElement("/GenericCV/PSI-MS", CvParam.class);
             cvEnzyme.setName("no enzyme");
             cvEnzyme.setAccession("MS:1001091");
 
@@ -345,11 +389,11 @@ public class MzIdentMLExporter {
         }
 
         // Fragment Tolerance
-        CvParam fragmentMinus = getDataItem("Tolerance.minus", CvParam.class);
+        CvParam fragmentMinus = getMzIdentMlElement("/Tolerance/minus", CvParam.class);
         fragmentMinus.setValue(searchParameters.getFragMassTolerance().toString());
         fragmentMinus.setUnitName(searchParameters.getFragMassToleranceUnit().toString());
 
-        CvParam fragmentPlus = getDataItem("Tolerance.plus", CvParam.class);
+        CvParam fragmentPlus = getMzIdentMlElement("/Tolerance/plus", CvParam.class);
         fragmentPlus.setValue(searchParameters.getFragMassTolerance().toString());
         fragmentPlus.setUnitName(searchParameters.getFragMassToleranceUnit().toString());
 
@@ -357,12 +401,12 @@ public class MzIdentMLExporter {
             case DA:
                 fragmentMinus.setUnitName("dalton");
                 fragmentMinus.setUnitAccession("UO:0000221");
-                fragmentMinus.setUnitCv(getDataItem("CvList.UO", Cv.class));
+                fragmentMinus.setUnitCv(getMzIdentMlElement("/CvList/UO", Cv.class));
                 break;
             case PPM:
                 fragmentMinus.setUnitName("parts per million");
                 fragmentMinus.setUnitAccession("UO:0000169");
-                fragmentMinus.setUnitCv(getDataItem("CvList.UO", Cv.class));
+                fragmentMinus.setUnitCv(getMzIdentMlElement("/CvList/UO", Cv.class));
                 break;
             default:
                 break;
@@ -386,7 +430,7 @@ public class MzIdentMLExporter {
         proteinProtocol.setAnalysisSoftware(mzIdentML.getAnalysisSoftwareList().getAnalysisSoftware().get(0));
 
         proteinProtocol.setThreshold(new ParamList());
-        proteinProtocol.getThreshold().getCvParam().add(getDataItem("Threshold.no", CvParam.class));
+        proteinProtocol.getThreshold().getCvParam().add(getMzIdentMlElement("/Threshold/no", CvParam.class));
 
         // TODO: threshold value and type as cv param
         collection.setProteinDetectionProtocol(proteinProtocol);
@@ -398,7 +442,6 @@ public class MzIdentMLExporter {
      * Iterate the spectrum data for this run and populate the necessary objects
      * with it.
      */
-
     private void assembleSpectrumData() throws IOException {
         SpectrumIdentificationList spectrumIdentificationList = new SpectrumIdentificationList();
         spectrumIdentificationList.setId("SIL-1");
@@ -410,10 +453,10 @@ public class MzIdentMLExporter {
         AnalysisCollection analysisCollection = new AnalysisCollection();
 
         FileFormat spectrumFileFormat = new FileFormat();
-        spectrumFileFormat.setCvParam(getDataItem("FileFormat.Mascot MGF", CvParam.class));
+        spectrumFileFormat.setCvParam(getMzIdentMlElement("/FileFormat/Mascot MGF", CvParam.class));
 
         SpectrumIDFormat spectrumIDFormat = new SpectrumIDFormat();
-        spectrumIDFormat.setCvParam(getDataItem("SpectrumIDFormat.mascot query number", CvParam.class));
+        spectrumIDFormat.setCvParam(getMzIdentMlElement("/SpectrumIDFormat/mascot query number", CvParam.class));
 
         SearchDatabaseRef dbRef = new SearchDatabaseRef();
         dbRef.setSearchDatabase(inputs.getSearchDatabase().get(0));
@@ -578,7 +621,7 @@ public class MzIdentMLExporter {
         dbSequence.setSeq(protein.getSequence());
         dbSequence.setSearchDatabase(inputs.getSearchDatabase().get(0));
 
-        CvParam cvParam = getDataItem("DBSequence.description", CvParam.class);
+        CvParam cvParam = getMzIdentMlElement("/DBSequence/description", CvParam.class);
         cvParam.setValue(proteinGroupHasProtein.getProteinAccession());
 
         dbSequence.getCvParam().add(cvParam);
@@ -598,9 +641,9 @@ public class MzIdentMLExporter {
         CvParam modParam;
 
         if (modification.getAccession().startsWith(UNIMOD_PREFIX)) {
-            modParam = getDataItem("GenericCV.UNIMOD", CvParam.class);
+            modParam = getMzIdentMlElement("/GenericCV/UNIMOD", CvParam.class);
         } else {
-            modParam = getDataItem("GenericCV.PSI-MS", CvParam.class);
+            modParam = getMzIdentMlElement("/GenericCV/PSI-MS", CvParam.class);
         }
         modParam.setName(modification.getName());
         modParam.setAccession(modification.getAccession());
@@ -609,64 +652,32 @@ public class MzIdentMLExporter {
     }
 
     /**
-     * Create a new contact detail object.
+     * Get a list of child MzIdentML elements by their class and parent name.
      *
-     * @param name Contact name
-     * @param type Desired return type
-     * @param <T>  Subclass of AbstractContact
-     * @return Contact as subclass of AbstractContact
-     */
-    private <T extends AbstractContact> T getContact(String name, Class<T> type) throws IOException {
-        T contact = null;
-
-        try {
-            Constructor ctor = type.getDeclaredConstructor();
-            contact = (T) ctor.newInstance();
-        } catch (ReflectiveOperationException e) {
-            LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
-        }
-
-        if (contact != null) {
-            contact.setId(name);
-            contact.getCvParam().addAll(getMzIdentMlElements(type.getSimpleName() + "." + name, CvParam.class));
-
-            mzIdentML.getAuditCollection().getPersonOrOrganization().add(contact);
-        }
-
-        return contact;
-    }
-
-    /**
-     * Get a list of data items mapped to the specified object type.
-     *
-     * @param name name of key or dot notation path to key
-     * @param type type of objects to return
-     * @param <T>  subclass of MzIdentMLObject
+     * @param parentName name of key or dot notation path to key
+     * @param type       type of objects to return
+     * @param <T>        subclass of MzIdentMLObject
      * @return list of objects of type T
-     * @throws IOException in case of an I/O related problem
+     * @throws IOException in case of a JSON parsing related problem
      */
-    public <T extends MzIdentMLObject> List<T> getMzIdentMlElements(String name, Class<T> type) throws IOException {
-        JsonNode listNode = getTermNode(name);
-        List<T> data = new ArrayList<>();
+    public <T extends MzIdentMLObject> List<T> getChildMzIdentMlElements(String parentName, Class<T> type) throws IOException {
+        JsonNode parentNode = getNodeByPath(parentName);
 
-        if (listNode == null) {
-            LOGGER.warn("Contact details not found for contact name: " + name);
-        } else {
-            try {
-                for (JsonNode node : listNode) {
-                    data.add(objectReader.treeToValue(node, type));
-                }
-            } catch (IOException e) {
-                LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
-                throw e;
+        List<T> mzIdentMlElements = new ArrayList<>();
+        try {
+            for (JsonNode childNode : parentNode) {
+                mzIdentMlElements.add(objectReader.treeToValue(childNode, type));
             }
+        } catch (IOException e) {
+            LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
+            throw e;
         }
 
-        return data;
+        return mzIdentMlElements;
     }
 
     /**
-     * Get a single data item in the specified object type.
+     * Get an MzIdentML element by name and class.
      *
      * @param name Name of key or dot notation path to key
      * @param type Type of object to be returned
@@ -674,45 +685,33 @@ public class MzIdentMLExporter {
      * @return Object of type T
      * @throws java.io.IOException in case of an I/O related problem
      */
-    public <T extends MzIdentMLObject> T getDataItem(String name, Class<T> type) throws IOException {
-        JsonNode node = getTermNode(name);
+    public <T extends MzIdentMLObject> T getMzIdentMlElement(String name, Class<T> type) throws IOException {
+        JsonNode node = getNodeByPath(name);
 
-        List<T> item = new ArrayList<>();
-
+        T mzIdentMlElement;
         try {
-            item.add(objectReader.treeToValue(node, type));
+            mzIdentMlElement = objectReader.treeToValue(node, type);
         } catch (IOException e) {
             LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
+            throw e;
         }
 
-        return item.get(0);
+        return mzIdentMlElement;
     }
 
     /**
      * Find a node by name or dot notation path.
      *
-     * @param name name or path
+     * @param path name or path
      * @return the found JsonNode instance
+     * @throws IllegalArgumentException in case of an invalid path
      */
-    private JsonNode getTermNode(String name) throws IOException {
+    private JsonNode getNodeByPath(String path) throws IllegalArgumentException {
         JsonNode node;
 
-        if (name.contains(".")) {
-            String[] path = name.split("\\.");
-
-            //get the parent node
-            node = ontologyTerms.get(path[0]);
-
-            //iterate over the child nodes
-            for (int i = 1; i < path.length; ++i) {
-                node = node.get(path[i]);
-
-                if (node == null) {
-                    throw new IOException("Node " + name + " not found in the mzIdentML ontology terms file.");
-                }
-            }
-        } else {
-            node = ontologyTerms.get(name);
+        node = ontologyTerms.at(path);
+        if (node.isMissingNode()) {
+            throw new IllegalArgumentException("Node " + path + " not found in the mzIdentML ontology terms file.");
         }
 
         return node;

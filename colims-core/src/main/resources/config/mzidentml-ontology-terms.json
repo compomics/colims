@@ -4,7 +4,7 @@
             "id": "ID_software",
             "name": "MaxQuant",
             "version": "???",
-            "uri": "???"
+            "uri": "http://www.biochem.mpg.de/5111795/maxquant"
         },
         "PeptideShaker": {
             "id": "ID_software",
@@ -183,7 +183,7 @@
                 "cvRef": "PSI-MS",
                 "accession": "MS:1000588",
                 "name": "contact url",
-                "value": "http://peptide-shaker.googlecode.com"
+                "value": "http://compomics.github.io/projects/peptide-shaker.html"
             }
         }
     },
@@ -203,7 +203,7 @@
         "software vendor": {
             "cvRef": "PSI-MS",
             "accession": "MS:1001267",
-            "name": "CompOmics"
+            "name": "software vendor"
         }
     },
     "SearchDatabase": {

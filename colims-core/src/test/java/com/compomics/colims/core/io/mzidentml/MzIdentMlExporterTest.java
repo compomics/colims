@@ -2,6 +2,7 @@ package com.compomics.colims.core.io.mzidentml;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
+import java.io.FileWriter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +13,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftware;
 import uk.ac.ebi.jmzidml.model.mzidml.Cv;
-import uk.ac.ebi.jmzidml.model.mzidml.CvList;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,10 +25,10 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 @Transactional
 @Rollback
-public class MzIdentMLExporterTest {
+public class MzIdentMlExporterTest {
 
     @Autowired
-    private MzIdentMLExporter exporter;
+    private MzIdentMlExporter exporter;
 
     @Autowired
     private AnalyticalRunRepository repository;
@@ -45,25 +45,26 @@ public class MzIdentMLExporterTest {
         analyticalRuns.add(run);
 
         String export = exporter.export(analyticalRuns);
-//        System.out.println(export);
-//
-//        FileWriter testFileWriter = new FileWriter("/home/niels/Desktop/testMzIdentMl.xml", false);
-//        testFileWriter.write(export);
-//        testFileWriter.close();
+
+        System.out.println("test");
+        System.out.println(export);
+
+        FileWriter testFileWriter = new FileWriter("/home/niels/Desktop/testMzIdentMl.xml", false);
+        testFileWriter.write(export);
+        testFileWriter.close();
 
         Assert.assertFalse(export.isEmpty());
     }
 
     @Test
-    public void testClassListMapping() throws IOException {
-        CvList cvList = new CvList();
-        cvList.getCv().addAll(exporter.getMzIdentMlElements("CvList", Cv.class));
-        Assert.assertEquals(2, cvList.getCv().size());
+    public void testGetMzIdentMlElements() throws IOException {
+        List<Cv> cvs = exporter.getChildMzIdentMlElements("/CvList", Cv.class);
+        Assert.assertEquals(2, cvs.size());
     }
 
     @Test
-    public void testClassItemMapping() throws IOException {
-        AnalysisSoftware as = exporter.getDataItem("AnalysisSoftware.PeptideShaker", AnalysisSoftware.class);
-        Assert.assertEquals("PeptideShaker", as.getName());
+    public void testGetMzIdentMlElement() throws IOException {
+        AnalysisSoftware analysisSoftware = exporter.getMzIdentMlElement("/AnalysisSoftware/PeptideShaker", AnalysisSoftware.class);
+        Assert.assertEquals("PeptideShaker", analysisSoftware.getName());
     }
 }

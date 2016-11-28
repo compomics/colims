@@ -1,7 +1,6 @@
 use colims;
 
-
-
+   
     create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
@@ -102,10 +101,12 @@ use colims;
         abbreviation varchar(10) not null,
         city varchar(30) not null,
         country varchar(30) not null,
+        email varchar(255),
         name varchar(30) not null,
         number integer not null,
         postal_code integer,
         street varchar(20) not null,
+        url varchar(255),
         primary key (id)
     );
 
@@ -897,7 +898,7 @@ INSERT INTO permission (id, creation_date, modification_date, user_name, descrip
 INSERT INTO role_has_permission (l_role_id, l_permission_id) VALUES (1,1),(1,2),(1,3),(1,4),(2,1),(2,2),(2,3);
 
 -- insert default search engines
-INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '1.5.4.1');
+INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,'MS:1002458','MS','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '1.5.4.1');
 
 -- insert default quantification engines
 INSERT INTO quantification_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '1.5.4.1');

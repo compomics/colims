@@ -82,6 +82,10 @@ public class InstitutionManagementController implements Controllable {
         bindingGroup.addBinding(binding);
         binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, institutionManagementDialog.getInstitutionList(), BeanProperty.create("selectedElement.country"), institutionManagementDialog.getCountryTextField(), ELProperty.create("${text}"), "countryBinding");
         bindingGroup.addBinding(binding);
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, institutionManagementDialog.getInstitutionList(), BeanProperty.create("selectedElement.email"), institutionManagementDialog.getEmailTextField(), ELProperty.create("${text}"), "emailCodeBinding");
+        bindingGroup.addBinding(binding);
+        binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE, institutionManagementDialog.getInstitutionList(), BeanProperty.create("selectedElement.url"), institutionManagementDialog.getUrlTextField(), ELProperty.create("${text}"), "urlBinding");
+        bindingGroup.addBinding(binding);
 
         bindingGroup.bind();
 
@@ -262,6 +266,8 @@ public class InstitutionManagementController implements Controllable {
         institutionManagementDialog.getCityTextField().setText("");
         institutionManagementDialog.getPostalCodeTextField().setText("");
         institutionManagementDialog.getCountryTextField().setText("");
+        institutionManagementDialog.getEmailTextField().setText("");
+        institutionManagementDialog.getUrlTextField().setText("");
     }
 
 }

@@ -58,7 +58,7 @@ public class ColimsSpectrumMapper {
         Precursor precursor = new Precursor(retentionTime, mzRatio, sourceSpectrum.getIntensity(), chargeList);
         targetSpectrum.setPrecursor(precursor);
         //Add other parameters
-        targetSpectrum.setScanNumber(sourceSpectrum.getScanNumber());
+        targetSpectrum.setScanNumber(sourceSpectrum.getScanNumber().toString());
         targetSpectrum.setScanStartTime(sourceSpectrum.getScanTime());
         targetSpectrum.setSpectrumTitle(sourceSpectrum.getTitle());
         //Add peaks

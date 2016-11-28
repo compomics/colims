@@ -74,6 +74,18 @@ public class Institution extends AuditableDatabaseEntity {
     @Length(min = 3, max = 30, message = "Institution country name must be between {min} and {max} characters")
     @Column(name = "country", nullable = false)
     private String country;
+    /**
+     * The institution email.
+     */
+    @Basic(optional = true)
+    @Column(name = "email", nullable = true)
+    private String email;
+    /**
+     * The institution URL.
+     */
+    @Basic(optional = true)
+    @Column(name = "url", nullable = true)
+    private String url;
 
     public String getName() {
         return name;
@@ -131,6 +143,27 @@ public class Institution extends AuditableDatabaseEntity {
         this.country = country;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    /**
+     * Get the address as a String array.
+     *
+     * @return the address array
+     */
     public String[] getAddress() {
         String[] address = new String[3];
 
@@ -143,17 +176,39 @@ public class Institution extends AuditableDatabaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Institution that = (Institution) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (abbreviation != null ? !abbreviation.equals(that.abbreviation) : that.abbreviation != null) return false;
-        if (street != null ? !street.equals(that.street) : that.street != null) return false;
-        if (number != null ? !number.equals(that.number) : that.number != null) return false;
-        if (city != null ? !city.equals(that.city) : that.city != null) return false;
-        if (postalCode != null ? !postalCode.equals(that.postalCode) : that.postalCode != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (abbreviation != null ? !abbreviation.equals(that.abbreviation) : that.abbreviation != null) {
+            return false;
+        }
+        if (street != null ? !street.equals(that.street) : that.street != null) {
+            return false;
+        }
+        if (number != null ? !number.equals(that.number) : that.number != null) {
+            return false;
+        }
+        if (city != null ? !city.equals(that.city) : that.city != null) {
+            return false;
+        }
+        if (postalCode != null ? !postalCode.equals(that.postalCode) : that.postalCode != null) {
+            return false;
+        }
+        if (email != null ? !email.equals(that.email) : that.email != null) {
+            return false;
+        }
+        if (url != null ? !url.equals(that.url) : that.url != null) {
+            return false;
+        }
         return !(country != null ? !country.equals(that.country) : that.country != null);
 
     }

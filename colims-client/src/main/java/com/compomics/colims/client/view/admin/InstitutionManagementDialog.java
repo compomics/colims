@@ -76,6 +76,14 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
         return institutionStateInfoLabel;
     }
 
+    public JTextField getEmailTextField() {
+        return emailTextField;
+    }
+
+    public JTextField getUrlTextField() {
+        return urlTextField;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -112,6 +120,10 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
         saveOrUpdateButton = new javax.swing.JButton();
         countryLabel = new javax.swing.JLabel();
         countryTextField = new javax.swing.JTextField();
+        urlLabel = new javax.swing.JLabel();
+        urlTextField = new javax.swing.JTextField();
+        emailLabel = new javax.swing.JLabel();
+        emailTextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Institution management");
@@ -166,7 +178,7 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
                         .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 238, Short.MAX_VALUE)))
+                        .addGap(0, 322, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -218,6 +230,12 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
         countryLabel.setText("Country*");
         countryLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
+        urlLabel.setText("urlLabel");
+        urlLabel.setPreferredSize(new java.awt.Dimension(48, 14));
+
+        emailLabel.setText("Email");
+        emailLabel.setPreferredSize(new java.awt.Dimension(48, 14));
+
         javax.swing.GroupLayout institutionDetailPanelLayout = new javax.swing.GroupLayout(institutionDetailPanel);
         institutionDetailPanel.setLayout(institutionDetailPanelLayout);
         institutionDetailPanelLayout.setHorizontalGroup(
@@ -233,24 +251,28 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
                         .addGroup(institutionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(abbreviationTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 398, Short.MAX_VALUE)
                             .addComponent(nameTextField)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, institutionDetailPanelLayout.createSequentialGroup()
+                        .addComponent(institutionStateInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(institutionDetailPanelLayout.createSequentialGroup()
                         .addGroup(institutionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(emailLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(urlLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(postalCodeLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
                             .addComponent(cityLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(versionLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(countryLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(streetLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(institutionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(countryTextField)
-                            .addComponent(postalCodeTextField, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cityTextField)
-                            .addComponent(numberTextField)
-                            .addComponent(streetTextField)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, institutionDetailPanelLayout.createSequentialGroup()
-                        .addComponent(institutionStateInfoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(12, 12, 12)
+                        .addGroup(institutionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(urlTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(countryTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(postalCodeTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(cityTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(numberTextField, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(streetTextField)
+                            .addComponent(emailTextField))))
                 .addContainerGap())
         );
         institutionDetailPanelLayout.setVerticalGroup(
@@ -284,6 +306,14 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
                 .addGroup(institutionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(countryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(countryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(institutionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(urlLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(urlTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(institutionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(emailLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(emailTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(institutionDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -321,7 +351,7 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
         institutionManagementParentPanelLayout.setVerticalGroup(
             institutionManagementParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(institutionManagementParentPanelLayout.createSequentialGroup()
-                .addComponent(institutionManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                .addComponent(institutionManagementPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -350,6 +380,8 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
     private javax.swing.JLabel countryLabel;
     private javax.swing.JTextField countryTextField;
     private javax.swing.JButton deleteButton;
+    private javax.swing.JLabel emailLabel;
+    private javax.swing.JTextField emailTextField;
     private javax.swing.JPanel institutionDetailPanel;
     private javax.swing.JPanel institutionDetailParentPanel;
     private javax.swing.JList institutionList;
@@ -366,6 +398,8 @@ public class InstitutionManagementDialog extends javax.swing.JDialog {
     private javax.swing.JButton saveOrUpdateButton;
     private javax.swing.JLabel streetLabel;
     private javax.swing.JTextField streetTextField;
+    private javax.swing.JLabel urlLabel;
+    private javax.swing.JTextField urlTextField;
     private javax.swing.JLabel versionLabel;
     // End of variables declaration//GEN-END:variables
 }

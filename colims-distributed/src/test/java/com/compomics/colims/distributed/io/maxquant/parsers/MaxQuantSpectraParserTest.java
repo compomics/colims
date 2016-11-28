@@ -26,6 +26,7 @@ public class MaxQuantSpectraParserTest {
         omittedProteinIds.add(0);
         omittedProteinIds.add(1);
 
+        maxQuantSpectraParser.clear();
         maxQuantSpectraParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, false, omittedProteinIds);
 
         MaxQuantSpectra maxQuantSpectra = maxQuantSpectraParser.getMaxQuantSpectra();
