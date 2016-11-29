@@ -1,6 +1,7 @@
 package com.compomics.colims.model;
 
 import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.colims.model.enums.ScoreType;
 import com.compomics.colims.model.util.CompareUtils;
 
 import javax.persistence.*;
@@ -35,19 +36,25 @@ public class SearchParameters extends DatabaseEntity {
     @Column(name = "missed_cleavages", nullable = true)
     private Integer numberOfMissedCleavages;
     /**
-     * The PSM sequence-level global FDR.
+     * The target-decoy score strategy.
+     */
+    @Column(name = "score_type", nullable = true)
+    @Enumerated(EnumType.ORDINAL)
+    private ScoreType scoreType;
+    /**
+     * The PSM sequence-level threshold.
      */
     @Basic(optional = true)
     @Column(name = "psm_threshold", nullable = true)
     private Double psmThreshold;
     /**
-     * The peptide sequence-level global FDR.
+     * The peptide sequence-level threshold.
      */
     @Basic(optional = true)
     @Column(name = "peptide_threshold", nullable = true)
     private Double peptideThreshold;
     /**
-     * The protein sequence-level global FDR.
+     * The protein sequence-level threshold.
      */
     @Basic(optional = true)
     @Column(name = "protein_threshold", nullable = true)
@@ -142,6 +149,14 @@ public class SearchParameters extends DatabaseEntity {
 
     public void setNumberOfMissedCleavages(Integer numberOfMissedCleavages) {
         this.numberOfMissedCleavages = numberOfMissedCleavages;
+    }
+
+    public ScoreType getScoreType() {
+        return scoreType;
+    }
+
+    public void setScoreType(ScoreType scoreType) {
+        this.scoreType = scoreType;
     }
 
     public Double getPsmThreshold() {
@@ -267,9 +282,13 @@ public class SearchParameters extends DatabaseEntity {
         if (enzymes != null ? !enzymes.equals(that.enzymes) : that.enzymes != null) return false;
         if (numberOfMissedCleavages != null ? !numberOfMissedCleavages.equals(that.numberOfMissedCleavages) : that.numberOfMissedCleavages != null)
             return false;
-        if (psmThreshold != null ? !CompareUtils.equals(psmThreshold, that.psmThreshold) : that.psmThreshold != null) return false;
-        if (peptideThreshold != null ? !CompareUtils.equals(peptideThreshold, that.peptideThreshold) : that.peptideThreshold != null) return false;
-        if (proteinThreshold != null ? !CompareUtils.equals(proteinThreshold, that.proteinThreshold) : that.proteinThreshold != null) return false;
+        if (scoreType != that.scoreType) return false;
+        if (psmThreshold != null ? !CompareUtils.equals(psmThreshold, that.psmThreshold) : that.psmThreshold != null)
+            return false;
+        if (peptideThreshold != null ? !CompareUtils.equals(peptideThreshold, that.peptideThreshold) : that.peptideThreshold != null)
+            return false;
+        if (proteinThreshold != null ? !CompareUtils.equals(proteinThreshold, that.proteinThreshold) : that.proteinThreshold != null)
+            return false;
         if (precMassTolerance != null ? !CompareUtils.equals(precMassTolerance, that.precMassTolerance) : that.precMassTolerance != null)
             return false;
         if (precMassToleranceUnit != that.precMassToleranceUnit) return false;
@@ -289,6 +308,7 @@ public class SearchParameters extends DatabaseEntity {
         int result = searchType != null ? searchType.hashCode() : 0;
         result = 31 * result + (enzymes != null ? enzymes.hashCode() : 0);
         result = 31 * result + (numberOfMissedCleavages != null ? numberOfMissedCleavages.hashCode() : 0);
+        result = 31 * result + (scoreType != null ? scoreType.hashCode() : 0);
         result = 31 * result + (psmThreshold != null ? psmThreshold.hashCode() : 0);
         result = 31 * result + (peptideThreshold != null ? peptideThreshold.hashCode() : 0);
         result = 31 * result + (proteinThreshold != null ? proteinThreshold.hashCode() : 0);

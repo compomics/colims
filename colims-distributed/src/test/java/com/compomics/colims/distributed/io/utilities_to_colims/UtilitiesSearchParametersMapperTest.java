@@ -8,6 +8,8 @@ import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import com.compomics.util.experiment.massspectrometry.Charge;
+import com.compomics.util.preferences.IdMatchValidationPreferences;
+import com.compomics.util.preferences.IdentificationParameters;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,9 +75,12 @@ public class UtilitiesSearchParametersMapperTest {
 
         utilitiesSearchParameters.setPtmSettings(ptmSettings);
 
+        //create identification parameters
+        IdentificationParameters identificationParameters = IdentificationParameters.getDefaultIdentificationParameters(utilitiesSearchParameters);
+
         SearchParameters searchParameters = new SearchParameters();
 
-        utilitiesSearchParametersMapper.map(utilitiesSearchParameters, searchParameters);
+        utilitiesSearchParametersMapper.map(identificationParameters, searchParameters);
 
         Assert.assertNotNull(searchParameters.getSearchType());
         Assert.assertTrue("MS:1001083".equals(searchParameters.getSearchType().getAccession()));
@@ -106,6 +111,11 @@ public class UtilitiesSearchParametersMapperTest {
         Assert.assertEquals(PeptideFragmentIon.A_ION, searchParameters.getFirstSearchedIonType().intValue());
         Assert.assertNotNull(searchParameters.getSecondSearchedIonType());
         Assert.assertEquals(PeptideFragmentIon.B_ION, searchParameters.getSecondSearchedIonType().intValue());
+
+        IdMatchValidationPreferences idValidationPreferences = identificationParameters.getIdValidationPreferences();
+        Assert.assertEquals(idValidationPreferences.getDefaultPsmFDR(), searchParameters.getPsmThreshold(), 0.001);
+        Assert.assertEquals(idValidationPreferences.getDefaultPeptideFDR(), searchParameters.getPeptideThreshold(), 0.001);
+        Assert.assertEquals(idValidationPreferences.getDefaultProteinFDR(), searchParameters.getProteinThreshold(), 0.001);
 
         Assert.assertNotNull(searchParameters.getSearchParametersHasModifications());
         Assert.assertEquals(9, searchParameters.getSearchParametersHasModifications().size());

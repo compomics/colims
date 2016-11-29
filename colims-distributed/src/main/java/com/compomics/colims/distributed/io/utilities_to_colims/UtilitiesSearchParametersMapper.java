@@ -1,7 +1,6 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.io.Mapper;
-import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.service.TypedCvParamService;
 import com.compomics.colims.distributed.io.SearchModificationMapper;
 import com.compomics.colims.model.SearchCvParam;
@@ -15,8 +14,8 @@ import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
+import com.compomics.util.preferences.IdentificationParameters;
 import com.compomics.util.pride.CvTerm;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +29,7 @@ import javax.annotation.PostConstruct;
  * @author Niels Hulstaert
  */
 @Component("utilitiesSearchParametersMapper")
-public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.util.experiment.identification.identification_parameters.SearchParameters, SearchParameters> {
+public class UtilitiesSearchParametersMapper implements Mapper<IdentificationParameters, SearchParameters> {
 
     private static final String DEFAULT_SEARCH_TYPE_ACCESSION = "MS:1001083";
 
@@ -56,13 +55,19 @@ public class UtilitiesSearchParametersMapper implements Mapper<com.compomics.uti
     /**
      * Map the Utilities SearchParameters to the Colims SearchParameters.
      *
-     * @param utilitiesSearchParameters the Utilities search parameters
-     * @param searchParameters          the Colims search parameters
+     * @param identificationParameters the Utilities identification parameters
+     * @param searchParameters         the Colims search parameters
      */
     @Override
-    public void map(final com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters, final SearchParameters searchParameters) {
+    public void map(final IdentificationParameters identificationParameters, final SearchParameters searchParameters) {
         //set the default search type
         searchParameters.setSearchType(defaultSearchType);
+        //get the FDR values
+        searchParameters.setPsmThreshold(identificationParameters.getIdValidationPreferences().getDefaultPsmFDR());
+        searchParameters.setPeptideThreshold(identificationParameters.getIdValidationPreferences().getDefaultPeptideFDR());
+        searchParameters.setProteinThreshold(identificationParameters.getIdValidationPreferences().getDefaultProteinFDR());
+        //get the Utilities search parameters
+        com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters = identificationParameters.getSearchParameters();
         //map Utilities enzyme
         if (utilitiesSearchParameters.getEnzyme() != null) {
             searchParameters.setEnzymes(utilitiesSearchParameters.getEnzyme().getName());

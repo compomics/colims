@@ -84,9 +84,9 @@ public class MaxQuantSearchSettingsParser {
      */
     private final Map<Integer, String> labelMods = new HashMap<>();
     /**
-     * The peptide FDR threshold.
+     * The PSM FDR threshold.
      */
-    private Double peptideFdr;
+    private Double psmFdr;
     /**
      * The protein FDR threshold.
      */
@@ -237,6 +237,9 @@ public class MaxQuantSearchSettingsParser {
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setSearchType(defaultSearchType);
 
+        //set the target-decoy scoring strategy default to FDR
+        searchParameters.setScoreType(ScoreType.FDR);
+
         //precursor mass tolerance
         String precursorMassToleranceString = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.PEPTIDE_MASS_TOLERANCE);
         searchParameters.setPrecMassTolerance(Double.parseDouble(precursorMassToleranceString));
@@ -254,8 +257,8 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.setPrecMassToleranceUnit(massAccuracyType);
         searchParameters.setFragMassToleranceUnit(massAccuracyType);
 
-        //peptide and protein FDR
-        searchParameters.setPeptideThreshold(peptideFdr);
+        //PSM and protein FDR
+        searchParameters.setPsmThreshold(psmFdr);
         searchParameters.setProteinThreshold(proteinFdr);
 
         //enzyme
@@ -382,7 +385,7 @@ public class MaxQuantSearchSettingsParser {
         analyticalRuns.clear();
         isobaricLabels.clear();
         labelMods.clear();
-        peptideFdr = null;
+        psmFdr = null;
         proteinFdr = null;
 
         //create a map to hold raw files for each run (key: group index; value: raw file).
@@ -434,7 +437,7 @@ public class MaxQuantSearchSettingsParser {
 
         //get the values for the different levels of FDR
         Element peptideFdrElement = getChildByName(root, mqParHeaders.get(MqParHeader.PEPTIDE_FDR));
-        peptideFdr = Double.valueOf(peptideFdrElement.getText());
+        psmFdr = Double.valueOf(peptideFdrElement.getText());
         Element proteinFdrElement = getChildByName(root, mqParHeaders.get(MqParHeader.PROTEIN_FDR));
         proteinFdr = Double.valueOf(proteinFdrElement.getText());
 

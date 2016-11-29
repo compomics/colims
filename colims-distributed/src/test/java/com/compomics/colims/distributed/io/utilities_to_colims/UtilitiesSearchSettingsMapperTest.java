@@ -5,10 +5,12 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
 import com.compomics.colims.model.enums.FastaDbType;
+import com.compomics.colims.model.enums.ScoreType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.massspectrometry.Charge;
+import com.compomics.util.preferences.IdentificationParameters;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +29,7 @@ import java.util.EnumMap;
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 public class UtilitiesSearchSettingsMapperTest {
 
-    private SearchParameters searchParameters;
+    private IdentificationParameters identificationParameters;
     private EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
     @Autowired
     private UtilitiesSearchSettingsMapper utilitiesSearchSettingsMapper;
@@ -37,7 +39,7 @@ public class UtilitiesSearchSettingsMapperTest {
     @Before
     public void init() throws IOException {
         //create SearchParameters
-        searchParameters = new SearchParameters();
+        SearchParameters searchParameters = new SearchParameters();
         Enzyme enzyme = new Enzyme(1, "testEnzyme", "A", "A", "A", "A");
         searchParameters.setEnzyme(enzyme);
 
@@ -57,6 +59,9 @@ public class UtilitiesSearchSettingsMapperTest {
 
         //look for a FastaDB instance from the db
         fastaDbs.put(FastaDbType.PRIMARY, fastaDbService.findById(1L));
+
+        //create IdentificationParameters
+        identificationParameters = IdentificationParameters.getDefaultIdentificationParameters(searchParameters);
     }
 
     /**
@@ -66,12 +71,16 @@ public class UtilitiesSearchSettingsMapperTest {
      */
     @Test
     public void testMap() throws IOException {
-        SearchAndValidationSettings searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDbs, searchParameters, false);
+        SearchAndValidationSettings searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, "0.28.0", fastaDbs, identificationParameters, ScoreType.FDR, 0.001, false);
 
         Assert.assertNotNull(searchAndValidationSettings);
 
         //search parameters
         Assert.assertNotNull(searchAndValidationSettings.getSearchParameters());
+
+        //protein score type and threshold value
+        Assert.assertEquals(ScoreType.FDR, searchAndValidationSettings.getSearchParameters().getScoreType());
+        Assert.assertEquals(0.001, searchAndValidationSettings.getSearchParameters().getProteinThreshold(), 0.001);
 
         //search engine
         Assert.assertNotNull(searchAndValidationSettings.getSearchEngine());

@@ -6,6 +6,7 @@ import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.colims.model.enums.ScoreType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,13 +46,14 @@ public class MaxQuantSearchSettingsParserTest {
         Assert.assertEquals(20.0, searchParameters.getFragMassTolerance(), 0.001);
         Assert.assertEquals(MassAccuracyType.PPM, searchParameters.getFragMassToleranceUnit());
         Assert.assertEquals(Integer.valueOf(7), searchParameters.getUpperCharge());
-        Assert.assertEquals(0.01, searchParameters.getPeptideThreshold(), 0.001);
-        Assert.assertEquals(0.01, searchParameters.getPeptideThreshold(), 0.001);
+        Assert.assertEquals(ScoreType.FDR, searchParameters.getScoreType());
+        Assert.assertEquals(0.01, searchParameters.getPsmThreshold(), 0.001);
+        Assert.assertEquals(0.01, searchParameters.getProteinThreshold(), 0.001);
         Assert.assertFalse(searchParameters.getSearchParametersHasModifications().isEmpty());
         Assert.assertEquals(3, searchParameters.getSearchParametersHasModifications().size());
 
         Long id = searchParameters.getId();
-        //check if the ID of the other search paramters, has to be the same
+        //check if the ID of the other search parameters, has to be the same
         runSettings.entrySet().
                 stream().
                 filter(entry -> !entry.getKey().equals("20130607_FI_Ubiquitin_9")).

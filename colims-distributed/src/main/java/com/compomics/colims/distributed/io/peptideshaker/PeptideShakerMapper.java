@@ -10,6 +10,7 @@ import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSearchSe
 import com.compomics.colims.distributed.io.utilities_to_colims.UtilitiesSpectrumMapper;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
+import com.compomics.colims.model.enums.ScoreType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.MsExperiment;
 import com.compomics.util.experiment.identification.identifications.Ms2Identification;
@@ -24,6 +25,10 @@ import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.SpectrumFactory;
 import com.compomics.util.experiment.personalization.UrParameter;
 import eu.isas.peptideshaker.parameters.PSParameter;
+import eu.isas.peptideshaker.scoring.PSMaps;
+import eu.isas.peptideshaker.scoring.maps.ProteinMap;
+import eu.isas.peptideshaker.scoring.targetdecoy.TargetDecoyMap;
+import eu.isas.peptideshaker.scoring.targetdecoy.TargetDecoyResults;
 import eu.isas.peptideshaker.utils.CpsParent;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
@@ -119,20 +124,44 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
             analyticalRun.setStorageLocation(dataImport.getPeptideShakerCpsArchive().getCanonicalPath());
 
             //first, map the search settings
-            //get the CpsParent instance for accessing the .cps file
+            //get the CpsParent instance for accessing the .cpsx file
             CpsParent cpsParent = dataImport.getCpsParent();
             //get the MsExperiment instance
             MsExperiment msExperiment = cpsParent.getExperiment();
+
+            //get the Ms2Identification instance
+            Ms2Identification identification = (Ms2Identification) cpsParent.getIdentification();
+
+            PSMaps psMaps = new PSMaps();
+            psMaps = (PSMaps) identification.getUrParam(psMaps);
+            ProteinMap proteinMap = psMaps.getProteinMap();
+            TargetDecoyMap targetDecoyMap = proteinMap.getTargetDecoyMap();
+            TargetDecoyResults targetDecoyResults = targetDecoyMap.getTargetDecoyResults();
+
+            double proteinThreshold = targetDecoyResults.getUserInput() / 100;
+            int proteinThresholdType = targetDecoyResults.getInputType();
+            ScoreType proteinScoreType;
+
+            switch (proteinThresholdType) {
+                case 0:
+                    proteinScoreType = ScoreType.CONFIDENCE;
+                    break;
+                case 1:
+                    proteinScoreType = ScoreType.FDR;
+                    break;
+                case 2:
+                    proteinScoreType = ScoreType.FNR;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Should not be able to get here.");
+            }
 
             //load the (primary, there's only one) FASTA files
             FastaDb fastaDb = fastaDbService.findById(dataImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
 
             LOGGER.info("Start mapping search settings for PeptideShaker experiment " + msExperiment.getReference());
-            SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(dataImport, analyticalRun, fastaDb);
+            SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(dataImport, analyticalRun, fastaDb, proteinScoreType, proteinThreshold);
             LOGGER.info("Finished mapping search settings for PeptideShaker experiment " + msExperiment.getReference());
-
-            //get the Ms2Identification instance
-            Ms2Identification identification = (Ms2Identification) cpsParent.getIdentification();
 
             LOGGER.info("Start mapping PeptideShaker experiment " + msExperiment.getReference());
             //get the fasta file
@@ -142,8 +171,8 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
             //load the spectrum files, peptide en protein matches
             cpsParent.loadSpectrumFiles(null);
 
-            //We don't need to iterate over the samples in the .cps file because
-            //for the moment, because PeptideShaker .cps files contain only one sample.
+            //We don't need to iterate over the samples in the .cpsx file because
+            //for the moment, because PeptideShaker .cpsx files contain only one sample.
             //We don't need to iterate over the replicates/analytical runs in the .cps file
             //for the moment, because there's only one replicate per sample.
             //instantiate new analytical run
@@ -243,10 +272,12 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
      * @param unpackedPeptideShakerImport the UnpackedPeptideShakerImport instance
      * @param analyticalRun               the AnalyticalRun instance onto the search settings will be mapped
      * @param fastaDb                     the FastaDb instance retrieved from the database
+     * @param proteinScoreType            the protein target-decoy scoring strategy
+     * @param proteinThreshold            the protein score threshold
      * @return the mapped search and validation settings
      * @throws IOException thrown in case of an I/O related problem
      */
-    private SearchAndValidationSettings mapSearchSettings(final UnpackedPeptideShakerImport unpackedPeptideShakerImport, final AnalyticalRun analyticalRun, final FastaDb fastaDb) throws IOException {
+    private SearchAndValidationSettings mapSearchSettings(final UnpackedPeptideShakerImport unpackedPeptideShakerImport, final AnalyticalRun analyticalRun, final FastaDb fastaDb, final ScoreType proteinScoreType, final Double proteinThreshold) throws IOException {
         SearchAndValidationSettings searchAndValidationSettings;
 
         CpsParent cpsParent = unpackedPeptideShakerImport.getCpsParent();
@@ -255,7 +286,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
         EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
         fastaDbs.put(FastaDbType.PRIMARY, fastaDb);
 
-        searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, fastaDbs, cpsParent.getIdentificationParameters().getSearchParameters(), false);
+        searchAndValidationSettings = utilitiesSearchSettingsMapper.map(SearchEngineType.PEPTIDESHAKER, version, fastaDbs, cpsParent.getIdentificationParameters(), proteinScoreType, proteinThreshold, false);
 
         //set entity associations
         analyticalRun.setSearchAndValidationSettings(searchAndValidationSettings);
