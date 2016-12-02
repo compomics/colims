@@ -1,256 +1,315 @@
 {
-    "AnalysisSoftware": {
-        "MaxQuant": {
-            "id": "ID_software",
-            "name": "MaxQuant",
-            "version": "???",
-            "uri": "http://www.biochem.mpg.de/5111795/maxquant"
-        },
-        "PeptideShaker": {
-            "id": "ID_software",
-            "name": "PeptideShaker",
-            "version": "???",
-            "uri": "http://peptide-shaker.googlecode.com"
-        }
+  "AnalysisSoftware": {
+    "MaxQuant": {
+      "id": "ID_software",
+      "name": "MaxQuant",
+      "version": "???",
+      "uri": "http://www.biochem.mpg.de/5111795/maxquant"
     },
-    "AnalysisSoftwareCV": {
-        "MaxQuant": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001583",
-            "name": "MaxQuant"
-        },
-        "PeptideShaker": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1002458",
-            "name": "PeptideShaker"
-        }
-    },
-    "CvList": {
-        "PSI-MS": {
-            "id": "PSI-MS",
-            "uri": "http://psidev.cvs.sourceforge.net/viewvc/*checkout*/psidev/psi/psi-ms/mzML/controlledVocabulary/psi-ms.obo",
-            "version": "2.25.0",
-            "fullName": "PSI-MS"
-        },
-        "UO": {
-            "id": "UNIMOD",
-            "uri": "http://www.unimod.org/obo/unimod.obo",
-            "fullName": "UNIMOD"
-        }
-    },
-    "DBSequence": {
-        "description": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001088",
-            "name": "protein description"
-        }
-    },
-    "FileFormat": {
-        "FASTA": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001348",
-            "name": "FASTA format"
-        },
-        "Mascot DAT": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001199",
-            "name": "Mascot DAT format"
-        },
-        "Mascot MGF": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001062",
-            "name": "Mascot MGF format"
-        },
-        "MS Amanda": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1002459",
-            "name": "MS Amanda CSV format"
-        },
-        "Multiple peak list": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1000774",
-            "name": "Multiple peak list nativeID format"
-        },
-        "MzIdentML": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1002073",
-            "name": "MzIdentML format"
-        },
-        "OMSSA": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001400",
-            "name": "OMSSA XML file"
-        },
-        "PepXML": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001421",
-            "name": "PepXML format"
-        },
-        "Tab delimited": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1000914",
-            "name": "Tab delimited text format"
-        },
-        "XTandem": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001401",
-            "name": "XTandem XML file"
-        }
-    },
-    "GenericCV": {
-        "PSI-MS": {
-            "cvRef": "PSI-MS"
-        },
-        "UNIMOD": {
-            "cvRef": "UNIMOD"
-        }
-    },
-    "Organization": {
-        "TEMPLATE": {
-            "address": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000587",
-                "name": "contact address"
-            },
-            "email": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000589",
-                "name": "contact email"
-            },
-            "name": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000586",
-                "name": "contact name"
-            },
-            "url": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000588",
-                "name": "contact url"
-            },
-            "affiliation": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000590",
-                "name": "contact affiliation",
-                "value": "Member of institution"
-            }
-        },
-        "MaxQuant": {
-            "address": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000587",
-                "name": "contact address",
-                "value": "MaxQuant Team, Max-Planck Institute for Biochemistry, Am Klopferspitz 18, D-82152 Martinsried, Germany"
-            },
-            "email": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000589",
-                "name": "contact email",
-                "value": "info@maxquant.org"
-            },
-            "name": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000586",
-                "name": "contact name",
-                "value": "MaxQuant developers"
-            },
-            "url": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000588",
-                "name": "contact url",
-                "value": "http://www.maxquant.org"
-            }
-        },
-        "PeptideShaker": {
-            "address": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000587",
-                "name": "contact address",
-                "value": "Proteomics Unit, Building for Basic Biology, University of Bergen, Jonas Liesvei 91, N-5009 Bergen, Norway"
-            },
-            "email": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000589",
-                "name": "contact email",
-                "value": "peptide-shaker@googlegroups.com"
-            },
-            "name": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000586",
-                "name": "contact name",
-                "value": "PeptideShaker developers"
-            },
-            "url": {
-                "cvRef": "PSI-MS",
-                "accession": "MS:1000588",
-                "name": "contact url",
-                "value": "http://compomics.github.io/projects/peptide-shaker.html"
-            }
-        }
-    },
-    "Person": {
-        "email": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1000589",
-            "name": "contact email"
-        }
-    },
-    "Role": {
-        "researcher": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001271",
-            "name": "researcher"
-        },
-        "software vendor": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001267",
-            "name": "software vendor"
-        }
-    },
-    "SearchDatabase": {
-        "type": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001073",
-            "name": "database type amino acid"
-        }
-    },
-    "SearchType": {
-        "ms-ms": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001083",
-            "name": "ms-ms search"
-        }
-    },
-    "SpectrumIDFormat": {
-        "mascot query number": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001528",
-            "name": "Mascot query number"
-        }
-    },
-    "Threshold": {
-        "no": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001494",
-            "name": "no threshold"
-        }
-    },
-    "Enzyme": {
-        "Trypsin": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001313",
-            "name": "Trypsin/P"
-        }
-    },
-    "Tolerance": {
-        "minus": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001413",
-            "name": "search tolerance minus value"
-        },
-        "plus": {
-            "cvRef": "PSI-MS",
-            "accession": "MS:1001412",
-            "name": "search tolerance plus value"
-        }
+    "PeptideShaker": {
+      "id": "ID_software",
+      "name": "PeptideShaker",
+      "version": "???",
+      "uri": "http://peptide-shaker.googlecode.com"
     }
+  },
+  "AnalysisSoftwareCV": {
+    "MaxQuant": {
+      "cvRef": "MS",
+      "accession": "MS:1001583",
+      "name": "MaxQuant"
+    },
+    "PeptideShaker": {
+      "cvRef": "MS",
+      "accession": "MS:1002458",
+      "name": "PeptideShaker"
+    }
+  },
+  "CvList": {
+    "MS": {
+      "id": "MS",
+      "uri": "http://purl.obolibrary.org/obo/ms",
+      "fullName": "Mass spectrometry ontology"
+    },
+    "MOD": {
+      "id": "MOD",
+      "uri": "http://purl.obolibrary.org/obo/mod",
+      "fullName": "Protein modification"
+    },
+    "UNIMOD": {
+      "id": "UNIMOD",
+      "uri": "http://www.unimod.org",
+      "fullName": "UNIMOD"
+    },
+    "UO": {
+      "id": "UO",
+      "uri": "http://www.unimod.org/obo/unimod.obo",
+      "fullName": "Units of measurement"
+    }
+  },
+  "DB Sequence": {
+    "Description": {
+      "cvRef": "MS",
+      "accession": "MS:1001088",
+      "name": "protein description"
+    }
+  },
+  "FileFormat": {
+    "FASTA": {
+      "cvRef": "MS",
+      "accession": "MS:1001348",
+      "name": "FASTA format"
+    },
+    "Mascot DAT": {
+      "cvRef": "MS",
+      "accession": "MS:1001199",
+      "name": "Mascot DAT format"
+    },
+    "Mascot MGF": {
+      "cvRef": "MS",
+      "accession": "MS:1001062",
+      "name": "Mascot MGF format"
+    },
+    "MS Amanda": {
+      "cvRef": "MS",
+      "accession": "MS:1002459",
+      "name": "MS Amanda CSV format"
+    },
+    "Multiple peak list": {
+      "cvRef": "MS",
+      "accession": "MS:1000774",
+      "name": "Multiple peak list nativeID format"
+    },
+    "MzIdentML": {
+      "cvRef": "MS",
+      "accession": "MS:1002073",
+      "name": "MzIdentML format"
+    },
+    "OMSSA": {
+      "cvRef": "MS",
+      "accession": "MS:1001400",
+      "name": "OMSSA XML file"
+    },
+    "PepXML": {
+      "cvRef": "MS",
+      "accession": "MS:1001421",
+      "name": "PepXML format"
+    },
+    "Tab delimited": {
+      "cvRef": "MS",
+      "accession": "MS:1000914",
+      "name": "Tab delimited text format"
+    },
+    "XTandem": {
+      "cvRef": "MS",
+      "accession": "MS:1001401",
+      "name": "XTandem XML file"
+    }
+  },
+  "GenericCV": {
+    "MS": {
+      "cvRef": "MS"
+    },
+    "MOD": {
+      "cvRef": "MOD"
+    },
+    "UNIMOD": {
+      "cvRef": "UNIMOD"
+    },
+    "UNKNOWN": {
+      "cvRef": "N/A"
+    }
+  },
+  "Unknown param": {
+    "cvRef": "N/A",
+    "accession": "N/A"
+  },
+  "Organization": {
+    "Template": {
+      "Address": {
+        "cvRef": "MS",
+        "accession": "MS:1000587",
+        "name": "contact address"
+      },
+      "Email": {
+        "cvRef": "MS",
+        "accession": "MS:1000589",
+        "name": "contact email"
+      },
+      "Name": {
+        "cvRef": "MS",
+        "accession": "MS:1000586",
+        "name": "contact name"
+      },
+      "Url": {
+        "cvRef": "MS",
+        "accession": "MS:1000588",
+        "name": "contact url"
+      },
+      "Affiliation": {
+        "cvRef": "MS",
+        "accession": "MS:1000590",
+        "name": "contact affiliation",
+        "value": "Member of institution"
+      }
+    },
+    "MaxQuant": {
+      "address": {
+        "cvRef": "MS",
+        "accession": "MS:1000587",
+        "name": "contact address",
+        "value": "MaxQuant Team, Max-Planck Institute for Biochemistry, Am Klopferspitz 18, D-82152 Martinsried, Germany"
+      },
+      "email": {
+        "cvRef": "MS",
+        "accession": "MS:1000589",
+        "name": "contact email",
+        "value": "info@maxquant.org"
+      },
+      "name": {
+        "cvRef": "MS",
+        "accession": "MS:1000586",
+        "name": "contact name",
+        "value": "MaxQuant developers"
+      },
+      "url": {
+        "cvRef": "MS",
+        "accession": "MS:1000588",
+        "name": "contact url",
+        "value": "http://www.maxquant.org"
+      }
+    },
+    "PeptideShaker": {
+      "address": {
+        "cvRef": "MS",
+        "accession": "MS:1000587",
+        "name": "contact address",
+        "value": "Proteomics Unit, Building for Basic Biology, University of Bergen, Jonas Liesvei 91, N-5009 Bergen, Norway"
+      },
+      "email": {
+        "cvRef": "MS",
+        "accession": "MS:1000589",
+        "name": "contact email",
+        "value": "peptide-shaker@googlegroups.com"
+      },
+      "name": {
+        "cvRef": "MS",
+        "accession": "MS:1000586",
+        "name": "contact name",
+        "value": "PeptideShaker developers"
+      },
+      "url": {
+        "cvRef": "MS",
+        "accession": "MS:1000588",
+        "name": "contact url",
+        "value": "http://compomics.github.io/projects/peptide-shaker.html"
+      }
+    }
+  },
+  "Person": {
+    "Email": {
+      "cvRef": "MS",
+      "accession": "MS:1000589",
+      "name": "contact email"
+    }
+  },
+  "Role": {
+    "Researcher": {
+      "cvRef": "MS",
+      "accession": "MS:1001271",
+      "name": "researcher"
+    },
+    "Software vendor": {
+      "cvRef": "MS",
+      "accession": "MS:1001267",
+      "name": "software vendor"
+    }
+  },
+  "SearchDatabase": {
+    "Type": {
+      "cvRef": "MS",
+      "accession": "MS:1001073",
+      "name": "database type amino acid"
+    }
+  },
+  "SearchType": {
+    "MS-MS": {
+      "cvRef": "MS",
+      "accession": "MS:1001083",
+      "name": "ms-ms search"
+    }
+  },
+  "SpectrumIDFormat": {
+    "Mascot query number": {
+      "cvRef": "MS",
+      "accession": "MS:1001528",
+      "name": "Mascot query number"
+    }
+  },
+  "Threshold": {
+    "No threshold": {
+      "cvRef": "MS",
+      "accession": "MS:1001494",
+      "name": "no threshold"
+    },
+    "PSM FDR": {
+      "cvRef": "MS",
+      "accession": "MS:1002350",
+      "name": "PSM-level global FDR"
+    },
+    "Peptide FDR": {
+      "cvRef": "MS",
+      "accession": "MS:1001364",
+      "name": "peptide sequence-level global FDR"
+    },
+    "Protein FDR": {
+      "cvRef": "MS",
+      "accession": "MS:1002369",
+      "name": "protein group-level global FDR"
+    },
+    "Protein confidence": {
+      "cvRef": "MS",
+      "accession": "MS:1002461",
+      "name": "protein group-level global confidence"
+    },
+    "Protein FNR": {
+      "cvRef": "MS",
+      "accession": "MS:1002460",
+      "name": "protein group-level global FNR"
+    }
+  },
+  "Enzyme": {
+    "Trypsin/P": {
+      "cvRef": "MS",
+      "accession": "MS:1001313",
+      "name": "Trypsin/P"
+    },
+    "Trypsin": {
+      "cvRef": "MS",
+      "accession": "MS:1001251",
+      "name": "Trypsin"
+    },
+    "Lys-C": {
+      "cvRef": "MS",
+      "accession": "MS:1001309",
+      "name": "Lys-C"
+    },
+    "No cleavage": {
+      "cvRef": "MS",
+      "accession": "MS:1001955",
+      "name": "no cleavage"
+    }
+  },
+  "Tolerance": {
+    "Minus": {
+      "cvRef": "MS",
+      "accession": "MS:1001413",
+      "name": "search tolerance minus value"
+    },
+    "Plus": {
+      "cvRef": "MS",
+      "accession": "MS:1001412",
+      "name": "search tolerance plus value"
+    }
+  }
 }

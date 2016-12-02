@@ -1,15 +1,19 @@
 package com.compomics.colims.core.io.mzidentml;
 
+import com.compomics.colims.core.ontology.ols.OntologyTerm;
+import com.compomics.colims.core.service.OlsService;
 import com.compomics.colims.core.util.PeptidePosition;
 import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.core.util.SequenceUtils;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.SearchModification;
+import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.enums.ModificationType;
-import com.compomics.colims.repository.UserRepository;
+import com.compomics.colims.model.enums.ScoreType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import org.apache.commons.math.util.MathUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,10 +27,7 @@ import uk.ac.ebi.jmzidml.xml.io.MzIdentMLMarshaller;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -43,8 +44,7 @@ public class MzIdentMlExporter {
      */
     private static final Logger LOGGER = Logger.getLogger(MzIdentMlExporter.class);
 
-    private static final String PSI_MOD_PREFIX = "MOD";
-    private static final String UNIMOD_PREFIX = "UNIMOD";
+    private final String MODIFICATION_ACCESSION_DELIMITER = ":";
 
     @Value("${mzidentml.version}")
     private final String MZIDENTML_VERSION = "1.1.0";
@@ -69,12 +69,16 @@ public class MzIdentMlExporter {
      * The Inputs instance from the MzIdentML object model.
      */
     private Inputs inputs;
+    /**
+     * The CVs used in the MzIdentML file (key: CV reference; value: {@link Cv} instance).
+     */
+    private Map<String, Cv> cvs = new HashMap<>();
 
-    private final UserRepository userRepository;
+    private final OlsService olsService;
 
     @Autowired
-    public MzIdentMlExporter(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public MzIdentMlExporter(OlsService olsService) {
+        this.olsService = olsService;
     }
 
     /**
@@ -100,9 +104,9 @@ public class MzIdentMlExporter {
         this.analyticalRuns = analyticalRuns;
         this.searchEngine = analyticalRuns.get(0).getSearchAndValidationSettings().getSearchEngine();
 
-        MzIdentMLMarshaller marshaller = new MzIdentMLMarshaller();
+        MzIdentMLMarshaller mzIdentMLMarshaller = new MzIdentMLMarshaller();
 
-        return marshaller.marshal(populate());
+        return mzIdentMLMarshaller.marshal(populate());
     }
 
     /**
@@ -114,11 +118,11 @@ public class MzIdentMlExporter {
     private MzIdentML populate() throws IOException {
         mzIdentML = new MzIdentML();
 
-        mzIdentML.setId("colims-" + COLIMS_VERSION);
+        mzIdentML.setId("Colims-" + COLIMS_VERSION);
         mzIdentML.setVersion(MZIDENTML_VERSION);
         mzIdentML.setCreationDate(new GregorianCalendar());
 
-        CvList cvList = populateCvList();
+        CvList cvList = new CvList();
         mzIdentML.setCvList(cvList);
 
         AuditCollection auditCollection = populateAuditCollection();
@@ -138,20 +142,25 @@ public class MzIdentMlExporter {
         mzIdentML.setAnalysisProtocolCollection(analysisProtocolCollection);
 
 //        assembleSpectrumData();
+
+        //add all the used CVs
+        mzIdentML.getCvList().getCv().addAll(cvs.values());
+
         return mzIdentML;
     }
 
     /**
-     * Construct a list of CV sources used in the file.
+     * Update the CV list if the given CV reference is not present.
      *
-     * @return CvList List of CV sources
+     * @param cvRef the CV reference String
      */
-    private CvList populateCvList() throws IOException {
-        CvList cvList = new CvList();
+    private void updateCvList(String cvRef) throws IOException {
+        if (!cvs.containsKey(cvRef)) {
+            Cv cv = getMzIdentMlElement("/CvList/" + cvRef, Cv.class);
 
-        cvList.getCv().addAll(getChildMzIdentMlElements("/CvList", Cv.class));
-
-        return cvList;
+            //add it to the used CVs
+            cvs.put(cvRef, cv);
+        }
     }
 
     /**
@@ -171,7 +180,7 @@ public class MzIdentMlExporter {
         person.setFirstName(owner.getFirstName());
         person.setLastName(owner.getLastName());
 
-        CvParam email = getMzIdentMlElement("/Person/email", CvParam.class);
+        CvParam email = getMzIdentMlElement("/Person/Email", CvParam.class);
         email.setValue(owner.getEmail());
 
         person.getCvParam().add(email);
@@ -185,22 +194,22 @@ public class MzIdentMlExporter {
         //getContact("LAB_PLACEHOLDER", Organization.class);
         organization.setId(institution.getName());
 
-        CvParam address = getMzIdentMlElement("/Organization/TEMPLATE/address", CvParam.class);
+        CvParam address = getMzIdentMlElement("/Organization/Template/Address", CvParam.class);
         address.setValue(Arrays.stream(institution.getAddress()).collect(Collectors.joining(", ")));
         organization.getCvParam().add(address);
 
-        CvParam name = getMzIdentMlElement("/Organization/TEMPLATE/name", CvParam.class);
+        CvParam name = getMzIdentMlElement("/Organization/Template/Name", CvParam.class);
         name.setValue(institution.getName());
         organization.getCvParam().add(name);
 
         if (institution.getEmail() != null && !institution.getEmail().isEmpty()) {
-            CvParam institutionEmail = getMzIdentMlElement("/Organization/TEMPLATE/email", CvParam.class);
+            CvParam institutionEmail = getMzIdentMlElement("/Organization/Template/Email", CvParam.class);
             institutionEmail.setValue(institution.getEmail());
             organization.getCvParam().add(institutionEmail);
         }
 
         if (institution.getUrl() != null && !institution.getUrl().isEmpty()) {
-            CvParam url = getMzIdentMlElement("/Organization/TEMPLATE/url", CvParam.class);
+            CvParam url = getMzIdentMlElement("/Organization/Template/Url", CvParam.class);
             url.setValue(institution.getUrl());
             organization.getCvParam().add(url);
         }
@@ -232,7 +241,7 @@ public class MzIdentMlExporter {
 
         //set the researcher role
         Role role = new Role();
-        role.setCvParam(getMzIdentMlElement("/Role/researcher", CvParam.class));
+        role.setCvParam(getMzIdentMlElement("/Role/Researcher", CvParam.class));
 
         provider.getContactRole().setRole(role);
 
@@ -267,7 +276,7 @@ public class MzIdentMlExporter {
         ContactRole contactRole = new ContactRole();
         contactRole.setContact(organization);
         contactRole.setRole(new Role());
-        contactRole.getRole().setCvParam(getMzIdentMlElement("/Role/software vendor", CvParam.class));
+        contactRole.getRole().setCvParam(getMzIdentMlElement("/Role/Software vendor", CvParam.class));
         analysisSoftware.setContactRole(contactRole);
 
         analysisSoftwareList.getAnalysisSoftware().add(analysisSoftware);
@@ -299,7 +308,7 @@ public class MzIdentMlExporter {
             searchDatabase.setFileFormat(new FileFormat());
             searchDatabase.getFileFormat().setCvParam(getMzIdentMlElement("/FileFormat/FASTA", CvParam.class));
             searchDatabase.setDatabaseName(new Param());
-            searchDatabase.getCvParam().add(getMzIdentMlElement("/SearchDatabase/type", CvParam.class));
+            searchDatabase.getCvParam().add(getMzIdentMlElement("/SearchDatabase/Type", CvParam.class));
 
             //NOTE: if decoy database used then cv param should be child of MS:1001450 here
             UserParam databaseName = new UserParam();
@@ -326,23 +335,30 @@ public class MzIdentMlExporter {
         SearchAndValidationSettings settings = analyticalRuns.get(0).getSearchAndValidationSettings();
         SearchParameters searchParameters = settings.getSearchParameters();
 
-        SpectrumIdentificationProtocol spectrumProtocol = new SpectrumIdentificationProtocol();
+        SpectrumIdentificationProtocol spectrumIdentificationProtocol = new SpectrumIdentificationProtocol();
 
         //set analysis software and search type
-        spectrumProtocol.setId("SP-1");
-        spectrumProtocol.setAnalysisSoftware(analysisSoftware);
-        spectrumProtocol.setSearchType(new Param());
-        spectrumProtocol.getSearchType().setParam(getMzIdentMlElement("/SearchType/ms-ms", CvParam.class));
+        spectrumIdentificationProtocol.setId("SP-1");
+        spectrumIdentificationProtocol.setAnalysisSoftware(analysisSoftware);
+        spectrumIdentificationProtocol.setSearchType(new Param());
+        spectrumIdentificationProtocol.getSearchType().setParam(getMzIdentMlElement("/SearchType/MS-MS", CvParam.class));
 
-        //@// TODO: 28/11/16 check the other CV params from PeptideShaker
-        //set the threshold values
-        spectrumProtocol.setThreshold(new ParamList());
-        spectrumProtocol.getThreshold().getCvParam().add(getMzIdentMlElement("/Threshold/no", CvParam.class));
+        //set the threshold values for the PSM and peptide level (if provided)
+        spectrumIdentificationProtocol.setThreshold(new ParamList());
+        if (searchParameters.getScoreType() == ScoreType.FDR && searchParameters.getPsmThreshold() != null) {
+            CvParam threshold = getMzIdentMlElement("/Threshold/PSM FDR", CvParam.class);
+            threshold.setValue(String.valueOf(MathUtils.round(searchParameters.getPsmThreshold(), 2)));
+            spectrumIdentificationProtocol.getThreshold().getCvParam().add(threshold);
+        }
+        if (searchParameters.getScoreType() == ScoreType.FDR && searchParameters.getPeptideThreshold() != null) {
+            CvParam threshold = getMzIdentMlElement("/Threshold/Peptide FDR", CvParam.class);
+            threshold.setValue(String.valueOf(MathUtils.round(searchParameters.getPeptideThreshold(), 2)));
+            spectrumIdentificationProtocol.getThreshold().getCvParam().add(threshold);
+        }
 
-
-        // TODO: threshold value and type as cv param
+        //populate the search modification parameters
         if (searchParameters.getSearchParametersHasModifications().size() > 0) {
-            spectrumProtocol.setModificationParams(new ModificationParams());
+            spectrumIdentificationProtocol.setModificationParams(new ModificationParams());
 
             for (SearchParametersHasModification searchParametersHasModification : searchParameters.getSearchParametersHasModifications()) {
                 SearchModification colimsSearchModification = searchParametersHasModification.getSearchModification();
@@ -351,91 +367,156 @@ public class MzIdentMlExporter {
                 mzSearchModification.setFixedMod(searchParametersHasModification.getModificationType() == ModificationType.FIXED);
                 mzSearchModification.setMassDelta(colimsSearchModification.getAverageMassShift().floatValue());
 
-                mzSearchModification.getCvParam().add(modificationToCvParam(colimsSearchModification));
+                CvParam modificationParam = modificationToCvParam(colimsSearchModification);
+                mzSearchModification.getCvParam().add(modificationParam);
 
-                spectrumProtocol.getModificationParams().getSearchModification().add(mzSearchModification);
+                spectrumIdentificationProtocol.getModificationParams().getSearchModification().add(mzSearchModification);
             }
         }
 
-        // Enzyme
-        spectrumProtocol.setEnzymes(new Enzymes());
-
-        Enzyme mzEnzyme = new Enzyme();
+        //populate the enzyme section
+        spectrumIdentificationProtocol.setEnzymes(new Enzymes());
         String colimsEnzymes = searchParameters.getEnzymes();
-
-        CvParam cvEnzyme;
-
         if (colimsEnzymes != null) {
             for (String colimsEnzyme : colimsEnzymes.split(";")) {
-                //@// TODO: 27/09/16 refactor this
-                cvEnzyme = getMzIdentMlElement("/Enzyme/" + colimsEnzyme, CvParam.class);
-                cvEnzyme.setName(colimsEnzyme);
-                cvEnzyme.setAccession(colimsEnzyme);
-
+                CvParam cvEnzyme = getEnzymeByName(colimsEnzyme);
+                if (cvEnzyme == null) {
+                    //set the enzyme as "unknown"
+                    cvEnzyme = getMzIdentMlElement("/Unknown param", CvParam.class);
+                }
+                Enzyme mzEnzyme = new Enzyme();
                 mzEnzyme.setId("ENZYME-" + colimsEnzyme);
                 mzEnzyme.setEnzymeName(new ParamList());
                 mzEnzyme.setMissedCleavages(searchParameters.getNumberOfMissedCleavages() == null ? 0 : searchParameters.getNumberOfMissedCleavages());
                 mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
 
-                spectrumProtocol.getEnzymes().getEnzyme().add(mzEnzyme);
+                spectrumIdentificationProtocol.getEnzymes().getEnzyme().add(mzEnzyme);
             }
         } else {
-            cvEnzyme = getMzIdentMlElement("/GenericCV/PSI-MS", CvParam.class);
-            cvEnzyme.setName("no enzyme");
-            cvEnzyme.setAccession("MS:1001091");
+            CvParam cvEnzyme = getMzIdentMlElement("/Enzyme/No cleavage", CvParam.class);
 
-            mzEnzyme.setId("ENZYME-1");
+            Enzyme mzEnzyme = new Enzyme();
+            mzEnzyme.setId("ENZYME-" + cvEnzyme.getName());
+            mzEnzyme.setEnzymeName(new ParamList());
             mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
+
+            spectrumIdentificationProtocol.getEnzymes().getEnzyme().add(mzEnzyme);
         }
 
-        // Fragment Tolerance
-        CvParam fragmentMinus = getMzIdentMlElement("/Tolerance/minus", CvParam.class);
+        //add the mass unit ontology
+        updateCvList("UO");
+        //populate the fragment tolerance elements
+        CvParam fragmentMinus = getMzIdentMlElement("/Tolerance/Minus", CvParam.class);
         fragmentMinus.setValue(searchParameters.getFragMassTolerance().toString());
+        addMassUnit(fragmentMinus, searchParameters.getFragMassToleranceUnit());
         fragmentMinus.setUnitName(searchParameters.getFragMassToleranceUnit().toString());
 
-        CvParam fragmentPlus = getMzIdentMlElement("/Tolerance/plus", CvParam.class);
+        CvParam fragmentPlus = getMzIdentMlElement("/Tolerance/Plus", CvParam.class);
         fragmentPlus.setValue(searchParameters.getFragMassTolerance().toString());
+        addMassUnit(fragmentPlus, searchParameters.getFragMassToleranceUnit());
         fragmentPlus.setUnitName(searchParameters.getFragMassToleranceUnit().toString());
 
-        switch (searchParameters.getFragMassToleranceUnit()) {
+        spectrumIdentificationProtocol.setFragmentTolerance(new Tolerance());
+
+        spectrumIdentificationProtocol.getFragmentTolerance().getCvParam().add(fragmentMinus);
+        spectrumIdentificationProtocol.getFragmentTolerance().getCvParam().add(fragmentPlus);
+
+        //populate the precursor tolerance elements
+        CvParam parentMinus = getMzIdentMlElement("/Tolerance/Minus", CvParam.class);
+        parentMinus.setValue(searchParameters.getPrecMassTolerance().toString());
+        addMassUnit(parentMinus, searchParameters.getPrecMassToleranceUnit());
+        parentMinus.setUnitName(searchParameters.getPrecMassToleranceUnit().toString());
+
+        CvParam parentPlus = getMzIdentMlElement("/Tolerance/Plus", CvParam.class);
+        parentPlus.setValue(searchParameters.getPrecMassTolerance().toString());
+        addMassUnit(fragmentPlus, searchParameters.getPrecMassToleranceUnit());
+        fragmentPlus.setUnitName(searchParameters.getPrecMassToleranceUnit().toString());
+        spectrumIdentificationProtocol.setParentTolerance(new Tolerance());
+
+        spectrumIdentificationProtocol.getParentTolerance().getCvParam().add(parentMinus);
+        spectrumIdentificationProtocol.getParentTolerance().getCvParam().add(parentPlus);
+
+        collection.getSpectrumIdentificationProtocol().add(spectrumIdentificationProtocol);
+
+        //populate the protein detection protocol
+        ProteinDetectionProtocol proteinDetectionProtocol = new ProteinDetectionProtocol();
+        proteinDetectionProtocol.setAnalysisSoftware(analysisSoftware);
+        proteinDetectionProtocol.setId("PDP-1");
+        CvParam proteinThreshold;
+        switch (searchParameters.getScoreType()) {
+            case FDR:
+                proteinThreshold = getMzIdentMlElement("/Threshold/Protein FDR", CvParam.class);
+                break;
+            case CONFIDENCE:
+                proteinThreshold = getMzIdentMlElement("/Threshold/Protein confidence", CvParam.class);
+                break;
+            case FNR:
+                proteinThreshold = getMzIdentMlElement("/Threshold/Protein FNR", CvParam.class);
+                break;
+            default:
+                proteinThreshold = getMzIdentMlElement("/Threshold/No threshold", CvParam.class);
+                break;
+        }
+        proteinDetectionProtocol.setThreshold(new ParamList());
+        if (searchParameters.getProteinThreshold() != null) {
+            proteinThreshold.setValue(String.valueOf(MathUtils.round(searchParameters.getProteinThreshold(), 2)));
+        }
+        proteinDetectionProtocol.getThreshold().getCvParam().add(proteinThreshold);
+        collection.setProteinDetectionProtocol(proteinDetectionProtocol);
+
+        return collection;
+    }
+
+    /**
+     * Add the given {@link MassAccuracyType} to the {@link CvParam}.
+     *
+     * @param cvParam          the CV param instance
+     * @param massAccuracyType the mass accuracy
+     * @throws IOException in case of an JSON parsing related problem
+     */
+    private void addMassUnit(CvParam cvParam, MassAccuracyType massAccuracyType) throws IOException {
+        switch (massAccuracyType) {
             case DA:
-                fragmentMinus.setUnitName("dalton");
-                fragmentMinus.setUnitAccession("UO:0000221");
-                fragmentMinus.setUnitCv(getMzIdentMlElement("/CvList/UO", Cv.class));
+                cvParam.setUnitName("dalton");
+                cvParam.setUnitAccession("UO:0000221");
+                cvParam.setUnitCv(getMzIdentMlElement("/CvList/UO", Cv.class));
                 break;
             case PPM:
-                fragmentMinus.setUnitName("parts per million");
-                fragmentMinus.setUnitAccession("UO:0000169");
-                fragmentMinus.setUnitCv(getMzIdentMlElement("/CvList/UO", Cv.class));
+                cvParam.setUnitName("parts per million");
+                cvParam.setUnitAccession("UO:0000169");
+                cvParam.setUnitCv(getMzIdentMlElement("/CvList/UO", Cv.class));
                 break;
             default:
                 break;
         }
+    }
 
-        spectrumProtocol.setFragmentTolerance(new Tolerance());
+    /**
+     * Get the enzyme CvParam by it's name.
+     *
+     * @param colimsEnzymeName the Colims enzyme name
+     * @return the populated CvParam instance, null if nothing could be found
+     * @throws IOException in case of a JSON parsing related problem
+     */
+    private CvParam getEnzymeByName(String colimsEnzymeName) throws IOException {
+        CvParam enzyme;
 
-        spectrumProtocol.getFragmentTolerance().getCvParam().add(fragmentMinus);
-        spectrumProtocol.getFragmentTolerance().getCvParam().add(fragmentPlus);
+        //safety check for enzymes name with a slash in them
+        colimsEnzymeName = colimsEnzymeName.replace("/", "~1");
+        enzyme = getMzIdentMlElement("/Enzyme/" + colimsEnzymeName, CvParam.class);
+        if (enzyme == null) {
+            //look for the enzyme with the OLS service
+            OntologyTerm olsEnzyme = olsService.findEnzymeByName(colimsEnzymeName);
+            if (olsEnzyme != null) {
+                Cv cv = new Cv();
+                cv.setId(olsEnzyme.getOntologyPrefix());
+                enzyme.setCv(cv);
+                enzyme.setName(olsEnzyme.getLabel());
+                enzyme.setAccession(olsEnzyme.getOboId());
+            }
+        }
 
-        spectrumProtocol.setParentTolerance(new Tolerance());
-
-        spectrumProtocol.getParentTolerance().getCvParam().add(fragmentMinus);
-        spectrumProtocol.getParentTolerance().getCvParam().add(fragmentPlus);
-
-        collection.getSpectrumIdentificationProtocol().add(spectrumProtocol);
-
-        // Protein Detection Protocol
-        ProteinDetectionProtocol proteinProtocol = new ProteinDetectionProtocol();
-        proteinProtocol.setId("PDP-1");
-        proteinProtocol.setAnalysisSoftware(mzIdentML.getAnalysisSoftwareList().getAnalysisSoftware().get(0));
-
-        proteinProtocol.setThreshold(new ParamList());
-        proteinProtocol.getThreshold().getCvParam().add(getMzIdentMlElement("/Threshold/no", CvParam.class));
-
-        // TODO: threshold value and type as cv param
-        collection.setProteinDetectionProtocol(proteinProtocol);
-
-        return collection;
+        return enzyme;
     }
 
     /**
@@ -456,7 +537,7 @@ public class MzIdentMlExporter {
         spectrumFileFormat.setCvParam(getMzIdentMlElement("/FileFormat/Mascot MGF", CvParam.class));
 
         SpectrumIDFormat spectrumIDFormat = new SpectrumIDFormat();
-        spectrumIDFormat.setCvParam(getMzIdentMlElement("/SpectrumIDFormat/mascot query number", CvParam.class));
+        spectrumIDFormat.setCvParam(getMzIdentMlElement("/SpectrumIDFormat/Mascot query number", CvParam.class));
 
         SearchDatabaseRef dbRef = new SearchDatabaseRef();
         dbRef.setSearchDatabase(inputs.getSearchDatabase().get(0));
@@ -572,7 +653,7 @@ public class MzIdentMlExporter {
     }
 
     /**
-     * Create a spectrum identification item from a colims spectrum.
+     * Create a spectrum identification item from a Colims spectrum.
      *
      * @param spectrum Spectrum object
      * @return Spectrum identification item
@@ -590,7 +671,7 @@ public class MzIdentMlExporter {
     }
 
     /**
-     * Create an mzIdentML modification from a colims equivalent.
+     * Create an mzIdentML modification from a Colims equivalent.
      *
      * @param peptideHasMod Peptide to modification representation
      * @return Equivalent modification
@@ -621,7 +702,7 @@ public class MzIdentMlExporter {
         dbSequence.setSeq(protein.getSequence());
         dbSequence.setSearchDatabase(inputs.getSearchDatabase().get(0));
 
-        CvParam cvParam = getMzIdentMlElement("/DBSequence/description", CvParam.class);
+        CvParam cvParam = getMzIdentMlElement("/DB Sequence/Description", CvParam.class);
         cvParam.setValue(proteinGroupHasProtein.getProteinAccession());
 
         dbSequence.getCvParam().add(cvParam);
@@ -632,18 +713,20 @@ public class MzIdentMlExporter {
     /**
      * Get the CV representation of a Colims modification.
      *
-     * @param modification A colims modification
-     * @param <T>          Subclass of AbstractModification
-     * @return Modification in CvParam form
-     * @throws IOException
+     * @param modification a colims modification
+     * @param <T>          subclass of {@link AbstractModification}
+     * @return the modification in CvParam form
+     * @throws IOException in case of an JSON parsing related problem
      */
     private <T extends AbstractModification> CvParam modificationToCvParam(T modification) throws IOException {
-        CvParam modParam;
+        CvParam modParam = null;
 
-        if (modification.getAccession().startsWith(UNIMOD_PREFIX)) {
-            modParam = getMzIdentMlElement("/GenericCV/UNIMOD", CvParam.class);
-        } else {
-            modParam = getMzIdentMlElement("/GenericCV/PSI-MS", CvParam.class);
+        //try to get the modification ontology by it's prefix
+        if (modification.getAccession().contains(MODIFICATION_ACCESSION_DELIMITER)) {
+            modParam = getMzIdentMlElement("/GenericCV/" + modification.getAccession().substring(0, modification.getAccession().indexOf(MODIFICATION_ACCESSION_DELIMITER)), CvParam.class);
+        }
+        if (modParam == null) {
+            modParam = getMzIdentMlElement("/GenericCV/UNKNOWN", CvParam.class);
         }
         modParam.setName(modification.getName());
         modParam.setAccession(modification.getAccession());
@@ -677,23 +760,31 @@ public class MzIdentMlExporter {
     }
 
     /**
-     * Get an MzIdentML element by name and class.
+     * Get an MzIdentML element by name and class. Returns null if nothing was found.
      *
      * @param name Name of key or dot notation path to key
      * @param type Type of object to be returned
      * @param <T>  Subclass of MzIdentMLObject
-     * @return Object of type T
+     * @return Object of type T, null if nothing was found
      * @throws java.io.IOException in case of an I/O related problem
      */
     public <T extends MzIdentMLObject> T getMzIdentMlElement(String name, Class<T> type) throws IOException {
-        JsonNode node = getNodeByPath(name);
+        T mzIdentMlElement = null;
 
-        T mzIdentMlElement;
-        try {
-            mzIdentMlElement = objectReader.treeToValue(node, type);
-        } catch (IOException e) {
-            LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
-            throw e;
+        JsonNode node = getNodeByPath(name);
+        if (!node.isMissingNode()) {
+            try {
+                //check if a node has a "cvRef" value
+                if (node.has("cvRef")) {
+                    String cvRef = node.get("cvRef").asText();
+                    updateCvList(cvRef);
+                }
+
+                mzIdentMlElement = objectReader.treeToValue(node, type);
+            } catch (IOException e) {
+                LOGGER.error("Unable to instantiate contact object of type " + type.getName(), e);
+                throw e;
+            }
         }
 
         return mzIdentMlElement;
@@ -704,15 +795,12 @@ public class MzIdentMlExporter {
      *
      * @param path name or path
      * @return the found JsonNode instance
-     * @throws IllegalArgumentException in case of an invalid path
      */
-    private JsonNode getNodeByPath(String path) throws IllegalArgumentException {
+
+    private JsonNode getNodeByPath(String path) {
         JsonNode node;
 
         node = ontologyTerms.at(path);
-        if (node.isMissingNode()) {
-            throw new IllegalArgumentException("Node " + path + " not found in the mzIdentML ontology terms file.");
-        }
 
         return node;
     }

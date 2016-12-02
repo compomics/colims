@@ -49,9 +49,9 @@ public class MzIdentMlExporterTest {
         System.out.println("test");
         System.out.println(export);
 
-        FileWriter testFileWriter = new FileWriter("/home/niels/Desktop/testMzIdentMl.xml", false);
-        testFileWriter.write(export);
-        testFileWriter.close();
+//        FileWriter testFileWriter = new FileWriter("/home/niels/Desktop/testMzIdentMl.xml", false);
+//        testFileWriter.write(export);
+//        testFileWriter.close();
 
         Assert.assertFalse(export.isEmpty());
     }

@@ -40,8 +40,6 @@ public class ColimsSpectrumMapperTest {
      */
     @Test
     public void testMap() throws Exception {
-        System.out.println("Mapping colims spectra back to MSnSpectra in utilities");
-
         Spectrum spectrum = new Spectrum();
         File inputSpectra = new ClassPathResource("data/input_spectra_Z.mgf.gz").getFile();
         byte[] data = Files.readAllBytes(inputSpectra.toPath());

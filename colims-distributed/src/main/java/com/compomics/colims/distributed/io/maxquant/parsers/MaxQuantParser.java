@@ -243,9 +243,6 @@ public class MaxQuantParser {
         Set<Integer> msmsIds = maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToPsms().get(aplKey);
         for (Integer msmsId : msmsIds) {
             //get the evidence IDs associated with the msms ID
-            if (!maxQuantEvidenceParser.getSpectrumToPeptides().containsKey(msmsId)) {
-                System.out.println("------------------");
-            }
             for (Integer evidenceId : maxQuantEvidenceParser.getSpectrumToPeptides().get(msmsId)) {
                 setPeptideRelations(spectrum, evidenceId);
             }
