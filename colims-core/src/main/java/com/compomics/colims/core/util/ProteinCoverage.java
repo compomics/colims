@@ -138,4 +138,80 @@ public class ProteinCoverage {
         //if openframe > 0 something went wrong
         return builder.toString();
     }
+    
+    /**
+     * find Amino acid preceding the peptide in the protein sequence.
+     * @param protein
+     * @param peptide
+     * @return amino acid if peptide exists in given protein sequence.
+     */
+    public static String findAminoAcidPrecedingPeptide(String protein, String peptide){
+        protein = protein.toUpperCase(Locale.US);
+        peptide = peptide.toUpperCase(Locale.US);
+        if( protein.contains(peptide)){
+            // if peptide is N-terminal returns "-"
+            if(protein.indexOf(peptide)>0){
+                return String.valueOf(protein.charAt(protein.indexOf(peptide)-1));
+            }else{
+                return "-";
+            }
+        }else{
+            return null;
+        }  
+    }
+    
+    /**
+     * find Amino acid following the peptide in the protein sequence.
+     * @param protein
+     * @param peptide
+     * @return amino acid if peptide exists in given protein sequence.
+     */
+    public static String findAminoAcidFollowingPeptide(String protein, String peptide){
+        protein = protein.toUpperCase(Locale.US);
+        peptide = peptide.toUpperCase(Locale.US);
+        if( protein.contains(peptide)){
+            // if peptide is C-terminal returns "-"
+            if(protein.indexOf(peptide) + peptide.length() < protein.length()){
+                return String.valueOf(protein.charAt(protein.indexOf(peptide)+ peptide.length()));
+            }else{
+                return "-";
+            }
+        }else{
+            return null;
+        }  
+    }
+    
+    /**
+     * find start position of the peptide in the protein sequence
+     * @param protein
+     * @param peptide
+     * @return position
+     */
+    public static String findStartPositionOfPeptide(String protein, String peptide){
+        protein = protein.toUpperCase(Locale.US);
+        peptide = peptide.toUpperCase(Locale.US);
+        // N-terminus of the protein position is 1
+        if( protein.contains(peptide)){
+            return String.valueOf(protein.indexOf(peptide) + 1) ;
+        }else{
+            return null;
+        }
+    }
+    
+    /**
+     * find end position of the peptide in the protein sequence
+     * @param protein
+     * @param peptide
+     * @return position
+     */
+    public static String findEndPositionOfPeptide(String protein, String peptide){
+        protein = protein.toUpperCase(Locale.US);
+        peptide = peptide.toUpperCase(Locale.US);
+        // N-terminus of the protein position is 1
+        if( protein.contains(peptide)){
+            return String.valueOf(protein.indexOf(peptide) + + peptide.length()) ;
+        }else{
+            return null;
+        }
+    }
 }

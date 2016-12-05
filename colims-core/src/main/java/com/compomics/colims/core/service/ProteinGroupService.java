@@ -1,12 +1,14 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.hibernate.SortDirection;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface provides service methods for the ProteinGroup class.
@@ -62,4 +64,12 @@ public interface ProteinGroupService extends GenericService<ProteinGroup, Long> 
      * @return list of ambiguity members
      */
     List<ProteinGroupHasProtein> getAmbiguityMembers(final Long proteinGroupId);
+        
+    /**
+     * Get ProteinGroupHasProtein object by proteinGroupId
+     * if nothing found return null
+     * @param proteinGroupId
+     * @return ProteinGroupHasProtein and Protein
+     */
+    Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinbyProteinGroupId (final Long proteinGroupId);
 }

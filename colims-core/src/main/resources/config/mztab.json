@@ -16,8 +16,8 @@
       },
       "peptideshaker": {
         "ontology": "MS",
-        "accession": "MS:1002468",
-        "name": "PeptideShaker peptide score"
+        "accession": "MS:1002470",
+        "name": "PeptideShaker protein group score"
       }
     }
   },
@@ -50,8 +50,8 @@
     "values": {
       "default": {
         "ontology": "MS",
-        "accession": "MS:1001153",
-        "name": "search engine specific score"
+        "accession": "MS:1001143",
+        "name": "PSM-level search engine specific statistic"
       },
       "maxQuant": {
         "ontology": "MS",
@@ -101,6 +101,23 @@
         "ontology": "MS",
         "accession": "MS:1002458",
         "name": "PeptideShaker"
+      }
+    }
+  },
+  "PSM confidence type": {
+    "name": {
+      "user_friendly_name": "PSM confidence type"
+    },
+    "values": {
+      "MaxQuant": {
+        "ontology": "MS",
+        "accession": "MS:1002357",
+        "name": "PSM-level probability"
+      },
+      "PeptideShaker": {
+        "ontology": "MS",
+        "accession": "MS:1002540",
+        "name": "PeptideShaker PSM confidence type"
       }
     }
   },

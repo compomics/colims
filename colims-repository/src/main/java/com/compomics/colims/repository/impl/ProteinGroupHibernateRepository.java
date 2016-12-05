@@ -1,11 +1,13 @@
 package com.compomics.colims.repository.impl;
 
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.colims.repository.hibernate.SortDirection;
+import java.util.HashMap;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
@@ -15,6 +17,8 @@ import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import org.hibernate.Query;
 
 /**
  * @author Niels Hulstaert
@@ -153,5 +157,22 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         criteria.add(Restrictions.eq("isMainGroupProtein", false));
 
         return criteria.list();
+    }
+
+    @Override
+    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinbyProteinGroupId(Long proteinGroupId) {
+        
+        Query query = getCurrentSession().getNamedQuery("Protein.getProteinByProteinGroupId");
+        query.setParameter("proteinGroupId", proteinGroupId);
+
+        List list = query.list();
+
+        Map<ProteinGroupHasProtein, Protein> proteins = new HashMap<>();
+        for (Object object : list) {
+            Object[] objectArray = (Object[]) object;  
+            proteins.put((ProteinGroupHasProtein) objectArray[1], (Protein) objectArray[0]);
+        }
+
+        return proteins;
     }
 }

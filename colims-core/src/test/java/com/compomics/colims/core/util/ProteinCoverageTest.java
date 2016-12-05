@@ -30,8 +30,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = {"classpath:colims-core-simple-test-context.xml"})
 public class ProteinCoverageTest {
 
-    @Autowired
-    private ProteinCoverage proteinCoverage;
 
     @Test
     public void testCalculateProteinCoverage() {
@@ -53,7 +51,7 @@ public class ProteinCoverageTest {
         peptides.add(peptide2);
         peptides.add(peptide3);
         
-        double coverage = proteinCoverage.calculateProteinCoverage(protein, peptides);
+        double coverage = ProteinCoverage.calculateProteinCoverage(protein, peptides);
         
         Assert.assertTrue(coverage > 0);
         Assert.assertTrue(coverage < 1);
@@ -76,10 +74,54 @@ public class ProteinCoverageTest {
         peptides.add(peptide2);
         peptides.add(peptide3); 
         
-        double coverage = proteinCoverage.calculateProteinCoverage(protein, peptides);
+        double coverage = ProteinCoverage.calculateProteinCoverage(protein, peptides);
         
         Assert.assertTrue(coverage > 0);
         Assert.assertTrue(coverage < 1);
 
+    }
+    
+    @Test
+    public void testAminoAcidPrecedingPeptide(){
+        String protein = "ABCDEFGHIJKLMNOP";
+   
+        String peptide = "ABCDEF";
+        
+        String aminoAcid = ProteinCoverage.findAminoAcidPrecedingPeptide(protein, peptide);
+        
+        Assert.assertTrue(aminoAcid.equals("-"));
+    }
+    
+    @Test
+    public void testAminoAcidFollowingPeptide(){
+        String protein = "ABCDEFGHIJKLMNOP";
+   
+        String peptide = "FGHIJK";
+        
+        String aminoAcid = ProteinCoverage.findAminoAcidFollowingPeptide(protein, peptide);
+        
+        Assert.assertTrue(aminoAcid.equals("L"));
+    }
+    
+     @Test
+    public void testStartPositionOfPeptide(){
+        String protein = "ABCDEFGHIJKLMNOP";
+   
+        String peptide = "ABCDEF";
+        
+        String aminoAcid = ProteinCoverage.findStartPositionOfPeptide(protein, peptide);
+        
+        Assert.assertTrue(aminoAcid.equals("1"));
+    }
+    
+    @Test
+    public void testEndPositionOfPeptide(){
+        String protein = "ABCDEFGHIJKLMNOP";
+   
+        String peptide = "FGHIJK";
+        
+        String aminoAcid = ProteinCoverage.findEndPositionOfPeptide(protein, peptide);
+        
+        Assert.assertTrue(aminoAcid.equals("11"));
     }
 }

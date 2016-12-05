@@ -1,12 +1,14 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.colims.repository.hibernate.SortDirection;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface provides repository methods for the ProteinGroup class.
@@ -70,4 +72,11 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      */
     List<ProteinGroupHasProtein> getAmbiguityMembers(final Long proteinGroupId);
 
+    /**
+     * Get ProteinGroupHasProtein object by proteinGroupId
+     * if nothing found return null
+     * @param proteinGroupId
+     * @return ProteinGroupHasProtein and protein
+     */
+    Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinbyProteinGroupId (final Long proteinGroupId);
 }

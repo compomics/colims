@@ -1,11 +1,13 @@
 package com.compomics.colims.repository;
 
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface provides repository methods for the Peptide class.
@@ -32,6 +34,7 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      */
     List<PeptideHasModification> fetchPeptideHasModifications(Long peptideId);
     
+    
     /**
      * Fetch the distinct Peptide sequence instances associated with the given protein group and analyticalRun.
      * Different modifications or charge states of the same peptide are not counted.
@@ -50,4 +53,12 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @return the list of unique Peptides
      */
     List<Peptide> getUniquePeptideByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds);
+    
+    /**
+     * Fetch the PeptideHasProteinGroup instances associated with the given analyticalRuns.
+     *
+     * @param analyticalRunIds the list of anayicalRun IDs
+     * @return the map (key : PeptideHasProteinGroup ; value : analyticalRun)
+     */
+    Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAnalyticalRunId(List<Long> analyticalRunIds);
 }

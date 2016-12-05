@@ -42,4 +42,5 @@ public interface ModificationRepository extends GenericRepository<Modification, 
      * @return the list of protein IDs
      */
     List<Long> getConstraintLessModificationIdsForRuns(List<Long> analyticalRunIds);
+    
 }

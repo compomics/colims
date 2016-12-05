@@ -301,7 +301,7 @@ public class MzTabExportController implements Controllable {
                     quantificationReagentTreeModel.insertNodeInto(labelTreeNode, quantificationReagent, quantificationReagentTreeModel.getChildCount(quantificationReagent));
 
                     mzTabExportDialog.getQuantificationReagentTree().expandPath(new TreePath(quantificationReagent.getPath()));
-                }else{
+                } else {
                     MessageEvent messageEvent = new MessageEvent("Label assigment", "One reagent can have only one label. (one to one)", JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
                 }
@@ -475,26 +475,29 @@ public class MzTabExportController implements Controllable {
             validationMessages.add("Please provide a description.");
         }
 
-        if(!quantificationLabelsListModel.isEmpty()){
+        if (!quantificationLabelsListModel.isEmpty()) {
             validationMessages.add("All labels should be matched to reagents");
         }
-        
+
         //ensure that all runs linked with assays have been searched with the same search engine
         List<AnalyticalRun> runs = mzTabExport.getRuns();
         SearchEngineType firstRunSearchEngineType = runs.get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType();
-        QuantificationMethodCvParam firstQuantificationMethodCvParam = runs.get(0).getQuantificationSettings().getQuantificationMethodCvParam();
         for (int i = 1; i < runs.size(); i++) {
             if (!firstRunSearchEngineType.equals(runs.get(i).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType())) {
                 validationMessages.add("All runs linked to assays must have the same search engine");
             }
-            if (!firstQuantificationMethodCvParam.equals(runs.get(i).getQuantificationSettings().getQuantificationMethodCvParam())) {
-                validationMessages.add("All runs should have the same quantification method");
-            }
-            if (runs.get(i).getQuantificationSettings().getQuantificationMethodCvParam().getQuantificationMethodHasReagents().size() != mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length) {
-                validationMessages.add("Assay number should be the same with quantification reagent of the run " + runs.get(i).getName());
+        }
+        if (runs.get(0).getQuantificationSettings() != null) {
+            QuantificationMethodCvParam firstQuantificationMethodCvParam = runs.get(0).getQuantificationSettings().getQuantificationMethodCvParam();
+            for (int i = 1; i < runs.size(); i++) {
+                if (!firstQuantificationMethodCvParam.equals(runs.get(i).getQuantificationSettings().getQuantificationMethodCvParam())) {
+                    validationMessages.add("All runs should have the same quantification method");
+                }
+                if (runs.get(i).getQuantificationSettings().getQuantificationMethodCvParam().getQuantificationMethodHasReagents().size() != mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length) {
+                    validationMessages.add("Assay number should be the same with quantification reagent of the run " + runs.get(i).getName());
+                }
             }
         }
-
         return validationMessages;
     }
 
