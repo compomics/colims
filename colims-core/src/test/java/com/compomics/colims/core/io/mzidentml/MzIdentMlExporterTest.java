@@ -2,7 +2,6 @@ package com.compomics.colims.core.io.mzidentml;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
-import java.io.FileWriter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftware;
 import uk.ac.ebi.jmzidml.model.mzidml.Cv;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,16 +46,21 @@ public class MzIdentMlExporterTest {
         AnalyticalRun run = repository.findById(1L);
         analyticalRuns.add(run);
 
-        String export = exporter.export(analyticalRuns);
+//        try (StringWriter writer = new StringWriter()) {
+//            exporter.export(writer, analyticalRuns);
+//            System.out.println(writer.toString());
+//        }
+
+        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
+        try (
+                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
+        ) {
+            exporter.export(bufferedWriter, analyticalRuns);
+        }
 
         System.out.println("test");
-        System.out.println(export);
 
-//        FileWriter testFileWriter = new FileWriter("/home/niels/Desktop/testMzIdentMl.xml", false);
-//        testFileWriter.write(export);
-//        testFileWriter.close();
-
-        Assert.assertFalse(export.isEmpty());
+//        Assert.assertFalse(export.isEmpty());
     }
 
     @Test

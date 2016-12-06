@@ -427,7 +427,7 @@ public class MzTabExporter {
             analyticalRunIds.add(analyticalRun.getId());
         });
         List<ProteinGroupDTO> proteinList = getProteinGroupsForAnalyticalRuns(analyticalRunIds);
-        SearchAndValidationSettings searchAndValidationSettings = searchAndValidationSettingsService.getbyAnalyticalRun(mzTabExport.getRuns().get(0));
+        SearchAndValidationSettings searchAndValidationSettings = searchAndValidationSettingsService.getByAnalyticalRun(mzTabExport.getRuns().get(0));
         Map<FastaDb, FastaDbType> fastaDbs = fastaDbService.findBySearchAndValidationSettings(searchAndValidationSettings);
         // check if db is uniprot!
         for (int i = 0; i < proteinList.size(); i++) {

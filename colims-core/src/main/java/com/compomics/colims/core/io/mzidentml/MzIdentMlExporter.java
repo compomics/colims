@@ -1,7 +1,9 @@
 package com.compomics.colims.core.io.mzidentml;
 
+import com.compomics.colims.core.ontology.ols.Ontology;
 import com.compomics.colims.core.ontology.ols.OntologyTerm;
 import com.compomics.colims.core.service.OlsService;
+import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.core.util.PeptidePosition;
 import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.core.util.SequenceUtils;
@@ -27,6 +29,7 @@ import uk.ac.ebi.jmzidml.xml.io.MzIdentMLMarshaller;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,7 +39,7 @@ import java.util.stream.Collectors;
  *
  * @author Iain
  */
-@Component
+@Component("mzIdentMlExporter")
 public class MzIdentMlExporter {
 
     /**
@@ -73,12 +76,16 @@ public class MzIdentMlExporter {
      * The CVs used in the MzIdentML file (key: CV reference; value: {@link Cv} instance).
      */
     private Map<String, Cv> cvs = new HashMap<>();
-
+    /**
+     * The Ontology Lookup Service (OLS) service.
+     */
     private final OlsService olsService;
+    private final SearchAndValidationSettingsService searchAndValidationSettingsService;
 
     @Autowired
-    public MzIdentMlExporter(OlsService olsService) {
+    public MzIdentMlExporter(OlsService olsService, SearchAndValidationSettingsService searchAndValidationSettingsService) {
         this.olsService = olsService;
+        this.searchAndValidationSettingsService = searchAndValidationSettingsService;
     }
 
     /**
@@ -96,26 +103,41 @@ public class MzIdentMlExporter {
     /**
      * Export the given analytical runs in mzIdentML format.
      *
+     * @param writer         the {@link Writer} instance
      * @param analyticalRuns the analytical runs to export.
      * @return the mzIdentML String
      * @throws IOException error thrown in case of a I/O related problem
      */
-    public String export(List<AnalyticalRun> analyticalRuns) throws IOException {
+    public void export(Writer writer, List<AnalyticalRun> analyticalRuns) throws IOException {
         this.analyticalRuns = analyticalRuns;
         this.searchEngine = analyticalRuns.get(0).getSearchAndValidationSettings().getSearchEngine();
 
+        populate();
+
         MzIdentMLMarshaller mzIdentMLMarshaller = new MzIdentMLMarshaller();
 
-        return mzIdentMLMarshaller.marshal(populate());
+        mzIdentMLMarshaller.marshal(mzIdentML, writer);
+
+        clear();
+    }
+
+    /**
+     * Clear the resources of the exporter.
+     */
+    private void clear() {
+        mzIdentML = null;
+        analyticalRuns.clear();
+        cvs.clear();
+        searchEngine = null;
+        cvs.clear();
+        inputs = null;
     }
 
     /**
      * Assemble necessary data into an mzIdentML object and it's many
      * properties.
-     *
-     * @return a fully furnished {@link MzIdentML} object
      */
-    private MzIdentML populate() throws IOException {
+    private void populate() throws IOException {
         mzIdentML = new MzIdentML();
 
         mzIdentML.setId("Colims-" + COLIMS_VERSION);
@@ -128,7 +150,7 @@ public class MzIdentMlExporter {
         AuditCollection auditCollection = populateAuditCollection();
         mzIdentML.setAuditCollection(auditCollection);
 
-        Provider provider = populateProvider(auditCollection.getPerson().get(0));
+        Provider provider = populateProvider();
         mzIdentML.setProvider(provider);
 
         AnalysisSoftwareList analysisSoftwareList = populateAnalysisSoftwareList(auditCollection);
@@ -145,8 +167,6 @@ public class MzIdentMlExporter {
 
         //add all the used CVs
         mzIdentML.getCvList().getCv().addAll(cvs.values());
-
-        return mzIdentML;
     }
 
     /**
@@ -158,8 +178,24 @@ public class MzIdentMlExporter {
         if (!cvs.containsKey(cvRef)) {
             Cv cv = getMzIdentMlElement("/CvList/" + cvRef, Cv.class);
 
-            //add it to the used CVs
-            cvs.put(cvRef, cv);
+            if (cv == null) {
+                //look up the ontology with the OLS service
+                List<String> namespaces = new ArrayList<>();
+                namespaces.add(cvRef.toLowerCase());
+                List<Ontology> ontologies = olsService.getOntologiesByNamespace(namespaces);
+                if (!ontologies.isEmpty()) {
+                    Ontology ontology = ontologies.get(0);
+                    cv = new Cv();
+                    cv.setId(ontology.getPrefix());
+                    cv.setFullName(ontology.getTitle());
+                    cv.setUri(ontology.getIdUrl());
+                }
+            }
+
+            if (cv != null) {
+                //add it to the used CVs
+                cvs.put(cvRef, cv);
+            }
         }
     }
 
@@ -228,10 +264,9 @@ public class MzIdentMlExporter {
     /**
      * Populate the provider element.
      *
-     * @param person the contact person
      * @return the provider MzIdentML element
      */
-    private Provider populateProvider(Person person) throws IOException {
+    private Provider populateProvider() throws IOException {
         Provider provider = new Provider();
         provider.setId("PROVIDER");
 
@@ -296,8 +331,10 @@ public class MzIdentMlExporter {
         inputs = new Inputs();
         dataCollection.setInputs(inputs);
 
+        SearchAndValidationSettings searchAndValidationSettings = analyticalRuns.get(0).getSearchAndValidationSettings();
+        searchAndValidationSettingsService.fetchSearchSettingsHasFastaDb(searchAndValidationSettings);
         //iterate over the different FASTA databases used for the searches
-        for (SearchSettingsHasFastaDb searchSettingsHasFastaDb : analyticalRuns.get(0).getSearchAndValidationSettings().getSearchSettingsHasFastaDbs()) {
+        for (SearchSettingsHasFastaDb searchSettingsHasFastaDb : searchAndValidationSettings.getSearchSettingsHasFastaDbs()) {
             FastaDb fasta = searchSettingsHasFastaDb.getFastaDb();
 
             SearchDatabase searchDatabase = new SearchDatabase();
@@ -307,13 +344,28 @@ public class MzIdentMlExporter {
             searchDatabase.setVersion(fasta.getVersion());
             searchDatabase.setFileFormat(new FileFormat());
             searchDatabase.getFileFormat().setCvParam(getMzIdentMlElement("/FileFormat/FASTA", CvParam.class));
-            searchDatabase.setDatabaseName(new Param());
             searchDatabase.getCvParam().add(getMzIdentMlElement("/SearchDatabase/Type", CvParam.class));
 
             //NOTE: if decoy database used then cv param should be child of MS:1001450 here
-            UserParam databaseName = new UserParam();
-            databaseName.setName(fasta.getName());
-            searchDatabase.getDatabaseName().setParam(databaseName);
+            if (fasta.getDatabaseName() != null && !fasta.getDatabaseName().isEmpty()) {
+                searchDatabase.setDatabaseName(new Param());
+                UserParam databaseName = new UserParam();
+                databaseName.setName(fasta.getDatabaseName());
+                searchDatabase.getDatabaseName().setParam(databaseName);
+            }
+
+            if (fasta.getTaxonomy() != null) {
+                Cv cv = new Cv();
+                cv.setId(fasta.getTaxonomy().getLabel());
+                updateCvList(cv.getId());
+
+                if(cvs.containsKey(cv.getId())) {
+                    CvParam taxonomy = new CvParam();
+                    taxonomy.setCv(cv);
+                    taxonomy.setAccession(fasta.getTaxonomy().getAccession());
+                    taxonomy.setName(fasta.getTaxonomy().getName());
+                }
+            }
 
             inputs.getSearchDatabase().add(searchDatabase);
         }

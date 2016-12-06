@@ -45,6 +45,11 @@
       "id": "UO",
       "uri": "http://www.unimod.org/obo/unimod.obo",
       "fullName": "Units of measurement"
+    },
+    "NCBITaxon": {
+      "id": "NCBI",
+      "uri": "http://purl.obolibrary.org/obo/ncbitaxon",
+      "fullName": "NCBI organismal classification"
     }
   },
   "DB Sequence": {

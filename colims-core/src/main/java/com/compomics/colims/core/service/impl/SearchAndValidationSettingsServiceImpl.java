@@ -113,7 +113,7 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
     }
 
     @Override
-    public SearchAndValidationSettings getbyAnalyticalRun(AnalyticalRun analyticalRun) {
+    public SearchAndValidationSettings getByAnalyticalRun(AnalyticalRun analyticalRun) {
         return searchAndValidationSettingsRepository.findbyAnalyticalRunId(analyticalRun.getId());
     }
 

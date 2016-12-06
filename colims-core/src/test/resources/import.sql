@@ -76,10 +76,10 @@ INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,
 INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (2,'MS:1001583','MS','MaxQuant','MAXQUANT','0.0.0');
 
 -- insert test taxonomy cv param
-INSERT INTO taxonomy_cv_param (id, accession, label, name) VALUES (1,'ncbi:9606','ncbiTaxon','Homo sapiens');
+INSERT INTO taxonomy_cv_param (id, accession, label, name) VALUES (1,'NCBITaxon:9606','NCBITaxon','Homo sapiens');
 
 -- insert test fasta db
-INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_taxonomy_cv_id) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', '1.2.3', 1);
+INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_taxonomy_cv_id, database_name) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', '1.2.3', 1, 'UNIPROT');
 
 -- insert test search parameter cv params
 INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'SEARCH_TYPE');
@@ -106,7 +106,7 @@ INSERT INTO search_params_has_modification (id, modification_type, l_search_modi
 INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1);
 
 -- insert test search and val settings has fasta db
-INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 0);
+INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 1);
 
 -- insert test quantification method cv param
 INSERT INTO quantification_method_cv_param (id, accession, label, name) VALUES (1, 'PRIDE', 'PRIDE:0000315', 'SILAC');

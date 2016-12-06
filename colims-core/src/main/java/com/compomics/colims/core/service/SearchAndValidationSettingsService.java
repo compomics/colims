@@ -39,8 +39,8 @@ public interface SearchAndValidationSettingsService extends GenericService<Searc
     /**
      * Get the SearchAndValidationSettings by analytical run instance from database.
      * if nothing was found, send null value.
-     * @param analyticalRun
+     * @param analyticalRun the {@link AnalyticalRun} instance
      * @return the found SearchAndValidationSettings
      */
-    SearchAndValidationSettings getbyAnalyticalRun(AnalyticalRun analyticalRun);
+    SearchAndValidationSettings getByAnalyticalRun(AnalyticalRun analyticalRun);
 }
