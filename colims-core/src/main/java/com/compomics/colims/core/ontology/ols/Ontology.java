@@ -74,8 +74,6 @@ public class Ontology {
         hash = 83 * hash + Objects.hashCode(this.nameSpace);
         hash = 83 * hash + Objects.hashCode(this.prefix);
         hash = 83 * hash + Objects.hashCode(this.title);
-        hash = 83 * hash + Objects.hashCode(this.idUrl);
-        hash = 83 * hash + Objects.hashCode(this.baseUris);
         return hash;
     }
 

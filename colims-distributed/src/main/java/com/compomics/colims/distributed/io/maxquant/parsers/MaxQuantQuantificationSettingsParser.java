@@ -71,19 +71,19 @@ public class MaxQuantQuantificationSettingsParser {
         OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(quantificationLabel);
 
         // create quantificationCvParam
-        QuantificationMethodCvParam quantificationMethodCvParam =
-                new QuantificationMethodCvParam(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
-        quantificationMethodCvParam.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethodCvParam, quantificationLabel, reagents));
+        QuantificationMethod quantificationMethod =
+                new QuantificationMethod(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+        quantificationMethod.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethod, quantificationLabel, reagents));
         // check if quantificationMethodCvParam is in the db
-        quantificationMethodCvParam = quantificationSettingsService.getQuantificationMethodCvParams(quantificationMethodCvParam);
+        quantificationMethod = quantificationSettingsService.getQuantificationMethodCvParams(quantificationMethod);
         // create quantificationSettings
         QuantificationSettings quantificationSettings = new QuantificationSettings();
-        quantificationSettings.setQuantificationMethodCvParam(quantificationMethodCvParam);
+        quantificationSettings.setQuantificationMethod(quantificationMethod);
         quantificationSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(QuantificationEngineType.MAXQUANT, maxQuantSearchSettingsParser.getVersion()));
         analyticalRuns.forEach(analyticalRun -> {
             QuantificationSettings quantSettings = new QuantificationSettings();
             quantSettings.setAnalyticalRun(analyticalRun);
-            quantSettings.setQuantificationMethodCvParam(quantificationSettings.getQuantificationMethodCvParam());
+            quantSettings.setQuantificationMethod(quantificationSettings.getQuantificationMethod());
             quantSettings.setQuantificationEngine(quantificationSettings.getQuantificationEngine());
             runsAndQuantificationSettings.put(analyticalRun, quantSettings);
 
@@ -93,12 +93,12 @@ public class MaxQuantQuantificationSettingsParser {
     /**
      * This method is to create QuantificationReagent and its link to QuantificationMethodCvParam.
      *
-     * @param quantificationMethodCvParam
+     * @param quantificationMethod
      * @param quantificationLabel
      * @param reagents
      * @return QuantificationMethodHasReagents list
      */
-    public List<QuantificationMethodHasReagent> createQuantificationReagent(QuantificationMethodCvParam quantificationMethodCvParam, String quantificationLabel, List<String> reagents) {
+    public List<QuantificationMethodHasReagent> createQuantificationReagent(QuantificationMethod quantificationMethod, String quantificationLabel, List<String> reagents) {
         List<QuantificationMethodHasReagent> quantificationMethodHasReagents = new ArrayList<>();
 
         reagents.forEach(reagent -> {
@@ -118,7 +118,7 @@ public class MaxQuantQuantificationSettingsParser {
                 quantificationReagent = quantificationReagentService.getQuantificationReagent(quantificationReagent);
 
                 quantificationMethodHasReagent.setQuantificationReagent(quantificationReagent);
-                quantificationMethodHasReagent.setQuantificationMethodCvParam(quantificationMethodCvParam);
+                quantificationMethodHasReagent.setQuantificationMethod(quantificationMethod);
                 quantificationMethodHasReagents.add(quantificationMethodHasReagent);
             }
         });

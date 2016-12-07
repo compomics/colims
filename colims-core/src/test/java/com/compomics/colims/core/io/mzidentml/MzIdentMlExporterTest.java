@@ -16,6 +16,7 @@ import uk.ac.ebi.jmzidml.model.mzidml.Cv;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,21 +47,21 @@ public class MzIdentMlExporterTest {
         AnalyticalRun run = repository.findById(1L);
         analyticalRuns.add(run);
 
-//        try (StringWriter writer = new StringWriter()) {
-//            exporter.export(writer, analyticalRuns);
-//            System.out.println(writer.toString());
-//        }
+        try (StringWriter writer = new StringWriter()) {
+            exporter.export(writer, analyticalRuns);
 
-        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
-        try (
-                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
-        ) {
-            exporter.export(bufferedWriter, analyticalRuns);
+            String export = writer.toString();
+//            System.out.println(export);
+
+            Assert.assertFalse(export.isEmpty());
         }
 
-        System.out.println("test");
-
-//        Assert.assertFalse(export.isEmpty());
+//        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
+//        try (
+//                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
+//        ) {
+//            exporter.export(bufferedWriter, analyticalRuns);
+//        }
     }
 
     @Test

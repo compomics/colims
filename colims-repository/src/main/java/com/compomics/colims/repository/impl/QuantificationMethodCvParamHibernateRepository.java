@@ -4,7 +4,7 @@
  */
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.QuantificationMethodCvParam;
+import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.colims.model.QuantificationMethodHasReagent;
 import com.compomics.colims.model.comparator.QuantificationMethodHasReagentsNameComparator;
 import org.springframework.stereotype.Repository;
@@ -19,37 +19,37 @@ import java.util.List;
  * @author Kenneth Verheggen, demet
  */
 @Repository("quantificationParametersRepository")
-public class QuantificationMethodCvParamHibernateRepository extends GenericHibernateRepository<QuantificationMethodCvParam, Long> implements QuantificationMethodCvParamRepository {
+public class QuantificationMethodCvParamHibernateRepository extends GenericHibernateRepository<QuantificationMethod, Long> implements QuantificationMethodCvParamRepository {
 
     @Override
-    public List<QuantificationMethodCvParam> findByExample(QuantificationMethodCvParam exampleInstance){
-        List<QuantificationMethodCvParam> quantificationMethodCvParams = super.findByExample(exampleInstance);
+    public List<QuantificationMethod> findByExample(QuantificationMethod exampleInstance){
+        List<QuantificationMethod> quantificationMethods = super.findByExample(exampleInstance);
         
-        Iterator<QuantificationMethodCvParam> iterator = quantificationMethodCvParams.iterator();
+        Iterator<QuantificationMethod> iterator = quantificationMethods.iterator();
         // do some additional comparisons
         while(iterator.hasNext()){
-            QuantificationMethodCvParam quantificationMethodCvParam = iterator.next();
+            QuantificationMethod quantificationMethod = iterator.next();
             
             //check accession
-            if(!exampleInstance.getAccession().equals(quantificationMethodCvParam.getAccession())){
+            if(!exampleInstance.getAccession().equals(quantificationMethod.getAccession())){
                 iterator.remove();
                 continue;
             }
             
             //check label
-            if(!exampleInstance.getLabel().equals(quantificationMethodCvParam.getLabel())){
+            if(!exampleInstance.getLabel().equals(quantificationMethod.getLabel())){
                 iterator.remove();
                 continue;
             }
             
             //check name
-            if(!exampleInstance.getName().equals(quantificationMethodCvParam.getName())){
+            if(!exampleInstance.getName().equals(quantificationMethod.getName())){
                 iterator.remove();
                 continue;
             }
             
             //check QuantificationMethodHasReagents size
-            if(exampleInstance.getQuantificationMethodHasReagents().size() != quantificationMethodCvParam.getQuantificationMethodHasReagents().size()){
+            if(exampleInstance.getQuantificationMethodHasReagents().size() != quantificationMethod.getQuantificationMethodHasReagents().size()){
                 iterator.remove();
                 continue;
             }
@@ -57,7 +57,7 @@ public class QuantificationMethodCvParamHibernateRepository extends GenericHiber
              //sort the lists of QuantificationMethodHasReagents instances
             QuantificationMethodHasReagentsNameComparator reagentsNameComparator = new QuantificationMethodHasReagentsNameComparator();
             //create a temporary list to avoid changes in the database
-            List<QuantificationMethodHasReagent> sortedList = quantificationMethodCvParam.getQuantificationMethodHasReagents();
+            List<QuantificationMethodHasReagent> sortedList = quantificationMethod.getQuantificationMethodHasReagents();
             Collections.sort(exampleInstance.getQuantificationMethodHasReagents(), reagentsNameComparator);
             Collections.sort(sortedList, reagentsNameComparator);
 
@@ -66,6 +66,6 @@ public class QuantificationMethodCvParamHibernateRepository extends GenericHiber
             }
         }
         
-        return quantificationMethodCvParams;
+        return quantificationMethods;
     }
 }

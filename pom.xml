@@ -1,7 +1,7 @@
 <project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.compomics.colims</groupId>
     <artifactId>colims</artifactId>
@@ -89,7 +89,7 @@
             <id>harald</id>
             <email>harald.barsnes AT biomed.uib.no</email>
             <organization>Department of Biomedicine, University of Bergen, Norway</organization>
-        </developer>        
+        </developer>
     </developers>
 
     <properties>
@@ -175,24 +175,24 @@
         </repository>
 
         <!--  EBI nexus repository  -->
-        <!--<repository>-->
-            <!--<id>nexus-ebi-repo</id>-->
-            <!--<name>The EBI nexus repository</name>-->
-            <!--<url>-->
-                <!--http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo/-->
-            <!--</url>-->
-            <!--<layout>default</layout>-->
-        <!--</repository>-->
+        <repository>
+            <id>nexus-ebi-repo</id>
+            <name>The EBI nexus repository</name>
+            <url>
+                http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release
+            </url>
+            <layout>default</layout>
+        </repository>
 
         <!--  EBI nexus snapshot repository  -->
-        <!--<repository>-->
-            <!--<id>nexus-ebi-repo-snapshot</id>-->
-            <!--<name>The EBI nexus snapshot repository</name>-->
-            <!--<url>-->
-                <!--http://www.ebi.ac.uk/intact/maven/nexus/content/repositories/ebi-repo-snapshots/-->
-            <!--</url>-->
-            <!--<layout>default</layout>-->
-        <!--</repository>-->
+        <repository>
+            <id>nexus-ebi-repo-snapshot</id>
+            <name>The EBI nexus snapshot repository</name>
+            <url>
+                http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots
+            </url>
+            <layout>default</layout>
+        </repository>
 
         <repository>
             <id>genesis-maven-repo</id>
@@ -381,14 +381,14 @@
                         <artifactId>swing-layout</artifactId>
                         <groupId>org.swinglabs</groupId>
                     </exclusion>
-<!--                    <exclusion>
-                        <artifactId>batik-all</artifactId>
-                        <groupId>batik</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>batik</groupId>
-                        <artifactId>pdf-transcoder</artifactId>
-                    </exclusion>-->
+                    <!--                    <exclusion>
+                                            <artifactId>batik-all</artifactId>
+                                            <groupId>batik</groupId>
+                                        </exclusion>
+                                        <exclusion>
+                                            <groupId>batik</groupId>
+                                            <artifactId>pdf-transcoder</artifactId>
+                                        </exclusion>-->
                     <exclusion>
                         <groupId>umontreal.iro.lecuyer.gof</groupId>
                         <artifactId>ssj</artifactId>

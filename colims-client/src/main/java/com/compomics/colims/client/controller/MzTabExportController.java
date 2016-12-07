@@ -11,7 +11,7 @@ import com.compomics.colims.core.io.mztab.enums.MzTabMode;
 import com.compomics.colims.core.io.mztab.enums.MzTabType;
 import com.compomics.colims.core.service.ProteinGroupQuantLabeledService;
 import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.QuantificationMethodCvParam;
+import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.enums.SearchEngineType;
@@ -482,15 +482,15 @@ public class MzTabExportController implements Controllable {
         //ensure that all runs linked with assays have been searched with the same search engine
         List<AnalyticalRun> runs = mzTabExport.getRuns();
         SearchEngineType firstRunSearchEngineType = runs.get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType();
-        QuantificationMethodCvParam firstQuantificationMethodCvParam = runs.get(0).getQuantificationSettings().getQuantificationMethodCvParam();
+        QuantificationMethod firstQuantificationMethod = runs.get(0).getQuantificationSettings().getQuantificationMethod();
         for (int i = 1; i < runs.size(); i++) {
             if (!firstRunSearchEngineType.equals(runs.get(i).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType())) {
                 validationMessages.add("All runs linked to assays must have the same search engine");
             }
-            if (!firstQuantificationMethodCvParam.equals(runs.get(i).getQuantificationSettings().getQuantificationMethodCvParam())) {
+            if (!firstQuantificationMethod.equals(runs.get(i).getQuantificationSettings().getQuantificationMethod())) {
                 validationMessages.add("All runs should have the same quantification method");
             }
-            if (runs.get(i).getQuantificationSettings().getQuantificationMethodCvParam().getQuantificationMethodHasReagents().size() != mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length) {
+            if (runs.get(i).getQuantificationSettings().getQuantificationMethod().getQuantificationMethodHasReagents().size() != mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length) {
                 validationMessages.add("Assay number should be the same with quantification reagent of the run " + runs.get(i).getName());
             }
         }
@@ -700,9 +700,9 @@ public class MzTabExportController implements Controllable {
             //the analytical runs are on node level 2
             if (node.getLevel() == 2) {
                 AnalyticalRun analyticalRun = (AnalyticalRun) node.getUserObject();
-                int[] assayArray = new int[getQuantificationSettings(analyticalRun).getQuantificationMethodCvParam().getQuantificationMethodHasReagents().size()];
+                int[] assayArray = new int[getQuantificationSettings(analyticalRun).getQuantificationMethod().getQuantificationMethodHasReagents().size()];
                 // label free experiments
-                if (getQuantificationSettings(analyticalRun).getQuantificationMethodCvParam().getQuantificationMethodHasReagents().isEmpty()) {
+                if (getQuantificationSettings(analyticalRun).getQuantificationMethod().getQuantificationMethodHasReagents().isEmpty()) {
                     assayNumber++;
                     //add to tree and expand node
                     DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(ASSAY + assayNumber);
@@ -711,7 +711,7 @@ public class MzTabExportController implements Controllable {
                     mzTabExportDialog.getAssayWithRunsTree().expandPath(new TreePath(node.getPath()));
                 }
                 // labeled experiments
-                for (int counter = 0; counter < getQuantificationSettings(analyticalRun).getQuantificationMethodCvParam().getQuantificationMethodHasReagents().size(); counter++) {
+                for (int counter = 0; counter < getQuantificationSettings(analyticalRun).getQuantificationMethod().getQuantificationMethodHasReagents().size(); counter++) {
                     assayNumber++;
                     assayArray[counter] = assayNumber;
                     //add to tree and expand node
@@ -732,7 +732,7 @@ public class MzTabExportController implements Controllable {
     private void setQuantificationReagentsAndLabels() {
         int quantLabelIndex = 0;
 
-        if (getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethodCvParam().getQuantificationMethodHasReagents().isEmpty()) {
+        if (getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod().getQuantificationMethodHasReagents().isEmpty()) {
             mzTabExportDialog.getQuantificationLabelList().setVisible(false);
             mzTabExportDialog.getQuantificationReagentTree().setVisible(false);
             mzTabExportDialog.getMatchReagentAndLabelButton().setVisible(false);
@@ -743,9 +743,9 @@ public class MzTabExportController implements Controllable {
             mzTabExportDialog.getMatchReagentAndLabelButton().setVisible(true);
             mzTabExportDialog.getRemoveReagentAndLabelButton().setVisible(true);
         }
-        for (int counter = 0; counter < getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethodCvParam().getQuantificationMethodHasReagents().size(); counter++) {
+        for (int counter = 0; counter < getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod().getQuantificationMethodHasReagents().size(); counter++) {
             quantificationLabelsListModel.add(quantLabelIndex, proteinGroupQuantLabeledService.getProteinGroupQuantLabeledForRun(mzTabExport.getRuns().get(0).getId()).get(counter).getLabel());
-            DefaultMutableTreeNode quantificationReagentTreeNode = new DefaultMutableTreeNode(getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethodCvParam().getQuantificationMethodHasReagents().get(counter).getQuantificationReagent().getName());
+            DefaultMutableTreeNode quantificationReagentTreeNode = new DefaultMutableTreeNode(getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod().getQuantificationMethodHasReagents().get(counter).getQuantificationReagent().getName());
             quantificationReagentTreeModel.insertNodeInto(quantificationReagentTreeNode, quantificationReagentRootNode, quantificationReagentTreeModel.getChildCount(quantificationReagentRootNode));
             mzTabExportDialog.getQuantificationReagentTree().expandPath(new TreePath(quantificationReagentRootNode.getPath()));
             quantLabelIndex++;

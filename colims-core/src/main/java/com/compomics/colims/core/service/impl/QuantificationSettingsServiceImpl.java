@@ -3,7 +3,7 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.QuantificationSettingsService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.QuantificationEngine;
-import com.compomics.colims.model.QuantificationMethodCvParam;
+import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import com.compomics.colims.repository.QuantificationEngineRepository;
@@ -86,15 +86,15 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     }
 
     @Override
-    public QuantificationMethodCvParam getQuantificationMethodCvParams(QuantificationMethodCvParam quantificationMethodCvParam) {
+    public QuantificationMethod getQuantificationMethodCvParams(QuantificationMethod quantificationMethod) {
         //find QuantificationMethodCvParam by example
-        List<QuantificationMethodCvParam> quantificationMethodCvParams = quantificationMethodCvParamRepository.findByExample(quantificationMethodCvParam);
-        if (!quantificationMethodCvParams.isEmpty()) {
-            return quantificationMethodCvParams.get(0);
+        List<QuantificationMethod> quantificationMethods = quantificationMethodCvParamRepository.findByExample(quantificationMethod);
+        if (!quantificationMethods.isEmpty()) {
+            return quantificationMethods.get(0);
         } else {
             //save the given instance
-            quantificationMethodCvParamRepository.persist(quantificationMethodCvParam);
-            return quantificationMethodCvParam;
+            quantificationMethodCvParamRepository.persist(quantificationMethod);
+            return quantificationMethod;
         }
     }
 

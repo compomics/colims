@@ -5,7 +5,7 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.QuantificationEngine;
-import com.compomics.colims.model.QuantificationMethodCvParam;
+import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.enums.QuantificationEngineType;
@@ -31,10 +31,10 @@ public interface QuantificationSettingsService extends GenericService<Quantifica
      * Get the QuantificationMethodCvParam by example from the database. If nothing was found, store the given
      * QuantificationMethodCvParam and return them.
      *
-     * @param quantificationMethodCvParam the QuantificationMethodCvParam instance
+     * @param quantificationMethod the QuantificationMethodCvParam instance
      * @return the found QuantificationMethodCvParam
      */
-    QuantificationMethodCvParam getQuantificationMethodCvParams(QuantificationMethodCvParam quantificationMethodCvParam);
+    QuantificationMethod getQuantificationMethodCvParams(QuantificationMethod quantificationMethod);
 
     /**
      * Get the QuantificationSettings by analytical run instance from database.

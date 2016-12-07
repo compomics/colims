@@ -4,13 +4,13 @@
  */
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.QuantificationMethodCvParam;
+import com.compomics.colims.model.QuantificationMethod;
 
 /**
  * This interface provides repository methods for the QuantificationMethodCvParam class.
  *
  * @author Niels Hulstaert
  */
-public interface QuantificationMethodCvParamRepository extends GenericRepository<QuantificationMethodCvParam, Long> {
+public interface QuantificationMethodCvParamRepository extends GenericRepository<QuantificationMethod, Long> {
 
 }

@@ -68,7 +68,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             analyticalRuns = maxQuantParser.getAnalyticalRuns();
         } catch (IOException | UnparseableException | JDOMException ex) {
             LOGGER.error(ex.getMessage(), ex);
-            throw new MappingException("there was a problem storing your max quant data, underlying exception: ", ex);
+            throw new MappingException("there was a problem storing your MaxQuant data, underlying exception: ", ex);
         }
 
         return new MappedData(analyticalRuns, maxQuantParser.getProteinGroupSet());

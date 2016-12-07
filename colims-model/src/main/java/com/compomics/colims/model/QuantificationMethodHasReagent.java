@@ -25,9 +25,9 @@ public class QuantificationMethodHasReagent extends DatabaseEntity{
     /**
      * The QuantificationMethodCvParam instance of this join entity.
      */
-    @JoinColumn(name = "l_quantification_method_cv_param_id", referencedColumnName = "id")
+    @JoinColumn(name = "l_quantification_method_id", referencedColumnName = "id")
     @ManyToOne(cascade=CascadeType.ALL)
-    private QuantificationMethodCvParam quantificationMethodCvParam;
+    private QuantificationMethod quantificationMethod;
     
     /**
      * The QuantificationMethodCvParam instance of this join entity.
@@ -40,12 +40,12 @@ public class QuantificationMethodHasReagent extends DatabaseEntity{
         
     }
 
-    public QuantificationMethodCvParam getQuantificationMethodCvParam() {
-        return quantificationMethodCvParam;
+    public QuantificationMethod getQuantificationMethod() {
+        return quantificationMethod;
     }
 
-    public void setQuantificationMethodCvParam(QuantificationMethodCvParam quantificationMethodCvParam) {
-        this.quantificationMethodCvParam = quantificationMethodCvParam;
+    public void setQuantificationMethod(QuantificationMethod quantificationMethod) {
+        this.quantificationMethod = quantificationMethod;
     }
 
     public QuantificationReagent getQuantificationReagent() {
@@ -59,7 +59,7 @@ public class QuantificationMethodHasReagent extends DatabaseEntity{
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 71 * hash + Objects.hashCode(this.quantificationMethodCvParam);
+        hash = 71 * hash + Objects.hashCode(this.quantificationMethod);
         hash = 71 * hash + Objects.hashCode(this.quantificationReagent);
         return hash;
     }
@@ -76,7 +76,7 @@ public class QuantificationMethodHasReagent extends DatabaseEntity{
             return false;
         }
         final QuantificationMethodHasReagent other = (QuantificationMethodHasReagent) obj;
-        if (!Objects.equals(this.quantificationMethodCvParam, other.quantificationMethodCvParam)) {
+        if (!Objects.equals(this.quantificationMethod, other.quantificationMethod)) {
             return false;
         }
         if (!Objects.equals(this.quantificationReagent, other.quantificationReagent)) {

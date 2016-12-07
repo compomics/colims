@@ -300,14 +300,14 @@ public class MzTabExporter {
 
         // quantification method
         metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(QUANTIFICATION_METHOD).append(COLUMN_DELIMITER).append(
-                createOntology(StringUtils.substringBefore(getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethodCvParam().getAccession(), ":"),
-                        getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethodCvParam().getAccession(), getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethodCvParam().getName())).append(System.lineSeparator());
+                createOntology(StringUtils.substringBefore(getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod().getAccession(), ":"),
+                        getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod().getAccession(), getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod().getName())).append(System.lineSeparator());
 
         //assay quantification reagents
         for (int i = 0; i < mzTabExport.getRuns().size(); i++) {
             counter = 0;
             // label free
-            if (getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationMethodCvParam().getQuantificationMethodHasReagents().isEmpty()) {
+            if (getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationMethod().getQuantificationMethodHasReagents().isEmpty()) {
                 int assayNumber = mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[counter];
                 metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(ASSAY_QUANTIFICATION_REAGENT, assayNumber)).append(COLUMN_DELIMITER).
                         append(createOntology(mzTabParams.get(5).getMzTabParamOptions().get(2).getOntology(), mzTabParams.get(5).getMzTabParamOptions().get(2).getAccession(), mzTabParams.get(5).getMzTabParamOptions().get(2).getName())).append(System.lineSeparator());
@@ -315,7 +315,7 @@ public class MzTabExporter {
 
             }
             // labeled
-            for (QuantificationMethodHasReagent quantificationMethodHasReagent : getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationMethodCvParam().getQuantificationMethodHasReagents()) {
+            for (QuantificationMethodHasReagent quantificationMethodHasReagent : getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationMethod().getQuantificationMethodHasReagents()) {
                 int assayNumber = mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[counter];
                 metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(ASSAY_QUANTIFICATION_REAGENT, assayNumber)).append(COLUMN_DELIMITER).
                         append(createOntology(StringUtils.substringBefore(quantificationMethodHasReagent.getQuantificationReagent().getAccession(), ":"), quantificationMethodHasReagent.getQuantificationReagent().getAccession(), quantificationMethodHasReagent.getQuantificationReagent().getName())).append(System.lineSeparator());
@@ -328,14 +328,14 @@ public class MzTabExporter {
         // assay ms run reference
         for (int i = 0; i < mzTabExport.getRuns().size(); i++) {
             // label free
-            if (getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationMethodCvParam().getQuantificationMethodHasReagents().isEmpty()) {
+            if (getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationMethod().getQuantificationMethodHasReagents().isEmpty()) {
                 int assayNumber = mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[0];
                 metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(ASSAY_RUN_REF, assayNumber)).append(COLUMN_DELIMITER).
                         append(String.format(MS_RUN_REF, i + 1)).append(System.lineSeparator());
                 assayAnalyticalRunRef.put(String.format(ASSAY, assayNumber), mzTabExport.getRuns().get(i));
             }
             // labeled
-            for (int j = 0; j < getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationMethodCvParam().getQuantificationMethodHasReagents().size(); j++) {
+            for (int j = 0; j < getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationMethod().getQuantificationMethodHasReagents().size(); j++) {
                 int assayNumber = mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[j];
                 metada.append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(ASSAY_RUN_REF, assayNumber)).append(COLUMN_DELIMITER).
                         append(String.format(MS_RUN_REF, i + 1)).append(System.lineSeparator());

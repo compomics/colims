@@ -29,7 +29,7 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
      */
     @JoinColumn(name = "l_quant_method_cv_param", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.MERGE)
-    private QuantificationMethodCvParam quantificationMethodCvParam;
+    private QuantificationMethod quantificationMethod;
 
     public AnalyticalRun getAnalyticalRun() {
         return analyticalRun;
@@ -47,12 +47,12 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
         this.quantificationEngine = quantificationEngine;
     }
 
-    public QuantificationMethodCvParam getQuantificationMethodCvParam() {
-        return quantificationMethodCvParam;
+    public QuantificationMethod getQuantificationMethod() {
+        return quantificationMethod;
     }
 
-    public void setQuantificationMethodCvParam(QuantificationMethodCvParam quantificationMethodCvParam) {
-        this.quantificationMethodCvParam = quantificationMethodCvParam;
+    public void setQuantificationMethod(QuantificationMethod quantificationMethod) {
+        this.quantificationMethod = quantificationMethod;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.core.ontology.ols.Ontology;
 import com.compomics.colims.core.ontology.ols.OlsSearchResult;
+import com.compomics.colims.core.ontology.ols.Ontology;
 import com.compomics.colims.core.ontology.ols.OntologyTerm;
 import com.compomics.colims.core.ontology.ols.SearchResultMetadata;
 import com.compomics.colims.model.Modification;
@@ -14,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import org.springframework.web.client.RestClientException;
 
 /**
  * @author Niels Hulstaert

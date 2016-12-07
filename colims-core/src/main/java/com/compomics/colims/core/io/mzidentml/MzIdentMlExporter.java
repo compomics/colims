@@ -173,8 +173,9 @@ public class MzIdentMlExporter {
      * Update the CV list if the given CV reference is not present.
      *
      * @param cvRef the CV reference String
+     * @return true if the CV was added or already present
      */
-    private void updateCvList(String cvRef) throws IOException {
+    private boolean updateCvList(String cvRef) throws IOException {
         if (!cvs.containsKey(cvRef)) {
             Cv cv = getMzIdentMlElement("/CvList/" + cvRef, Cv.class);
 
@@ -195,8 +196,11 @@ public class MzIdentMlExporter {
             if (cv != null) {
                 //add it to the used CVs
                 cvs.put(cvRef, cv);
+
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -357,9 +361,9 @@ public class MzIdentMlExporter {
             if (fasta.getTaxonomy() != null) {
                 Cv cv = new Cv();
                 cv.setId(fasta.getTaxonomy().getLabel());
-                updateCvList(cv.getId());
+                boolean updated = updateCvList(cv.getId());
 
-                if(cvs.containsKey(cv.getId())) {
+                if (updated) {
                     CvParam taxonomy = new CvParam();
                     taxonomy.setCv(cv);
                     taxonomy.setAccession(fasta.getTaxonomy().getAccession());
@@ -829,7 +833,10 @@ public class MzIdentMlExporter {
                 //check if a node has a "cvRef" value
                 if (node.has("cvRef")) {
                     String cvRef = node.get("cvRef").asText();
-                    updateCvList(cvRef);
+                    boolean updated = updateCvList(cvRef);
+                    if(!updated){
+                        LOGGER.warn("Couldn't find a CV with reference " + cvRef);
+                    }
                 }
 
                 mzIdentMlElement = objectReader.treeToValue(node, type);
