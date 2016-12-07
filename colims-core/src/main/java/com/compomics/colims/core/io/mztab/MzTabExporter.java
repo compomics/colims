@@ -821,7 +821,6 @@ public class MzTabExporter {
      * @return quantificationSettingsMap
      */
     private QuantificationSettings getQuantificationSettings(AnalyticalRun analyticalRun) {
-        //return quantificationSettingsService.getbyAnalyticalRun(analyticalRun);
         return analyticalRun.getQuantificationSettings();
     }
 
@@ -832,7 +831,6 @@ public class MzTabExporter {
      * @return quantificationSettingsMap
      */
     private SearchAndValidationSettings getSearchAndValidationSettings(AnalyticalRun analyticalRun) {
-        //return quantificationSettingsService.getbyAnalyticalRun(analyticalRun);
         return analyticalRun.getSearchAndValidationSettings();
     }
 

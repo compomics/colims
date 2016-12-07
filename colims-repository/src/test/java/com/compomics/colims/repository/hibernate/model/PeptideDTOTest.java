@@ -1,4 +1,4 @@
-package com.compomics.colims.client.model;
+package com.compomics.colims.repository.hibernate.model;
 
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
