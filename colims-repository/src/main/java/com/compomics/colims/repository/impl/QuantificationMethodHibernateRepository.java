@@ -9,7 +9,7 @@ import com.compomics.colims.model.QuantificationMethodHasReagent;
 import com.compomics.colims.model.comparator.QuantificationMethodHasReagentsNameComparator;
 import org.springframework.stereotype.Repository;
 
-import com.compomics.colims.repository.QuantificationMethodCvParamRepository;
+import com.compomics.colims.repository.QuantificationMethodRepository;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -18,8 +18,8 @@ import java.util.List;
  *
  * @author Kenneth Verheggen, demet
  */
-@Repository("quantificationParametersRepository")
-public class QuantificationMethodCvParamHibernateRepository extends GenericHibernateRepository<QuantificationMethod, Long> implements QuantificationMethodCvParamRepository {
+@Repository("quantificationMethodRepository")
+public class QuantificationMethodHibernateRepository extends GenericHibernateRepository<QuantificationMethod, Long> implements QuantificationMethodRepository {
 
     @Override
     public List<QuantificationMethod> findByExample(QuantificationMethod exampleInstance){

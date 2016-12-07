@@ -7,7 +7,7 @@ import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.colims.model.QuantificationSettings;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import com.compomics.colims.repository.QuantificationEngineRepository;
-import com.compomics.colims.repository.QuantificationMethodCvParamRepository;
+import com.compomics.colims.repository.QuantificationMethodRepository;
 import com.compomics.colims.repository.QuantificationSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,13 +24,13 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
 
     private final QuantificationSettingsRepository quantificationSettingsRepository;
     private final QuantificationEngineRepository quantificationEngineRepository;
-    private final QuantificationMethodCvParamRepository quantificationMethodCvParamRepository;
+    private final QuantificationMethodRepository quantificationMethodRepository;
 
     @Autowired
-    public QuantificationSettingsServiceImpl(QuantificationSettingsRepository quantificationSettingsRepository, QuantificationEngineRepository quantificationEngineRepository, QuantificationMethodCvParamRepository quantificationMethodCvParamRepository) {
+    public QuantificationSettingsServiceImpl(QuantificationSettingsRepository quantificationSettingsRepository, QuantificationEngineRepository quantificationEngineRepository, QuantificationMethodRepository quantificationMethodRepository) {
         this.quantificationSettingsRepository = quantificationSettingsRepository;
         this.quantificationEngineRepository = quantificationEngineRepository;
-        this.quantificationMethodCvParamRepository = quantificationMethodCvParamRepository;
+        this.quantificationMethodRepository = quantificationMethodRepository;
     }
 
     @Override
@@ -88,12 +88,12 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     @Override
     public QuantificationMethod getQuantificationMethodCvParams(QuantificationMethod quantificationMethod) {
         //find QuantificationMethodCvParam by example
-        List<QuantificationMethod> quantificationMethods = quantificationMethodCvParamRepository.findByExample(quantificationMethod);
+        List<QuantificationMethod> quantificationMethods = quantificationMethodRepository.findByExample(quantificationMethod);
         if (!quantificationMethods.isEmpty()) {
             return quantificationMethods.get(0);
         } else {
             //save the given instance
-            quantificationMethodCvParamRepository.persist(quantificationMethod);
+            quantificationMethodRepository.persist(quantificationMethod);
             return quantificationMethod;
         }
     }

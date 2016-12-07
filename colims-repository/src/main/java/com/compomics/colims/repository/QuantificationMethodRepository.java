@@ -11,6 +11,6 @@ import com.compomics.colims.model.QuantificationMethod;
  *
  * @author Niels Hulstaert
  */
-public interface QuantificationMethodCvParamRepository extends GenericRepository<QuantificationMethod, Long> {
+public interface QuantificationMethodRepository extends GenericRepository<QuantificationMethod, Long> {
 
 }
