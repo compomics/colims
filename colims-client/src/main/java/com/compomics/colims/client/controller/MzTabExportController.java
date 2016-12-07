@@ -29,7 +29,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -679,8 +678,8 @@ public class MzTabExportController implements Controllable {
             int index = 0;
             while (assays.hasMoreElements()) {
                 String assay = ((DefaultMutableTreeNode) assays.nextElement()).getUserObject().toString();
-                int assayNumber = Integer.valueOf(assay.substring(assay.indexOf(" ") + 1));
-                assayNumbers[index] = assayNumber;
+                int assayNo = Integer.valueOf(assay.substring(assay.indexOf(" ") + 1));
+                assayNumbers[index] = assayNo;
                 index++;
             }
             mzTabExport.getStudyVariablesAssaysRefs().put(studyVariable.toString(), assayNumbers);
@@ -764,7 +763,6 @@ public class MzTabExportController implements Controllable {
      * @return quantificationSettingsMap
      */
     private QuantificationSettings getQuantificationSettings(AnalyticalRun analyticalRun) {
-        //return quantificationSettingsService.getbyAnalyticalRun(analyticalRun);
         return analyticalRun.getQuantificationSettings();
     }
 
