@@ -230,6 +230,7 @@ public class MzTabExporter {
      * Export the mzTabExport input to a mzTab file.
      *
      * @param mzTabExport the MzTabExport instance
+     * @throws java.io.IOException
      */
     public void export(MzTabExport mzTabExport) throws IOException {
         this.mzTabExport = mzTabExport;
@@ -270,6 +271,7 @@ public class MzTabExporter {
         pw.flush();    
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
+            throw new IOException(e.getMessage());
         }
     }
 
@@ -300,7 +302,7 @@ public class MzTabExporter {
 
         //software
         if(type == 2 || type == 4){
-            pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(SOFTWARE, 1)).append(COLUMN_DELIMITER).append(getSearchEngine()));
+            pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(SOFTWARE, 1)).append(COLUMN_DELIMITER).append(getSearchEngine()).append(COLUMN_DELIMITER));
         }
         
         // protein search engine score
@@ -548,7 +550,7 @@ public class MzTabExporter {
             }
 
             // set search engine
-            proteins.append(getSearchEngine());
+            proteins.append(getSearchEngine()).append(COLUMN_DELIMITER);
 
             // set best search engine score for protein. 
             proteins.append(proteinList.get(i).getProteinPostErrorProbability()).append(COLUMN_DELIMITER);
@@ -684,7 +686,7 @@ public class MzTabExporter {
             // search engine score
             psms.append(peptideHasProteinGroup.getKey().getPeptide().getPsmProbability()).append(COLUMN_DELIMITER);
 
-            // modifications (FIX)
+            // modifications 
             psms.append(getModifications(peptideHasProteinGroup.getKey().getPeptide())).append(COLUMN_DELIMITER);
 
             //retention time
@@ -787,8 +789,6 @@ public class MzTabExporter {
         }
 
         searchEngine = searchEngine.deleteCharAt(searchEngine.length() - 1);
-
-        searchEngine.append(COLUMN_DELIMITER);
 
         return searchEngine.toString();
     }

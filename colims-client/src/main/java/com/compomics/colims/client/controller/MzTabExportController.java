@@ -29,6 +29,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -291,7 +292,7 @@ public class MzTabExportController implements Controllable {
         mzTabExportDialog.getMatchReagentAndLabelButton().addActionListener(e -> {
             String selectedLabel = mzTabExportDialog.getQuantificationLabelList().getSelectedValue();
 
-            if (!selectedLabel.isEmpty() && isOneNodeSelected(mzTabExportDialog.getQuantificationReagentTree(), 1)) {
+            if (selectedLabel != null && isOneNodeSelected(mzTabExportDialog.getQuantificationReagentTree(), 1)) {
                 DefaultMutableTreeNode quantificationReagent = (DefaultMutableTreeNode) mzTabExportDialog.getQuantificationReagentTree().getSelectionPaths()[0].getLastPathComponent();
                 if (quantificationReagent.getChildCount() == 0) {
                     // remove label from list
@@ -776,10 +777,17 @@ public class MzTabExportController implements Controllable {
         protected Void doInBackground() throws Exception {
 
             LOGGER.info("Exporting mzTab file " + mzTabExport.getFileName() + " to directory " + mzTabExport.getExportDirectory());
-            mzTabExporter.export(mzTabExport);
-            LOGGER.info("Finished exporting mzTab file " + mzTabExport.getFileName());
+            try{
+                mzTabExporter.export(mzTabExport);
+                ProgressEndEvent progressEndEvent = new ProgressEndEvent();
+                eventBus.post(progressEndEvent);
+                eventBus.post(new MessageEvent("Info", "Exporting mzTab file has finished", JOptionPane.INFORMATION_MESSAGE));
+                LOGGER.info("Finished exporting mzTab file " + mzTabExport.getFileName());
+            }catch(Exception e){
+                eventBus.post(new MessageEvent("Error", e.getMessage(), JOptionPane.ERROR_MESSAGE));
+            }
 
-            Thread.sleep(10000);
+            Thread.sleep(1);
 
             return null;
         }
