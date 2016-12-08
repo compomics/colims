@@ -625,6 +625,7 @@
                                 <exclude>**/*IT.class</exclude>
                             </excludes>
                             <!--<argLine>@{argLine}</argLine>-->
+                            <argLine>-Xmx1024m</argLine>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -659,18 +660,12 @@
                                 <exclude>**/PeptideShakerIOIT.class</exclude>
                             </excludes>
                             <!--<argLine>@{argLine}</argLine>-->
+                            <argLine>-Xmx1024m</argLine>
                         </configuration>
                         <executions>
                             <execution>
-                                <id>failsafe-integration-test</id>
-                                <phase>integration-test</phase>
                                 <goals>
                                     <goal>integration-test</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>failsafe-verify</id>
-                                <goals>
                                     <goal>verify</goal>
                                 </goals>
                             </execution>
