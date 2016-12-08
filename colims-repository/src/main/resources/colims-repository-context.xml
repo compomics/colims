@@ -29,7 +29,7 @@
         <property name="persistenceUnitName" value="colimsPersistenceUnit"/>
         <property name="dataSource" ref="colimsDataSource"/>
         <property name="packagesToScan" value="com.compomics.colims.model"/>
-        <!--<property name="mappingResources" value="Queries.hbm.xml"/>-->
+        <property name="mappingResources" value="Queries.hbm.xml"/>
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
         </property>

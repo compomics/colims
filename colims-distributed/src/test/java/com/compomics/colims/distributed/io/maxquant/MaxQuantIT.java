@@ -8,6 +8,7 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.UserBean;
 import com.compomics.colims.model.enums.FastaDbType;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,12 +25,9 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertThat;
-
 /**
- * MaxQuant integration test.
+ * MaxQuant integration test. This class tests the main MaxQuant parsing classes {@link MaxQuantMapper} and {@link
+ * com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser}.
  *
  * @author Iain
  */
@@ -44,7 +42,7 @@ public class MaxQuantIT {
     @Autowired
     private UserService userService;
     @Autowired
-    MaxQuantMapper maxQuantImporter;
+    private MaxQuantMapper maxQuantMapper;
     @Autowired
     private UserBean userBean;
 
@@ -56,29 +54,27 @@ public class MaxQuantIT {
     }
 
     /**
-     * Test of map method, of class MaxQuantImporter.
+     * Test of the MaxQuant main mapper method.
+     *
      * @throws java.lang.Exception in case of an exception
      */
     @Test
     public void testMap() throws Exception {
-        //persist the fasta db. We don't have it as an insert statement in the import.sql file
-        //as the file path might be different depending on the OS
+        //save the test FASTA to the database first
         fastaDbService.persist(MaxQuantTestSuite.testFastaDb);
+        //save the contaminants FASTA to the database first
+        fastaDbService.persist(MaxQuantTestSuite.contaminantsFastaDb);
 
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb.getId())));
+        fastaDbIds.put(FastaDbType.CONTAMINANTS, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb.getId())));
 
         MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.mqparFile,
                 MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds, false, false, new ArrayList<>(), "label free");
-        MappedData mappedData = maxQuantImporter.mapData(maxQuantImport);
+        maxQuantMapper.clear();
+        MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 
-        assertThat(analyticalRuns.size(), is(6));
-        assertThat(analyticalRuns.get(0).getSpectrums().size(), greaterThan(0));
-        assertThat(analyticalRuns.get(0).getSearchAndValidationSettings().getSearchSettingsHasFastaDbs().get(0).getFastaDb(), is(MaxQuantTestSuite.testFastaDb));
-   //     assertThat(analyticalRuns.get(0).getQuantificationSettings(), notNullValue());
-        assertThat(analyticalRuns.get(0).getSpectrums().get(0).getPeptides().size(), greaterThan(0));
-        // TODO: 6/6/2016 more test.. 
-
+        Assert.assertFalse(analyticalRuns.isEmpty());
     }
 }

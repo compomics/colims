@@ -52,7 +52,7 @@ public class MaxQuantSpectraParserTest {
         for (List<Spectrum> unidentifiedSpectra : maxQuantSpectra.getUnidentifiedSpectra().values()) {
             numberOfUnidentifiedSpectra += unidentifiedSpectra.size();
         }
-        Assert.assertEquals(11307, numberOfUnidentifiedSpectra);
+        Assert.assertEquals(11306, numberOfUnidentifiedSpectra);
     }
 
 }

@@ -2,6 +2,7 @@ package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.ProteinGroupService;
 import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import javafx.util.Pair;
 
 /**
  * Created by Iain on 08/09/2015.
@@ -81,6 +84,12 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     @Override
     public List<ProteinGroupHasProtein> getAmbiguityMembers(Long proteinGroupId) {
         return proteinGroupRepository.getAmbiguityMembers(proteinGroupId);
+    }
+
+    @Override
+    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinbyProteinGroupId(Long proteinGroupId) {
+        return proteinGroupRepository.getProteinGroupHasProteinbyProteinGroupId(proteinGroupId);
+       
     }
 
 }

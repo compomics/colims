@@ -18,7 +18,6 @@ import java.nio.file.Path;
 @Suite.SuiteClasses({
         MaxQuantEvidenceParserTest.class,
         MaxQuantSearchSettingsParserTest.class,
-        MaxQuantParserTest.class,
         MaxQuantProteinGroupsParserTest.class,
         MaxQuantSpectraParserTest.class,
         TabularFileIteratorTest.class,

@@ -118,6 +118,8 @@ public class AccessionConverter {
                 input.append(buffer.flip());
                 buffer.clear();
             }
+        }catch(IOException e){
+            throw new IOException("EMBL-EBI server is not available at the moment, please try again later.");
         }
         htmlPage = input.toString();
         return htmlPage;

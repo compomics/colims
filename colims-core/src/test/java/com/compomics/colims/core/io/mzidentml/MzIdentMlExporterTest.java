@@ -67,7 +67,7 @@ public class MzIdentMlExporterTest {
     @Test
     public void testGetMzIdentMlElements() throws IOException {
         List<Cv> cvs = exporter.getChildMzIdentMlElements("/CvList", Cv.class);
-        Assert.assertEquals(2, cvs.size());
+        Assert.assertEquals(5, cvs.size());
     }
 
     @Test

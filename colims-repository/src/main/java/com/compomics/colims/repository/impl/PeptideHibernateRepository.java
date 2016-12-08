@@ -1,5 +1,6 @@
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProteinGroup;
@@ -14,8 +15,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -79,7 +82,7 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     @Override
     public List<String> getDistinctPeptideSequenceByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds) {
         Query query = getCurrentSession().getNamedQuery("Peptide.getDistinctPeptideSequenceByProteinGroupIdAndAnalyticalRunIds");
-        
+
         query.setLong("proteinGroupId", proteinGroupId);
         query.setParameterList("analyticalRunId", analyticalRunIds);
 
@@ -93,12 +96,27 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
         peptideDTOs.forEach(peptideDto -> {
             Criteria criteria = getCurrentSession().createCriteria(PeptideHasProteinGroup.class);
             criteria.add(Restrictions.eq("peptide.id", peptideDto.getPeptide().getId()));
-            if(criteria.list().size() == 1){
+            if (criteria.list().size() == 1) {
                 peptides.add(peptideDto.getPeptide());
             }
         });
-        
+
         return peptides;
+    }
+
+    @Override
+    public Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAnalyticalRunId(List<Long> analyticalRunIds) {
+        Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideHasProteinGroupByAnalyticalRunIds");
+        query.setParameterList("analyticalRunId", analyticalRunIds);
+
+        List list = query.list();
+
+        Map<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroups = new HashMap<>();
+        for (Object object : list) {
+            Object[] objectArray = (Object[]) object;  
+            peptideHasProteinGroups.put((PeptideHasProteinGroup) objectArray[1], (AnalyticalRun) objectArray[2]);
+        }
+        return peptideHasProteinGroups;
     }
 
 }

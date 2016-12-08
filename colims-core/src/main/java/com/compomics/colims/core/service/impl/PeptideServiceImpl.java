@@ -1,8 +1,11 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.PeptideService;
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.model.PeptideHasProteinGroup;
+import com.compomics.colims.repository.ModificationRepository;
 import com.compomics.colims.repository.PeptideRepository;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import org.apache.log4j.Logger;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Niels Hulstaert
@@ -26,10 +30,12 @@ public class PeptideServiceImpl implements PeptideService {
     private static final Logger LOGGER = Logger.getLogger(PeptideServiceImpl.class);
 
     private final PeptideRepository peptideRepository;
+    private final ModificationRepository modificationRepository;
 
     @Autowired
-    public PeptideServiceImpl(PeptideRepository peptideRepository) {
+    public PeptideServiceImpl(PeptideRepository peptideRepository, ModificationRepository modificationRepository) {
         this.peptideRepository = peptideRepository;
+        this.modificationRepository = modificationRepository;
     }
 
     @Override
@@ -69,6 +75,9 @@ public class PeptideServiceImpl implements PeptideService {
         } catch (LazyInitializationException e) {
             //fetch the PeptideHasModification instance
             List<PeptideHasModification> peptideHasModifications = peptideRepository.fetchPeptideHasModifications(peptide.getId());
+            for(PeptideHasModification peptideHasModification : peptideHasModifications){
+                peptideHasModification.setModification(modificationRepository.findById(peptideHasModification.getModification().getId()));
+            }
             peptide.setPeptideHasModifications(peptideHasModifications);
         }
     }
@@ -86,5 +95,11 @@ public class PeptideServiceImpl implements PeptideService {
     @Override
     public List<Peptide> getUniquePeptides(Long proteinGroupId, List<Long> analyticalRunIds) {
         return peptideRepository.getUniquePeptideByProteinGroupIdAnalyticalRunId(proteinGroupId, analyticalRunIds);
+    }
+
+
+    @Override
+    public Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAnalyticalRunId(List<Long> analyticalRunIds) {
+        return peptideRepository.getPeptideHasProteinGroupByAnalyticalRunId(analyticalRunIds);
     }
 }

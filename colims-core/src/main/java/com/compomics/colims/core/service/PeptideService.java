@@ -1,9 +1,12 @@
 package com.compomics.colims.core.service;
 
+import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This interface provides service methods for the Peptide class.
@@ -47,4 +50,12 @@ public interface PeptideService extends GenericService<Peptide, Long> {
      * @return the list of unique Peptides
      */
     List<Peptide> getUniquePeptides(Long proteinGroupId, List<Long> analyticalRunIds);
+    
+    /**
+     * Fetch the PeptideHasProteinGroup instances associated with the given analyticalRuns.
+     *
+     * @param analyticalRunIds the list of anayicalRun IDs
+     * @return the map (key : PeptideHasProteinGroup ; value : analyticalRun)
+     */
+    Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAnalyticalRunId(List<Long> analyticalRunIds);
 }

@@ -25,7 +25,7 @@ public class FixedTabularFileIteratorTest {
         Assert.assertTrue(iterator.hasNext());
         Map<String, String> values = iterator.next();
         Assert.assertNotNull(values);
-        Assert.assertEquals(4, values.size());
+        Assert.assertEquals(1, values.size());
 
     }
 

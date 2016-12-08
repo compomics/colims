@@ -624,7 +624,7 @@
                             <excludes>
                                 <exclude>**/*IT.class</exclude>
                             </excludes>
-                            <argLine>@{argLine}</argLine>
+                            <!--<argLine>@{argLine}</argLine>-->
                         </configuration>
                     </plugin>
                 </plugins>
@@ -658,7 +658,7 @@
                                 <exclude>**/PeptideShakerImporterIT.class</exclude>
                                 <exclude>**/PeptideShakerIOIT.class</exclude>
                             </excludes>
-                            <argLine>@{argLine}</argLine>
+                            <!--<argLine>@{argLine}</argLine>-->
                         </configuration>
                         <executions>
                             <execution>

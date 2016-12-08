@@ -39,8 +39,9 @@ public class FastaDbParserTest {
         Assert.assertTrue(parsedFastas.containsKey("O00571"));
         //look for the last protein
         Assert.assertTrue(parsedFastas.containsKey("E9PAV3"));
-        //look for 2 contaminants proteins
+        //look for 3 contaminants proteins
         Assert.assertTrue(parsedFastas.containsKey("P09870"));
         Assert.assertTrue(parsedFastas.containsKey("P05784"));
+        Assert.assertTrue(parsedFastas.containsKey("H-INV:HIT000292931"));
     }
 }

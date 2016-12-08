@@ -76,7 +76,7 @@ INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (2,
 INSERT INTO taxonomy_cv_param (id, accession, label, name) VALUES (1,'ncbi:9606','ncbiTaxon','Homo sapiens');
 
 -- insert test fasta db
-INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_taxonomy_cv_id) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', '1.2.3', 1);
+INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, database_name,l_taxonomy_cv_id) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', '1.2.3', 'UNIPROT', 1);
 
 -- insert test search parameter cv params
 INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'SEARCH_TYPE');
@@ -106,13 +106,13 @@ INSERT INTO search_and_validation_settings (id, creation_date, modification_date
 INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 0);
 
 -- insert test quantification method cv param
-INSERT INTO quantification_method_cv_param (id, accession, label, name) VALUES (1, 'PRIDE', 'PRIDE:0000315', 'SILAC');
+INSERT INTO quantification_method (id, accession, label, name) VALUES (1, 'PRIDE', 'PRIDE:0000315', 'SILAC');
 
 -- insert quantification reagent
 INSERT INTO quantification_reagent (id, accession, label, name) VALUES (1, 'PRIDE', 'PRIDE:0000326', 'SILAC light');
 
 -- insert quantification method has reagent
-INSERT INTO quantification_method_has_reagent (id, l_quantification_method_cv_param_id, l_quantification_reagent_id) VALUES (1, 1, 1);
+INSERT INTO quantification_method_has_reagent (id, l_quantification_method_id, l_quantification_reagent_id) VALUES (1, 1, 1);
 
 -- insert quantification engine
 INSERT INTO quantification_engine (id, accession, label, name, type, version) VALUES (1,'MS:1001583','MS','MaxQuant','MAXQUANT','0.0.0');

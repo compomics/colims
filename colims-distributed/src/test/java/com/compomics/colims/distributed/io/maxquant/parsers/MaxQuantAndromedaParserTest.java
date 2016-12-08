@@ -37,7 +37,7 @@ public class MaxQuantAndromedaParserTest {
         Assert.assertEquals(fragmentationType, FragmentationType.CID);
         Assert.assertEquals(massAnalyzerType, MaxQuantConstants.Analyzer.ITMS);
         //check apl files
-        Assert.assertEquals(3, aplFilePaths.size());
+        Assert.assertEquals(5, aplFilePaths.size());
     }
 
 }

@@ -80,7 +80,7 @@ public class UtilitiesSpectrumMapperTest {
         Assert.assertEquals(mSnSpectrum.getPrecursor().getMz(), spectrum.getMzRatio(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getIntensity(), spectrum.getIntensity(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getRt(), spectrum.getRetentionTime(), 0.001);
-        Assert.assertEquals(mSnSpectrum.getScanNumber(), spectrum.getScanNumber());
+        Assert.assertEquals(mSnSpectrum.getScanNumber(), Long.toString(spectrum.getScanNumber()));
         Assert.assertEquals(mSnSpectrum.getScanStartTime(), spectrum.getScanTime(), 0.001);
         Assert.assertEquals(2, spectrum.getCharge().intValue());
         Assert.assertEquals(FragmentationType.CID, spectrum.getFragmentationType());

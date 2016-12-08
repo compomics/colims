@@ -1,5 +1,5 @@
 -- insert test institution
-INSERT INTO institution (id, creation_date, modification_date, user_name, abbreviation, city, country, name, number, postal_codes, street) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','CFO','Paris','France','Centre for Proteomics','8', '8520', 'Rue De Masspec');
+INSERT INTO institution (id, creation_date, modification_date, user_name, abbreviation, city, country, name, number, postal_code, street) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','CFO','Paris','France','Centre for Proteomics','8', '8520', 'Rue De Masspec');
 
 -- insert test users
 INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password, l_institution_id) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin11@test.com','admin1_first_name','admin1_last_name','admin1','/VcrldJXLdkuNRe5JHMtO4S/0plRymxt',1),(2,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','lab1@test.com','lab1_first_name','lab1_last_name','lab1','21HkOuddgSKsFAEunzfJwgeHGus+Ny5a', 1),(3,'2012-06-28 11:05:58','2012-06-28 11:05:58','admin','lab2@test.com','lab2_first_name','lab2_last_name','lab2','5VCdz+RPeCu1dkUfpzNedNA49K5S/TTn', 1),(4,'2012-06-28 11:19:49','2012-10-11 12:02:33','admin','collab1@test.com','collab1_first_name','collab1_last_name','collab1','ohgCuzOjoAC5s+k6mzEJqFwFeZsR7TWI',1);
@@ -78,7 +78,7 @@ INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_t
 INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (3, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'SEARCH_TYPE');
 
 -- insert test search parameters
-INSERT INTO search_parameters (id, l_search_type_cv_id, enzymes, threshold, search_ion_type_1, fragment_mass_tolerance, fragment_mass_tolerance_unit, lower_charge, missed_cleavages, precursor_mass_tolerance, precursor_mass_tolerance_unit, search_ion_type_2, upper_charge) VALUES (1, 3, 'Trypsin', 50.0, 1, 0.02, 1, 2, 2, 10.0, 0, 4, 4), (2, 3, 'Trypsin', 50.0, 1, 0.02, 1, 2, 2, 10.0, 0, 4, 4), (3, 3, 'Trypsin', 50.0, 1, 0.02, 1, 2, 2, 10.0, 0, 4, 4);
+INSERT INTO search_parameters (id, l_search_type_cv_id, enzymes, search_ion_type_1, fragment_mass_tolerance, fragment_mass_tolerance_unit, lower_charge, missed_cleavages, precursor_mass_tolerance, precursor_mass_tolerance_unit, search_ion_type_2, upper_charge, score_type, psm_threshold, peptide_threshold, protein_threshold) VALUES (1, 3, 'Trypsin', 50.0, 0.02, 1, 2, 2, 10.0, 0, 4, 4, 1, 0.01, 0.02, 0.03), (2, 3, 'Trypsin', 50.0, 0.02, 1, 2, 2, 10.0, 0, 4, 4, 1, 0.01, 0.02, 0.03), (3, 3, 'Trypsin', 50.0, 0.02, 1, 2, 2, 10.0, 0, 4, 4, 1, 0.01, 0.02, 0.03);
 
 -- insert test search modifications
 INSERT INTO search_modification (id, name, accession, utilities_name, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'MOD:00425', 'test_utilities_name', '16.0', '15.994915'), (2, 'phosphorylated residue', 'MOD:00696', 'utilities_name_2', '79.98', '79.966331');
