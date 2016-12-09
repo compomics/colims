@@ -97,7 +97,7 @@ INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_r
 INSERT INTO spectrum_file (id, content, l_spectrum_id) VALUES (1, 'AABBCC', 1);
 
 -- insert a search parameters
-INSERT INTO search_parameters (id, precursor_mass_tolerance, precursor_mass_tolerance_unit, fragment_mass_tolerance, fragment_mass_tolerance_unit, enzymes, score_type, psm_threshold, peptide_threshold, protein_threshold) VALUES (1, 4, 1, 5, 1, 'Trypsin;Trypsin/P', 1, 0.01, 0.02, 0.03);
+INSERT INTO search_parameters (id, precursor_mass_tolerance, precursor_mass_tolerance_unit, fragment_mass_tolerance, fragment_mass_tolerance_unit, enzymes, score_type, psm_threshold, peptide_threshold, protein_threshold, missed_cleavages) VALUES (1, 4, 1, 5, 1, 'Trypsin;Trypsin/P', 1, 0.01, 0.02, 0.03, '2;3');
 
 -- insert a search params has mod
 INSERT INTO search_params_has_modification (id, modification_type, l_search_modification_id, l_search_parameters_id) VALUES (1, 1, 3, 1);
