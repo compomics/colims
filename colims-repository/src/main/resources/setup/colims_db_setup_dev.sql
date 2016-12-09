@@ -1,5 +1,6 @@
 use colims;
 
+
     create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
@@ -431,18 +432,17 @@ use colims;
     create table colims.search_parameters (
         id bigint not null auto_increment,
         enzymes varchar(255),
-        search_ion_type_1 integer,
         fragment_mass_tolerance double precision,
         fragment_mass_tolerance_unit integer,
         lower_charge integer,
-        missed_cleavages integer,
+        missed_cleavages varchar(255),
         peptide_threshold double precision,
         precursor_mass_tolerance double precision,
         precursor_mass_tolerance_unit integer,
         protein_threshold double precision,
         psm_threshold double precision,
         score_type integer,
-        search_ion_type_2 integer,
+        searched_ions varchar(255),
         upper_charge integer,
         l_search_type_cv_id bigint,
         primary key (id)
