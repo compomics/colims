@@ -434,16 +434,20 @@ public class MzIdentMlExporter {
         spectrumIdentificationProtocol.setEnzymes(new Enzymes());
         String colimsEnzymes = searchParameters.getEnzymes();
         if (colimsEnzymes != null) {
-            for (String colimsEnzyme : colimsEnzymes.split(";")) {
-                CvParam cvEnzyme = getEnzymeByName(colimsEnzyme);
+            //split the enzymes
+            String[] enzymes = colimsEnzymes.split(SearchParameters.DELIMITER);
+            //split the number of missedCleavages
+            String[] missedCleavages = searchParameters.getNumberOfMissedCleavages().split(";");
+            for (int i = 0; i < enzymes.length; i++) {
+                CvParam cvEnzyme = getEnzymeByName(enzymes[i]);
                 if (cvEnzyme == null) {
                     //set the enzyme as "unknown"
                     cvEnzyme = getMzIdentMlElement("/Unknown param", CvParam.class);
                 }
                 Enzyme mzEnzyme = new Enzyme();
-                mzEnzyme.setId("ENZYME-" + colimsEnzyme);
+                mzEnzyme.setId("ENZYME-" + enzymes[i]);
                 mzEnzyme.setEnzymeName(new ParamList());
-                mzEnzyme.setMissedCleavages(searchParameters.getNumberOfMissedCleavages() == null ? 0 : searchParameters.getNumberOfMissedCleavages());
+                mzEnzyme.setMissedCleavages(Integer.parseInt(missedCleavages[i]));
                 mzEnzyme.getEnzymeName().getCvParam().add(cvEnzyme);
 
                 spectrumIdentificationProtocol.getEnzymes().getEnzyme().add(mzEnzyme);
@@ -834,7 +838,7 @@ public class MzIdentMlExporter {
                 if (node.has("cvRef")) {
                     String cvRef = node.get("cvRef").asText();
                     boolean updated = updateCvList(cvRef);
-                    if(!updated){
+                    if (!updated) {
                         LOGGER.warn("Couldn't find a CV with reference " + cvRef);
                     }
                 }

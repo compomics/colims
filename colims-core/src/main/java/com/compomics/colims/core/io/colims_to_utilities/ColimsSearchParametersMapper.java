@@ -10,6 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * This class maps a Colims SearchParameters instance onto a Utilities SearchParameters instance.
  *
@@ -48,11 +53,20 @@ public class ColimsSearchParametersMapper {
         utilitiesSearchParameters.setFragmentIonAccuracy(colimsSearchParameters.getFragMassTolerance());
 
         //fragment ions searched
-        if (colimsSearchParameters.getFirstSearchedIonType() != null) {
-            utilitiesSearchParameters.setIonSearched1(getFragmentIonTypeToString(colimsSearchParameters.getFirstSearchedIonType()));
-        }
-        if (colimsSearchParameters.getSecondSearchedIonType() != null) {
-            utilitiesSearchParameters.setIonSearched2(getFragmentIonTypeToString(colimsSearchParameters.getSecondSearchedIonType()));
+        if (colimsSearchParameters.getSearchedIons() != null) {
+            String[] searchedIons = colimsSearchParameters.getSearchedIons().split(SearchParameters.DELIMITER);
+            List<String> implementedForwardIons = Arrays.asList(com.compomics.util.experiment.identification.identification_parameters.SearchParameters.implementedForwardIons);
+            List<String> implementedRewindIons = Arrays.asList(com.compomics.util.experiment.identification.identification_parameters.SearchParameters.implementedRewindIons);
+            ArrayList<Integer> forwardIons = Arrays.stream(searchedIons)
+                    .filter(ion -> implementedForwardIons.contains(ion))
+                    .map(ion -> implementedForwardIons.indexOf(ion))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<Integer> rewindIons = Arrays.stream(searchedIons)
+                    .filter(ion -> implementedRewindIons.contains(ion))
+                    .map(ion -> implementedRewindIons.indexOf(ion))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            utilitiesSearchParameters.setForwardIons(forwardIons);
+            utilitiesSearchParameters.setForwardIons(rewindIons);
         }
         //precursor accuracy
         utilitiesSearchParameters.setPrecursorAccuracyType(MassAccuracyType.getByColimsMassAccuracyType(colimsSearchParameters.getPrecMassToleranceUnit()));

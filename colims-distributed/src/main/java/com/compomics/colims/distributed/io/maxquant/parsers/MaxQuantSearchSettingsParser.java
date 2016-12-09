@@ -269,7 +269,7 @@ public class MaxQuantSearchSettingsParser {
 
         //missed cleavages
         String missedCleavages = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.MAX_MISSED_CLEAVAGES);
-        searchParameters.setNumberOfMissedCleavages(Integer.parseInt(missedCleavages));
+        searchParameters.setNumberOfMissedCleavages(missedCleavages);
 
         //upper charge
         String upperCharge = mqParParamsWithRawFile.get(rawFileName).get(MqParHeader.MAX_CHARGE);

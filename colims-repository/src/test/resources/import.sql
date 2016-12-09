@@ -78,7 +78,7 @@ INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_t
 INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (3, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'SEARCH_TYPE');
 
 -- insert test search parameters
-INSERT INTO search_parameters (id, l_search_type_cv_id, enzymes, search_ion_type_1, fragment_mass_tolerance, fragment_mass_tolerance_unit, lower_charge, missed_cleavages, precursor_mass_tolerance, precursor_mass_tolerance_unit, search_ion_type_2, upper_charge, score_type, psm_threshold, peptide_threshold, protein_threshold) VALUES (1, 3, 'Trypsin', 50.0, 0.02, 1, 2, 2, 10.0, 0, 4, 4, 1, 0.01, 0.02, 0.03), (2, 3, 'Trypsin', 50.0, 0.02, 1, 2, 2, 10.0, 0, 4, 4, 1, 0.01, 0.02, 0.03), (3, 3, 'Trypsin', 50.0, 0.02, 1, 2, 2, 10.0, 0, 4, 4, 1, 0.01, 0.02, 0.03);
+INSERT INTO search_parameters (id, l_search_type_cv_id, enzymes, searched_ions, fragment_mass_tolerance, fragment_mass_tolerance_unit, lower_charge, missed_cleavages, precursor_mass_tolerance, precursor_mass_tolerance_unit, upper_charge, score_type, psm_threshold, peptide_threshold, protein_threshold) VALUES (1, 3, 'Trypsin', '1;4', 0.02, 1, 2, 2, 10.0, 0, 4, 1, 0.01, 0.02, 0.03), (2, 3, 'Trypsin', '1;4' , 0.02, 1, 2, 2, 10.0, 0, 4, 1, 0.01, 0.02, 0.03), (3, 3, 'Trypsin', '1;4', 0.02, 1, 2, 2, 10.0, 0, 4, 1, 0.01, 0.02, 0.03);
 
 -- insert test search modifications
 INSERT INTO search_modification (id, name, accession, utilities_name, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'MOD:00425', 'test_utilities_name', '16.0', '15.994915'), (2, 'phosphorylated residue', 'MOD:00696', 'utilities_name_2', '79.98', '79.966331');

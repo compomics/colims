@@ -8,8 +8,10 @@ import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.ScoreType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.biology.Enzyme;
+import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
 import com.compomics.util.experiment.massspectrometry.Charge;
+import com.compomics.util.preferences.DigestionPreferences;
 import com.compomics.util.preferences.IdentificationParameters;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**
@@ -40,10 +43,16 @@ public class UtilitiesSearchSettingsMapperTest {
     public void init() throws IOException {
         //create SearchParameters
         SearchParameters searchParameters = new SearchParameters();
-        Enzyme enzyme = new Enzyme(1, "testEnzyme", "A", "A", "A", "A");
-        searchParameters.setEnzyme(enzyme);
+        DigestionPreferences digestionPreferences = DigestionPreferences.getDefaultPreferences();
+        searchParameters.setDigestionPreferences(digestionPreferences);
 
-        searchParameters.setnMissedCleavages(2);
+        ArrayList<Enzyme> enzymes = new ArrayList<>();
+        Enzyme enzyme = new Enzyme("testEnzyme");
+        enzymes.add(enzyme);
+
+        digestionPreferences.setEnzymes(enzymes);
+
+        digestionPreferences.setnMissedCleavages("testEnzyme", 2);
 
         searchParameters.setPrecursorAccuracyType(SearchParameters.MassAccuracyType.DA);
         searchParameters.setPrecursorAccuracy(0.5);
@@ -54,14 +63,18 @@ public class UtilitiesSearchSettingsMapperTest {
         searchParameters.setFragmentAccuracyType(SearchParameters.MassAccuracyType.DA);
         searchParameters.setFragmentIonAccuracy(0.5);
 
-        searchParameters.setIonSearched1("a");
-        searchParameters.setIonSearched2("b");
+        ArrayList<Integer> forwardIons = new ArrayList<>();
+        forwardIons.add(PeptideFragmentIon.A_ION);
+        searchParameters.setForwardIons(forwardIons);
+        ArrayList<Integer> rewindIons = new ArrayList<>();
+        rewindIons.add(PeptideFragmentIon.X_ION);
+        searchParameters.setRewindIons(rewindIons);
 
         //look for a FastaDB instance from the db
         fastaDbs.put(FastaDbType.PRIMARY, fastaDbService.findById(1L));
 
         //create IdentificationParameters
-        identificationParameters = IdentificationParameters.getDefaultIdentificationParameters(searchParameters);
+        identificationParameters = new IdentificationParameters(searchParameters);
     }
 
     /**

@@ -8,6 +8,7 @@ import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import com.compomics.util.experiment.massspectrometry.Charge;
+import com.compomics.util.preferences.DigestionPreferences;
 import com.compomics.util.preferences.IdMatchValidationPreferences;
 import com.compomics.util.preferences.IdentificationParameters;
 import org.junit.Assert;
@@ -16,6 +17,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.ArrayList;
 
 /**
  * @author Niels Hulstaert
@@ -34,10 +37,16 @@ public class UtilitiesSearchParametersMapperTest {
     public void testMapSearchParameters() {
         //create SearchParameters
         com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters = new com.compomics.util.experiment.identification.identification_parameters.SearchParameters();
-        Enzyme enzyme = new Enzyme(1, "trypsin", "A", "A", "A", "A");
-        utilitiesSearchParameters.setEnzyme(enzyme);
+        DigestionPreferences digestionPreferences = DigestionPreferences.getDefaultPreferences();
+        utilitiesSearchParameters.setDigestionPreferences(digestionPreferences);
 
-        utilitiesSearchParameters.setnMissedCleavages(2);
+        ArrayList<Enzyme> enzymes = new ArrayList<>();
+        enzymes.add(new Enzyme("enzyme1"));
+        enzymes.add(new Enzyme("enzyme2"));
+        digestionPreferences.setEnzymes(enzymes);
+
+        digestionPreferences.setnMissedCleavages("enzyme1", 2);
+        digestionPreferences.setnMissedCleavages("enzyme2", 3);
 
         utilitiesSearchParameters.setPrecursorAccuracyType(com.compomics.util.experiment.identification.identification_parameters.SearchParameters.MassAccuracyType.DA);
         utilitiesSearchParameters.setPrecursorAccuracy(0.5);
@@ -48,8 +57,12 @@ public class UtilitiesSearchParametersMapperTest {
         utilitiesSearchParameters.setFragmentAccuracyType(com.compomics.util.experiment.identification.identification_parameters.SearchParameters.MassAccuracyType.DA);
         utilitiesSearchParameters.setFragmentIonAccuracy(0.5);
 
-        utilitiesSearchParameters.setIonSearched1("a");
-        utilitiesSearchParameters.setIonSearched2("b");
+        ArrayList<Integer> forwardIons = new ArrayList<>();
+        forwardIons.add(PeptideFragmentIon.B_ION);
+        utilitiesSearchParameters.setForwardIons(forwardIons);
+        ArrayList<Integer> rewindIons = new ArrayList<>();
+        rewindIons.add(PeptideFragmentIon.Y_ION);
+        utilitiesSearchParameters.setRewindIons(rewindIons);
 
         PTM ptm1 = PTMFactory.getInstance().getPTM("Carbamidomethylation of C");
         PTM ptm2 = PTMFactory.getInstance().getPTM("Oxidation of M");
@@ -76,7 +89,7 @@ public class UtilitiesSearchParametersMapperTest {
         utilitiesSearchParameters.setPtmSettings(ptmSettings);
 
         //create identification parameters
-        IdentificationParameters identificationParameters = IdentificationParameters.getDefaultIdentificationParameters(utilitiesSearchParameters);
+        IdentificationParameters identificationParameters = new IdentificationParameters(utilitiesSearchParameters);
 
         SearchParameters searchParameters = new SearchParameters();
 
@@ -87,10 +100,10 @@ public class UtilitiesSearchParametersMapperTest {
         Assert.assertEquals(2L, searchParameters.getSearchType().getId().longValue());
 
         Assert.assertNotNull(searchParameters.getEnzymes());
-        Assert.assertTrue(enzyme.getName().equalsIgnoreCase(searchParameters.getEnzymes()));
+        Assert.assertTrue("enzyme1;enzyme2".equalsIgnoreCase(searchParameters.getEnzymes()));
 
         Assert.assertNotNull(searchParameters.getNumberOfMissedCleavages());
-        Assert.assertEquals(2, searchParameters.getNumberOfMissedCleavages().intValue());
+        Assert.assertEquals("2;3", searchParameters.getNumberOfMissedCleavages());
 
         Assert.assertNotNull(searchParameters.getPrecMassToleranceUnit());
         Assert.assertEquals(MassAccuracyType.DA, searchParameters.getPrecMassToleranceUnit());
@@ -107,10 +120,7 @@ public class UtilitiesSearchParametersMapperTest {
         Assert.assertNotNull(searchParameters.getUpperCharge());
         Assert.assertEquals(charge.value, searchParameters.getUpperCharge().intValue());
 
-        Assert.assertNotNull(searchParameters.getFirstSearchedIonType());
-        Assert.assertEquals(PeptideFragmentIon.A_ION, searchParameters.getFirstSearchedIonType().intValue());
-        Assert.assertNotNull(searchParameters.getSecondSearchedIonType());
-        Assert.assertEquals(PeptideFragmentIon.B_ION, searchParameters.getSecondSearchedIonType().intValue());
+        Assert.assertEquals("b;y", searchParameters.getSearchedIons());
 
         IdMatchValidationPreferences idValidationPreferences = identificationParameters.getIdValidationPreferences();
         Assert.assertEquals(idValidationPreferences.getDefaultPsmFDR(), searchParameters.getPsmThreshold(), 0.001);

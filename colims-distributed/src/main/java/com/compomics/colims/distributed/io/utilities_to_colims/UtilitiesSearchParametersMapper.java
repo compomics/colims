@@ -20,6 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class maps the Utilities search parameters onto the Colims search
@@ -68,12 +72,19 @@ public class UtilitiesSearchParametersMapper implements Mapper<IdentificationPar
         searchParameters.setProteinThreshold(identificationParameters.getIdValidationPreferences().getDefaultProteinFDR());
         //get the Utilities search parameters
         com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters = identificationParameters.getSearchParameters();
-        //map Utilities enzyme
-        if (utilitiesSearchParameters.getEnzyme() != null) {
-            searchParameters.setEnzymes(utilitiesSearchParameters.getEnzyme().getName());
+        //map Utilities enzymes and associated number of missed cleavages
+        if (utilitiesSearchParameters.getDigestionPreferences().hasEnzymes()) {
+            List<String> enzymeList = utilitiesSearchParameters.getDigestionPreferences().getEnzymes()
+                    .stream()
+                    .map(enzyme -> enzyme.getName())
+                    .collect(Collectors.toList());
+            List<Integer> missedCleavages = new ArrayList<>();
+            enzymeList.stream()
+                    .forEach(enzyme -> missedCleavages.add(utilitiesSearchParameters.getDigestionPreferences().getnMissedCleavages(enzyme)));
+
+            searchParameters.setEnzymes(enzymeList.stream().collect(Collectors.joining(SearchParameters.DELIMITER)));
+            searchParameters.setNumberOfMissedCleavages(missedCleavages.stream().map(n -> n.toString()).collect(Collectors.joining(SearchParameters.DELIMITER)));
         }
-        //number of missed cleavages
-        searchParameters.setNumberOfMissedCleavages(utilitiesSearchParameters.getnMissedCleavages());
         //precursor mass tolerance unit
         MassAccuracyType precursorMassAccuracyType = MassAccuracyType.getByUtilitiesMassAccuracyType(utilitiesSearchParameters.getPrecursorAccuracyType());
         searchParameters.setPrecMassToleranceUnit(precursorMassAccuracyType);
@@ -88,10 +99,19 @@ public class UtilitiesSearchParametersMapper implements Mapper<IdentificationPar
         searchParameters.setFragMassToleranceUnit(fragmentMassAccuracyType);
         //fragment mass tolerance
         searchParameters.setFragMassTolerance(utilitiesSearchParameters.getFragmentIonAccuracy());
-        //fragment ion type 1
-        searchParameters.setFirstSearchedIonType(utilitiesSearchParameters.getIonSearched1());
-        //fragment ion type 2
-        searchParameters.setSecondSearchedIonType(utilitiesSearchParameters.getIonSearched2());
+        //searched fragment ions
+        List<String> forwardIons = utilitiesSearchParameters.getForwardIons()
+                .stream()
+                .map(index -> Arrays.asList(com.compomics.util.experiment.identification.identification_parameters.SearchParameters.implementedForwardIons).get(index))
+                .collect(Collectors.toList());
+        List<String> rewindIons = utilitiesSearchParameters.getRewindIons()
+                .stream()
+                .map(index -> Arrays.asList(com.compomics.util.experiment.identification.identification_parameters.SearchParameters.implementedRewindIons).get(index - com.compomics.util.experiment.identification.identification_parameters.SearchParameters.implementedForwardIons.length))
+                .collect(Collectors.toList());
+        List<String> searchedIons = new ArrayList<>();
+        searchedIons.addAll(forwardIons);
+        searchedIons.addAll(rewindIons);
+        searchParameters.setSearchedIons(searchedIons.stream().collect(Collectors.joining(SearchParameters.DELIMITER)));
 
         //map the search modifications
         mapSearchModifications(utilitiesSearchParameters.getPtmSettings(), searchParameters);

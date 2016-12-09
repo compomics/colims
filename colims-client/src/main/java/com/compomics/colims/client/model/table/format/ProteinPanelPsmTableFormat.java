@@ -94,9 +94,9 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
                 return spectrum.getMzRatio();
             case PRECURSOR_MASS_ERROR:
                 int sign = charge > 0 ? Charge.PLUS : Charge.MINUS;
-                IonMatch ionMatch = new IonMatch(new Peak(spectrum.getMzRatio(), 0, 0), new PrecursorIon(peptide.getTheoreticalMass()), new Charge(sign, charge));
+                IonMatch ionMatch = new IonMatch(new Peak(spectrum.getMzRatio(), 0, 0), new PrecursorIon(peptide.getTheoreticalMass()), charge);
                 boolean isPpm = searchParameters.getPrecMassToleranceUnit() == MassAccuracyType.PPM;
-                return Math.abs(ionMatch.getError(isPpm, true));
+                return Math.abs(ionMatch.getError(isPpm));
             case RETENTION_TIME:
                 return spectrum.getRetentionTime();
             case PSM_CONFIDENCE:

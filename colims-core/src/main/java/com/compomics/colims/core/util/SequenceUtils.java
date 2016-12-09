@@ -1,6 +1,7 @@
 package com.compomics.colims.core.util;
 
 import com.compomics.util.experiment.biology.AminoAcidPattern;
+import com.compomics.util.experiment.biology.AminoAcidSequence;
 import com.compomics.util.preferences.SequenceMatchingPreferences;
 
 import java.util.ArrayList;
@@ -34,8 +35,7 @@ public class SequenceUtils {
      * @param proteinSequence the protein sequence
      * @param peptideSequence the peptide sequence
      * @return the list of PeptidePosition instance
-     * @throws IllegalStateException error thrown if the peptide sequence could
-     * not be found in the protein sequence
+     * @throws IllegalStateException error thrown if the peptide sequence could not be found in the protein sequence
      */
     public static List<PeptidePosition> getPeptidePositions(String proteinSequence, String peptideSequence) {
         List<PeptidePosition> peptidePositions = new ArrayList<>();
@@ -76,7 +76,7 @@ public class SequenceUtils {
      * @return the list of peptide start indexes
      */
     public static List<Integer> getPeptideStartIndexes(String proteinSequence, String peptideSequence) {
-        AminoAcidPattern aminoAcidPattern = new AminoAcidPattern(peptideSequence);
+        AminoAcidPattern aminoAcidPattern = new AminoAcidPattern(new AminoAcidSequence(peptideSequence));
 
         return aminoAcidPattern.getIndexes(proteinSequence, SEQUENCE_MATCHING_PREFERENCES);
     }
@@ -87,7 +87,7 @@ public class SequenceUtils {
      *
      * @param proteinSequence the protein sequence
      * @param peptideSequence the sequence of the peptide of interest
-     * @param startPosition the peptide start position in the protein
+     * @param startPosition   the peptide start position in the protein
      * @return the amino acids surrounding a peptide in the protein sequence
      */
     public static Character[] getSurroundingAAs(String proteinSequence, String peptideSequence, int startPosition) {

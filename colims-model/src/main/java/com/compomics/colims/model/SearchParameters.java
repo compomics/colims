@@ -20,6 +20,11 @@ public class SearchParameters extends DatabaseEntity {
     private static final long serialVersionUID = -1065576089263244645L;
 
     /**
+     * The delimiter used in some of the fields.
+     */
+    public static final String DELIMITER = ";";
+
+    /**
      * The type of search performed e.g. PMF, Tag searches, MS-MS.
      */
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -31,10 +36,11 @@ public class SearchParameters extends DatabaseEntity {
     @Column(name = "enzymes", nullable = true)
     private String enzymes;
     /**
-     * The number of missed cleavage sites allowed by the search.
+     * The number of missed cleavage sites allowed by the search, separated by semicolon in the same order as the
+     * enzymes.
      */
     @Column(name = "missed_cleavages", nullable = true)
-    private Integer numberOfMissedCleavages;
+    private String numberOfMissedCleavages;
     /**
      * The target-decoy score strategy.
      */
@@ -97,17 +103,11 @@ public class SearchParameters extends DatabaseEntity {
     @Column(name = "upper_charge", nullable = true)
     private Integer upperCharge;
     /**
-     * The first ion type searched.
+     * The searched ions separated by a semi-colon.
      */
     @Basic(optional = true)
-    @Column(name = "search_ion_type_1", nullable = true)
-    private Integer firstSearchedIonType;
-    /**
-     * The second ion type searched.
-     */
-    @Basic(optional = true)
-    @Column(name = "search_ion_type_2", nullable = true)
-    private Integer secondSearchedIonType;
+    @Column(name = "searched_ions", nullable = true)
+    private String searchedIons;
     /**
      * The SearchParametersHasModification instances from the join table between the search parameters and search
      * modifications.
@@ -143,11 +143,11 @@ public class SearchParameters extends DatabaseEntity {
         this.enzymes = enzymes;
     }
 
-    public Integer getNumberOfMissedCleavages() {
+    public String getNumberOfMissedCleavages() {
         return numberOfMissedCleavages;
     }
 
-    public void setNumberOfMissedCleavages(Integer numberOfMissedCleavages) {
+    public void setNumberOfMissedCleavages(String numberOfMissedCleavages) {
         this.numberOfMissedCleavages = numberOfMissedCleavages;
     }
 
@@ -231,20 +231,12 @@ public class SearchParameters extends DatabaseEntity {
         this.upperCharge = upperCharge;
     }
 
-    public Integer getFirstSearchedIonType() {
-        return firstSearchedIonType;
+    public String getSearchedIons() {
+        return searchedIons;
     }
 
-    public void setFirstSearchedIonType(Integer firstSearchedIonType) {
-        this.firstSearchedIonType = firstSearchedIonType;
-    }
-
-    public Integer getSecondSearchedIonType() {
-        return secondSearchedIonType;
-    }
-
-    public void setSecondSearchedIonType(Integer secondSearchedIonType) {
-        this.secondSearchedIonType = secondSearchedIonType;
+    public void setSearchedIons(String searchedIons) {
+        this.searchedIons = searchedIons;
     }
 
     public List<SearchAndValidationSettings> getSearchAndValidationSettingses() {
@@ -297,9 +289,7 @@ public class SearchParameters extends DatabaseEntity {
         if (fragMassToleranceUnit != that.fragMassToleranceUnit) return false;
         if (lowerCharge != null ? !lowerCharge.equals(that.lowerCharge) : that.lowerCharge != null) return false;
         if (upperCharge != null ? !upperCharge.equals(that.upperCharge) : that.upperCharge != null) return false;
-        if (firstSearchedIonType != null ? !firstSearchedIonType.equals(that.firstSearchedIonType) : that.firstSearchedIonType != null)
-            return false;
-        return !(secondSearchedIonType != null ? !secondSearchedIonType.equals(that.secondSearchedIonType) : that.secondSearchedIonType != null);
+        return !(searchedIons != null ? !searchedIons.equals(that.searchedIons) : that.searchedIons != null);
 
     }
 
@@ -318,8 +308,7 @@ public class SearchParameters extends DatabaseEntity {
         result = 31 * result + (fragMassToleranceUnit != null ? fragMassToleranceUnit.hashCode() : 0);
         result = 31 * result + (lowerCharge != null ? lowerCharge.hashCode() : 0);
         result = 31 * result + (upperCharge != null ? upperCharge.hashCode() : 0);
-        result = 31 * result + (firstSearchedIonType != null ? firstSearchedIonType.hashCode() : 0);
-        result = 31 * result + (secondSearchedIonType != null ? secondSearchedIonType.hashCode() : 0);
+        result = 31 * result + (searchedIons != null ? searchedIons.hashCode() : 0);
         return result;
     }
 }

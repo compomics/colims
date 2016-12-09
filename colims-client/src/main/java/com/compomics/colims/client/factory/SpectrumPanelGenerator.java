@@ -190,8 +190,8 @@ public class SpectrumPanelGenerator {
             spectrumPanel.addAutomaticDeNovoSequencing(
                     peptideAssumption.getPeptide(),
                     annotations,
-                    utilitiesSearchParameters.getIonSearched1(),
-                    utilitiesSearchParameters.getIonSearched2(),
+                    utilitiesSearchParameters.getForwardIons().get(0),
+                    utilitiesSearchParameters.getRewindIons().get(0),
                     annotationSettings.getDeNovoCharge(),
                     annotationSettings.showForwardIonDeNovoTags(),
                     annotationSettings.showRewindIonDeNovoTags(),
@@ -205,8 +205,8 @@ public class SpectrumPanelGenerator {
                     annotations,
                     true,
                     utilitiesSearchParameters.getPtmSettings(),
-                    utilitiesSearchParameters.getIonSearched1(),
-                    utilitiesSearchParameters.getIonSearched2()
+                    utilitiesSearchParameters.getForwardIons().get(0),
+                    utilitiesSearchParameters.getRewindIons().get(0)
             );
 
             secondarySpectrumPlotsParentPanel.removeAll();
