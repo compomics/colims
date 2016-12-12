@@ -40,7 +40,7 @@ public class MaxQuantSearchSettingsParserTest {
         Assert.assertEquals(SearchEngineType.MAXQUANT, searchAndValidationSettings.getSearchEngine().getSearchEngineType());
         SearchParameters searchParameters = searchAndValidationSettings.getSearchParameters();
         Assert.assertEquals("Trypsin/P", searchParameters.getEnzymes());
-        Assert.assertEquals(3, searchParameters.getNumberOfMissedCleavages());
+        Assert.assertEquals("3", searchParameters.getNumberOfMissedCleavages());
         Assert.assertEquals(4.5, searchParameters.getPrecMassTolerance(), 0.001);
         Assert.assertEquals(MassAccuracyType.PPM, searchParameters.getPrecMassToleranceUnit());
         Assert.assertEquals(20.0, searchParameters.getFragMassTolerance(), 0.001);
