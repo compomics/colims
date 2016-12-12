@@ -3,11 +3,8 @@ package com.compomics.colims.distributed.io.maxquant;
 import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
-import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantQuantificationSettingsParser;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParser;
 import com.compomics.colims.model.AnalyticalRun;
 import org.apache.log4j.Logger;
 import org.jdom2.JDOMException;
@@ -30,27 +27,18 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
      * Logger instance.
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantMapper.class);
-
-    private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
+    /**
+     * The MaxQuant parent parser class.
+     */
     private final MaxQuantParser maxQuantParser;
-    private final MaxQuantQuantificationSettingsParser maxQuantQuantificationSettingsParser;
-    private final FastaDbService fastaDbService;
 
     @Autowired
-    public MaxQuantMapper(MaxQuantSearchSettingsParser maxQuantSearchSettingsParser,
-                          MaxQuantParser maxQuantParser,
-                          MaxQuantQuantificationSettingsParser maxQuantQuantificationSettingsParser,
-                          FastaDbService fastaDbService) {
-        this.maxQuantSearchSettingsParser = maxQuantSearchSettingsParser;
+    public MaxQuantMapper(MaxQuantParser maxQuantParser) {
         this.maxQuantParser = maxQuantParser;
-        this.maxQuantQuantificationSettingsParser = maxQuantQuantificationSettingsParser;
-        this.fastaDbService = fastaDbService;
     }
 
     @Override
     public void clear() {
-        maxQuantSearchSettingsParser.clear();
-        maxQuantQuantificationSettingsParser.clear();
         maxQuantParser.clear();
     }
 

@@ -60,6 +60,13 @@ public class MaxQuantQuantificationSettingsParser {
     }
 
     /**
+     * Clear resources.
+     */
+    public void clear() {
+        runsAndQuantificationSettings.clear();
+    }
+
+    /**
      * Parse the quantification parameters for a MaxQuant experiment.
      *
      * @param analyticalRuns
@@ -126,10 +133,4 @@ public class MaxQuantQuantificationSettingsParser {
         return quantificationMethodHasReagents;
     }
 
-    /**
-     * Clear resources.
-     */
-    public void clear() {
-        runsAndQuantificationSettings.clear();
-    }
 }

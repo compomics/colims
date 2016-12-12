@@ -65,6 +65,15 @@ public class MaxQuantProteinGroupsParser {
     }
 
     /**
+     * Clear resources.
+     */
+    public void clear() {
+        proteinGroups.clear();
+        omittedProteinGroupIds.clear();
+        proteinService.clear();
+    }
+
+    /**
      * Parse the proteinGroups.txt file.
      *
      * @param proteinGroupsFile   MaxQuant protein groups file
@@ -83,15 +92,6 @@ public class MaxQuantProteinGroupsParser {
                 proteinGroups.put(Integer.parseInt(values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))), proteinGroup);
             }
         }
-    }
-
-    /**
-     * Clear resources.
-     */
-    public void clear() {
-        proteinGroups.clear();
-        omittedProteinGroupIds.clear();
-        proteinService.clear();
     }
 
     /**

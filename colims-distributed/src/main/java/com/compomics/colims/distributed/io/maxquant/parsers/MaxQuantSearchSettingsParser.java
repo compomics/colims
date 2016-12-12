@@ -145,8 +145,7 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Get analytical runs name (experiment name) which have link with
-     * analytical runs.
+     * Get the analytical runs name and their associated MaxQuant experiment name.
      *
      * @return analyticalRuns
      */
@@ -181,6 +180,8 @@ public class MaxQuantSearchSettingsParser {
         analyticalRuns.clear();
         isobaricLabels.clear();
         labelMods.clear();
+        psmFdr = null;
+        proteinFdr = null;
     }
 
     /**
@@ -381,13 +382,6 @@ public class MaxQuantSearchSettingsParser {
      * @throws IOException   in case of an problem with the mqpar.xml file
      */
     private void parseMqParFile(Path mqParFile) throws JDOMException, IOException {
-        mqParParamsWithRawFile.clear();
-        analyticalRuns.clear();
-        isobaricLabels.clear();
-        labelMods.clear();
-        psmFdr = null;
-        proteinFdr = null;
-
         //create a map to hold raw files for each run (key: group index; value: raw file).
         Map<Integer, String> rawFilePath = new HashMap<>();
         //create a map to hold raw file groups for each run (key: group index; value: group number).
@@ -395,7 +389,7 @@ public class MaxQuantSearchSettingsParser {
         //create a map to hold enum map of spectrum parameters and their group(key: group number; value: enum map of spectrum parameters).
         Map<Integer, EnumMap<MqParHeader, String>> spectrumParamsWithGroup = new HashMap<>();
         //create a map to hold experiment names for each run (key: group index; value: experiment name).
-        Map<Integer, String> experimentsName = new HashMap<>();
+        Map<Integer, String> maxQuantExperiments = new HashMap<>();
 
         Resource mqParResource = new FileSystemResource(mqParFile.toFile());
         SAXBuilder builder = new SAXBuilder();
@@ -419,7 +413,7 @@ public class MaxQuantSearchSettingsParser {
         counter = 0;
         for (Element analyticalRunNameElement : analyticalRunNamesElement.getChildren()) {
             if (!analyticalRunNameElement.getContent().isEmpty()) {
-                experimentsName.put(counter, analyticalRunNameElement.getContent().get(0).getValue());
+                maxQuantExperiments.put(counter, analyticalRunNameElement.getContent().get(0).getValue());
                 counter++;
             } else {
                 throw new IllegalStateException("Experiment name in mqpar file is empty.");
@@ -501,7 +495,7 @@ public class MaxQuantSearchSettingsParser {
             // fill analyticalRuns
             AnalyticalRun analyticalRun = new AnalyticalRun();
             analyticalRun.setName(entry.getValue());
-            analyticalRuns.put(analyticalRun, experimentsName.get(entry.getKey()));
+            analyticalRuns.put(analyticalRun, maxQuantExperiments.get(entry.getKey()));
         });
     }
 
