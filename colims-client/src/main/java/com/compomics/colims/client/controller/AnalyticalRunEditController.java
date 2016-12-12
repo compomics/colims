@@ -12,6 +12,7 @@ import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.AnalyticalRunBinaryFile;
+import com.compomics.colims.model.BinaryFile;
 import com.compomics.colims.model.Instrument;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -214,7 +215,7 @@ public class AnalyticalRunEditController implements Controllable {
         if(analyticalRun.getId() != null){
             // fetch binary files if analytical run Id is not null
             analyticalRunService.fetchBinaryFiles(analyticalRun);
-            analyticalRunEditDialog.getAttachementsTextField().setText(analyticalRun.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", ")));
+            analyticalRunEditDialog.getAttachementsTextField().setText(analyticalRun.getBinaryFiles().stream().map(BinaryFile::toString).collect(Collectors.joining(", ")));
         }else{
             analyticalRunEditDialog.getAttachementsTextField().setText("");
         }
@@ -314,7 +315,7 @@ public class AnalyticalRunEditController implements Controllable {
      * @return the joined attachments String
      */
     private String getAttachmentsAsString() {
-        return analyticalRunToEdit.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", "));
+        return analyticalRunToEdit.getBinaryFiles().stream().map(BinaryFile::toString).collect(Collectors.joining(", "));
     }
 
 }

@@ -4,6 +4,7 @@ import com.compomics.colims.core.distributed.model.CompletedDbTask;
 import com.compomics.colims.core.distributed.model.DbTaskError;
 import com.compomics.colims.core.distributed.model.Notification;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.io.PeptideShakerImport;
@@ -11,7 +12,6 @@ import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantMapper;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerMapper;
@@ -52,53 +52,75 @@ public class PersistDbTaskHandler {
     /**
      * The CompletedDbTask sender.
      */
-    @Autowired
-    private CompletedTaskProducer completedTaskProducer;
+    private final CompletedTaskProducer completedTaskProducer;
     /**
      * The DbTaskError sender.
      */
     @Autowired
-    private DbTaskErrorProducer dbTaskErrorProducer;
+    private final DbTaskErrorProducer dbTaskErrorProducer;
     /**
      * The PeptideShaker IO handler.
      */
     @Autowired
-    private PeptideShakerIO peptideShakerIO;
+    private final PeptideShakerIO peptideShakerIO;
     /**
      * The PeptideShaker data mapper.
      */
     @Autowired
-    private PeptideShakerMapper peptideShakerMapper;
+    private final PeptideShakerMapper peptideShakerMapper;
     /**
      * The MaxQuant data mapper.
      */
     @Autowired
-    private MaxQuantMapper maxQuantMapper;
+    private final MaxQuantMapper maxQuantMapper;
     /**
      * The user entity service.
      */
     @Autowired
-    private UserService userService;
+    private final UserService userService;
     /**
      * The sample entity service.
      */
     @Autowired
-    private SampleService sampleService;
+    private final SampleService sampleService;
     /**
      * The instrument entity service.
      */
     @Autowired
-    private InstrumentService instrumentService;
+    private final InstrumentService instrumentService;
     /**
      * The persist service
      */
     @Autowired
-    private PersistService persistService;
-     /**
+    private final PersistService persistService;
+    /**
      * The Notification message sender.
      */
     @Autowired
-    private NotificationProducer notificationProducer;
+    private final NotificationProducer notificationProducer;
+
+    @Autowired
+    public PersistDbTaskHandler(CompletedTaskProducer completedTaskProducer,
+                                DbTaskErrorProducer dbTaskErrorProducer,
+                                PeptideShakerIO peptideShakerIO,
+                                PeptideShakerMapper peptideShakerMapper,
+                                MaxQuantMapper maxQuantMapper,
+                                UserService userService,
+                                SampleService sampleService,
+                                InstrumentService instrumentService,
+                                PersistService persistService,
+                                NotificationProducer notificationProducer) {
+        this.completedTaskProducer = completedTaskProducer;
+        this.dbTaskErrorProducer = dbTaskErrorProducer;
+        this.peptideShakerIO = peptideShakerIO;
+        this.peptideShakerMapper = peptideShakerMapper;
+        this.maxQuantMapper = maxQuantMapper;
+        this.userService = userService;
+        this.sampleService = sampleService;
+        this.instrumentService = instrumentService;
+        this.persistService = persistService;
+        this.notificationProducer = notificationProducer;
+    }
 
     public void handlePersistDbTask(PersistDbTask persistDbTask) {
         Long started = System.currentTimeMillis();
@@ -149,14 +171,13 @@ public class PersistDbTaskHandler {
      *
      * @param persistDbTask the persist task containing the DataImport object
      * @return the MappedDataImport instance
-     * @throws MappingException thrown in case of a mapping exception
-     * @throws java.io.IOException thrown in case of an IO related problem
-     * @throws org.apache.commons.compress.archivers.ArchiveException thrown in
-     * case of an Archiver exception
-     * @throws java.lang.ClassNotFoundException thrown in case of a failure to
-     * load a class by it's string name
-     * @throws java.sql.SQLException thrown in case of an SQL related problem
-     * @throws InterruptedException thrown in case a thread is interrupted
+     * @throws MappingException                                       thrown in case of a mapping exception
+     * @throws java.io.IOException                                    thrown in case of an IO related problem
+     * @throws org.apache.commons.compress.archivers.ArchiveException thrown in case of an Archiver exception
+     * @throws java.lang.ClassNotFoundException                       thrown in case of a failure to load a class by
+     *                                                                it's string name
+     * @throws java.sql.SQLException                                  thrown in case of an SQL related problem
+     * @throws InterruptedException                                   thrown in case a thread is interrupted
      */
     private MappedData mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException, JDOMException {
         MappedData mappedData = null;

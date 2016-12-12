@@ -45,7 +45,7 @@ public class OlsSearchResult {
          *
          * @param queryValue
          */
-        private SearchField(String queryValue) {
+        SearchField(String queryValue) {
             this.queryValue = queryValue;
         }
 

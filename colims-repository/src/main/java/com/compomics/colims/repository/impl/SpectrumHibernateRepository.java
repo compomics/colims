@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -55,7 +55,8 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
             spectra = createCriteria().add(Restrictions.in("id", idList)).list();
 
             // sorting here because unable to pass order by list through criteria
-            Collections.sort(spectra, (s1, s2) -> Long.compare(idList.indexOf(s1.getId()), idList.indexOf(s2.getId())));
+            //noinspection ComparatorCombinators
+            spectra.sort(Comparator.comparingLong(idList::indexOf));
         }
 
         return spectra;

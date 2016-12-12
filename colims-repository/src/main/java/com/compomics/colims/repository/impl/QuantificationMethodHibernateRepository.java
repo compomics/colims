@@ -58,8 +58,8 @@ public class QuantificationMethodHibernateRepository extends GenericHibernateRep
             QuantificationMethodHasReagentsNameComparator reagentsNameComparator = new QuantificationMethodHasReagentsNameComparator();
             //create a temporary list to avoid changes in the database
             List<QuantificationMethodHasReagent> sortedList = quantificationMethod.getQuantificationMethodHasReagents();
-            Collections.sort(exampleInstance.getQuantificationMethodHasReagents(), reagentsNameComparator);
-            Collections.sort(sortedList, reagentsNameComparator);
+            (exampleInstance.getQuantificationMethodHasReagents()).sort(reagentsNameComparator);
+            sortedList.sort(reagentsNameComparator);
 
             if (!exampleInstance.getQuantificationMethodHasReagents().equals(sortedList)) {
                 iterator.remove();

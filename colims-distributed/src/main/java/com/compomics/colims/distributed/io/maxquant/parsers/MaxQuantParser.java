@@ -115,9 +115,7 @@ public class MaxQuantParser {
         LOGGER.debug("parsing proteinGroups.txt");
         List<FastaDb> fastaDbList = new ArrayList<>();
         fastaDbs.forEach((k, v) -> {
-            v.forEach(fastaDb -> {
-                fastaDbList.add(fastaDb);
-            });
+            v.forEach(fastaDbList::add);
         });
 
         //look for the proteinGroups.txt file

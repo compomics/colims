@@ -206,10 +206,7 @@ public class FastaDb extends DatabaseEntity {
         if (!Objects.equals(this.taxonomy, other.taxonomy)) {
             return false;
         }
-        if (!Objects.equals(this.searchSettingsHasFastaDbs, other.searchSettingsHasFastaDbs)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.searchSettingsHasFastaDbs, other.searchSettingsHasFastaDbs);
     }
 
     @Override

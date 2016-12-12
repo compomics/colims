@@ -72,8 +72,8 @@ public class SearchParameterHibernateRepository extends GenericHibernateReposito
             SearchParameterHasModNameComparator modificationNameComparator = new SearchParameterHasModNameComparator();
             //create a temporary list to avoid changes in the database
             List<SearchParametersHasModification> sortedList = searchParameters.getSearchParametersHasModifications();
-            Collections.sort(exampleInstance.getSearchParametersHasModifications(), modificationNameComparator);
-            Collections.sort(sortedList, modificationNameComparator);
+            (exampleInstance.getSearchParametersHasModifications()).sort(modificationNameComparator);
+            sortedList.sort(modificationNameComparator);
 
             if (!exampleInstance.getSearchParametersHasModifications().equals(sortedList)) {
                 iterator.remove();
@@ -93,8 +93,8 @@ public class SearchParameterHibernateRepository extends GenericHibernateReposito
             CvParamNameComparator nameComparator = new CvParamNameComparator();
             //create a temporary list to avoid changes in the database
             List<SearchCvParam> sortedList2 = searchParameters.getAdditionalCvParams();
-            Collections.sort(exampleInstance.getAdditionalCvParams(), nameComparator);
-            Collections.sort(sortedList2, nameComparator);
+            (exampleInstance.getAdditionalCvParams()).sort(nameComparator);
+            sortedList2.sort(nameComparator);
 
             if (!exampleInstance.getAdditionalCvParams().equals(sortedList2)) {
                 iterator.remove();

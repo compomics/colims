@@ -26,10 +26,7 @@ import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.DatabaseEntity;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.UserBean;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.model.enums.FastaDbType;
@@ -271,7 +268,7 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
             }
 
             if (analyticalRun.getId() != null) {
-                analyticalRunsSearchSettingsDialog.getAttachmentsTextField().setText(analyticalRun.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", ")));
+                analyticalRunsSearchSettingsDialog.getAttachmentsTextField().setText(analyticalRun.getBinaryFiles().stream().map(BinaryFile::toString).collect(Collectors.joining(", ")));
             } else {
                 analyticalRunsSearchSettingsDialog.getAttachmentsTextField().setText("");
             }
@@ -283,7 +280,7 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
                 }
             });
             analyticalRunsSearchSettingsDialog.getEnzymeTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getEnzymes());
-            analyticalRunsSearchSettingsDialog.getMaxMissedCleTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getNumberOfMissedCleavages().toString());
+            analyticalRunsSearchSettingsDialog.getMaxMissedCleTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getNumberOfMissedCleavages());
             analyticalRunsSearchSettingsDialog.getPreMasTolTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance().toString());
         } else {
             analyticalRunsSearchSettingsDialog.getNameTextField().setText("");

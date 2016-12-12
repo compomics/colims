@@ -52,7 +52,7 @@ public class TypedCvParamServiceImpl implements TypedCvParamService {
 
     @Override
     public <T extends TypedCvParam> List<T> findByCvParamByType(Class<T> clazz, CvParamType cvParamType) {
-        return cvParamRepository.findByCvParamType(cvParamType).stream().filter(cvParam -> clazz.isInstance(cvParam)).map(cvParam -> (T) cvParam).collect(Collectors.toList());
+        return cvParamRepository.findByCvParamType(cvParamType).stream().filter(clazz::isInstance).map(cvParam -> (T) cvParam).collect(Collectors.toList());
     }
 
     @Override

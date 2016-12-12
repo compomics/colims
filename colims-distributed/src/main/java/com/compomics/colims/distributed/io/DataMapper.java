@@ -3,7 +3,6 @@ package com.compomics.colims.distributed.io;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
-import org.jdom2.JDOMException;
 
 /**
  * This interface defines the import data contract for the different import resources.

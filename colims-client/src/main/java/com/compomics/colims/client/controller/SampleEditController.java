@@ -402,6 +402,6 @@ public class SampleEditController implements Controllable {
      * @return the concatenated String
      */
     private String getAttachmentsAsString() {
-        return sampleToEdit.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", "));
+        return sampleToEdit.getBinaryFiles().stream().map(BinaryFile::toString).collect(Collectors.joining(", "));
     }
 }

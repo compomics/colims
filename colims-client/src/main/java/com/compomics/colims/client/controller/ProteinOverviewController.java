@@ -56,10 +56,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.swing.event.TreeSelectionEvent;
@@ -166,7 +164,7 @@ public class ProteinOverviewController implements Controllable {
                 proteinOverviewPanel.getPeptideTable(), sortedPeptides, TableComparatorChooser.SINGLE_COLUMN);
 
         //init PSM table
-        SortedList<Peptide> sortedPsms = new SortedList<>(psms, (o1, o2) -> o1.getPsmPostErrorProbability().compareTo(o2.getPsmPostErrorProbability()));
+        SortedList<Peptide> sortedPsms = new SortedList<>(psms, Comparator.comparing(Peptide::getPsmPostErrorProbability));
 
         psmTableModel = GlazedListsSwing.eventTableModel(sortedPsms, psmTableFormat);
         proteinOverviewPanel.getPsmTable().setModel(psmTableModel);

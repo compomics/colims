@@ -148,7 +148,7 @@ public class PeptideShakerDataImportController implements Controllable {
         }
         peptideShakerDataImportPanel.getCpsTextField().setText(peptideShakerImport.getPeptideShakerCpsArchive().getPath());
         
-        peptideShakerImport.getMgfFiles().forEach(mgfFile -> mgfFileListModel.addElement(mgfFile)); 
+        peptideShakerImport.getMgfFiles().forEach(mgfFileListModel::addElement);
     }
     /**
      * Validate the user input before unpacking the cps archive. Returns an

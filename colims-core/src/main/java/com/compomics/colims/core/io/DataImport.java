@@ -70,10 +70,7 @@ public abstract class DataImport implements Serializable {
             return false;
         }
         final DataImport other = (DataImport) obj;
-        if (!Objects.equals(this.fastaDbIds, other.fastaDbIds)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.fastaDbIds, other.fastaDbIds);
     }
 
 }

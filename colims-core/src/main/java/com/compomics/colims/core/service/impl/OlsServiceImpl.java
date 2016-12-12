@@ -171,7 +171,7 @@ public class OlsServiceImpl implements OlsService {
         url.append(query);
         if (!searchFields.isEmpty() && !searchFields.equals(OlsSearchResult.DEFAULT_SEARCH_FIELDS)) {
             url.append("&queryFields=");
-            url.append(searchFields.stream().map(s -> s.getQueryValue()).collect(Collectors.joining(",")));
+            url.append(searchFields.stream().map(OlsSearchResult.SearchField::getQueryValue).collect(Collectors.joining(",")));
         }
         if (!ontologyNamespaces.isEmpty()) {
             url.append("&ontology=");

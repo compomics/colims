@@ -101,10 +101,7 @@ public class SearchSettingsHasFastaDb extends DatabaseEntity {
         if (!Objects.equals(this.searchAndValidationSettings, other.searchAndValidationSettings)) {
             return false;
         }
-        if (!Objects.equals(this.fastaDb, other.fastaDb)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.fastaDb, other.fastaDb);
     }
 
 }

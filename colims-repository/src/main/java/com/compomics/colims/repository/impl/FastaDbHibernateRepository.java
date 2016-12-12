@@ -5,7 +5,7 @@ import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchSettingsHasFastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.repository.FastaDbRepository;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 
 import java.util.List;

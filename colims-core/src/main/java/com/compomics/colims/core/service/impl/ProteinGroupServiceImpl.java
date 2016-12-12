@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import javafx.util.Pair;
 
 /**
  * Created by Iain on 08/09/2015.

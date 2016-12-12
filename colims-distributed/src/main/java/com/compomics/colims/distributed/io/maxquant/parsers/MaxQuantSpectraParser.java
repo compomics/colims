@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import org.apache.commons.lang3.CharSetUtils;
 
 /**
  * Parser for the MaxQuant msms.txt output and .apl files that creates

@@ -337,7 +337,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      */
     private void initLabelSelectionView(){
         labelSelectionDialog = new LabelSelectionDialog(analyticalRunsAdditionDialog, true);
-        labelSelectionDialog.getLabelDualList().init((String o1, String o2) -> o1.compareToIgnoreCase(o2));
+        labelSelectionDialog.getLabelDualList().init(String::compareToIgnoreCase);
         labelSelectionDialog.getLabelDualList().populateLists(proteinGroupHeaders.getProteinGroupHeaders(), new ArrayList<>(), proteinGroupHeaders.getProteinGroupHeaders().size());
         maxQuantDataImportController.getDataImport().getSelectedProteinGroupHeaders().clear();
         

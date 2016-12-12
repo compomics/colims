@@ -169,7 +169,7 @@ public class MainController implements Controllable, ActionListener {
         org.jdesktop.beansbinding.util.logging.Logger.getLogger(ELProperty.class.getName()).setLevel(Level.SEVERE);
 
         //set close behaviour of main frame
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         //find all projects
         projects.addAll(projectService.findAllWithEagerFetching());

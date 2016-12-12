@@ -58,12 +58,12 @@ public class ColimsSearchParametersMapper {
             List<String> implementedForwardIons = Arrays.asList(com.compomics.util.experiment.identification.identification_parameters.SearchParameters.implementedForwardIons);
             List<String> implementedRewindIons = Arrays.asList(com.compomics.util.experiment.identification.identification_parameters.SearchParameters.implementedRewindIons);
             ArrayList<Integer> forwardIons = Arrays.stream(searchedIons)
-                    .filter(ion -> implementedForwardIons.contains(ion))
-                    .map(ion -> implementedForwardIons.indexOf(ion))
+                    .filter(implementedForwardIons::contains)
+                    .map(implementedForwardIons::indexOf)
                     .collect(Collectors.toCollection(ArrayList::new));
             ArrayList<Integer> rewindIons = Arrays.stream(searchedIons)
-                    .filter(ion -> implementedRewindIons.contains(ion))
-                    .map(ion -> implementedRewindIons.indexOf(ion))
+                    .filter(implementedRewindIons::contains)
+                    .map(implementedRewindIons::indexOf)
                     .collect(Collectors.toCollection(ArrayList::new));
             utilitiesSearchParameters.setForwardIons(forwardIons);
             utilitiesSearchParameters.setForwardIons(rewindIons);
