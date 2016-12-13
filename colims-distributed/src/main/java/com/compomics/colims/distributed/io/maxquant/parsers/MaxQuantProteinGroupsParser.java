@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.io.fasta.FastaDbParser;
 import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.distributed.io.maxquant.TabularFileIterator;
 import com.compomics.colims.distributed.io.maxquant.headers.ProteinGroupsHeader;

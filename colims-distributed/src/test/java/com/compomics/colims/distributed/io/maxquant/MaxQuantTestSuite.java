@@ -1,7 +1,10 @@
 package com.compomics.colims.distributed.io.maxquant;
 
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantHeadersTest;
-import com.compomics.colims.distributed.io.maxquant.parsers.*;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantEvidenceParserTest;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantProteinGroupsParserTest;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParserTest;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSpectraParserTest;
 import com.compomics.colims.model.FastaDb;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -22,8 +25,7 @@ import java.nio.file.Path;
         MaxQuantSpectraParserTest.class,
         TabularFileIteratorTest.class,
         FixedTabularFileIteratorTest.class,
-        MaxQuantHeadersTest.class,
-        FastaDbParserTest.class
+        MaxQuantHeadersTest.class
 })
 public class MaxQuantTestSuite {
 

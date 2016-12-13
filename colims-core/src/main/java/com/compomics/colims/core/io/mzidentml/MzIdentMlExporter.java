@@ -75,7 +75,7 @@ public class MzIdentMlExporter {
     /**
      * The CVs used in the MzIdentML file (key: CV reference; value: {@link Cv} instance).
      */
-    private Map<String, Cv> cvs = new HashMap<>();
+    private final Map<String, Cv> cvs = new HashMap<>();
     /**
      * The Ontology Lookup Service (OLS) service.
      */
@@ -163,7 +163,7 @@ public class MzIdentMlExporter {
         AnalysisProtocolCollection analysisProtocolCollection = populateAnalysisProtocolCollection(analysisSoftware);
         mzIdentML.setAnalysisProtocolCollection(analysisProtocolCollection);
 
-//        assembleSpectrumData();
+        assembleSpectrumData();
 
         //add all the used CVs
         mzIdentML.getCvList().getCv().addAll(cvs.values());
@@ -338,11 +338,12 @@ public class MzIdentMlExporter {
         SearchAndValidationSettings searchAndValidationSettings = analyticalRuns.get(0).getSearchAndValidationSettings();
         searchAndValidationSettingsService.fetchSearchSettingsHasFastaDb(searchAndValidationSettings);
         //iterate over the different FASTA databases used for the searches
-        for (SearchSettingsHasFastaDb searchSettingsHasFastaDb : searchAndValidationSettings.getSearchSettingsHasFastaDbs()) {
+        for (int i = 0; i < searchAndValidationSettings.getSearchSettingsHasFastaDbs().size(); i++) {
+            SearchSettingsHasFastaDb searchSettingsHasFastaDb = searchAndValidationSettings.getSearchSettingsHasFastaDbs().get(i);
             FastaDb fasta = searchSettingsHasFastaDb.getFastaDb();
 
             SearchDatabase searchDatabase = new SearchDatabase();
-            searchDatabase.setId(fasta.getId().toString());
+            searchDatabase.setId("SearchDB_" + i);
             searchDatabase.setLocation(fasta.getFilePath());
             searchDatabase.setName(fasta.getName());
             searchDatabase.setVersion(fasta.getVersion());
@@ -602,92 +603,94 @@ public class MzIdentMlExporter {
         SearchDatabaseRef dbRef = new SearchDatabaseRef();
         dbRef.setSearchDatabase(inputs.getSearchDatabase().get(0));
 
-        for (Spectrum spectrum : analyticalRuns.get(0).getSpectrums()) {
-            SpectrumIdentification spectrumIdentification = new SpectrumIdentification();
-            spectrumIdentification.setId("SPECTRUM-" + spectrum.getId().toString());
+        for (AnalyticalRun analyticalRun : analyticalRuns) {
+            for (Spectrum spectrum : analyticalRun.getSpectrums()) {
+                SpectrumIdentification spectrumIdentification = new SpectrumIdentification();
+                spectrumIdentification.setId("SPECTRUM-" + spectrum.getId().toString());
 
-            spectrum.getSpectrumFiles().stream().forEach(spectrumFile -> {
-                SpectraData spectraData = new SpectraData();
-                spectraData.setId("SD-" + spectrumFile.getId().toString());
-                spectraData.setLocation("data.mgf");                        // NOTE: may not be accurate
-                spectraData.setFileFormat(spectrumFileFormat);
-                spectraData.setSpectrumIDFormat(spectrumIDFormat);
+                spectrum.getSpectrumFiles().forEach(spectrumFile -> {
+                    SpectraData spectraData = new SpectraData();
+                    spectraData.setId("SD-" + spectrumFile.getId().toString());
+                    spectraData.setLocation("data.mgf");                        // NOTE: may not be accurate
+                    spectraData.setFileFormat(spectrumFileFormat);
+                    spectraData.setSpectrumIDFormat(spectrumIDFormat);
 
-                mzIdentML.getDataCollection().getInputs().getSpectraData().add(spectraData);
+                    mzIdentML.getDataCollection().getInputs().getSpectraData().add(spectraData);
 
-                InputSpectra inputSpectra = new InputSpectra();
-                inputSpectra.setSpectraData(spectraData);
+                    InputSpectra inputSpectra = new InputSpectra();
+                    inputSpectra.setSpectraData(spectraData);
 
-                spectrumIdentification.getInputSpectra().add(inputSpectra);
-            });
+                    spectrumIdentification.getInputSpectra().add(inputSpectra);
+                });
 
-            SpectrumIdentificationResult spectrumIdentificationResult = createSpectrumIdentificationResult(spectrum);
-            SpectrumIdentificationItem spectrumIdentificationItem = createSpectrumIdentificationItem(spectrum);
+                SpectrumIdentificationResult spectrumIdentificationResult = createSpectrumIdentificationResult(spectrum);
+                SpectrumIdentificationItem spectrumIdentificationItem = createSpectrumIdentificationItem(spectrum);
 
-            for (com.compomics.colims.model.Peptide colimsPeptide : spectrum.getPeptides()) {
-                uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide();
+                for (com.compomics.colims.model.Peptide colimsPeptide : spectrum.getPeptides()) {
+                    uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide();
 
-                mzPeptide.setId("PEPTIDE-" + colimsPeptide.getId().toString());
-                mzPeptide.setPeptideSequence(colimsPeptide.getSequence());
+                    mzPeptide.setId("PEPTIDE-" + colimsPeptide.getId().toString());
+                    mzPeptide.setPeptideSequence(colimsPeptide.getSequence());
 
-                for (PeptideHasModification peptideHasMod : colimsPeptide.getPeptideHasModifications()) {
-                    mzPeptide.getModification().add(createModification(peptideHasMod));
-                }
+                    for (PeptideHasModification peptideHasMod : colimsPeptide.getPeptideHasModifications()) {
+                        mzPeptide.getModification().add(createModification(peptideHasMod));
+                    }
 
-                sequenceCollection.getPeptide().add(mzPeptide);
-                spectrumIdentificationItem.setPeptide(mzPeptide);
+                    sequenceCollection.getPeptide().add(mzPeptide);
+                    spectrumIdentificationItem.setPeptide(mzPeptide);
 
-                for (PeptideHasProteinGroup peptideHasProteinGroup : colimsPeptide.getPeptideHasProteinGroups()) {
-                    for (ProteinGroupHasProtein proteinGroupHasProtein : peptideHasProteinGroup.getProteinGroup().getProteinGroupHasProteins()) {
-                        DBSequence dbSequence = createDBSequence(proteinGroupHasProtein);
+                    for (PeptideHasProteinGroup peptideHasProteinGroup : colimsPeptide.getPeptideHasProteinGroups()) {
+                        for (ProteinGroupHasProtein proteinGroupHasProtein : peptideHasProteinGroup.getProteinGroup().getProteinGroupHasProteins()) {
+                            DBSequence dbSequence = createDBSequence(proteinGroupHasProtein);
 
-                        sequenceCollection.getDBSequence().add(dbSequence);
+                            sequenceCollection.getDBSequence().add(dbSequence);
 
-                        //calculate peptide location values
-                        //more than one position is possible
-                        List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(proteinGroupHasProtein.getProtein().getSequence(), colimsPeptide.getSequence());
-                        peptidePositions.stream().forEach(peptidePosition -> {
-                            PeptideEvidence evidence = new PeptideEvidence();
-                            evidence.setDBSequence(dbSequence);
-                            evidence.setPeptide(mzPeptide);
-                            evidence.setId("PE-" + peptideHasProteinGroup.getId().toString());
+                            //calculate peptide location values
+                            //more than one position is possible
+                            List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(proteinGroupHasProtein.getProtein().getSequence(), colimsPeptide.getSequence());
+                            peptidePositions.forEach(peptidePosition -> {
+                                PeptideEvidence evidence = new PeptideEvidence();
+                                evidence.setDBSequence(dbSequence);
+                                evidence.setPeptide(mzPeptide);
+                                evidence.setId("PE-" + peptideHasProteinGroup.getId().toString());
 
-                            evidence.setStart(peptidePosition.getStartPosition());
-                            evidence.setEnd(peptidePosition.getEndPosition());
-                            evidence.setPre(peptidePosition.getPreAA().toString());
-                            evidence.setPost(peptidePosition.getPostAA().toString());
+                                evidence.setStart(peptidePosition.getStartPosition());
+                                evidence.setEnd(peptidePosition.getEndPosition());
+                                evidence.setPre(peptidePosition.getPreAA().toString());
+                                evidence.setPost(peptidePosition.getPostAA().toString());
 
-                            sequenceCollection.getPeptideEvidence().add(evidence);
+                                sequenceCollection.getPeptideEvidence().add(evidence);
 
-                            PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
-                            evidenceRef.setPeptideEvidence(evidence);
-                            spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
-                        });
+                                PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
+                                evidenceRef.setPeptideEvidence(evidence);
+                                spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
+                            });
+                        }
                     }
                 }
+
+                spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
+                spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
+
+                spectrumIdentification.setSpectrumIdentificationList(spectrumIdentificationList);
+                spectrumIdentification.setSpectrumIdentificationProtocol(mzIdentML.getAnalysisProtocolCollection().getSpectrumIdentificationProtocol().get(0));
+
+                spectrumIdentification.getSearchDatabaseRef().add(dbRef);
+
+                analysisCollection.getSpectrumIdentification().add(spectrumIdentification);
+
+                ProteinDetection proteinDetection = new ProteinDetection();
+                proteinDetection.setId("PD-1");
+                proteinDetection.setProteinDetectionList(proteinDetectionList);
+                proteinDetection.setProteinDetectionProtocol(mzIdentML.getAnalysisProtocolCollection().getProteinDetectionProtocol());
+
+                InputSpectrumIdentifications iSI = new InputSpectrumIdentifications();
+                iSI.setSpectrumIdentificationList(spectrumIdentificationList);
+
+                proteinDetection.getInputSpectrumIdentifications().add(iSI);
+
+                analysisCollection.setProteinDetection(proteinDetection);
             }
-
-            spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
-            spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
-
-            spectrumIdentification.setSpectrumIdentificationList(spectrumIdentificationList);
-            spectrumIdentification.setSpectrumIdentificationProtocol(mzIdentML.getAnalysisProtocolCollection().getSpectrumIdentificationProtocol().get(0));
-
-            spectrumIdentification.getSearchDatabaseRef().add(dbRef);
-
-            analysisCollection.getSpectrumIdentification().add(spectrumIdentification);
-
-            ProteinDetection proteinDetection = new ProteinDetection();
-            proteinDetection.setId("PD-1");
-            proteinDetection.setProteinDetectionList(proteinDetectionList);
-            proteinDetection.setProteinDetectionProtocol(mzIdentML.getAnalysisProtocolCollection().getProteinDetectionProtocol());
-
-            InputSpectrumIdentifications iSI = new InputSpectrumIdentifications();
-            iSI.setSpectrumIdentificationList(spectrumIdentificationList);
-
-            proteinDetection.getInputSpectrumIdentifications().add(iSI);
-
-            analysisCollection.setProteinDetection(proteinDetection);
         }
 
         mzIdentML.getDataCollection().getAnalysisData().getSpectrumIdentificationList().add(spectrumIdentificationList);

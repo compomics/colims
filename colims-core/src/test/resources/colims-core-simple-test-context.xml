@@ -15,4 +15,8 @@
     
     <bean name="proteinCoverage" class="com.compomics.colims.core.util.ProteinCoverage"/>
 
+    <bean name="fastaDbParser" class="com.compomics.colims.core.io.fasta.FastaDbParser"/>
+
+    <bean name="fastaDbAccessionParser" class="com.compomics.colims.core.io.fasta.FastaDbAccessionParser"/>
+
 </beans>

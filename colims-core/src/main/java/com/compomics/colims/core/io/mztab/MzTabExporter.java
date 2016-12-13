@@ -393,7 +393,7 @@ public class MzTabExporter {
         }
 
         constructProteins(type, pw);
-        constructPSM(type, pw);
+        constructPSM(pw);
 
     }
 
@@ -453,9 +453,7 @@ public class MzTabExporter {
      */
     private void addProteinData(int type, PrintWriter pw) throws IOException {
         List<Long> analyticalRunIds = new ArrayList<>();
-        mzTabExport.getRuns().forEach(analyticalRun -> {
-            analyticalRunIds.add(analyticalRun.getId());
-        });
+        mzTabExport.getRuns().forEach(analyticalRun -> analyticalRunIds.add(analyticalRun.getId()));
         List<ProteinGroupDTO> proteinList = getProteinGroupsForAnalyticalRuns(analyticalRunIds);
         SearchAndValidationSettings searchAndValidationSettings = searchAndValidationSettingsService.getByAnalyticalRun(mzTabExport.getRuns().get(0));
         Map<FastaDb, FastaDbType> fastaDbs = fastaDbService.findBySearchAndValidationSettings(searchAndValidationSettings);
@@ -614,7 +612,7 @@ public class MzTabExporter {
         }
     }
 
-    private void constructPSM(int type, PrintWriter pw) throws IOException {
+    private void constructPSM(PrintWriter pw) throws IOException {
         StringBuilder psms = new StringBuilder();
 
         psms.append(PSM_HEADER_PREFIX).append(COLUMN_DELIMITER).append(SEQUENCE).append(COLUMN_DELIMITER).append(PSM_ID).append(COLUMN_DELIMITER).append(ACCESSION)
@@ -624,7 +622,7 @@ public class MzTabExporter {
                 .append(EXPERIMENTAL_MASS_TO_CHARGE).append(COLUMN_DELIMITER).append(CALCULATED_MASS_TO_CHARGE).append(COLUMN_DELIMITER).append(SPECTRA_REFERENCE)
                 .append(COLUMN_DELIMITER).append(PRE).append(COLUMN_DELIMITER).append(POST).append(COLUMN_DELIMITER).append(START).append(COLUMN_DELIMITER).append(END);
         pw.println(psms);
-        addPSMData(type, pw);
+        addPSMData(pw);
     }
 
     /**
@@ -632,7 +630,7 @@ public class MzTabExporter {
      *
      * @return proteins
      */
-    private void addPSMData(int type, PrintWriter pw) throws IOException {
+    private void addPSMData(PrintWriter pw) throws IOException {
         List<Long> peptideIds = new ArrayList<>();
         List<Long> analyticalRunIds = new ArrayList<>();
         mzTabExport.getRuns().forEach(analyticalRun -> {

@@ -47,21 +47,21 @@ public class MzIdentMlExporterTest {
         AnalyticalRun run = repository.findById(1L);
         analyticalRuns.add(run);
 
-        try (StringWriter writer = new StringWriter()) {
-            exporter.export(writer, analyticalRuns);
-
-            String export = writer.toString();
-//            System.out.println(export);
-
-            Assert.assertFalse(export.isEmpty());
-        }
-
-//        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
-//        try (
-//                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
-//        ) {
-//            exporter.export(bufferedWriter, analyticalRuns);
+//        try (StringWriter writer = new StringWriter()) {
+//            exporter.export(writer, analyticalRuns);
+//
+//            String export = writer.toString();
+////            System.out.println(export);
+//
+//            Assert.assertFalse(export.isEmpty());
 //        }
+
+        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
+        try (
+                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
+        ) {
+            exporter.export(bufferedWriter, analyticalRuns);
+        }
     }
 
     @Test

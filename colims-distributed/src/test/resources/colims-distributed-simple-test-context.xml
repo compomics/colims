@@ -6,6 +6,4 @@
 
     <bean name="unimodMarshaller" class="com.compomics.colims.distributed.io.unimod.UnimodMarshaller"/>
 
-    <bean name="fastaDbParser" class="com.compomics.colims.distributed.io.maxquant.parsers.FastaDbParser"/>
-
 </beans>
