@@ -83,12 +83,12 @@ public class MaxQuantProteinGroupsParser {
      * @param optionalHeaders     the list of optional headers
      * @throws IOException in case of an Input/Output related problem
      */
-    public void parse(Path proteinGroupsFile, List<FastaDb> fastaDbs, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
+    public void parse(Path proteinGroupsFile, Map<FastaDb, Path> fastaDbMap, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
         TabularFileIterator iterator = new TabularFileIterator(proteinGroupsFile, proteinGroupsHeaders.getMandatoryHeaders());
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
-            ProteinGroup proteinGroup = parseProteinGroup(values, fastaDbParser.parseFastas(fastaDbs), includeContaminants, optionalHeaders);
+            ProteinGroup proteinGroup = parseProteinGroup(values, fastaDbParser.parseFastas(fastaDbMap), includeContaminants, optionalHeaders);
             if (proteinGroup.getMainProtein() != null) {
                 proteinGroups.put(Integer.parseInt(values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))), proteinGroup);
             }

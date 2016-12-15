@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -72,7 +74,10 @@ public class MaxQuantIT {
         MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.mqparFile,
                 MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds, false, false, new ArrayList<>(), "label free");
         maxQuantMapper.clear();
-        MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
+
+        Path experimentsDirectory = Paths.get("data/maxquant/maxquant_SILAC_integration");
+        Path fastasDirectory = Paths.get("data/maxquant/maxquant_SILAC_integration");
+        MappedData mappedData = maxQuantMapper.mapData(maxQuantImport, experimentsDirectory, fastasDirectory);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 
         Assert.assertFalse(analyticalRuns.isEmpty());

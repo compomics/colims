@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class represents a FASTA databaseName in the databaseName.
+ * This class represents a FASTA database in the database.
  *
  * @author Niels Hulstaert
  */

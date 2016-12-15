@@ -82,12 +82,13 @@ public class MaxQuantParser {
      * Parse the MaxQuant output folder and map the content of the different
      * files to Colims entities.
      *
-     * @param maxQuantImport the {@link MaxQuantImport} instance
+     * @param maxQuantImport  the {@link MaxQuantImport} instance
+     * @param fastasDirectory the FASTA DBs directory
      * @throws IOException          in case of an input/output related problem
      * @throws UnparseableException in case of a problem occured while parsing
      * @throws JDOMException        in case of an XML parsing related problem
      */
-    public void parse(MaxQuantImport maxQuantImport) throws IOException, UnparseableException, JDOMException {
+    public void parse(MaxQuantImport maxQuantImport, Path fastasDirectory) throws IOException, UnparseableException, JDOMException {
         EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
         //get the FASTA db entities from the database
         maxQuantImport.getFastaDbIds().forEach((FastaDbType fastaDbType, List<Long> fastaDbIds) -> {
@@ -113,9 +114,16 @@ public class MaxQuantParser {
 
         //parse the protein groups file
         LOGGER.debug("parsing proteinGroups.txt");
-        List<FastaDb> fastaDbList = new ArrayList<>();
+        Map<FastaDb, Path> fastaDbMap = new HashMap<>();
         fastaDbs.forEach((k, v) -> {
-            v.forEach(fastaDbList::add);
+            v.forEach(fastaDb -> {
+                //make the path absolute and check it exists
+                Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDb.getFilePath());
+                if (!Files.exists(absoluteFastaDbPath)) {
+                    throw new IllegalArgumentException("The FASTA DB file " + absoluteFastaDbPath + " doesn't exist.");
+                }
+                fastaDbMap.put(fastaDb, absoluteFastaDbPath);
+            });
         });
 
         //look for the proteinGroups.txt file
@@ -123,7 +131,7 @@ public class MaxQuantParser {
         if (!Files.exists(proteinGroupsFile)) {
             throw new FileNotFoundException("The proteinGroups.txt " + proteinGroupsFile.toString() + " was not found.");
         }
-        maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbList, maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupHeaders());
+        maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbMap, maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupHeaders());
 
         LOGGER.debug("parsing msms.txt");
         maxQuantSpectraParser.parse(maxQuantImport.getCombinedDirectory(), maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());

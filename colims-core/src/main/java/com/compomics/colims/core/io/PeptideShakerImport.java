@@ -1,7 +1,9 @@
 package com.compomics.colims.core.io;
 
 import com.compomics.colims.model.enums.FastaDbType;
+
 import java.io.File;
+import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -16,13 +18,13 @@ public class PeptideShakerImport extends DataImport {
     private static final long serialVersionUID = 6181185980673938925L;
 
     /**
-     * The PeptideShaker .cps file.
+     * The PeptideShaker .cpsx file.
      */
-    private File peptideShakerCpsArchive;
+    private Path peptideShakerCpsxArchive;
     /**
      * The list of mgf files.
      */
-    private List<File> mgfFiles;
+    private List<Path> mgfFiles;
 
     /**
      * No-arg constructor.
@@ -33,29 +35,29 @@ public class PeptideShakerImport extends DataImport {
     /**
      * Constructor.
      *
-     * @param peptideShakerCpsArchive the PeptideShaker .cps file
-     * @param fastaDbIds the FASTA database IDs map
-     * @param mgfFiles the list of MGF files
+     * @param peptideShakerCpsxArchive the PeptideShaker .cps file
+     * @param fastaDbIds               the FASTA database IDs map
+     * @param mgfFiles                 the list of MGF files
      */
-    public PeptideShakerImport(final File peptideShakerCpsArchive, final EnumMap<FastaDbType, List<Long>> fastaDbIds, final List<File> mgfFiles) {
+    public PeptideShakerImport(final Path peptideShakerCpsxArchive, final EnumMap<FastaDbType, List<Long>> fastaDbIds, final List<Path> mgfFiles) {
         super(fastaDbIds);
-        this.peptideShakerCpsArchive = peptideShakerCpsArchive;
+        this.peptideShakerCpsxArchive = peptideShakerCpsxArchive;
         this.mgfFiles = mgfFiles;
     }
 
-    public File getPeptideShakerCpsArchive() {
-        return peptideShakerCpsArchive;
+    public Path getPeptideShakerCpsxArchive() {
+        return peptideShakerCpsxArchive;
     }
 
-    public void setPeptideShakerCpsArchive(File peptideShakerCpsArchive) {
-        this.peptideShakerCpsArchive = peptideShakerCpsArchive;
+    public void setPeptideShakerCpsxArchive(Path peptideShakerCpsxArchive) {
+        this.peptideShakerCpsxArchive = peptideShakerCpsxArchive;
     }
 
-    public List<File> getMgfFiles() {
+    public List<Path> getMgfFiles() {
         return mgfFiles;
     }
 
-    public void setMgfFiles(List<File> mgfFiles) {
+    public void setMgfFiles(List<Path> mgfFiles) {
         this.mgfFiles = mgfFiles;
     }
 
@@ -73,7 +75,7 @@ public class PeptideShakerImport extends DataImport {
 
         PeptideShakerImport that = (PeptideShakerImport) o;
 
-        if (peptideShakerCpsArchive != null ? !peptideShakerCpsArchive.equals(that.peptideShakerCpsArchive) : that.peptideShakerCpsArchive != null) {
+        if (peptideShakerCpsxArchive != null ? !peptideShakerCpsxArchive.equals(that.peptideShakerCpsxArchive) : that.peptideShakerCpsxArchive != null) {
             return false;
         }
         return !(mgfFiles != null ? !mgfFiles.equals(that.mgfFiles) : that.mgfFiles != null);
@@ -83,7 +85,7 @@ public class PeptideShakerImport extends DataImport {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (peptideShakerCpsArchive != null ? peptideShakerCpsArchive.hashCode() : 0);
+        result = 31 * result + (peptideShakerCpsxArchive != null ? peptideShakerCpsxArchive.hashCode() : 0);
         result = 31 * result + (mgfFiles != null ? mgfFiles.hashCode() : 0);
         return result;
     }

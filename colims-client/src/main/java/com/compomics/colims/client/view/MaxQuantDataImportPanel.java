@@ -25,7 +25,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public JFileChooser getParameterDirectoryChooser() {
+    public JFileChooser getMqParDirectoryChooser() {
         return parameterDirectoryChooser;
     }
 

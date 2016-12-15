@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,13 +24,13 @@ import java.util.Map;
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 public class MaxQuantProteinGroupsParserTest {
 
-    private List<FastaDb> fastaDbs = new ArrayList<>();
+    private Map<FastaDb, Path> fastaDbs = new HashMap<>();
     @Autowired
     private MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
 
     public MaxQuantProteinGroupsParserTest() {
-        fastaDbs.add(MaxQuantTestSuite.testFastaDb);
-        fastaDbs.add(MaxQuantTestSuite.contaminantsFastaDb);
+        fastaDbs.put(MaxQuantTestSuite.testFastaDb, MaxQuantTestSuite.testFastaDbPath);
+        fastaDbs.put(MaxQuantTestSuite.contaminantsFastaDb, MaxQuantTestSuite.contaminantsFastaDbPath);
     }
 
     /**

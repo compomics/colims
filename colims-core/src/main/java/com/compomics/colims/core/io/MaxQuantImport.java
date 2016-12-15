@@ -103,6 +103,14 @@ public class MaxQuantImport extends DataImport {
         return quantificationLabel;
     }
 
+    public void setMqParFile(Path mqParFile) {
+        this.mqParFile = mqParFile;
+    }
+
+    public void setCombinedDirectory(Path combinedDirectory) {
+        this.combinedDirectory = combinedDirectory;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;

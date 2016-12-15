@@ -3,7 +3,6 @@ package com.compomics.colims.distributed.io.peptideshaker;
 import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.*;
-import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -19,14 +18,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Niels Hulstaert
@@ -75,17 +71,17 @@ public class PeptideShakerMapperIT {
     @Test
     public void testImportData() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException, InterruptedException {
         //import PeptideShaker .cps file
-        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cpsx").getFile());
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("colims_test_ps_file.cpsx").getFile());
         //set mgf files and fasta file
-        List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
+        List<Path> mgfFiles = new ArrayList<>();
+        mgfFiles.add(Paths.get("qExactive01819.mgf"));
         unpackedPsDataImport.setMgfFiles(mgfFiles);
 
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-august-2015_concatenated_target_decoy.fasta").getFile();
+        Path fastaFile = Paths.get("uniprot-human-reviewed-trypsin-august-2015_concatenated_target_decoy.fasta");
         FastaDb fastaDb = new FastaDb();
-        fastaDb.setName(fastaFile.getName());
-        fastaDb.setFileName(fastaFile.getName());
-        fastaDb.setFilePath(fastaFile.getAbsolutePath());
+        fastaDb.setName(fastaFile.getFileName().toString());
+        fastaDb.setFileName(fastaFile.getFileName().toString());
+        fastaDb.setFilePath(fastaFile.toString());
         fastaDb.setVersion("test_version");
         fastaDb.setDatabaseName("UNIPROT");
 
@@ -94,14 +90,16 @@ public class PeptideShakerMapperIT {
         fastaDbService.persist(fastaDb);
 
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY,new ArrayList<>(Arrays.asList(fastaDb.getId())));
+        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(fastaDb.getId())));
 
         unpackedPsDataImport.setFastaDbIds(fastaDbIds);
 
         //clear resources
         peptideShakerMapper.clear();
 
-        MappedData mappedData = peptideShakerMapper.mapData(unpackedPsDataImport);
+        Path experimentsDirectory = Paths.get("data/peptideshaker");
+        Path fastasDirectory = Paths.get("data/peptideshaker");
+        MappedData mappedData = peptideShakerMapper.mapData(unpackedPsDataImport, experimentsDirectory.toAbsolutePath(), fastasDirectory.toAbsolutePath());
 
         //analytical run
         AnalyticalRun testAnalyticalRun = mappedData.getAnalyticalRuns().get(0);
@@ -131,8 +129,8 @@ public class PeptideShakerMapperIT {
                             Assert.assertNotNull(proteinGroupHasProtein.getProteinAccession());
                             Protein protein = proteinGroupHasProtein.getProtein();
                             Assert.assertNotNull(protein);
-                     //       Assert.assertFalse(protein.getProteinAccessions().isEmpty());
-                      //      Assert.assertFalse(protein.getProteinAccessions().get(0).getAccession().isEmpty());
+                            //       Assert.assertFalse(protein.getProteinAccessions().isEmpty());
+                            //      Assert.assertFalse(protein.getProteinAccessions().get(0).getAccession().isEmpty());
                             Assert.assertFalse(protein.getSequence().isEmpty());
                         });
                     });

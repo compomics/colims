@@ -16,6 +16,8 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,10 +48,10 @@ public class Playground {
         persistMetadata.setStartDate(new Date());
         persistDbTask.setPersistMetadata(persistMetadata);
 
-        List<File> mgfFiles = Arrays.asList(new File("maxquant_test1"), new File("test2"));
+        List<Path> mgfFiles = Arrays.asList(Paths.get("maxquant_test1"), Paths.get("test2"));
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY,new ArrayList<>(Arrays.asList(1L)));
-        DataImport dataImport = new PeptideShakerImport(new File("testFile"), fastaDbIds, mgfFiles);
+        DataImport dataImport = new PeptideShakerImport(Paths.get("testFile"), fastaDbIds, mgfFiles);
         persistDbTask.setDataImport(dataImport);
 
         DbTask dbTask = persistDbTask;

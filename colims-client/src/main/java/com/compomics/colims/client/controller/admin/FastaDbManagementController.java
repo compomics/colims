@@ -71,7 +71,7 @@ public class FastaDbManagementController implements Controllable {
     private BindingGroup bindingGroup;
     private final EventList<FastaDb> fastaDbs = new BasicEventList<>();
     private SortedList<FastaDb> sortedFastaDbs;
-    DefaultEventListModel<FastaDb> fastaDbListModel;
+    private DefaultEventListModel<FastaDb> fastaDbListModel;
     private DefaultEventSelectionModel<FastaDb> fastaDbSelectionModel;
     //view
     private FastaDbManagementDialog fastaDbManagementDialog;

@@ -27,9 +27,13 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 
 /**
@@ -49,6 +53,16 @@ public class PersistDbTaskHandler {
     private static final String STARTED_MESSAGE = "started parsing...  ";
     private static final String FINISHED_MESSAGE = "finished parsing ";
     private static final String DB_STARTED_MESSAGE = "saving to database...";
+    /**
+     * The experiments location as provided in the distributed properties file.
+     */
+    @Value("${distributed.experiments.root.path}")
+    private String experimentsLocation = "";
+    /**
+     * The FASTA DBs location as provided in the distributed properties file.
+     */
+    @Value("${distributed.fasta.root.path}")
+    private String fastasLocation = "";
     /**
      * The CompletedDbTask sender.
      */
@@ -181,14 +195,27 @@ public class PersistDbTaskHandler {
      */
     private MappedData mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException, JDOMException {
         MappedData mappedData = null;
+
         notificationProducer.sendNotification(new Notification(STARTED_MESSAGE, ""));
+
+        //check if the experiments and FASTA DBs locations exist
+        Path experimentsDirectory = Paths.get(experimentsLocation);
+        if (!Files.exists(experimentsDirectory)) {
+            throw new IllegalArgumentException("The experiments directory " + experimentsLocation + " doesn't exist.");
+        }
+        Path fastasDirectory = Paths.get(fastasLocation);
+        if (!Files.exists(experimentsDirectory)) {
+            throw new IllegalArgumentException("The FASTA DBs directory " + fastasLocation + " doesn't exist.");
+        }
 
         switch (persistDbTask.getPersistMetadata().getPersistType()) {
             case PEPTIDESHAKER:
-                //unpack .cps archive
-                UnpackedPeptideShakerImport unpackedPeptideShakerImport = peptideShakerIO.unpackPeptideShakerImport((PeptideShakerImport) (persistDbTask.getDataImport()));
+                PeptideShakerImport peptideShakerImport = (PeptideShakerImport) (persistDbTask.getDataImport());
 
-                mappedData = peptideShakerMapper.mapData(unpackedPeptideShakerImport);
+                //unpack .cps archive
+                UnpackedPeptideShakerImport unpackedPeptideShakerImport = peptideShakerIO.unpackPeptideShakerImport(peptideShakerImport, experimentsDirectory);
+
+                mappedData = peptideShakerMapper.mapData(unpackedPeptideShakerImport, experimentsDirectory, fastasDirectory);
 
                 //clear resources after mapping
                 peptideShakerMapper.clear();
@@ -204,11 +231,7 @@ public class PersistDbTaskHandler {
 //                }
                 break;
             case MAX_QUANT:
-                //clear resources before mapping
-                //// TODO: 6/1/2016 change this to inline calls parser and mapper instead of mapper calling parser
-                //mappedData = maxQuantMapper.mapData(maxQuantParser.parseData((MaxQuantImport) (persistDbTask.getDataImport())))
-
-                mappedData = maxQuantMapper.mapData((MaxQuantImport) (persistDbTask.getDataImport()));
+                mappedData = maxQuantMapper.mapData((MaxQuantImport) (persistDbTask.getDataImport()), experimentsDirectory, fastasDirectory);
 
                 //clear resources after mapping
                 maxQuantMapper.clear();

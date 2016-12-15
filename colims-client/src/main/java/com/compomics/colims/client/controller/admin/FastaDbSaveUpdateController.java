@@ -10,24 +10,18 @@ import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.core.util.PropertiesUtil;
 import com.compomics.colims.client.view.admin.FastaDbSaveUpdatePanel;
 import com.compomics.colims.client.view.admin.HeaderParseRuleAdditionDialog;
 import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.FastaDbService;
+import com.compomics.colims.core.util.PathUtils;
+import com.compomics.colims.core.util.PropertiesUtil;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.TaxonomyCvParam;
 import com.compomics.colims.model.cv.CvParam;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.logging.Level;
-import javax.annotation.PostConstruct;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
@@ -38,11 +32,18 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.*;
+
 /**
- *
  * @author demet
  */
 @Component("fastaDbSaveUpdateController")
@@ -66,14 +67,26 @@ public class FastaDbSaveUpdateController implements Controllable {
      * List to hold map of parse rule and explanation.
      */
     private final List<Map<String, String>> headerParseRuleList = new ArrayList<>();
-
+    /**
+     * The list of databases.
+     */
     private final List<String> databaseList = new ArrayList<>();
     /**
-     * properties configuration to read properties file.
+     * The properties configuration to read properties file.
      */
     private PropertiesConfiguration config;
     /**
-     * set to hold database names from properties file
+     * The FASTAs location as provided in the client properties file.
+     */
+    @Value("${distributed.fastas.local.path}")
+    private String localFastasLocation = "";
+    /**
+     * The FASTAs location as provided in the client properties file.
+     */
+    @Value("${distributed.fastas.directory}")
+    private String fastasDirectory = "";
+    /**
+     * set to hold database names from properties file.
      */
     private Set<Object> databaseSet = new TreeSet<>();
     //model
@@ -81,12 +94,11 @@ public class FastaDbSaveUpdateController implements Controllable {
     private ObservableList<CvParam> taxonomyBindingList;
     private ObservableList<String> headerParseRuleBindingList;
     private ObservableList<String> databaseBindingList;
+    private boolean saveUpdate = false;
+    private FastaDb fastaDbToEdit;
     //view
     private FastaDbSaveUpdatePanel fastaDbSaveUpdatePanel;
     private HeaderParseRuleAdditionDialog headerParseRuleAdditionDialog;
-
-    private boolean saveUpdate = false;
-    private FastaDb fastaDbToEdit;
     //services
     @Autowired
     private EventBus eventBus;
@@ -123,9 +135,9 @@ public class FastaDbSaveUpdateController implements Controllable {
         try {
             config = PropertiesUtil.parsePropertiesFile("config/header-parse-rule.properties");
         } catch (IOException | ConfigurationException ex) {
-            java.util.logging.Logger.getLogger(FastaDbSaveUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage(), ex);
         }
-        fillHeaderParseRuleComboBox();
+        populateHeaderParseRuleComboBox();
 
         JComboBoxBinding parseRuleComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, headerParseRuleBindingList, fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox());
         bindingGroup.addBinding(parseRuleComboBoxBinding);
@@ -137,21 +149,27 @@ public class FastaDbSaveUpdateController implements Controllable {
             allProperties.load(loader.getResourceAsStream("config/embl-ebi-database.properties"));
             databaseSet = new TreeSet(allProperties.keySet());
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(FastaDbSaveUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage(), ex);
         }
 
-        fillDatabaseComboBox();
+        populateDatabaseComboBox();
 
         JComboBoxBinding databaseComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, databaseBindingList, fastaDbSaveUpdatePanel.getDatabaseComboBox());
         bindingGroup.addBinding(databaseComboBoxBinding);
         bindingGroup.bind();
-
 
         //init FASTA file selection
         //disable select multiple files
         fastaDbSaveUpdatePanel.getFastaFileChooser().setMultiSelectionEnabled(false);
         //set FASTA file filter
         fastaDbSaveUpdatePanel.getFastaFileChooser().setFileFilter(new FastaFileFilter());
+        //set the preferred location for the file chooser
+        if (!localFastasLocation.isEmpty()) {
+            File localFastasDirectory = new File(localFastasLocation);
+            if (localFastasDirectory.exists()) {
+                fastaDbSaveUpdatePanel.getFastaFileChooser().setCurrentDirectory(localFastasDirectory);
+            }
+        }
 
         //add listeners
         fastaDbSaveUpdatePanel.getBrowseTaxonomyButton().addActionListener(e -> {
@@ -171,11 +189,11 @@ public class FastaDbSaveUpdateController implements Controllable {
 
         headerParseRuleAdditionDialog.getSaveParseRuleButton().addActionListener(l -> {
             try {
-                config = PropertiesUtil.addProperty(config,headerParseRuleAdditionDialog.getDescriptionTextField().getText(), headerParseRuleAdditionDialog.getParseRuleTextField().getText());
+                config = PropertiesUtil.addProperty(config, headerParseRuleAdditionDialog.getDescriptionTextField().getText(), headerParseRuleAdditionDialog.getParseRuleTextField().getText());
             } catch (ConfigurationException | IOException ex) {
-                java.util.logging.Logger.getLogger(FastaDbSaveUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getMessage(), ex);
             }
-            fillHeaderParseRuleComboBox();
+            populateHeaderParseRuleComboBox();
             headerParseRuleAdditionDialog.dispose();
         });
 
@@ -183,11 +201,15 @@ public class FastaDbSaveUpdateController implements Controllable {
             //in response to the button click, show open dialog
             int returnVal = fastaDbSaveUpdatePanel.getFastaFileChooser().showOpenDialog(fastaDbSaveUpdatePanel);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File fastaFile = fastaDbSaveUpdatePanel.getFastaFileChooser().getSelectedFile();
-
-                //show FASTA file name and path in textfields
-                fastaDbSaveUpdatePanel.getFileNameTextField().setText(fastaFile.getName());
-                fastaDbSaveUpdatePanel.getFilePathTextField().setText(fastaFile.getAbsolutePath());
+                try {
+                    Path fullFastaPath = fastaDbSaveUpdatePanel.getFastaFileChooser().getSelectedFile().toPath();
+                    Path relativeFastaPath = PathUtils.getRelativeChildPath(fullFastaPath, fastasDirectory);
+                    fastaDbSaveUpdatePanel.getFileNameTextField().setText(relativeFastaPath.getFileName().toString());
+                    fastaDbSaveUpdatePanel.getFilePathTextField().setText(relativeFastaPath.toString());
+                } catch (IllegalArgumentException ex) {
+                    MessageEvent messageEvent = new MessageEvent("Invalid FASTA location", "The FASTA location doesn't contain the fastas directory as defined in the properties file.", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
             }
         });
 
@@ -257,7 +279,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbSaveUpdatePanel.getFilePathTextField().setText(fastaDbToEdit.getFilePath());
         fastaDbSaveUpdatePanel.getVersionTextField().setText(fastaDbToEdit.getVersion());
         headerParseRuleList.forEach(parseRule -> {
-            if(parseRule.containsKey(fastaDb.getHeaderParseRule())){
+            if (parseRule.containsKey(fastaDb.getHeaderParseRule())) {
                 fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getModel().setSelectedItem(parseRule.get(fastaDb.getHeaderParseRule()));
             }
         });
@@ -308,15 +330,15 @@ public class FastaDbSaveUpdateController implements Controllable {
         }
 
         int parseRuleIndex = fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getSelectedIndex();
-        if(parseRuleIndex == 0){
+        if (parseRuleIndex == 0) {
             fastaDbToEdit.setHeaderParseRule(null);
-        }else{
+        } else {
             headerParseRuleList.get(parseRuleIndex).forEach((k, v) -> fastaDbToEdit.setHeaderParseRule(k));
         }
         int databaseIndex = fastaDbSaveUpdatePanel.getDatabaseComboBox().getSelectedIndex();
-        if(databaseIndex == 0){
+        if (databaseIndex == 0) {
             fastaDbToEdit.setDatabaseName(null);
-        }else{
+        } else {
             fastaDbToEdit.setDatabaseName(databaseList.get(databaseIndex));
         }
     }
@@ -337,9 +359,9 @@ public class FastaDbSaveUpdateController implements Controllable {
     }
 
     /**
-     * Fill Header Parse Rule Combo Box
+     * Populate the Header Parse Rule Combo Box.
      */
-    private void fillHeaderParseRuleComboBox(){
+    private void populateHeaderParseRuleComboBox() {
         headerParseRuleBindingList.clear();
         headerParseRuleList.clear();
         headerParseRuleBindingList.add("Please select one parse rule..");
@@ -351,17 +373,17 @@ public class FastaDbSaveUpdateController implements Controllable {
         Map<String, String> parseRulesWithExp = new HashMap<>();
 
         Iterator<String> keys = config.getKeys();
-        while(keys.hasNext()){
+        while (keys.hasNext()) {
             String key = keys.next();
-            if(!parseRulesWithExp.containsKey(config.getString(key))){
+            if (!parseRulesWithExp.containsKey(config.getString(key))) {
                 parseRulesWithExp.put(config.getString(key), key);
-            }else{
+            } else {
                 parseRulesWithExp.put(config.getString(key), parseRulesWithExp.get(config.getString(key)) + ", " + key);
             }
         }
         List<String> parseRulesFromDb = fastaDbService.getAllParseRules();
         parseRulesFromDb.stream().filter(p -> !parseRulesWithExp.containsKey(p)).forEach(p -> parseRulesWithExp.put(p, "from Db"));
-        parseRulesWithExp.entrySet().stream().forEach(entry ->{
+        parseRulesWithExp.entrySet().stream().forEach(entry -> {
             headerParseRuleBindingList.add(entry.getKey() + " [" + entry.getValue() + "]");
             // parse rule map. (key: parse rule, value: rule with explanation)
             Map<String, String> parseRule = new HashMap<>();
@@ -372,9 +394,9 @@ public class FastaDbSaveUpdateController implements Controllable {
     }
 
     /**
-     * Fill Database Combo Box
+     * Populate the Database Combo Box.
      */
-    private void fillDatabaseComboBox(){
+    private void populateDatabaseComboBox() {
         databaseBindingList.clear();
         databaseList.clear();
         databaseBindingList.add("Please select database..");

@@ -356,7 +356,7 @@
                                           </Group>
                                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="fileNameTextField" alignment="1" pref="428" max="32767" attributes="0"/>
+                                              <Component id="fileNameTextField" alignment="1" pref="423" max="32767" attributes="0"/>
                                               <Component id="filePathTextField" max="32767" attributes="0"/>
                                               <Component id="nameTextField" max="32767" attributes="0"/>
                                           </Group>
@@ -370,12 +370,12 @@
                                               </Group>
                                               <Component id="databaseLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                                           </Group>
-                                          <EmptySpace max="-2" attributes="0"/>
+                                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="databaseTextField" max="32767" attributes="0"/>
+                                              <Component id="taxonomyTextField" alignment="1" max="32767" attributes="0"/>
                                               <Component id="versionTextField" max="32767" attributes="0"/>
+                                              <Component id="databaseTextField" max="32767" attributes="0"/>
                                               <Component id="headerParseRuleTextField" max="32767" attributes="0"/>
-                                              <Component id="taxonomyTextField" alignment="0" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>

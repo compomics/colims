@@ -1,15 +1,13 @@
 package com.compomics.colims.core.io.fasta;
 
 import com.compomics.colims.model.FastaDb;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Collection;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -36,18 +34,19 @@ public class FastaDbParser {
     /**
      * Parse the given FASTA files into a map of protein accession -> sequence pairs.
      *
-     * @param fastaDbs the FASTA files to parse
+     * @param fastaDbs the FASTA files to parse and their associated (absolute) path
      * @return String/String map of protein/sequence
      * @throws IOException thrown in case of an input/output related problem
      */
-    public Map<String, String> parseFastas(Collection<FastaDb> fastaDbs) throws IOException {
+    public Map<String, String> parseFastas(Map<FastaDb, Path> fastaDbs) throws IOException {
         Map<String, String> parsedFastas = new HashMap<>();
         try {
             final StringBuilder sequenceBuilder = new StringBuilder();
             String header = "";
             String line;
-            for (FastaDb fastaDb : fastaDbs) {
-                try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(FilenameUtils.separatorsToSystem(fastaDb.getFilePath())))) {
+            for (Map.Entry<FastaDb, Path> entry : fastaDbs.entrySet()) {
+                FastaDb fastaDb = entry.getKey();
+                try (BufferedReader bufferedReader = Files.newBufferedReader(entry.getValue())) {
                     //get parse rule from the FastaDb instance and parse the key
                     if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
                         fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);

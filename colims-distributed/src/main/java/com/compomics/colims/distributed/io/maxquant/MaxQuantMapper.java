@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -43,15 +45,29 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     }
 
     @Override
-    public MappedData mapData(MaxQuantImport maxQuantImport) throws MappingException {
+    public MappedData mapData(MaxQuantImport maxQuantImport, Path experimentsDirectory, Path fastasDirectory) throws MappingException {
         LOGGER.info("started mapping folder: " + maxQuantImport.getMqParFile().toString());
 
         List<AnalyticalRun> analyticalRuns;
         try {
             maxQuantParser.clear();
 
+            //make the MaxQuantImport resources (mqpar file and combined directory) absolute and check it they exist
+            Path relativeCombinedDirectory = maxQuantImport.getCombinedDirectory();
+            Path absoluteCombinedDirectory = experimentsDirectory.resolve(relativeCombinedDirectory);
+            if (!Files.exists(absoluteCombinedDirectory)) {
+                throw new IllegalArgumentException("The combined directory " + absoluteCombinedDirectory.toString() + " doesn't exist.");
+            }
+            maxQuantImport.setCombinedDirectory(absoluteCombinedDirectory);
+            Path relativeMqparFile = maxQuantImport.getMqParFile();
+            Path absoluteMqparFile = experimentsDirectory.resolve(relativeMqparFile);
+            if (!Files.exists(absoluteMqparFile)) {
+                throw new IllegalArgumentException("The mqpar directory " + relativeMqparFile.toString() + " doesn't exist.");
+            }
+            maxQuantImport.setMqParFile(absoluteMqparFile);
+
             //parse the MaxQuant files
-            maxQuantParser.parse(maxQuantImport);
+            maxQuantParser.parse(maxQuantImport, fastasDirectory);
 
             analyticalRuns = maxQuantParser.getAnalyticalRuns();
         } catch (IOException | UnparseableException | JDOMException ex) {

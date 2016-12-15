@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.fasta;
 
 import com.compomics.colims.model.FastaDb;
+import org.apache.commons.collections.map.HashedMap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,8 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -46,9 +47,9 @@ public class FastaDbParserTest {
 
     @Test
     public void testParse() throws IOException {
-        List<FastaDb> fastaDbs = new ArrayList<>();
-        fastaDbs.add(testFastaDb);
-        fastaDbs.add(contaminantsFastaDb);
+        Map<FastaDb, Path> fastaDbs = new HashedMap();
+        fastaDbs.put(testFastaDb, Paths.get(testFastaDb.getFilePath()));
+        fastaDbs.put(contaminantsFastaDb, Paths.get(contaminantsFastaDb.getFilePath()));
 
         Map<String, String> parsedFastas = fastaDbParser.parseFastas(fastaDbs);
 
