@@ -7,7 +7,7 @@
 
 ----
 
-## Project Description
+## Project Descriptionn
 
 The [CompOmics](http://www.compomics.com) LIMS system, designed as the next-generation version of the [ms_lims](http://code.google.com/p/ms-lims) system, including much more powerful processing and analysis tools, and sporting a fully self-contained, freely available system for end-to-end mass spectrometry based proteomics identification pipelines.
 
