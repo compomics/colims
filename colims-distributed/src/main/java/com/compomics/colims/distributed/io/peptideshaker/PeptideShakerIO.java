@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public interface PeptideShakerIO {
 
     /**
-     * Unpack a PeptideShaker .cps file and return an
+     * Unpack a PeptideShaker .cpsx file and return an
      * UnpackedPeptideShakerImport instance. The .cps archive is unzipped in a
      * temp folder.
      *
@@ -29,10 +29,10 @@ public interface PeptideShakerIO {
      * @throws java.sql.SQLException                                  thrown in case of a database access error
      * @throws InterruptedException                                   thrown in case a thread is interrupted
      */
-    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException;
+    UnpackedPeptideShakerImport unpackPeptideShakerCpsxArchive(File peptideShakerCpsArchive) throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException;
 
     /**
-     * Unpack a PeptideShaker .cps file and return an
+     * Unpack a PeptideShaker .cpsx file and return an
      * UnpackedPeptideShakerImport instance. The .cps archive is unzipped in the
      * given destination directory.
      *
@@ -46,7 +46,7 @@ public interface PeptideShakerIO {
      * @throws InterruptedException                                   thrown in case a thread is interrupted
      * @throws org.apache.commons.compress.archivers.ArchiveException thrown in case of an archive related problem
      */
-    UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException, InterruptedException, ArchiveException;
+    UnpackedPeptideShakerImport unpackPeptideShakerCpsxArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException, InterruptedException, ArchiveException;
 
     /**
      * Unpack the given PeptideShakerImport instance: unpack the PeptideShaker .cps file and return an

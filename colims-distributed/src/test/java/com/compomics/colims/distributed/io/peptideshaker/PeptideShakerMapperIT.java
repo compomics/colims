@@ -71,7 +71,7 @@ public class PeptideShakerMapperIT {
     @Test
     public void testImportData() throws IOException, ArchiveException, ClassNotFoundException, MappingException, SQLException, InterruptedException {
         //import PeptideShaker .cps file
-        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("colims_test_ps_file.cpsx").getFile());
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsxArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cpsx").getFile());
         //set mgf files and fasta file
         List<Path> mgfFiles = new ArrayList<>();
         mgfFiles.add(Paths.get("qExactive01819.mgf"));
@@ -97,8 +97,8 @@ public class PeptideShakerMapperIT {
         //clear resources
         peptideShakerMapper.clear();
 
-        Path experimentsDirectory = Paths.get("data/peptideshaker");
-        Path fastasDirectory = Paths.get("data/peptideshaker");
+        Path experimentsDirectory = new ClassPathResource("data/peptideshaker").getFile().toPath();
+        Path fastasDirectory = new ClassPathResource("data/peptideshaker").getFile().toPath();
         MappedData mappedData = peptideShakerMapper.mapData(unpackedPsDataImport, experimentsDirectory.toAbsolutePath(), fastasDirectory.toAbsolutePath());
 
         //analytical run

@@ -29,17 +29,17 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     private static final Logger LOGGER = Logger.getLogger(PeptideShakerIOImpl.class);
 
     @Override
-    public UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive) throws IOException, ClassNotFoundException, SQLException, InterruptedException, ArchiveException {
+    public UnpackedPeptideShakerImport unpackPeptideShakerCpsxArchive(File peptideShakerCpsArchive) throws IOException, ClassNotFoundException, SQLException, InterruptedException, ArchiveException {
         File tempDirectory = Files.createTempDir();
         if (tempDirectory.exists()) {
-            return this.unpackPeptideShakerCpsArchive(peptideShakerCpsArchive, tempDirectory);
+            return this.unpackPeptideShakerCpsxArchive(peptideShakerCpsArchive, tempDirectory);
         } else {
             throw new IOException("Unable to create a temporary directory in " + tempDirectory.getParent());
         }
     }
 
     @Override
-    public UnpackedPeptideShakerImport unpackPeptideShakerCpsArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException, InterruptedException, ArchiveException {
+    public UnpackedPeptideShakerImport unpackPeptideShakerCpsxArchive(File peptideShakerCpsArchive, File destinationDirectory) throws IOException, ClassNotFoundException, SQLException, InterruptedException, ArchiveException {
         LOGGER.info("Start importing PeptideShaker .cps file " + peptideShakerCpsArchive.getName());
 
         CpsParent cpsParent = new CpsParent(destinationDirectory);
@@ -65,7 +65,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
             throw new IllegalArgumentException("The PeptideShaker file " + absolutePeptideShakerCpsxArchivePath.toString() + " doesn't exist.");
         }
         //unpacked PeptideShakerImport .cps archive
-        UnpackedPeptideShakerImport unpackedPeptideShakerImport = unpackPeptideShakerCpsArchive(absolutePeptideShakerCpsxArchivePath.toFile());
+        UnpackedPeptideShakerImport unpackedPeptideShakerImport = unpackPeptideShakerCpsxArchive(absolutePeptideShakerCpsxArchivePath.toFile());
 
         //set FASTA DB ids and MGF files
         unpackedPeptideShakerImport.setFastaDbIds(peptideShakerDataImport.getFastaDbIds());

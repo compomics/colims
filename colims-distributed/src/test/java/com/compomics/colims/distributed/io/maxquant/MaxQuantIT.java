@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -75,8 +76,8 @@ public class MaxQuantIT {
                 MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds, false, false, new ArrayList<>(), "label free");
         maxQuantMapper.clear();
 
-        Path experimentsDirectory = Paths.get("data/maxquant/maxquant_SILAC_integration");
-        Path fastasDirectory = Paths.get("data/maxquant/maxquant_SILAC_integration");
+        Path experimentsDirectory = new ClassPathResource("data/maxquant/maxquant_SILAC_integration").getFile().toPath();
+        Path fastasDirectory = new ClassPathResource("data/maxquant/maxquant_SILAC_integration").getFile().toPath();
         MappedData mappedData = maxQuantMapper.mapData(maxQuantImport, experimentsDirectory, fastasDirectory);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 

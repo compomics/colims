@@ -44,7 +44,7 @@ public class PeptideShakerIOIT {
      */
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
-        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cpsx").getFile());
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsxArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cpsx").getFile());
 
         Assert.assertNotNull(unpackedPsDataImport);
 
