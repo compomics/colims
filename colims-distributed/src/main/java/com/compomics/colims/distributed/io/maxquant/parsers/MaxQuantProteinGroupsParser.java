@@ -78,12 +78,12 @@ public class MaxQuantProteinGroupsParser {
      * Parse the proteinGroups.txt file.
      *
      * @param proteinGroupsFile   MaxQuant protein groups file
-     * @param fastaDbs            the list of {@link FastaDb} instances
+     * @param fastaDbs            the map of {@link FastaDb} instances
      * @param includeContaminants whether or not to include contaminants
      * @param optionalHeaders     the list of optional headers
      * @throws IOException in case of an Input/Output related problem
      */
-    public void parse(Path proteinGroupsFile, Map<FastaDb, Path> fastaDbMap, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
+    public void parse(Path proteinGroupsFile, LinkedHashMap<FastaDb, Path> fastaDbMap, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
         TabularFileIterator iterator = new TabularFileIterator(proteinGroupsFile, proteinGroupsHeaders.getMandatoryHeaders());
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();

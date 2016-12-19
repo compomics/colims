@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,41 +33,46 @@ public class FastaDbParser {
     private static final String EMPTY_HEADER_PARSE_RULE = "&gt;([^ ]*)";
 
     /**
-     * Parse the given FASTA files into a map of protein accession -> sequence pairs.
+     * Parse the given FASTA files into a map of protein accession -> sequence pairs. This method takes a {@link
+     * LinkedHashMap} of {@link FastaDb} instances as keys as an argument to consistently handle possible duplicate
+     * accessions between different FASTA DB files. In case of a duplicate accession, the associated protein sequence of
+     * the first entry is put in the map.
      *
      * @param fastaDbs the FASTA files to parse and their associated (absolute) path
      * @return String/String map of protein/sequence
      * @throws IOException thrown in case of an input/output related problem
      */
-    public Map<String, String> parseFastas(Map<FastaDb, Path> fastaDbs) throws IOException {
+    public Map<String, String> parseFastas(LinkedHashMap<FastaDb, Path> fastaDbs) throws IOException {
         Map<String, String> parsedFastas = new HashMap<>();
         try {
-            final StringBuilder sequenceBuilder = new StringBuilder();
-            String header = "";
-            String line;
             for (Map.Entry<FastaDb, Path> entry : fastaDbs.entrySet()) {
-                FastaDb fastaDb = entry.getKey();
                 try (BufferedReader bufferedReader = Files.newBufferedReader(entry.getValue())) {
+                    FastaDb fastaDb = entry.getKey();
                     //get parse rule from the FastaDb instance and parse the key
                     if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
                         fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);
                     }
+                    //compile the pattern
+                    Pattern pattern;
+                    if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
+                        pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
+                    } else {
+                        pattern = Pattern.compile(fastaDb.getHeaderParseRule());
+                    }
+                    final StringBuilder sequenceBuilder = new StringBuilder();
+                    String header = "";
+                    String line;
+                    //start reading the file
                     line = bufferedReader.readLine();
                     while (line != null) {
                         if (line.startsWith(BLOCK_SEPARATOR)) {
                             //add limiting check for protein store to avoid growing
                             if (sequenceBuilder.length() > 0) {
-                                Pattern pattern;
-                                if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
-                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
-                                } else {
-                                    pattern = Pattern.compile(fastaDb.getHeaderParseRule());
-                                }
                                 Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
                                 if (matcher.find()) {
-                                    parsedFastas.put(matcher.group(1), sequenceBuilder.toString().trim());
+                                    parsedFastas.putIfAbsent(matcher.group(1), sequenceBuilder.toString().trim());
                                 } else {
-                                    parsedFastas.put(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                                    parsedFastas.putIfAbsent(header.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
                                 }
                                 sequenceBuilder.setLength(0);
                             }

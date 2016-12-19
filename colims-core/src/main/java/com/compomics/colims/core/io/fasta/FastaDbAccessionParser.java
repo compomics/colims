@@ -1,15 +1,17 @@
 package com.compomics.colims.core.io.fasta;
 
 import com.compomics.colims.model.FastaDb;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
+import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,45 +34,52 @@ public class FastaDbAccessionParser {
     private static final String EMPTY_HEADER_PARSE_RULE = "&gt;([^ ]*)";
 
     /**
-     * Parse the given FASTA files into a map of protein accession -> sequence pairs.
+     * Parse the protein accessions from the given FASTA files into a map (key: the {@link FastaDb} instance; value: the
+     * set of protein accessions). The argument is a {@link LinkedHashMap} to be able to return the the parsed
+     * accessions in the same order as they were passed.
      *
-     * @param fastaDbs the FASTA files to parse
-     * @return the map of parsed accessions (key: the {@link FastaDb} instance; value: the set of protein accessions)
+     * @param fastaDbs the FASTA files to parse and their associated (absolute) path
+     * @return the map of parsed accessions (key: the {@link FastaDb} instance; value: the set of protein accessions).
      * @throws IOException thrown in case of an input/output related problem
      */
-    public Map<FastaDb, Set<String>> parseFastas(Collection<FastaDb> fastaDbs) throws IOException {
-        Map<FastaDb, Set<String>> parsedFastas = new HashMap<>();
+    public LinkedHashMap<FastaDb, Set<String>> parseFastas(LinkedHashMap<FastaDb, Path> fastaDbs) throws IOException {
+        LinkedHashMap<FastaDb, Set<String>> parsedFastas = new LinkedHashMap<>();
         try {
-            String header = "";
-            String line;
-            for (FastaDb fastaDb : fastaDbs) {
-                Set<String> accessions = new HashSet<>();
-                try (BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(FilenameUtils.separatorsToSystem(fastaDb.getFilePath())))) {
+            for (Map.Entry<FastaDb, Path> entry : fastaDbs.entrySet()) {
+                try (BufferedReader bufferedReader = Files.newBufferedReader(entry.getValue())) {
+                    Set<String> accessions = new HashSet<>();
+                    FastaDb fastaDb = entry.getKey();
                     //get parse rule from the FastaDb instance and parse the key
                     if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
                         fastaDb.setHeaderParseRule(EMPTY_HEADER_PARSE_RULE);
                     }
+                    //compile the pattern
+                    Pattern pattern;
+                    if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
+                        pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
+                    } else {
+                        pattern = Pattern.compile(fastaDb.getHeaderParseRule());
+                    }
+                    String line;
+                    //start reading the file
                     line = bufferedReader.readLine();
                     while (line != null) {
                         if (line.startsWith(BLOCK_SEPARATOR)) {
-                            Pattern pattern;
-                            if (fastaDb.getHeaderParseRule().contains(PARSE_RULE_SPLITTER)) {
-                                pattern = Pattern.compile(fastaDb.getHeaderParseRule().split(PARSE_RULE_SPLITTER)[1]);
-                            } else {
-                                pattern = Pattern.compile(fastaDb.getHeaderParseRule());
+                            try {
+                                Matcher matcher = pattern.matcher(line.substring(1).split(SPLITTER)[0]);
+                                if (matcher.find()) {
+                                    accessions.add(matcher.group(1));
+                                } else {
+                                    accessions.add(line.substring(1).split(SPLITTER)[0]);
+                                }
+                            } catch (StringIndexOutOfBoundsException ex) {
+                                System.out.println("=====");
                             }
-                            Matcher matcher = pattern.matcher(header.substring(1).split(SPLITTER)[0]);
-                            if (matcher.find()) {
-                                accessions.add(matcher.group(1));
-                            } else {
-                                accessions.add(header.substring(1).split(SPLITTER)[0]);
-                            }
-                            header = line;
                         }
                         line = bufferedReader.readLine();
                     }
+                    parsedFastas.put(fastaDb, accessions);
                 }
-                parsedFastas.put(fastaDb, accessions);
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

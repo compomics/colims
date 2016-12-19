@@ -114,17 +114,20 @@ public class MaxQuantParser {
 
         //parse the protein groups file
         LOGGER.debug("parsing proteinGroups.txt");
-        Map<FastaDb, Path> fastaDbMap = new HashMap<>();
-        fastaDbs.forEach((k, v) -> {
-            v.forEach(fastaDb -> {
-                //make the path absolute and check it exists
+        //we want the FASTA DB files to be parsed in the order the FastaDbType enum values are declared
+        //so use a LinkedHashMap to preserve the natural FastaDbType enum order
+        //(iterating over an EnumMap maintains that order as well)
+        LinkedHashMap<FastaDb, Path> fastaDbMap = new LinkedHashMap<>();
+        for (Map.Entry<FastaDbType, List<FastaDb>> entry : fastaDbs.entrySet()) {
+            entry.getValue().forEach(fastaDb -> {
+                //make the path absolute and check if it exists
                 Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDb.getFilePath());
                 if (!Files.exists(absoluteFastaDbPath)) {
                     throw new IllegalArgumentException("The FASTA DB file " + absoluteFastaDbPath + " doesn't exist.");
                 }
                 fastaDbMap.put(fastaDb, absoluteFastaDbPath);
             });
-        });
+        }
 
         //look for the proteinGroups.txt file
         Path proteinGroupsFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value());

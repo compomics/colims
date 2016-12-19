@@ -11,8 +11,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -47,13 +48,15 @@ public class FastaDbAccessionParserTest {
 
     @Test
     public void testParse() throws IOException {
-        List<FastaDb> fastaDbs = new ArrayList<>();
-        fastaDbs.add(testFastaDb);
-        fastaDbs.add(contaminantsFastaDb);
+        LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap();
+        fastaDbs.put(testFastaDb, Paths.get(testFastaDb.getFilePath()));
+        fastaDbs.put(contaminantsFastaDb, Paths.get(contaminantsFastaDb.getFilePath()));
 
         Map<FastaDb, Set<String>> parsedFastas = fastaDbAccessionParser.parseFastas(fastaDbs);
 
-        Assert.assertEquals(20380, parsedFastas.size());
+        Assert.assertEquals(2, parsedFastas.size());
+        Assert.assertEquals(20195, parsedFastas.get(testFastaDb).size());
+        Assert.assertEquals(245, parsedFastas.get(contaminantsFastaDb).size());
         //look for the first protein
         Assert.assertTrue(parsedFastas.get(testFastaDb).contains("P24844"));
         //look for a protein
@@ -64,5 +67,9 @@ public class FastaDbAccessionParserTest {
         Assert.assertTrue(parsedFastas.get(contaminantsFastaDb).contains("P09870"));
         Assert.assertTrue(parsedFastas.get(contaminantsFastaDb).contains("P05784"));
         Assert.assertTrue(parsedFastas.get(contaminantsFastaDb).contains("H-INV:HIT000292931"));
+
+        //check duplicates: both FASTA DBs contain the protein with accession "P19013"
+        Assert.assertTrue(parsedFastas.get(testFastaDb).contains("P19013"));
+        Assert.assertTrue(parsedFastas.get(contaminantsFastaDb).contains("P19013"));
     }
 }

@@ -1,7 +1,6 @@
 package com.compomics.colims.core.io.fasta;
 
 import com.compomics.colims.model.FastaDb;
-import org.apache.commons.collections.map.HashedMap;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -47,15 +47,17 @@ public class FastaDbParserTest {
 
     @Test
     public void testParse() throws IOException {
-        Map<FastaDb, Path> fastaDbs = new HashedMap();
+        LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
         fastaDbs.put(testFastaDb, Paths.get(testFastaDb.getFilePath()));
         fastaDbs.put(contaminantsFastaDb, Paths.get(contaminantsFastaDb.getFilePath()));
 
         Map<String, String> parsedFastas = fastaDbParser.parseFastas(fastaDbs);
 
-        Assert.assertEquals(20380, parsedFastas.size());
+        Assert.assertFalse(parsedFastas.containsKey(null));
+        Assert.assertEquals(20379, parsedFastas.size());
         //look for the first protein
         Assert.assertTrue(parsedFastas.containsKey("P24844"));
+        System.out.println(parsedFastas.get("P24844"));
         //look for a protein
         Assert.assertTrue(parsedFastas.containsKey("O00571"));
         //look for the last protein
@@ -64,5 +66,18 @@ public class FastaDbParserTest {
         Assert.assertTrue(parsedFastas.containsKey("P09870"));
         Assert.assertTrue(parsedFastas.containsKey("P05784"));
         Assert.assertTrue(parsedFastas.containsKey("H-INV:HIT000292931"));
+
+        //test a duplicate accession between the 2 FASTA DB files
+        Assert.assertTrue(parsedFastas.containsKey("P19013"));
+        //check if the duplicate accession is associated with the sequence from the primary FASTA
+        Assert.assertEquals("MIARQQCVRGGPRGFSCGSAIVGGGKRGAFSSVSMSGGAGRCSSGG" +
+                "FGSRSLYNLRGNKSISMSVAGSRQGACFGGAGGFGTGGFGAGGFGAGFGTGGFGGGFGGSFSGKGGP" +
+                "GFPVCPAGGIQEVTINQSLLTPLHVEIDPEIQKVRTEEREQIKLLNNKFASFIDKVQFLEQQNKVLE" +
+                "TKWNLLQQQTTTTSSKNLEPLFETYLSVLRKQLDTLGNDKGRLQSELKTMQDSVEDFKTKYEEEINKR" +
+                "TAAENDFVVLKKDVDAAYLNKVELEAKVDSLNDEINFLKVLYDAELSQMQTHVSDTSVVLSMDNNRNL" +
+                "DLDSIIAEVRAQYEEIAQRSKAEAEALYQTKVQQLQISVDQHGDNLKNTKSEIAELNRMIQRLRAEIE" +
+                "NIKKQCQTLQVSVADAEQRGENALKDAHSKRVELEAALQQAKEELARMLREYQELMSVKLALDIEIAT" +
+                "YRKLLEGEEYRMSGECQSAVSISVVSGSTSTGGISGGLGSGSGFGLSSGFGSGSGSGFGFGGSVSGSS" +
+                "SSKIISTTTLNKRR", parsedFastas.get("P19013"));
     }
 }

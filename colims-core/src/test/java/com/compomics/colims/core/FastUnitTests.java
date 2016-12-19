@@ -1,6 +1,7 @@
 package com.compomics.colims.core;
 
 import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapperTest;
+import com.compomics.colims.core.io.fasta.FastaDbAccessionParserTest;
 import com.compomics.colims.core.io.fasta.FastaDbParserTest;
 import com.compomics.colims.core.io.mzidentml.MzIdentMlExporterTest;
 import com.compomics.colims.core.io.mzml.MzMLParserTest;
@@ -25,10 +26,11 @@ import org.junit.runners.Suite;
         MzIdentMlExporterTest.class,
         OntologyMapperTest.class,
         FastaDbParserTest.class,
+        FastaDbAccessionParserTest.class,
         AccessionConventerTest.class,
         ProteinCoverageTest.class,
         SequenceUtilsTest.class,
-        PathUtilsTest.class
+        PathUtilsTest.class,
 })
 public class FastUnitTests {
 }
