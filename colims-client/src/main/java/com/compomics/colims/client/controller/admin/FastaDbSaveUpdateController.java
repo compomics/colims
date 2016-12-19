@@ -38,9 +38,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -78,13 +79,8 @@ public class FastaDbSaveUpdateController implements Controllable {
     /**
      * The FASTAs location as provided in the client properties file.
      */
-    @Value("${distributed.fastas.local.path}")
-    private String localFastasLocation = "";
-    /**
-     * The FASTAs location as provided in the client properties file.
-     */
-    @Value("${distributed.fastas.directory}")
-    private String fastasDirectory = "";
+    @Value("${fastas.path}")
+    private String fastasPath = "";
     /**
      * set to hold database names from properties file.
      */
@@ -158,18 +154,18 @@ public class FastaDbSaveUpdateController implements Controllable {
         bindingGroup.addBinding(databaseComboBoxBinding);
         bindingGroup.bind();
 
+        Path fastasDirectory = Paths.get(fastasPath);
+        if (!Files.exists(fastasDirectory)) {
+            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasPath.toString() + " doesn't exist.");
+        }
+
         //init FASTA file selection
         //disable select multiple files
         fastaDbSaveUpdatePanel.getFastaFileChooser().setMultiSelectionEnabled(false);
         //set FASTA file filter
         fastaDbSaveUpdatePanel.getFastaFileChooser().setFileFilter(new FastaFileFilter());
-        //set the preferred location for the file chooser
-        if (!localFastasLocation.isEmpty()) {
-            File localFastasDirectory = new File(localFastasLocation);
-            if (localFastasDirectory.exists()) {
-                fastaDbSaveUpdatePanel.getFastaFileChooser().setCurrentDirectory(localFastasDirectory);
-            }
-        }
+
+        fastaDbSaveUpdatePanel.getFastaFileChooser().setCurrentDirectory(fastasDirectory.toFile());
 
         //add listeners
         fastaDbSaveUpdatePanel.getBrowseTaxonomyButton().addActionListener(e -> {
@@ -203,7 +199,7 @@ public class FastaDbSaveUpdateController implements Controllable {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
                     Path fullFastaPath = fastaDbSaveUpdatePanel.getFastaFileChooser().getSelectedFile().toPath();
-                    Path relativeFastaPath = PathUtils.getRelativeChildPath(fullFastaPath, fastasDirectory);
+                    Path relativeFastaPath = PathUtils.getRelativeChildPath(fastasDirectory, fullFastaPath);
                     fastaDbSaveUpdatePanel.getFileNameTextField().setText(relativeFastaPath.getFileName().toString());
                     fastaDbSaveUpdatePanel.getFilePathTextField().setText(relativeFastaPath.toString());
                 } catch (IllegalArgumentException ex) {

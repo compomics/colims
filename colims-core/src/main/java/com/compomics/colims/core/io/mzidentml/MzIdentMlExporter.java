@@ -9,6 +9,7 @@ import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.core.util.SequenceUtils;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.SearchModification;
+import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.model.enums.ScoreType;
@@ -30,6 +31,7 @@ import uk.ac.ebi.jmzidml.xml.io.MzIdentMLMarshaller;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -76,6 +78,10 @@ public class MzIdentMlExporter {
      * The CVs used in the MzIdentML file (key: CV reference; value: {@link Cv} instance).
      */
     private final Map<String, Cv> cvs = new HashMap<>();
+    /**
+     * The map of protein accessions parsed from the used FASTA DB files.
+     */
+    private LinkedHashMap<FastaDb, Set<String>> proteinAccessions;
     /**
      * The Ontology Lookup Service (OLS) service.
      */
@@ -337,6 +343,16 @@ public class MzIdentMlExporter {
 
         SearchAndValidationSettings searchAndValidationSettings = analyticalRuns.get(0).getSearchAndValidationSettings();
         searchAndValidationSettingsService.fetchSearchSettingsHasFastaDb(searchAndValidationSettings);
+
+        LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
+        Arrays.stream(FastaDbType.values()).forEach(fastaDbType -> {
+            List<FastaDb> fastaDbsByType = getFastaDbsByType(searchAndValidationSettings.getSearchSettingsHasFastaDbs(), fastaDbType);
+            fastaDbsByType.forEach(fastaDb -> {
+                //get the absolute path and check if it exists
+
+            });
+        });
+
         //iterate over the different FASTA databases used for the searches
         for (int i = 0; i < searchAndValidationSettings.getSearchSettingsHasFastaDbs().size(); i++) {
             SearchSettingsHasFastaDb searchSettingsHasFastaDb = searchAndValidationSettings.getSearchSettingsHasFastaDbs().get(i);
@@ -378,6 +394,25 @@ public class MzIdentMlExporter {
         dataCollection.setAnalysisData(new AnalysisData());
 
         return dataCollection;
+    }
+
+    /**
+     * Get the {@link FastaDb} instances by type from the list of {@link SearchSettingsHasFastaDb} instances.
+     *
+     * @param searchSettingsHasFastaDbs the list of searchSettingsHasFastaDbs instances
+     * @param fastaDbType               the FASTA DB type
+     * @return the list of {@link FastaDb} instances with the given type
+     */
+    private List<FastaDb> getFastaDbsByType(List<SearchSettingsHasFastaDb> searchSettingsHasFastaDbs, FastaDbType fastaDbType) {
+        List<FastaDb> fastaDbs = new ArrayList<>();
+
+        for (SearchSettingsHasFastaDb searchSettingsHasFastaDb : searchSettingsHasFastaDbs) {
+            if (searchSettingsHasFastaDb.getFastaDbType() == fastaDbType) {
+                fastaDbs.add(searchSettingsHasFastaDb.getFastaDb());
+            }
+        }
+
+        return fastaDbs;
     }
 
     /**

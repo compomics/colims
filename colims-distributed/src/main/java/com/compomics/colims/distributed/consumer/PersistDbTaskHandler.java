@@ -56,13 +56,13 @@ public class PersistDbTaskHandler {
     /**
      * The experiments location as provided in the distributed properties file.
      */
-    @Value("${distributed.experiments.root.path}")
-    private String experimentsLocation = "";
+    @Value("${experiments.path}")
+    private String experimentsPath = "";
     /**
      * The FASTA DBs location as provided in the distributed properties file.
      */
-    @Value("${distributed.fasta.root.path}")
-    private String fastasLocation = "";
+    @Value("${fastas.path}")
+    private String fastasPath = "";
     /**
      * The CompletedDbTask sender.
      */
@@ -199,13 +199,13 @@ public class PersistDbTaskHandler {
         notificationProducer.sendNotification(new Notification(STARTED_MESSAGE, ""));
 
         //check if the experiments and FASTA DBs locations exist
-        Path experimentsDirectory = Paths.get(experimentsLocation);
+        Path experimentsDirectory = Paths.get(this.experimentsPath);
         if (!Files.exists(experimentsDirectory)) {
-            throw new IllegalArgumentException("The experiments directory " + experimentsLocation + " doesn't exist.");
+            throw new IllegalArgumentException("The experiments directory " + this.experimentsPath + " doesn't exist.");
         }
-        Path fastasDirectory = Paths.get(fastasLocation);
-        if (!Files.exists(experimentsDirectory)) {
-            throw new IllegalArgumentException("The FASTA DBs directory " + fastasLocation + " doesn't exist.");
+        Path fastasDirectory = Paths.get(this.fastasPath);
+        if (!Files.exists(fastasDirectory)) {
+            throw new IllegalArgumentException("The FASTA DBs directory " + this.fastasPath + " doesn't exist.");
         }
 
         switch (persistDbTask.getPersistMetadata().getPersistType()) {

@@ -23,8 +23,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -47,13 +48,8 @@ public class MaxQuantDataImportController implements Controllable {
     /**
      * The experiments location as provided in the client properties file.
      */
-    @Value("${distributed.experiments.local.path}")
-    private String localExperimentsLocation = "";
-    /**
-     * The experiments location as provided in the client properties file.
-     */
-    @Value("${distributed.experiments.directory}")
-    private String experimentsDirectory = "";
+    @Value("${experiments.path}")
+    private String experimentsPath = "";
     //model
     private Path mqparFile;
     private Path combinedDirectory;
@@ -95,11 +91,18 @@ public class MaxQuantDataImportController implements Controllable {
 
         bindingGroup.bind();
 
+        Path experimentsDirectory = Paths.get(experimentsPath);
+        if (!Files.exists(experimentsDirectory)) {
+            throw new IllegalArgumentException("The experiments directory defined in the client properties file " + experimentsPath.toString() + " doesn't exist.");
+        }
+
         //init the mqpar file directory selection
         //disable select multiple files
         maxQuantDataImportPanel.getMqParDirectoryChooser().setMultiSelectionEnabled(false);
         //set select directories only
         maxQuantDataImportPanel.getMqParDirectoryChooser().setFileFilter(new XmlFileFilter());
+
+        maxQuantDataImportPanel.getMqParDirectoryChooser().setCurrentDirectory(experimentsDirectory.toFile());
 
         maxQuantDataImportPanel.getSelectParameterDirectoryButton().addActionListener(e -> {
             //in response to the button click, show open dialog
@@ -107,7 +110,7 @@ public class MaxQuantDataImportController implements Controllable {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
                     Path fullMqparPath = maxQuantDataImportPanel.getMqParDirectoryChooser().getSelectedFile().toPath();
-                    mqparFile = PathUtils.getRelativeChildPath(fullMqparPath, experimentsDirectory);
+                    mqparFile = PathUtils.getRelativeChildPath(experimentsDirectory, fullMqparPath);
                     //show MaxQuant directory name in label
                     maxQuantDataImportPanel.getParameterDirectoryTextField().setText(mqparFile.getFileName().toString());
                 } catch (IllegalArgumentException ex) {
@@ -123,14 +126,7 @@ public class MaxQuantDataImportController implements Controllable {
         //set select directories only
         maxQuantDataImportPanel.getCombinedFolderChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        //set the preferred location for the mqpar and combined file choosers
-        if (!localExperimentsLocation.isEmpty()) {
-            File localExperimentsDirectory = new File(localExperimentsLocation);
-            if (localExperimentsDirectory.exists()) {
-                maxQuantDataImportPanel.getMqParDirectoryChooser().setCurrentDirectory(localExperimentsDirectory);
-                maxQuantDataImportPanel.getCombinedFolderChooser().setCurrentDirectory(localExperimentsDirectory);
-            }
-        }
+        maxQuantDataImportPanel.getCombinedFolderChooser().setCurrentDirectory(experimentsDirectory.toFile());
 
         maxQuantDataImportPanel.getSelectCombinedFolderButton().addActionListener(e -> {
             //in response to the button click, show open dialog
@@ -138,7 +134,7 @@ public class MaxQuantDataImportController implements Controllable {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
                     Path fullCombinedDirectory = maxQuantDataImportPanel.getCombinedFolderChooser().getSelectedFile().toPath();
-                    combinedDirectory = PathUtils.getRelativeChildPath(fullCombinedDirectory, experimentsDirectory);
+                    combinedDirectory = PathUtils.getRelativeChildPath(experimentsDirectory, fullCombinedDirectory);
                     //show combined directory name in label
                     maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(combinedDirectory.toString());
                 } catch (IllegalArgumentException ex) {

@@ -18,8 +18,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -42,13 +43,8 @@ public class PeptideShakerDataImportController implements Controllable {
     /**
      * The experiments location as provided in the client properties file.
      */
-    @Value("${distributed.experiments.local.path}")
-    private String localExperimentsLocation = "";
-    /**
-     * The experiments location as provided in the client properties file.
-     */
-    @Value("${distributed.experiments.directory}")
-    private String experimentsDirectory = "";
+    @Value("${experiments.path}")
+    private String experimentsPath = "";
     //model
     private Path cpsxArchive;
     private FastaDb fastaDb;
@@ -75,11 +71,18 @@ public class PeptideShakerDataImportController implements Controllable {
         //register to event bus
         eventBus.register(this);
 
+        Path experimentsDirectory = Paths.get(experimentsPath);
+        if (!Files.exists(experimentsDirectory)) {
+            throw new IllegalArgumentException("The experiments directory defined in the client properties file " + experimentsPath.toString() + " doesn't exist.");
+        }
+
         //init cps file selection
         //disable select multiple files
         peptideShakerDataImportPanel.getCpsFileChooser().setMultiSelectionEnabled(false);
         //set cps file filter
         peptideShakerDataImportPanel.getCpsFileChooser().setFileFilter(new CpsFileFilter());
+
+        peptideShakerDataImportPanel.getCpsFileChooser().setCurrentDirectory(experimentsDirectory.toFile());
 
         peptideShakerDataImportPanel.getSelectCpsButton().addActionListener(e -> {
             //in response to the button click, show open dialog
@@ -87,7 +90,7 @@ public class PeptideShakerDataImportController implements Controllable {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
                     Path fullCpsxArchivePath = peptideShakerDataImportPanel.getCpsFileChooser().getSelectedFile().toPath();
-                    cpsxArchive = PathUtils.getRelativeChildPath(fullCpsxArchivePath, experimentsDirectory);
+                    cpsxArchive = PathUtils.getRelativeChildPath(experimentsDirectory, fullCpsxArchivePath);
                     //show cps file name in label
                     peptideShakerDataImportPanel.getCpsTextField().setText(cpsxArchive.toString());
                 } catch (IllegalArgumentException ex) {
@@ -128,14 +131,7 @@ public class PeptideShakerDataImportController implements Controllable {
         //set mgf file filter
         peptideShakerDataImportPanel.getMgfFileChooser().setFileFilter(new MgfFileFilter());
 
-        //set the preferred location for the MGF en cpsx file choosers
-        if (!localExperimentsLocation.isEmpty()) {
-            File localExperimentsDirectory = new File(localExperimentsLocation);
-            if (localExperimentsDirectory.exists()) {
-                peptideShakerDataImportPanel.getCpsFileChooser().setCurrentDirectory(localExperimentsDirectory);
-                peptideShakerDataImportPanel.getMgfFileChooser().setCurrentDirectory(localExperimentsDirectory);
-            }
-        }
+        peptideShakerDataImportPanel.getMgfFileChooser().setCurrentDirectory(experimentsDirectory.toFile());
 
         peptideShakerDataImportPanel.getAddMgfButton().addActionListener(e -> {
             //in response to the button click, show open dialog
@@ -144,7 +140,7 @@ public class PeptideShakerDataImportController implements Controllable {
                 for (int i = 0; i < peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles().length; i++) {
                     try {
                         Path fullMgfPath = peptideShakerDataImportPanel.getMgfFileChooser().getSelectedFiles()[i].toPath();
-                        Path mgfPath = PathUtils.getRelativeChildPath(fullMgfPath, experimentsDirectory);
+                        Path mgfPath = PathUtils.getRelativeChildPath(experimentsDirectory, fullMgfPath);
                         mgfFileListModel.add(i, mgfPath);
                     } catch (IllegalArgumentException ex) {
                         MessageEvent messageEvent = new MessageEvent("Invalid MGF file location", "The MGF file location doesn't contain the experiments directory as defined in the properties file.", JOptionPane.WARNING_MESSAGE);
