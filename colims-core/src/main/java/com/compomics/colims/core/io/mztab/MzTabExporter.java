@@ -5,6 +5,7 @@
  */
 package com.compomics.colims.core.io.mztab;
 
+import com.compomics.colims.core.io.fasta.FastaDbAccessionParser;
 import com.compomics.colims.core.service.*;
 import com.compomics.colims.core.util.AccessionConverter;
 import com.compomics.colims.core.util.ProteinCoverage;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -171,6 +174,7 @@ public class MzTabExporter {
     private final SearchAndValidationSettingsService searchAndValidationSettingsService;
     private final FastaDbService fastaDbService;
     private final UniProtService uniProtService;
+    private final FastaDbAccessionParser fastaDbAccessionParser;
 
     /**
      * The MzTabExport instance.
@@ -179,7 +183,7 @@ public class MzTabExporter {
 
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
                          FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantLabeledService proteinGroupQuantLabeledService,
-                         ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService) {
+                         ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbAccessionParser fastaDbAccessionParser) {
         this.proteinGroupService = proteinGroupService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbService = fastaDbService;
@@ -187,6 +191,7 @@ public class MzTabExporter {
         this.proteinGroupQuantLabeledService = proteinGroupQuantLabeledService;
         this.proteinGroupQuantService = proteinGroupQuantService;
         this.peptideService = peptideService;
+        this.fastaDbAccessionParser = fastaDbAccessionParser;
     }
 
     /**
@@ -457,6 +462,24 @@ public class MzTabExporter {
         List<ProteinGroupDTO> proteinList = getProteinGroupsForAnalyticalRuns(analyticalRunIds);
         SearchAndValidationSettings searchAndValidationSettings = searchAndValidationSettingsService.getByAnalyticalRun(mzTabExport.getRuns().get(0));
         Map<FastaDb, FastaDbType> fastaDbs = fastaDbService.findBySearchAndValidationSettings(searchAndValidationSettings);
+        
+        LinkedHashMap<FastaDb, Path> fastaDbsWithPath = new LinkedHashMap();
+        fastaDbs.keySet().stream().filter((fastaDb) -> (fastaDbs.get(fastaDb).equals(FastaDbType.PRIMARY))).forEach((fastaDb) -> {
+            fastaDbsWithPath.put(fastaDb, Paths.get(fastaDb.getFilePath()));
+        });
+        
+        fastaDbs.keySet().stream().filter((fastaDb) -> (fastaDbs.get(fastaDb).equals(FastaDbType.ADDITIONAL))).forEach((fastaDb) -> {
+            fastaDbsWithPath.put(fastaDb, Paths.get(fastaDb.getFilePath()));
+        });
+        
+        fastaDbs.keySet().stream().filter((fastaDb) -> (fastaDbs.get(fastaDb).equals(FastaDbType.CONTAMINANTS))).forEach((fastaDb) -> {
+            fastaDbsWithPath.put(fastaDb, Paths.get(fastaDb.getFilePath()));
+        });
+        
+        Map<FastaDb, Set<String>> parsedFastas = fastaDbAccessionParser.parseFastas(fastaDbsWithPath);
+        
+        
+        
         // check if db is uniprot!
         for (int i = 0; i < proteinList.size(); i++) {
             StringBuilder proteins = new StringBuilder();
