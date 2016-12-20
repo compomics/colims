@@ -35,7 +35,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="fastaDbDetailPanel" pref="319" max="32767" attributes="0"/>
+              <Component id="fastaDbDetailPanel" pref="349" max="32767" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -206,7 +206,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="versionLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Version*"/>
+            <Property name="text" type="java.lang.String" value="Version"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[48, 14]"/>
             </Property>
@@ -342,7 +342,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="databaseLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Database*"/>
+            <Property name="text" type="java.lang.String" value="Database"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="databaseComboBox">

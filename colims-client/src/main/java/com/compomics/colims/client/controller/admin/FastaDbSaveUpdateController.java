@@ -66,9 +66,9 @@ public class FastaDbSaveUpdateController implements Controllable {
      */
     private static final TaxonomyCvParam TAXONOMY_CV_PARAM_NONE = new TaxonomyCvParam("none", "none", "none");
     /**
-     * List to hold map of parse rule and explanation.
+     * The list of {@link HeaderParseRule} instances.
      */
-    private final List<Map<String, String>> headerParseRuleList = new ArrayList<>();
+    private final List<HeaderParseRule> headerParseRules = new ArrayList<>();
     /**
      * The list of database names.
      */
@@ -85,7 +85,7 @@ public class FastaDbSaveUpdateController implements Controllable {
     //model
     private BindingGroup bindingGroup;
     private ObservableList<CvParam> taxonomyBindingList;
-    private ObservableList<String> headerParseRuleBindingList;
+    private ObservableList<HeaderParseRule> headerParseRuleBindingList;
     private ObservableList<String> databaseNamesBindingList;
     private boolean saveUpdate = false;
     private FastaDb fastaDbToEdit;
@@ -124,7 +124,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         JComboBoxBinding taxonomyComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, taxonomyBindingList, fastaDbSaveUpdatePanel.getTaxomomyComboBox());
         bindingGroup.addBinding(taxonomyComboBoxBinding);
 
-        headerParseRuleBindingList = ObservableCollections.observableList(new ArrayList<>());
+        headerParseRuleBindingList = ObservableCollections.observableList(headerParseRules);
         try {
             config = PropertiesUtil.parsePropertiesFile("config/header-parse-rule.properties");
         } catch (IOException | ConfigurationException ex) {
@@ -186,6 +186,8 @@ public class FastaDbSaveUpdateController implements Controllable {
                 config = PropertiesUtil.addProperty(config, headerParseRuleAdditionDialog.getDescriptionTextField().getText(), headerParseRuleAdditionDialog.getParseRuleTextField().getText());
             } catch (ConfigurationException | IOException ex) {
                 LOGGER.error(ex.getMessage(), ex);
+                MessageEvent messageEvent = new MessageEvent("Header parse rule save problem", "Something went wrong while trying to save the header parse rule to the properties file.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
             populateHeaderParseRuleComboBox();
             headerParseRuleAdditionDialog.dispose();
@@ -272,11 +274,10 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbSaveUpdatePanel.getFileNameTextField().setText(fastaDbToEdit.getFileName());
         fastaDbSaveUpdatePanel.getFilePathTextField().setText(fastaDbToEdit.getFilePath());
         fastaDbSaveUpdatePanel.getVersionTextField().setText(fastaDbToEdit.getVersion());
-        headerParseRuleList.forEach(parseRule -> {
-            if (parseRule.containsKey(fastaDb.getHeaderParseRule())) {
-                fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getModel().setSelectedItem(parseRule.get(fastaDb.getHeaderParseRule()));
-            }
-        });
+        HeaderParseRule headerParseRule = new HeaderParseRule(fastaDb.getHeaderParseRule());
+        if (headerParseRules.contains(headerParseRule)) {
+            fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getModel().setSelectedItem(headerParseRules.get(headerParseRules.indexOf(headerParseRule)));
+        }
         fastaDbSaveUpdatePanel.getDatabaseComboBox().getModel().setSelectedItem(fastaDb.getDatabaseName());
     }
 
@@ -314,7 +315,10 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbToEdit.setName(fastaDbSaveUpdatePanel.getNameTextField().getText());
         fastaDbToEdit.setFileName(fastaDbSaveUpdatePanel.getFileNameTextField().getText());
         fastaDbToEdit.setFilePath(fastaDbSaveUpdatePanel.getFilePathTextField().getText());
-        fastaDbToEdit.setVersion(fastaDbSaveUpdatePanel.getVersionTextField().getText());
+
+        if(fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(FastaDb.UNKNOWN_PROPERTY)){
+            fastaDbToEdit.setVersion(null);
+        }
 
         int taxonomyIndex = fastaDbSaveUpdatePanel.getTaxomomyComboBox().getSelectedIndex();
         if (taxonomyIndex == 0) {
@@ -327,8 +331,9 @@ public class FastaDbSaveUpdateController implements Controllable {
         if (parseRuleIndex == 0) {
             fastaDbToEdit.setHeaderParseRule(null);
         } else {
-            headerParseRuleList.get(parseRuleIndex).forEach((k, v) -> fastaDbToEdit.setHeaderParseRule(k));
+            fastaDbToEdit.setHeaderParseRule(headerParseRules.get(parseRuleIndex).getParseRule());
         }
+
         int databaseIndex = fastaDbSaveUpdatePanel.getDatabaseComboBox().getSelectedIndex();
         if (databaseIndex == 0) {
             fastaDbToEdit.setDatabaseName(null);
@@ -356,30 +361,31 @@ public class FastaDbSaveUpdateController implements Controllable {
      * Populate the Header Parse Rule Combo Box.
      */
     private void populateHeaderParseRuleComboBox() {
-        Map<String, String> defaultParseRule = new HashMap<>();
-        defaultParseRule.put("none", "none");
-        headerParseRuleList.add(defaultParseRule);
-        // map to hold parse rule and explanation of the rule (key: rule ; value : description).
-        // this map is used to combine all explanations of the same rule.
-        Map<String, String> parseRulesWithExp = new HashMap<>();
+        headerParseRules.clear();
+        headerParseRules.add(HeaderParseRule.NONE_RULE);
 
+        //map to hold parse rule and explanation of the rule (key: rule ; value : description).
+        //this map is used to combine all explanations of the same rule.
+        Map<String, String> parseRuleWithExplanations = new HashMap<>();
+
+        //get header parse rules from the properties file
         Iterator<String> keys = config.getKeys();
         while (keys.hasNext()) {
             String key = keys.next();
-            if (!parseRulesWithExp.containsKey(config.getString(key))) {
-                parseRulesWithExp.put(config.getString(key), key);
+            if (!parseRuleWithExplanations.containsKey(config.getString(key))) {
+                parseRuleWithExplanations.put(config.getString(key), key);
             } else {
-                parseRulesWithExp.put(config.getString(key), parseRulesWithExp.get(config.getString(key)) + ", " + key);
+                parseRuleWithExplanations.put(config.getString(key), parseRuleWithExplanations.get(config.getString(key)) + ", " + key);
             }
         }
+        //get header parse rules from the database
         List<String> parseRulesFromDb = fastaDbService.getAllParseRules();
-        parseRulesFromDb.stream().filter(p -> !parseRulesWithExp.containsKey(p)).forEach(p -> parseRulesWithExp.put(p, "from Db"));
-        parseRulesWithExp.entrySet().stream().forEach(entry -> {
-            headerParseRuleBindingList.add(entry.getKey() + " [" + entry.getValue() + "]");
-            // parse rule map. (key: parse rule, value: rule with explanation)
-            Map<String, String> parseRule = new HashMap<>();
-            parseRule.put(entry.getKey(), entry.getKey() + " [" + entry.getValue() + "]");
-            headerParseRuleList.add(parseRule);
+        parseRulesFromDb.stream().filter(p -> !parseRuleWithExplanations.containsKey(p)).forEach(p -> parseRuleWithExplanations.put(p, "from DB"));
+
+        //add the mapp entries to the headerParseRules list
+        parseRuleWithExplanations.entrySet().stream().forEach(entry -> {
+            HeaderParseRule headerParseRule = new HeaderParseRule(entry.getKey(), entry.getValue());
+            headerParseRules.add(headerParseRule);
         });
 
     }
@@ -393,5 +399,70 @@ public class FastaDbSaveUpdateController implements Controllable {
         databaseNamesBindingList.add(FastaDb.DATABASE_NAME_NOT_PRESENT);
 
         dbNames.forEach(databaseNames::add);
+    }
+}
+
+/**
+ * Holder class for a parse rule + explanation.
+ */
+class HeaderParseRule {
+
+    public static final HeaderParseRule NONE_RULE = new HeaderParseRule("none", "none");
+
+    /**
+     * The parse rule.
+     */
+    private String parseRule;
+    /**
+     * The explation.
+     */
+    private String explanation;
+
+    /**
+     * Constructor.
+     *
+     * @param parseRule the parse rule
+     */
+    public HeaderParseRule(String parseRule) {
+        this.parseRule = parseRule;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param parseRule   the parse rule
+     * @param explanation the explanation
+     */
+    public HeaderParseRule(String parseRule, String explanation) {
+        this.parseRule = parseRule;
+        this.explanation = explanation;
+    }
+
+    public String getParseRule() {
+        return parseRule;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        HeaderParseRule that = (HeaderParseRule) o;
+
+        return parseRule != null ? parseRule.equals(that.parseRule) : that.parseRule == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return parseRule != null ? parseRule.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return parseRule + " [" + explanation + "]";
     }
 }

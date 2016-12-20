@@ -137,7 +137,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         browseFastaButton.setMinimumSize(new java.awt.Dimension(80, 25));
         browseFastaButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        versionLabel.setText("Version*");
+        versionLabel.setText("Version");
         versionLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
         versionTextField.setToolTipText("Important field for Mztab export. If you don't have version, type N/A");
@@ -186,7 +186,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         browseHeaderParseRuleButtton.setMinimumSize(new java.awt.Dimension(80, 25));
         browseHeaderParseRuleButtton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        databaseLabel.setText("Database*");
+        databaseLabel.setText("Database");
 
         databaseComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -289,7 +289,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(fastaDbDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+                .addComponent(fastaDbDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

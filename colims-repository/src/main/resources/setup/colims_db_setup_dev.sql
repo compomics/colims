@@ -1,6 +1,5 @@
 use colims;
 
-
     create table colims.analytical_run (
         id bigint not null auto_increment,
         creation_date datetime not null,
@@ -67,13 +66,13 @@ use colims;
 
     create table colims.fasta_db (
         id bigint not null auto_increment,
-        database_name varchar(255) not null,
+        database_name varchar(250),
         file_name varchar(200) not null,
         file_path varchar(250) not null,
-        header_parse_rule varchar(255),
+        header_parse_rule varchar(250),
         md5_checksum varchar(255),
         name varchar(100) not null,
-        version varchar(20) not null,
+        version varchar(20),
         l_taxonomy_cv_id bigint,
         primary key (id)
     );
