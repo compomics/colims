@@ -93,8 +93,6 @@ public class FastaDbManagementController implements Controllable {
         //init view
         fastaDbManagementDialog = new FastaDbManagementDialog(analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog(), true);
 
-        //init fastaDbSaveUpdate
-        fastaDbSaveUpdateController.init();
         //init binding
         bindingGroup = new BindingGroup();
 
@@ -147,11 +145,12 @@ public class FastaDbManagementController implements Controllable {
 
         fastaDbManagementDialog.getAddButton().addActionListener(e -> {
             fastaDbSaveUpdateController.clearFastaDbDetailFields();
-            // create new fasta db
+            //create a new fasta db instance with some default values
             FastaDb newFastaDb = new FastaDb();
             newFastaDb.setName("name");
-            // send the new fastaDb to fastaDbSaveUpdateController
             newFastaDb.setTaxonomy(TAXONOMY_CV_PARAM_NONE);
+            newFastaDb.setDatabaseName(FastaDb.DATABASE_NAME_NOT_PRESENT);
+            //send the new fastaDb to fastaDbSaveUpdateController
             fastaDbSaveUpdateController.updateView(newFastaDb);
 
             // set panel and its size

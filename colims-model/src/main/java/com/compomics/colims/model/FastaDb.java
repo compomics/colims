@@ -19,6 +19,8 @@ public class FastaDb extends DatabaseEntity {
 
     private static final long serialVersionUID = -7674593202998529863L;
 
+    public static final String DATABASE_NAME_NOT_PRESENT = "Not in the EMBL-EBI list";
+
     /**
      * The official name of the FASTA db.
      */
@@ -44,9 +46,11 @@ public class FastaDb extends DatabaseEntity {
     @Column(name = "file_path", nullable = false)
     private String filePath;
     /**
-     * The databaseName of the FASTA db.
+     * The database name of the FASTA db.
      */
     @Basic(optional = false)
+    @NotBlank(message = "Please insert a database name.")
+    @Length(min = 2, max = 200, message = "Database name must be between {min} and {max} characters.")
     @Column(name = "database_name", nullable = false)
     private String databaseName;
     /**

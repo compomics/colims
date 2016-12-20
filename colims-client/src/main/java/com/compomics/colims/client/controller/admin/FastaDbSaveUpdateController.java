@@ -16,6 +16,7 @@ import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.core.util.PathUtils;
 import com.compomics.colims.core.util.PropertiesUtil;
+import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.TaxonomyCvParam;
 import com.compomics.colims.model.cv.CvParam;
@@ -69,9 +70,9 @@ public class FastaDbSaveUpdateController implements Controllable {
      */
     private final List<Map<String, String>> headerParseRuleList = new ArrayList<>();
     /**
-     * The list of databases.
+     * The list of database names.
      */
-    private final List<String> databaseList = new ArrayList<>();
+    private final List<String> databaseNames = new ArrayList<>();
     /**
      * The properties configuration to read properties file.
      */
@@ -81,15 +82,11 @@ public class FastaDbSaveUpdateController implements Controllable {
      */
     @Value("${fastas.path}")
     private String fastasPath = "";
-    /**
-     * set to hold database names from properties file.
-     */
-    private Set<Object> databaseSet = new TreeSet<>();
     //model
     private BindingGroup bindingGroup;
     private ObservableList<CvParam> taxonomyBindingList;
     private ObservableList<String> headerParseRuleBindingList;
-    private ObservableList<String> databaseBindingList;
+    private ObservableList<String> databaseNamesBindingList;
     private boolean saveUpdate = false;
     private FastaDb fastaDbToEdit;
     //view
@@ -138,19 +135,20 @@ public class FastaDbSaveUpdateController implements Controllable {
         JComboBoxBinding parseRuleComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, headerParseRuleBindingList, fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox());
         bindingGroup.addBinding(parseRuleComboBoxBinding);
 
-        databaseBindingList = ObservableCollections.observableList(new ArrayList<>());
+        databaseNamesBindingList = ObservableCollections.observableList(databaseNames);
         Properties allProperties = new Properties();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        TreeSet<String> dbNames = new TreeSet<>();
         try {
-            allProperties.load(loader.getResourceAsStream("config/embl-ebi-database.properties"));
-            databaseSet = new TreeSet(allProperties.keySet());
+            allProperties.load(ResourceUtils.getResourceByRelativePath("config/embl-ebi-database.properties").getInputStream());
+            dbNames = new TreeSet(allProperties.keySet());
         } catch (IOException ex) {
-            LOGGER.error(ex.getMessage(), ex);
+            MessageEvent messageEvent = new MessageEvent("Database names loading problem", "The database names could not be read from the properties file.", JOptionPane.WARNING_MESSAGE);
+            eventBus.post(messageEvent);
         }
 
-        populateDatabaseComboBox();
+        populateDatabaseComboBox(dbNames);
 
-        JComboBoxBinding databaseComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, databaseBindingList, fastaDbSaveUpdatePanel.getDatabaseComboBox());
+        JComboBoxBinding databaseComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, databaseNamesBindingList, fastaDbSaveUpdatePanel.getDatabaseComboBox());
         bindingGroup.addBinding(databaseComboBoxBinding);
         bindingGroup.bind();
 
@@ -335,7 +333,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         if (databaseIndex == 0) {
             fastaDbToEdit.setDatabaseName(null);
         } else {
-            fastaDbToEdit.setDatabaseName(databaseList.get(databaseIndex));
+            fastaDbToEdit.setDatabaseName(databaseNames.get(databaseIndex));
         }
     }
 
@@ -358,9 +356,6 @@ public class FastaDbSaveUpdateController implements Controllable {
      * Populate the Header Parse Rule Combo Box.
      */
     private void populateHeaderParseRuleComboBox() {
-        headerParseRuleBindingList.clear();
-        headerParseRuleList.clear();
-        headerParseRuleBindingList.add("Please select one parse rule..");
         Map<String, String> defaultParseRule = new HashMap<>();
         defaultParseRule.put("none", "none");
         headerParseRuleList.add(defaultParseRule);
@@ -391,19 +386,12 @@ public class FastaDbSaveUpdateController implements Controllable {
 
     /**
      * Populate the Database Combo Box.
+     *
+     * @param dbNames the set of database names as read from the properties files
      */
-    private void populateDatabaseComboBox() {
-        databaseBindingList.clear();
-        databaseList.clear();
-        databaseBindingList.add("Please select database..");
-        databaseBindingList.add("Not in the EMBL-EBI list");
-        databaseList.add("none");
-        databaseList.add("N/A");
+    private void populateDatabaseComboBox(TreeSet<String> dbNames) {
+        databaseNamesBindingList.add(FastaDb.DATABASE_NAME_NOT_PRESENT);
 
-        databaseSet.forEach(db -> {
-            databaseList.add((String) db);
-            databaseBindingList.add((String) db);
-        });
-
+        dbNames.forEach(databaseNames::add);
     }
 }

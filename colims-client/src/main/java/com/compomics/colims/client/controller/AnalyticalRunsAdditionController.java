@@ -1,6 +1,5 @@
 package com.compomics.colims.client.controller;
 
-import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
 import com.compomics.colims.client.event.admin.InstrumentChangeEvent;
@@ -19,12 +18,8 @@ import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.core.io.headers.ProteinGroupHeaders;
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.service.InstrumentService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Instrument;
-import com.compomics.colims.model.Sample;
-import com.compomics.colims.model.User;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.DefaultPermission;
-import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -91,9 +86,6 @@ public class AnalyticalRunsAdditionController implements Controllable {
     @Autowired
     @Lazy
     private MaxQuantDataImportController maxQuantDataImportController;
-    @Autowired
-    @Lazy
-    private FastaDbManagementController fastaDbManagementController;
     //services
     @Autowired
     private InstrumentService instrumentService;
@@ -109,6 +101,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
     private OntologyMapper ontologyMapper;
     @Autowired
     private ProteinGroupHeaders proteinGroupHeaders;
+
     /**
      * Get the view of this controller.
      *
@@ -127,11 +120,6 @@ public class AnalyticalRunsAdditionController implements Controllable {
         //register to event bus
         eventBus.register(this);
 
-        //init child controller
-        fastaDbManagementController.init();
-        peptideShakerDataImportController.init();
-        maxQuantDataImportController.init();
-
         //select peptideShaker radio button
         analyticalRunsAdditionDialog.getPeptideShakerRadioButton().setSelected(true);
         analyticalRunsAdditionDialog.getLabelComboBox().setVisible(false);
@@ -149,23 +137,23 @@ public class AnalyticalRunsAdditionController implements Controllable {
 
         JComboBoxBinding instrumentComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, instrumentBindingList, analyticalRunsAdditionDialog.getInstrumentComboBox());
         bindingGroup.addBinding(instrumentComboBoxBinding);
-        
+
         JComboBoxBinding labelComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, labelBindingList, analyticalRunsAdditionDialog.getLabelComboBox());
         bindingGroup.addBinding(labelComboBoxBinding);
-        
+
         bindingGroup.bind();
-        
+
         //add action listeners
-        analyticalRunsAdditionDialog.getMaxQuantRadioButton().addActionListener(e ->{
+        analyticalRunsAdditionDialog.getMaxQuantRadioButton().addActionListener(e -> {
             analyticalRunsAdditionDialog.getLabelComboBox().setVisible(true);
             analyticalRunsAdditionDialog.getLabelSelectionLabel().setVisible(true);
         });
-        
-        analyticalRunsAdditionDialog.getPeptideShakerRadioButton().addActionListener(e ->{
+
+        analyticalRunsAdditionDialog.getPeptideShakerRadioButton().addActionListener(e -> {
             analyticalRunsAdditionDialog.getLabelComboBox().setVisible(false);
             analyticalRunsAdditionDialog.getLabelSelectionLabel().setVisible(false);
         });
-        
+
         analyticalRunsAdditionDialog.getProceedButton().addActionListener(e -> {
             String currentCardName = GuiUtils.getVisibleChildComponent(analyticalRunsAdditionDialog.getTopPanel());
             switch (currentCardName) {
@@ -231,7 +219,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
                         } catch (IOException ex) {
                             java.util.logging.Logger.getLogger(AnalyticalRunsAdditionController.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        
+
                     } else {
                         MessageEvent messageEvent = new MessageEvent("Validation failure", maxQuantValidationMessages, JOptionPane.WARNING_MESSAGE);
                         eventBus.post(messageEvent);
@@ -281,7 +269,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * Show the view with the given DataImport en PersistMetadata instances for
      * updating a runs addition task.
      *
-     * @param dataImport the DataImport instance
+     * @param dataImport      the DataImport instance
      * @param persistMetaData the PersistMetadata instance
      */
     public void showEditView(DataImport dataImport, PersistMetadata persistMetaData) {
@@ -316,44 +304,47 @@ public class AnalyticalRunsAdditionController implements Controllable {
             eventBus.post(new MessageEvent("Authorization problem", "User " + userBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
         }
     }
+
     /**
      * Show label selection view if protein group headers list is not empty.
-     * @throws IOException 
+     *
+     * @throws IOException
      */
-    private void showLabelSelectionView() throws IOException{
-        Path proteinGroupDirectory = Paths.get(maxQuantDataImportController.getDataImport().getCombinedDirectory().toString() + File.separator + "txt"+ File.separator + "proteinGroups.txt");
+    private void showLabelSelectionView() throws IOException {
+        Path proteinGroupDirectory = Paths.get(maxQuantDataImportController.getDataImport().getCombinedDirectory().toString() + File.separator + "txt" + File.separator + "proteinGroups.txt");
         proteinGroupHeaders.parseProteinGroupHeaders(proteinGroupDirectory);
-        if(proteinGroupHeaders.getProteinGroupHeaders().size() > 0){
+        if (proteinGroupHeaders.getProteinGroupHeaders().size() > 0) {
             initLabelSelectionView();
             GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), labelSelectionDialog);
             labelSelectionDialog.setVisible(true);
-        }else{
+        } else {
             sendStorageTask(maxQuantDataImportController.getDataImport());
             getCardLayout().show(analyticalRunsAdditionDialog.getTopPanel(), CONFIRMATION_CARD);
         }
     }
+
     /**
      * initialize label selection view
      */
-    private void initLabelSelectionView(){
+    private void initLabelSelectionView() {
         labelSelectionDialog = new LabelSelectionDialog(analyticalRunsAdditionDialog, true);
         labelSelectionDialog.getLabelDualList().init(String::compareToIgnoreCase);
         labelSelectionDialog.getLabelDualList().populateLists(proteinGroupHeaders.getProteinGroupHeaders(), new ArrayList<>(), proteinGroupHeaders.getProteinGroupHeaders().size());
         maxQuantDataImportController.getDataImport().getSelectedProteinGroupHeaders().clear();
-        
+
         labelSelectionDialog.getLabelSaveOrUpdateButton().addActionListener(e -> {
             maxQuantDataImportController.getDataImport().getSelectedProteinGroupHeaders().addAll(labelSelectionDialog.getLabelDualList().getAddedItems());
             sendStorageTask(maxQuantDataImportController.getDataImport());
             getCardLayout().show(analyticalRunsAdditionDialog.getTopPanel(), CONFIRMATION_CARD);
             labelSelectionDialog.dispose();
         });
-        
+
         labelSelectionDialog.getCloseLabelButton().addActionListener(e -> {
             labelSelectionDialog.getLabelDualList().clear();
             labelSelectionDialog.dispose();
         });
     }
-    
+
     /**
      * Listen to an InstrumentChangeEvent.
      *
@@ -370,8 +361,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * queue cannot be reached or in case of an IOException thrown by the
      * sendDbTask method.
      *
-     * @param dataImport the DataImport instance with the necessary import
-     * information
+     * @param dataImport the DataImport instance with the necessary import information
      */
     private void sendStorageTask(DataImport dataImport) {
         String storageDescription = analyticalRunsAdditionDialog.getStorageDescriptionTextField().getText();
@@ -445,15 +435,16 @@ public class AnalyticalRunsAdditionController implements Controllable {
 
     /**
      * Find all quantificationMethod labels from COLIMS mapping.
+     *
      * @return quantificationMethods
      */
-    public List<String> findAllLabels(){
+    public List<String> findAllLabels() {
         List<String> quantificationMethods = new ArrayList<>();
         quantificationMethods.addAll(ontologyMapper.getColimsMapping().getQuantificationMethods().keySet());
-        
-        return quantificationMethods;               
+
+        return quantificationMethods;
     }
-    
+
     /**
      * Update the info label.
      *
@@ -472,7 +463,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
         PersistType selectedStorageType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = analyticalRunsAdditionDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = analyticalRunsAdditionDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -507,15 +498,15 @@ public class AnalyticalRunsAdditionController implements Controllable {
         this.instrument = instrument;
     }
 
-    public String getSelectedLabel(){
+    public String getSelectedLabel() {
         String selectedLabel = "";
-        if(analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex() != -1){
+        if (analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex() != -1) {
             selectedLabel = labelBindingList.get(analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex());
         }
-        
+
         return selectedLabel;
     }
-    
+
     public MaxQuantDataImportController getMaxQuantDataImportController() {
         return maxQuantDataImportController;
     }

@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -71,11 +72,11 @@ public class MaxQuantDataImportController implements Controllable {
     //services
     @Autowired
     private EventBus eventBus;
-
     @Autowired
     private FastaDbService fastaDbService;
 
     @Override
+    @PostConstruct
     public void init() {
         //get view from parent controller
         maxQuantDataImportPanel = analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog().getMaxQuantDataImportPanel();
