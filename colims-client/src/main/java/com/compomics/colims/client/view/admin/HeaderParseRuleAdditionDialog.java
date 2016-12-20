@@ -5,6 +5,7 @@
  */
 package com.compomics.colims.client.view.admin;
 
+import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -23,6 +24,8 @@ public class HeaderParseRuleAdditionDialog extends javax.swing.JDialog {
      */
     public HeaderParseRuleAdditionDialog(JDialog parent, boolean modal) {
         super(parent, modal);
+
+        this.getContentPane().setBackground(Color.WHITE);
         initComponents();
     }
 
@@ -59,8 +62,9 @@ public class HeaderParseRuleAdditionDialog extends javax.swing.JDialog {
         saveParseRuleButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Header Parse Rule Management");
+        setTitle("Header parse rule management");
 
+        headerParseRulePanel.setBackground(new java.awt.Color(255, 255, 255));
         headerParseRulePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         parseRuleLabel.setText("Header Parse Rule :");
@@ -96,7 +100,7 @@ public class HeaderParseRuleAdditionDialog extends javax.swing.JDialog {
                             .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(18, 18, 18)
                         .addGroup(headerParseRulePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(descriptionTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                            .addComponent(descriptionTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
                             .addComponent(parseRuleTextField))))
                 .addContainerGap())
         );
@@ -111,19 +115,23 @@ public class HeaderParseRuleAdditionDialog extends javax.swing.JDialog {
                     .addComponent(descriptionLabel)
                     .addComponent(descriptionTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(saveParseRuleButton)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(saveParseRuleButton))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(headerParseRulePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(headerParseRulePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(headerParseRulePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(headerParseRulePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();

@@ -54,7 +54,7 @@ public class LabelSelectionDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Label Selection Dialog");
+        setTitle("Label selection dialog");
 
         labelSaveOrUpdateButton.setText("save");
         labelSaveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));

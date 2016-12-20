@@ -142,8 +142,6 @@ public class MainController implements Controllable, ActionListener {
             //check for permission exceptions
             if (e instanceof PermissionException) {
                 showPermissionErrorDialog(e.getMessage());
-            } else if (e instanceof ArrayIndexOutOfBoundsException) {
-                showMessageDialog("OLS dialog problem", "Something went wrong in the OLS dialog, please try again.", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 showUnexpectedErrorDialog(e.getMessage());
                 System.exit(0);
