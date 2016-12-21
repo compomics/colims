@@ -46,6 +46,14 @@ public class FastaDbManagementController implements Controllable {
     private static final Logger LOGGER = Logger.getLogger(FastaDbManagementController.class);
 
     /**
+     * The value used for the database name if it's not in the EMBL-EBI list.
+     */
+    public static final String DATABASE_NAME_NOT_PRESENT = "not in the EMBL-EBI list";
+    /**
+     * The value shown in the user interface if a {@link FastaDb} property is empty.
+     */
+    public static final String UNKNOWN = "unknown";
+    /**
      * The default taxonomy value for the taxonomy combo box.
      */
     private static final TaxonomyCvParam TAXONOMY_CV_PARAM_NONE = new TaxonomyCvParam("none", "none", "none");
@@ -133,15 +141,15 @@ public class FastaDbManagementController implements Controllable {
                     }
                     fastaDbManagementDialog.getTaxonomyTextField().setText(fastaDb.getTaxonomy().toString());
                     if (fastaDb.getDatabaseName() == null) {
-                        fastaDb.setDatabaseName(FastaDb.DATABASE_NAME_NOT_PRESENT);
+                        fastaDb.setDatabaseName(DATABASE_NAME_NOT_PRESENT);
                     }
                     fastaDbManagementDialog.getDatabaseTextField().setText(fastaDb.getDatabaseName());
                     if (fastaDb.getHeaderParseRule() == null) {
-                        fastaDb.setHeaderParseRule(FastaDb.UNKNOWN_PROPERTY);
+                        fastaDb.setHeaderParseRule(UNKNOWN);
                     }
                     fastaDbManagementDialog.getHeaderParseRuleTextField().setText(fastaDb.getHeaderParseRule());
                     if (fastaDb.getVersion() == null) {
-                        fastaDb.setVersion(FastaDb.UNKNOWN_PROPERTY);
+                        fastaDb.setVersion(UNKNOWN);
                     }
                     fastaDbManagementDialog.getVersionTextField().setText(fastaDb.getVersion());
 
@@ -160,7 +168,7 @@ public class FastaDbManagementController implements Controllable {
             FastaDb newFastaDb = new FastaDb();
             newFastaDb.setName("name");
             newFastaDb.setTaxonomy(TAXONOMY_CV_PARAM_NONE);
-            newFastaDb.setDatabaseName(FastaDb.DATABASE_NAME_NOT_PRESENT);
+            newFastaDb.setDatabaseName(DATABASE_NAME_NOT_PRESENT);
             //send the new fastaDb to fastaDbSaveUpdateController
             fastaDbSaveUpdateController.updateView(newFastaDb);
 

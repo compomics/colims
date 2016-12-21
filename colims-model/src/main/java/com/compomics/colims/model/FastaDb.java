@@ -19,9 +19,6 @@ public class FastaDb extends DatabaseEntity {
 
     private static final long serialVersionUID = -7674593202998529863L;
 
-    public static final String DATABASE_NAME_NOT_PRESENT = "not in the EMBL-EBI list";
-    public static final String UNKNOWN_PROPERTY = "unknown";
-
     /**
      * The official name of the FASTA db.
      */

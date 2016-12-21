@@ -45,6 +45,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static com.compomics.colims.client.controller.admin.FastaDbManagementController.DATABASE_NAME_NOT_PRESENT;
+import static com.compomics.colims.client.controller.admin.FastaDbManagementController.UNKNOWN;
+
 /**
  * @author demet
  */
@@ -316,7 +319,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbToEdit.setFileName(fastaDbSaveUpdatePanel.getFileNameTextField().getText());
         fastaDbToEdit.setFilePath(fastaDbSaveUpdatePanel.getFilePathTextField().getText());
 
-        if(fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(FastaDb.UNKNOWN_PROPERTY)){
+        if (fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(UNKNOWN)) {
             fastaDbToEdit.setVersion(null);
         }
 
@@ -380,7 +383,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         }
         //get header parse rules from the database
         List<String> parseRulesFromDb = fastaDbService.getAllParseRules();
-        parseRulesFromDb.stream().filter(p -> !parseRuleWithExplanations.containsKey(p)).forEach(p -> parseRuleWithExplanations.put(p, "from DB"));
+        parseRulesFromDb.stream().filter(dbParseRule -> !parseRuleWithExplanations.containsKey(dbParseRule) && dbParseRule != null).forEach(dbParseRule -> parseRuleWithExplanations.put(dbParseRule, "from DB"));
 
         //add the mapp entries to the headerParseRules list
         parseRuleWithExplanations.entrySet().stream().forEach(entry -> {
@@ -396,7 +399,7 @@ public class FastaDbSaveUpdateController implements Controllable {
      * @param dbNames the set of database names as read from the properties files
      */
     private void populateDatabaseComboBox(TreeSet<String> dbNames) {
-        databaseNamesBindingList.add(FastaDb.DATABASE_NAME_NOT_PRESENT);
+        databaseNamesBindingList.add(DATABASE_NAME_NOT_PRESENT);
 
         dbNames.forEach(databaseNames::add);
     }
@@ -414,7 +417,7 @@ class HeaderParseRule {
      */
     private String parseRule;
     /**
-     * The explation.
+     * The explanation.
      */
     private String explanation;
 
@@ -440,10 +443,6 @@ class HeaderParseRule {
 
     public String getParseRule() {
         return parseRule;
-    }
-
-    public String getExplanation() {
-        return explanation;
     }
 
     @Override
