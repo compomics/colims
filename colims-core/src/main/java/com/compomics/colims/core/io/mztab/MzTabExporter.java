@@ -5,9 +5,10 @@
  */
 package com.compomics.colims.core.io.mztab;
 
+import com.compomics.colims.core.io.fasta.FastaDbAccessionParser;
 import com.compomics.colims.core.service.*;
-import com.compomics.colims.core.util.AccessionConverter;
 import com.compomics.colims.core.util.ProteinCoverage;
+import com.compomics.colims.core.util.UniprotProteinUtils;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.ModificationType;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -171,7 +174,8 @@ public class MzTabExporter {
     private final SearchAndValidationSettingsService searchAndValidationSettingsService;
     private final FastaDbService fastaDbService;
     private final UniProtService uniProtService;
-
+    private final FastaDbAccessionParser fastaDbAccessionParser;
+    private final UniprotProteinUtils uniprotProteinUtils;
     /**
      * The MzTabExport instance.
      */
@@ -179,7 +183,8 @@ public class MzTabExporter {
 
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
                          FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantLabeledService proteinGroupQuantLabeledService,
-                         ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService) {
+                         ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbAccessionParser fastaDbAccessionParser,
+                         UniprotProteinUtils uniprotProteinUtils) {
         this.proteinGroupService = proteinGroupService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbService = fastaDbService;
@@ -187,6 +192,8 @@ public class MzTabExporter {
         this.proteinGroupQuantLabeledService = proteinGroupQuantLabeledService;
         this.proteinGroupQuantService = proteinGroupQuantService;
         this.peptideService = peptideService;
+        this.fastaDbAccessionParser = fastaDbAccessionParser;
+        this.uniprotProteinUtils = uniprotProteinUtils;
     }
 
     /**
@@ -457,73 +464,50 @@ public class MzTabExporter {
         List<ProteinGroupDTO> proteinList = getProteinGroupsForAnalyticalRuns(analyticalRunIds);
         SearchAndValidationSettings searchAndValidationSettings = searchAndValidationSettingsService.getByAnalyticalRun(mzTabExport.getRuns().get(0));
         Map<FastaDb, FastaDbType> fastaDbs = fastaDbService.findBySearchAndValidationSettings(searchAndValidationSettings);
-        // check if db is uniprot!
+        
+        LinkedHashMap<FastaDb, Path> fastaDbsWithPath = new LinkedHashMap();
+        fastaDbs.keySet().stream().filter((fastaDb) -> (fastaDbs.get(fastaDb).equals(FastaDbType.PRIMARY))).forEach((fastaDb) -> {
+            fastaDbsWithPath.put(fastaDb, Paths.get(fastaDb.getFilePath()));
+        });
+        
+        fastaDbs.keySet().stream().filter((fastaDb) -> (fastaDbs.get(fastaDb).equals(FastaDbType.ADDITIONAL))).forEach((fastaDb) -> {
+            fastaDbsWithPath.put(fastaDb, Paths.get(fastaDb.getFilePath()));
+        });
+        
+        fastaDbs.keySet().stream().filter((fastaDb) -> (fastaDbs.get(fastaDb).equals(FastaDbType.CONTAMINANTS))).forEach((fastaDb) -> {
+            fastaDbsWithPath.put(fastaDb, Paths.get(fastaDb.getFilePath()));
+        });
+        
+        Map<FastaDb, Set<String>> parsedFastas = fastaDbAccessionParser.parseFastas(fastaDbsWithPath);
+        
         for (int i = 0; i < proteinList.size(); i++) {
             StringBuilder proteins = new StringBuilder();
             // set prefix and accession
             proteins.append(PROTEINS_PREFIX).append(COLUMN_DELIMITER).append(proteinList.get(i).getMainAccession()).append(COLUMN_DELIMITER);
-            // define uniprot map and uniprot accession list
-            Map<String, String> uniProtMap = new HashMap<>();
-            List<String> uniprotAccessions = new ArrayList<>();
-            // we do not know the database and version.
-            String database = "N/A";
-            String databaseVersion = "N/A";
-            for (FastaDb fastaDb : fastaDbs.keySet()) {
-                if (fastaDbs.get(fastaDb).equals(FastaDbType.PRIMARY)) {
-                    database = fastaDb.getDatabaseName();
-                    databaseVersion = fastaDb.getVersion();
-                    switch (fastaDb.getDatabaseName()) {
-                        case "UNIPROT":
-                            uniprotAccessions.add(proteinList.get(i).getMainAccession());
-                            uniProtMap = uniProtService.getUniProtByAccession(uniprotAccessions.get(0));
-                            break;
-                        case "Not in the EMBL-EBI list":
-                            break;
-                        default:
-                            uniprotAccessions = AccessionConverter.convertToUniProt(proteinList.get(i).getMainAccession(), fastaDb.getDatabaseName());
-                            uniProtMap = uniProtService.getUniProtByAccession(uniprotAccessions.get(0));
-                            break;
-                    }
+            
+            // we do not know which fasta file protein sequence comes from.
+            FastaDb fastaFile = new FastaDb();
+            
+            for (FastaDb fastaDb : parsedFastas.keySet()) {
+                if(parsedFastas.get(fastaDb).contains(proteinList.get(i).getMainSequence())){
+                    fastaFile = fastaDb;
+                    break;
                 }
             }
+            //(key: information type; value: protein sequence and functional information)
+            Map<String, String> uniProtMap = uniprotProteinUtils.getFastaDbUniprotInformation(proteinList.get(i).getMainAccession(), fastaFile);
+            
             // if uniprot map has values
             if (!uniProtMap.isEmpty()) {
                 // set description, taxid, species, database, database version
                 proteins.append(uniProtMap.get("description")).append(COLUMN_DELIMITER).append(uniProtMap.get("taxid")).append(COLUMN_DELIMITER).append(uniProtMap.get("species"))
-                        .append(COLUMN_DELIMITER).append(database).append(COLUMN_DELIMITER).append(databaseVersion).append(COLUMN_DELIMITER);
+                        .append(COLUMN_DELIMITER).append(fastaFile.getDatabaseName()).append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
             } else {
-                for (FastaDb fastaDb : fastaDbs.keySet()) {
-                    if (fastaDbs.get(fastaDb).equals(FastaDbType.ADDITIONAL)) {
-                        database = fastaDb.getDatabaseName();
-                        databaseVersion = fastaDb.getVersion();
-                        switch (fastaDb.getDatabaseName()) {
-                            case "UNIPROT":
-                                uniprotAccessions.add(proteinList.get(i).getMainAccession());
-                                uniProtMap = uniProtService.getUniProtByAccession(uniprotAccessions.get(0));
-                                break;
-                            case "Not in the EMBL-EBI list":
-                                break;
-                            default:
-                                uniprotAccessions = AccessionConverter.convertToUniProt(proteinList.get(i).getMainAccession(), fastaDb.getDatabaseName());
-                                uniProtMap = uniProtService.getUniProtByAccession(uniprotAccessions.get(0));
-                                break;
-                        }
-
-                        if (!uniProtMap.isEmpty()) {
-                            // set description, taxid, species, database, database version
-                            proteins.append(uniProtMap.get("description")).append(COLUMN_DELIMITER).append(uniProtMap.get("taxid")).append(COLUMN_DELIMITER).append(uniProtMap.get("species"))
-                                    .append(COLUMN_DELIMITER).append(COLUMN_DELIMITER).append(database).append(COLUMN_DELIMITER).append(databaseVersion).append(COLUMN_DELIMITER);
-                            break;
-                        }
-                    }
-                }
+                // set N/A (for description, taxid, species) , database, database version
+                proteins.append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append(fastaFile.getDatabaseName())
+                        .append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
             }
-            if (uniProtMap.isEmpty()) {
-                // set description, taxid, species, database, database version
-                proteins.append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append("N/A")
-                        .append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER);
-            }
-
+            
             // set search engine
             proteins.append(getSearchEngine()).append(COLUMN_DELIMITER);
 
