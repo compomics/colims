@@ -39,5 +39,6 @@ public interface Cache<K,V> {
      * Clears the cache
      */
     void clearCache();
+    
 
 }

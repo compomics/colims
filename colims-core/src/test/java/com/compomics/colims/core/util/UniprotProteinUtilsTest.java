@@ -35,8 +35,15 @@ public class UniprotProteinUtilsTest {
         
         Map<String, String> uniProtMap = uniprotProteinUtils.getFastaDbUniprotInformation(accession, fastaDb);
         
-        assertThat(uniProtMap.get("description"), is("HLA class I histocompatibility antigen, A-11 alpha chain"));
-        assertThat(uniProtMap.get("taxid"), is("9606"));
-        assertThat(uniProtMap.get("species"), is("Homo sapiens"));
+        // send the same accession and fasta to see if cache is working
+        String accession1 = "P13746";
+        FastaDb fastaDb1 = new FastaDb();
+        fastaDb.setDatabaseName("SWISSPROT");
+        
+        Map<String, String> uniProtMap1 = uniprotProteinUtils.getFastaDbUniprotInformation(accession1, fastaDb1);
+        
+        assertThat(uniProtMap1.get("description"), is("HLA class I histocompatibility antigen, A-11 alpha chain"));
+        assertThat(uniProtMap1.get("taxid"), is("9606"));
+        assertThat(uniProtMap1.get("species"), is("Homo sapiens"));
     }
 }

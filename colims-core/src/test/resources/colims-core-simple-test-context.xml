@@ -21,4 +21,9 @@
 
     <bean name="fastaDbAccessionParser" class="com.compomics.colims.core.io.fasta.FastaDbAccessionParser"/>
 
+     <!-- property placeholder -->
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="config/colims-core.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
 </beans>

@@ -13,28 +13,52 @@ import java.util.Map;
  *
  * @author demet
  */
+
 public class UniprotProteinCache extends LinkedHashMap<String, Map<String, String>> implements Cache<String, Map<String, String>>{
 
     private static final long serialVersionUID = 1L;
 
-    @Override
-    public void putInCache(String key, Map<String, String> value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private Integer  uniprotMaxCashSize;
+
+    public UniprotProteinCache(Integer uniprotMaxCashSize) {
+        this.uniprotMaxCashSize = uniprotMaxCashSize;
     }
 
+    /**
+     * Puts the given protein group main accession and UniProt map coming from UniProt service.
+     * If the maximum cache size is reached, the first added element is removed and replaced 
+     * by the given UniProt map.
+     * @param mainAccession the protein group main accession
+     * @param uniprotMap map of UniProt information
+     */
     @Override
-    public Map<String, String> getFromCache(String key) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void putInCache(String mainAccession, Map<String, String> uniprotMap) {
+        this.put(mainAccession, uniprotMap);
+    }
+
+    /**
+     * Gets the UniProt map by its key, mainAccession. If nothing is found, null is
+     * returned.
+     * @param mainAccession
+     * @return the UniProt map
+     */
+    @Override
+    public Map<String, String> getFromCache(String mainAccession) {
+       return this.get(mainAccession);
     }
 
     @Override
     public int getCacheSize() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.size();
     }
 
     @Override
     public void clearCache() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.clear();
     }
     
+    @Override
+    protected boolean removeEldestEntry(Map.Entry<String, Map<String, String>> eldest) {
+        return this.size() >= Integer.valueOf(uniprotMaxCashSize);
+    }
 }

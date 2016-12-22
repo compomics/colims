@@ -111,7 +111,6 @@ public class MzIdentMlExporter {
      *
      * @param writer         the {@link Writer} instance
      * @param analyticalRuns the analytical runs to export.
-     * @return the mzIdentML String
      * @throws IOException error thrown in case of a I/O related problem
      */
     public void export(Writer writer, List<AnalyticalRun> analyticalRuns) throws IOException {
