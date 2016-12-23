@@ -63,13 +63,13 @@ INSERT INTO material_cv_param (id, creation_date, modification_date, user_name, 
 INSERT INTO material (id, creation_date, modification_date, user_name, name, l_cell_type_cv_id, l_compartment_cv_id, l_species_cv_id, l_tissue_cv_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 1', '3', '4', '1', '2'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 2', '3', '4', '1', '2');
 
 -- insert test modifications
-INSERT INTO modification (id, name, accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'methionine', '-64.1', '-63.998286');
+INSERT INTO modification (id, name, accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '-64.1', '-63.998286');
 
 -- insert test proteins
-INSERT INTO protein (id, protein_sequence) VALUES (1, 'AAAAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
-INSERT INTO protein (id, protein_sequence) VALUES (2, 'AAMAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
-INSERT INTO protein (id, protein_sequence) VALUES (3, 'AACAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
-INSERT INTO protein (id, protein_sequence) VALUES (4, 'AABAAAAAAAAAAAAAAAAAAAABLENNARTMAAAAAAAAAAAAA');
+INSERT INTO protein (id, protein_sequence) VALUES (1, 'MATASPAADGGRGRPWEGGLVSWPPAPPLTLPWTWMGPSWGQHPGHWGFPALTEPSASPAAGLGIFEVRRVLDASGCSMLAPLQTGAARFSSYLLSRARKVLGSHLFSPCGVPEFCSISTRKLAAHGFGASMAAMVSFPPQRYHYFLVLDFEATCDKPQIHPQEIIEFPILKLNGRTMEIESTFHMYVQPVVHPQLTPFCTELTGIIQAMVDGQPSLQQVLERVDEWMAKEGLLDPNVKSIFVTCGDWDLKVMLPGQCQYLGLPVADYFKQWINLKKAYSFAMGCWPKNGLLDMNKGLSLQHIGRPHSGIDDCKNIANIMKTLAYRGFIFKQTSKPF');
+INSERT INTO protein (id, protein_sequence) VALUES (2, 'MTCGFRTGNFSCASACGPRPGRCCISAAPYRGISCYRGLSGGFGSQSVCGAFRSGSCGRSFGYRSGGICGPSPPCITTVSVNESLLTPLNLEIDPNAQCVKHEEKEQIKCLNSRFAAFIDKVRFLEQQNKLLETKWQFYQNRKCCESNMEPLFEGYIETLRREAECVEADSGRLAAELNHAQESMEGYKKRYEEEVALRATAENEFVALKKDVDCAYLRKSDLEANAEALTQETDFLRRMYDEETRILHSHISDTSVIVKMDNSRDLNMDCVVAEIKAQYDDIASRSRAEAESWYRTKCEEMKATVIRHGETLRRTREEINELNRMIQRLTAEIENAKCQNTKLEAAVTQSEQQGEAALADARCKLAELEGALQKAKQDMACLLKEYQEVMNSKLGLDVEIITYRRLLEGEEQRLCEGVGAVNVCVSSSRGGVVCGDLCVSGSRPVTGSVCSAPCSGNVAVSTGLCAPCGSGPCHPGRC');
+INSERT INTO protein (id, protein_sequence) VALUES (3, 'MTCGFRTGNFSCASACGPRPGRCCISAAPYRGISCYRGLSGGFGSQSVCGAFRSGSCGRSFGYRSGGICGPSPPCITTVSVNESLLTPLNLEIDPNAQCVKHEEKEQIKCLNSRFAAFIDKVRFLEQQNKLLETKWQFYQNRKCCESNMEPLFEGYIETLRREAECVEADSGRLAAELNHAQESMEGYKKRYEEEVALRATAENEFVALKKDVDCAYLRKSDLEANAEALTQETDFLRRMYDEETRILHSHISDTSVIVKMDNSRDLNMDCVVAEIKAQYDDIASRSRAEAESWYRTKCEEMKATVIRHGETLRRTREEINELNRMIQRLTAEIENAKCQNTKLEAAVTQSEQQGEAALADARCKLAELEGALQKAKQDMACLLKEYQEVMNSKLGLDVEIITYRRLLEGEEQRLCEGVGAVNVCVSSSRGGVVCGDLCVSGSRPVTGSVCSAPCSGNVAVRC');
+INSERT INTO protein (id, protein_sequence) VALUES (4, 'MTCGFRTGNFSCASACGPRPGRCCISAAPYRGISCYRGLSGGFGSQSVCGAFRSGSCGRSFGYRSGGICGPSPPCITTVSVNESLLTPLNLEIDPNAQCVKHEEKEQIKCLNSRFAAFIDKVRFLEQQNKLLETKWQFYQNRKCCESNMEPLFEGYIETLRREAECVEADSGRLAAELNHAQESMEGYKKRYEEEVALRATAENEFVALKKDVDCAYLRKSDLEANAEALTQETDFLRRMYDEETRILHSHISDTSVIVKMDNSRDLNMDCVVAEIKAQYDDIASRSRAEAESWYRTKCEEMKATVIRHGETLRRTREEINELNRMIQRLTAEIENAKCQNTKLEAAVTQSEQQGEAALADARCKLAELEGALQKAKQDMACLLKEYQEVMNSKLGLDVEIITYRRLLEGEEQRLCEGVGAVNVCVAVSTGLCAPCGSGPCHPGRC');
 
 -- insert test search engine
 INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER','0.35.0-beta');
@@ -79,7 +79,7 @@ INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (2,
 INSERT INTO taxonomy_cv_param (id, accession, label, name) VALUES (1,'NCBITaxon:9606','NCBITaxon','Homo sapiens');
 
 -- insert test fasta db
-INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_taxonomy_cv_id, database_name) VALUES (1, 'testfasta.fasta', 'C:\Users\colims\testfasta.fasta', null, 'test fasta', '1.2.3', 1, 'UNIPROT');
+INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_taxonomy_cv_id, database_name, header_parse_rule) VALUES (1, 'SP_human.fasta', 'SP_human.fasta', null, 'test fasta', '1.2.3', 1, 'UNIPROT', '&gt;.*\|(.*)\|'), (2, 'contaminants.fasta', 'contaminants.fasta', null, 'contaminants test fasta', null, null, 'CONTAMINANTS', null);
 
 -- insert test search parameter cv params
 INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'SEARCH_TYPE');
@@ -91,7 +91,7 @@ INSERT INTO search_modification (id, name, accession, utilities_name, average_ma
 INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1);
 
 -- insert a test spectrum
-INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000000', 1, 'CID', 1, 1, 5, 45, 3, 'Test Spectrum', 1);
+INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000000', 1, 'CID', 1, 1, 52, 45, 3887, 'Test Spectrum 1', 1), (2, 'MS:00000001', 1, 'CID', 1, 1, 745, 44745, 345, 'Test Spectrum 1', 1);
 
 -- insert a spectrum file
 INSERT INTO spectrum_file (id, content, l_spectrum_id) VALUES (1, 'AABBCC', 1);
@@ -106,7 +106,7 @@ INSERT INTO search_params_has_modification (id, modification_type, l_search_modi
 INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1);
 
 -- insert test search and val settings has fasta db
-INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 1);
+INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 1), (2, 1, 2, 2);
 
 -- insert test quantification method cv param
 INSERT INTO quantification_method_cv_param (id, accession, label, name) VALUES (1, 'PRIDE', 'PRIDE:0000315', 'SILAC');
@@ -124,8 +124,8 @@ INSERT INTO quantification_engine (id, accession, label, name, type, version) VA
 INSERT INTO quantification_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_quant_engine_id, l_quant_method_cv_param) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1);
 
 -- insert test peptides
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1);
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'LENNART', 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'PWEGGLVSWPPAP', 1, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'SACGPRPGRCCI', 1, 2);
 
 -- insert a test peptide has modification
 INSERT INTO peptide_has_modification (id,  delta_score,  location, prob_score, l_modification_id,  l_peptide_id) VALUES (1, 0.5, 1, 1, 1, 1);
@@ -134,10 +134,10 @@ INSERT INTO peptide_has_modification (id,  delta_score,  location, prob_score, l
 INSERT INTO protein_group (id) VALUES (1), (2);
 
 -- insert test protein group has proteins
-INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (1, 1, 1, 'PROT_ACC_11', TRUE);
-INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (2, 2, 2, 'PROT_ACC_2', TRUE);
-INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (3, 3, 2, 'PROT_ACC_3', FALSE);
-INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (4, 4, 2, 'PROT_ACC_4', FALSE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (1, 1, 1, 'O43414', TRUE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (2, 2, 2, 'Q61726', TRUE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (3, 3, 2, 'Q3ZAW8', FALSE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (4, 4, 2, 'Q8VED5', FALSE);
 
 -- insert test peptide has protein groups
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (1, 0.1, 0.9, 1, 1);

@@ -62,7 +62,7 @@ public class SequenceUtils {
                 peptidePositions.add(peptidePosition);
             });
         } else {
-            throw new IllegalStateException("The peptide sequence could not be found in the protein sequence.");
+            throw new IllegalStateException("Peptide sequence " + peptideSequence + " could not be found in protein sequence " + proteinSequence);
         }
 
         return peptidePositions;
