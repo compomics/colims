@@ -86,7 +86,7 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     }
 
     @Override
-    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinbyProteinGroupId(Long proteinGroupId) {
+    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinByProteinGroupId(Long proteinGroupId) {
         return proteinGroupRepository.getProteinGroupHasProteinbyProteinGroupId(proteinGroupId);
        
     }
