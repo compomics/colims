@@ -76,7 +76,7 @@
         where searchSettingsHasFastaDb.fastaDbType in (:fastaDbTypeOrdinals)
     </query>
 
-    <query name="Peptide.getPeptideDTOByProteinGroupId">
+    <query name="Peptide.getPeptideDTOsByProteinGroupId">
         select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability
         from Peptide as peptide
         join peptide.peptideHasProteinGroups as peptideHasProteinGroup
@@ -86,8 +86,19 @@
         where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
         and spectrum.analyticalRun.id in (:analyticalRunId)
     </query>
+
+    <query name="Peptide.getPeptidesByProteinGroupId">
+        select distinct peptide
+        from Peptide as peptide
+        join peptide.peptideHasProteinGroups as peptideHasProteinGroup
+        left join fetch peptide.peptideHasModifications as peptideHasModification
+        left join fetch peptideHasModification.modification as modification
+        join fetch peptide.spectrum as spectrum
+        where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
+        and spectrum.analyticalRun.id in (:analyticalRunId)
+    </query>
     
-    <query name="Peptide.getPeptideHasProteinGroupByAnalyticalRunIds">
+    <query name="Peptide.getPeptideHasProteinGroupsByRunIds">
         select peptide, peptideHasProteinGroup, spectrum.analyticalRun
         from PeptideHasProteinGroup as peptideHasProteinGroup
         join peptideHasProteinGroup.peptide as peptide
@@ -95,7 +106,7 @@
         where spectrum.analyticalRun.id in (:analyticalRunId)
     </query>
     
-    <query name="Peptide.getDistinctPeptideSequenceByProteinGroupIdAndAnalyticalRunIds">
+    <query name="Peptide.getDistinctPeptideSequencesByProteinGroupIdAndRunIds">
         select peptide.sequence
         from Peptide as peptide
         join peptide.peptideHasProteinGroups as peptideHasProteinGroup
@@ -105,7 +116,7 @@
         group by peptide.sequence
     </query>
 
-    <query name="Protein.getProteinByProteinGroupId">
+    <query name="Protein.getProteinsByProteinGroupId">
         select proteinGroupHasProtein.protein, proteinGroupHasProtein
         from ProteinGroupHasProtein as proteinGroupHasProtein
         join fetch proteinGroupHasProtein.proteinGroup as proteinGroup

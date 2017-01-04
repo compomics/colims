@@ -21,6 +21,10 @@ public class ProteinGroupDTO {
      */
     private Double proteinPostErrorProbability;
     /**
+     * The main group protein ID.
+     */
+    private Long mainId;
+    /**
      * The accession of the main group protein.
      */
     private String mainAccession;
@@ -66,6 +70,14 @@ public class ProteinGroupDTO {
 
     public void setProteinPostErrorProbability(Double proteinPostErrorProbability) {
         this.proteinPostErrorProbability = proteinPostErrorProbability;
+    }
+
+    public Long getMainId() {
+        return mainId;
+    }
+
+    public void setMainId(Long mainId) {
+        this.mainId = mainId;
     }
 
     public String getMainAccession() {
@@ -131,7 +143,6 @@ public class ProteinGroupDTO {
         ProteinGroupDTO that = (ProteinGroupDTO) o;
 
         return id.equals(that.id);
-
     }
 
     @Override

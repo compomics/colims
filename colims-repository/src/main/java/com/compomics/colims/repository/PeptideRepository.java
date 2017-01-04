@@ -17,14 +17,22 @@ import java.util.Map;
 public interface PeptideRepository extends GenericRepository<Peptide, Long> {
 
     /**
-     * Fetch the PeptideDTO instances associated with the given protein group and analyticalRun.
+     * Fetch the {@link PeptideDTO} instances associated with the given protein group and analytical runs.
      *
-     * @param proteinGroupId the protein group ID
-     * @param analyticalRunIds the list of anayicalRun IDs
+     * @param proteinGroupId   the protein group ID
+     * @param analyticalRunIds the list of analytical run IDs
      * @return the list of PeptideDTO objects
      */
-    List<PeptideDTO> getPeptideDTOByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds);
+    List<PeptideDTO> getPeptideDTOsByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds);
 
+    /**
+     * Fetch the {@link Peptide} instances associated with the given protein group and analytical runs.
+     *
+     * @param proteinGroupId   the protein group ID
+     * @param analyticalRunIds the list of analytical run IDs
+     * @return the list of PeptideDTO objects
+     */
+    List<Peptide> getPeptidesByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds);
 
     /**
      * Fetch the PeptideHasModification join entities.
@@ -33,32 +41,31 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @return the list of PeptideHasModification instances
      */
     List<PeptideHasModification> fetchPeptideHasModifications(Long peptideId);
-    
-    
+
     /**
      * Fetch the distinct Peptide sequence instances associated with the given protein group and analyticalRun.
      * Different modifications or charge states of the same peptide are not counted.
-     * 
-     * @param proteinGroupId the protein group ID
+     *
+     * @param proteinGroupId   the protein group ID
      * @param analyticalRunIds the list of anayicalRun IDs
      * @return the list of Peptide sequence
      */
-    List<String> getDistinctPeptideSequenceByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds);
-    
+    List<String> getDistinctPeptideSequenceByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds);
+
     /**
      * Fetch the unique Peptide instances associated with the given protein group and analyticalRun.
      *
-     * @param proteinGroupId the protein group ID
+     * @param proteinGroupId   the protein group ID
      * @param analyticalRunIds the list of anayicalRun IDs
      * @return the list of unique Peptides
      */
-    List<Peptide> getUniquePeptideByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds);
-    
+    List<Peptide> getUniquePeptideByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds);
+
     /**
      * Fetch the PeptideHasProteinGroup instances associated with the given analyticalRuns.
      *
      * @param analyticalRunIds the list of anayicalRun IDs
      * @return the map (key : PeptideHasProteinGroup ; value : analyticalRun)
      */
-    Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAnalyticalRunId(List<Long> analyticalRunIds);
+    Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAndRunIds(List<Long> analyticalRunIds);
 }

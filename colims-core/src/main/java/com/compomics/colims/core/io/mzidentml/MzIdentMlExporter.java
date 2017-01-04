@@ -11,12 +11,12 @@ import com.compomics.colims.core.util.PeptidePosition;
 import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.core.util.SequenceUtils;
 import com.compomics.colims.model.*;
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.model.enums.ScoreType;
-import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -723,24 +723,29 @@ public class MzIdentMlExporter {
 
         //get the protein group DTOs associated with the analytical runs
         List<Long> runIds = analyticalRuns.stream().map(AnalyticalRun::getId).collect(Collectors.toList());
-        List<ProteinGroupDTO> proteinGroupDTOs = proteinGroupService.getProteinGroupsForRuns(runIds);
+        List<ProteinGroupDTO> proteinGroupDTOs = proteinGroupService.getProteinGroupDTOsForRuns(runIds);
         //iterate over the protein groups
         for (ProteinGroupDTO proteinGroupDTO : proteinGroupDTOs) {
             DBSequence dbSequence = populateDBSequence(proteinGroupDTO.getMainAccession(), proteinGroupDTO.getMainSequence());
-            dbSequence.setId(String.format(DB_SEQUENCE_ID, proteinGroupDTO.getId()));
+            dbSequence.setId(String.format(DB_SEQUENCE_ID, proteinGroupDTO.getMainId()));
             sequenceCollection.getDBSequence().add(dbSequence);
 
+            //for each protein group, populate a ProteinAmbiguityGroup instance
             //check for ambiguity members
             List<ProteinGroupHasProtein> ambiguityMembers = proteinGroupService.getAmbiguityMembers(proteinGroupDTO.getId());
-            if (!ambiguityMembers.isEmpty()) {
-                ProteinAmbiguityGroup proteinAmbiguityGroup = populateProteinAmbiguityGroup();
+            //add the sequences for the ambiguity members
+            for (ProteinGroupHasProtein ambiguityMember : ambiguityMembers) {
+                dbSequence = populateDBSequence(ambiguityMember.getProteinAccession(), ambiguityMember.getProtein().getSequence());
+                dbSequence.setId(String.format(DB_SEQUENCE_ID, ambiguityMember.getProtein().getId());
+                sequenceCollection.getDBSequence().add(dbSequence);
             }
+            ProteinAmbiguityGroup proteinAmbiguityGroup = populateProteinAmbiguityGroup(proteinGroupDTO, ambiguityMembers);
 
+            Map<String, >
             //get the peptide DTOs associated with this protein group
-            List<PeptideDTO> peptideDTOS = peptideService.getPeptideDTO(proteinGroupDTO.getId(), runIds);
+            List<Peptide> peptideS = peptideService.getPeptides(proteinGroupDTO.getId(), runIds);
             //iterate over the protein group peptides
-            for (PeptideDTO peptideDTO : peptideDTOS) {
-                com.compomics.colims.model.Peptide colimsPeptide = peptideDTO.getPeptide();
+            for (Peptide colimsPeptide : peptideS) {
                 uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide();
 
                 mzPeptide.setId(String.format(PEPTIDE_ID, colimsPeptide.getId()));
@@ -772,20 +777,20 @@ public class MzIdentMlExporter {
                 //more than one position is possible
                 List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(proteinGroupDTO.getMainSequence(), colimsPeptide.getSequence());
                 for (PeptidePosition peptidePosition : peptidePositions) {
-                    PeptideEvidence evidence = new PeptideEvidence();
-                    evidence.setDBSequence(dbSequence);
-                    evidence.setPeptide(mzPeptide);
-                    evidence.setId("PE-" + sequenceCollection.getPeptideEvidence().size());
+                    PeptideEvidence peptideEvidence = new PeptideEvidence();
+                    peptideEvidence.setDBSequence(dbSequence);
+                    peptideEvidence.setPeptide(mzPeptide);
+                    peptideEvidence.setId("PE-" + sequenceCollection.getPeptideEvidence().size());
 
-                    evidence.setStart(peptidePosition.getStartPosition());
-                    evidence.setEnd(peptidePosition.getEndPosition());
-                    evidence.setPre(peptidePosition.getPreAA().toString());
-                    evidence.setPost(peptidePosition.getPostAA().toString());
+                    peptideEvidence.setStart(peptidePosition.getStartPosition());
+                    peptideEvidence.setEnd(peptidePosition.getEndPosition());
+                    peptideEvidence.setPre(peptidePosition.getPreAA().toString());
+                    peptideEvidence.setPost(peptidePosition.getPostAA().toString());
 
-                    sequenceCollection.getPeptideEvidence().add(evidence);
+                    sequenceCollection.getPeptideEvidence().add(peptideEvidence);
 
                     PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
-                    evidenceRef.setPeptideEvidence(evidence);
+                    evidenceRef.setPeptideEvidence(peptideEvidence);
                     spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
                 }
 
@@ -860,8 +865,13 @@ public class MzIdentMlExporter {
         return spectrumIdentificationResult;
     }
 
-    private ProteinAmbiguityGroup populateProteinAmbiguityGroup() {
+    private ProteinAmbiguityGroup populateProteinAmbiguityGroup(ProteinGroupDTO proteinGroupDTO, List<ProteinGroupHasProtein> ambiguityMembers) {
         ProteinAmbiguityGroup proteinAmbiguityGroup = new ProteinAmbiguityGroup();
+
+        ProteinDetectionHypothesis proteinDetectionHypothesis = new ProteinDetectionHypothesis();
+//        proteinDetectionHypothesis
+        PeptideHypothesis peptideHypothesis = new PeptideHypothesis();
+        peptideHypothesis.g
 
         return proteinAmbiguityGroup;
     }

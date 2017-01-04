@@ -1,5 +1,6 @@
 package com.compomics.colims.repository;
 
+import com.compomics.colims.model.Peptide;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import java.util.ArrayList;
 import org.junit.Assert;
@@ -26,10 +27,10 @@ public class PeptideRepositoryTest {
     private PeptideRepository peptideRepository;
 
     @Test
-    public void testGetPeptideDTOByProteinGroupId() {
+    public void testGetPeptideDTOsByProteinGroupId() {
         List<Long> analyticalRunIDs = new ArrayList<>();
         analyticalRunIDs.add(1L);
-        List<PeptideDTO> peptideDTOs = peptideRepository.getPeptideDTOByProteinGroupIdAnalyticalRunId(2L,analyticalRunIDs);
+        List<PeptideDTO> peptideDTOs = peptideRepository.getPeptideDTOsByProteinGroupIdAndRunIds(2L,analyticalRunIDs);
 
         Assert.assertFalse(peptideDTOs.isEmpty());
         Assert.assertEquals(2, peptideDTOs.size());
@@ -45,6 +46,22 @@ public class PeptideRepositoryTest {
         Assert.assertEquals(0.6, peptideDTO.getPeptideProbability(), 0.001);
         Assert.assertEquals(0.4, peptideDTO.getPeptidePostErrorProbability(), 0.001);
         Assert.assertNotNull(peptideDTO.getPeptide());
+    }
+
+    @Test
+    public void testGetPeptidesByProteinGroupId() {
+        List<Long> analyticalRunIDs = new ArrayList<>();
+        analyticalRunIDs.add(1L);
+        List<Peptide> peptides = peptideRepository.getPeptidesByProteinGroupIdAndRunIds(2L,analyticalRunIDs);
+
+        Assert.assertFalse(peptides.isEmpty());
+        Assert.assertEquals(2, peptides.size());
+
+        Peptide peptide = peptides.get(0);
+        Assert.assertNotNull(peptide);
+
+        peptide = peptides.get(1);
+        Assert.assertNotNull(peptide);
     }
 
 }

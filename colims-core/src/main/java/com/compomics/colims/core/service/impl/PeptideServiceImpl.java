@@ -75,7 +75,7 @@ public class PeptideServiceImpl implements PeptideService {
         } catch (LazyInitializationException e) {
             //fetch the PeptideHasModification instance
             List<PeptideHasModification> peptideHasModifications = peptideRepository.fetchPeptideHasModifications(peptide.getId());
-            for(PeptideHasModification peptideHasModification : peptideHasModifications){
+            for (PeptideHasModification peptideHasModification : peptideHasModifications) {
                 peptideHasModification.setModification(modificationRepository.findById(peptideHasModification.getModification().getId()));
             }
             peptide.setPeptideHasModifications(peptideHasModifications);
@@ -83,23 +83,28 @@ public class PeptideServiceImpl implements PeptideService {
     }
 
     @Override
-    public List<PeptideDTO> getPeptideDTO(Long proteinGroupId, List<Long> analyticalRunIds) {
-        return peptideRepository.getPeptideDTOByProteinGroupIdAnalyticalRunId(proteinGroupId, analyticalRunIds);
+    public List<PeptideDTO> getPeptideDTOs(Long proteinGroupId, List<Long> analyticalRunIds) {
+        return peptideRepository.getPeptideDTOsByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
+    }
+
+    @Override
+    public List<Peptide> getPeptides(Long proteinGroupId, List<Long> analyticalRunIds) {
+        return peptideRepository.getPeptidesByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
     }
 
     @Override
     public List<String> getDistinctPeptideSequence(Long proteinGroupId, List<Long> analyticalRunIds) {
-        return peptideRepository.getDistinctPeptideSequenceByProteinGroupIdAnalyticalRunId(proteinGroupId, analyticalRunIds);
+        return peptideRepository.getDistinctPeptideSequenceByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
     }
 
     @Override
     public List<Peptide> getUniquePeptides(Long proteinGroupId, List<Long> analyticalRunIds) {
-        return peptideRepository.getUniquePeptideByProteinGroupIdAnalyticalRunId(proteinGroupId, analyticalRunIds);
+        return peptideRepository.getUniquePeptideByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
     }
 
 
     @Override
     public Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAnalyticalRunId(List<Long> analyticalRunIds) {
-        return peptideRepository.getPeptideHasProteinGroupByAnalyticalRunId(analyticalRunIds);
+        return peptideRepository.getPeptideHasProteinGroupByAndRunIds(analyticalRunIds);
     }
 }

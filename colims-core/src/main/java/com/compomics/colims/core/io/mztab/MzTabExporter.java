@@ -575,7 +575,7 @@ public class MzTabExporter {
                 for (int j = 0; j < mzTabExport.getRuns().size(); j++) {
                     List<Long> analyticalRunIdList = new ArrayList<>(1);
                     analyticalRunIdList.add(mzTabExport.getRuns().get(j).getId());
-                    proteins.append(peptideService.getPeptideDTO(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
+                    proteins.append(peptideService.getPeptideDTOs(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
                     proteins.append(peptideService.getDistinctPeptideSequence(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
                     proteins.append(peptideService.getUniquePeptides(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
                 }
@@ -798,7 +798,7 @@ public class MzTabExporter {
      * @return list of ProteinGroupDTO object
      */
     private List<ProteinGroupDTO> getProteinGroupsForAnalyticalRuns(List<Long> analyticalRunIds) {
-        return proteinGroupService.getProteinGroupsForRuns(analyticalRunIds);
+        return proteinGroupService.getProteinGroupDTOsForRuns(analyticalRunIds);
     }
 
     /**
