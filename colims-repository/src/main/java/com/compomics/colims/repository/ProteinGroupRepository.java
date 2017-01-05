@@ -36,7 +36,7 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param analyticalRunIds the list of analytical run IDs
      * @return the list of protein group DTO objects
      */
-    List<ProteinGroupDTO> getProteinGroupDTOsForRun(List<Long> analyticalRunIds);
+    List<ProteinGroupDTO> getProteinGroupDTOsForRuns(List<Long> analyticalRunIds);
 
     /**
      * Fetch a list of {@link ProteinGroup} instances associated with the given analytical runs.
@@ -44,7 +44,7 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param analyticalRunIds the list of analytical run IDs
      * @return the list of protein groups
      */
-    List<ProteinGroup> getProteinGroupsForRun(List<Long> analyticalRunIds);
+    List<ProteinGroup> getProteinGroupsForRuns(List<Long> analyticalRunIds);
 
     /**
      * Count the number of proteins groups related to a given analytical run, including optional filter term.
@@ -87,5 +87,5 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param proteinGroupId
      * @return ProteinGroupHasProtein and protein
      */
-    Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinbyProteinGroupId(final Long proteinGroupId);
+    Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinsByProteinGroupId(final Long proteinGroupId);
 }

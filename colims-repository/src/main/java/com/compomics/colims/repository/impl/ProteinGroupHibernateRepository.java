@@ -118,7 +118,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public List<ProteinGroupDTO> getProteinGroupDTOsForRun(List<Long> analyticalRunIds) {
+    public List<ProteinGroupDTO> getProteinGroupDTOsForRuns(List<Long> analyticalRunIds) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
         //joins
@@ -144,27 +144,40 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         projectionList.add(Projections.property("protein.id").as("mainId"));
         criteria.setProjection(projectionList);
 
-        //transform results into ProteinGroupForRun instances
+        //transform results into ProteinGroupDTO instances
         criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroupDTO.class));
 
         return criteria.list();
     }
 
     @Override
-    public List<ProteinGroup> getProteinGroupsForRun(List<Long> analyticalRunIds) {
-        Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
+    public List<ProteinGroup> getProteinGroupsForRuns(List<Long> analyticalRunIds) {
+//        Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
+//
+//        //joins
+//        criteria.createAlias("peptide.spectrum", "spectrum");
+//        criteria.createAlias("peptideHasProteinGroup.peptide", "peptide");
+//        criteria.createAlias("proteinGroup.peptideHasProteinGroups", "peptideHasProteinGroup");
+//        criteria.createAlias("proteinGroup.proteinGroupHasProteins", "proteinGroupHasProtein");
+//        criteria.createAlias("proteinGroupHasProtein.protein", "protein");
+//
+//        //restrictions
+//        criteria.add(Restrictions.in("spectrum.analyticalRun.id", analyticalRunIds));
+//
+//        //projections
+//        ProjectionList projectionList = Projections.projectionList();
+//        projectionList.add(Projections.groupProperty("id").as("id"));
+//        criteria.setProjection(projectionList);
+//
+//        //transform results into ProteinGroup instances
+//        criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroup.class));
 
-        //joins
-        criteria.createAlias("peptide.spectrum", "spectrum");
-        criteria.createAlias("peptideHasProteinGroup.peptide", "peptide");
-        criteria.createAlias("proteinGroup.peptideHasProteinGroups", "peptideHasProteinGroup");
-        criteria.createAlias("proteinGroup.proteinGroupHasProteins", "proteinGroupHasProtein");
-        criteria.createAlias("proteinGroupHasProtein.protein", "protein");
+        Query query = getCurrentSession().getNamedQuery("ProteinGroup.getProteinGroupsByRunIds");
+        query.setParameterList("analyticalRunIds", analyticalRunIds);
 
-        //restrictions
-        criteria.add(Restrictions.in("spectrum.analyticalRun.id", analyticalRunIds));
+        List list = query.list();
 
-        return criteria.list();
+        return list;
     }
 
     @Override
@@ -178,7 +191,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinbyProteinGroupId(Long proteinGroupId) {
+    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinsByProteinGroupId(Long proteinGroupId) {
 
         Query query = getCurrentSession().getNamedQuery("Protein.getProteinByProteinGroupId");
         query.setParameter("proteinGroupId", proteinGroupId);

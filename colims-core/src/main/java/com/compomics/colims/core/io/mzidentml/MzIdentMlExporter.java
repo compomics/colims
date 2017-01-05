@@ -17,6 +17,7 @@ import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.model.enums.ScoreType;
+import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,6 +68,7 @@ public class MzIdentMlExporter {
     private static final String SPECTRUM_IDENTIFICATION_LIST_ID = "SIL-%d";
     private static final String PROTEIN_DETECTION_LIST_ID = "PDL-%d";
     private static final String PROTEIN_DETECTION_ID = "PD-%d";
+    private static final String PROTEIN_DETECTION_HYPOTHESIS_ID = "PDH-%d";
 
     @Value("${mzidentml.version}")
     private final String MZIDENTML_VERSION = "1.1.0";
@@ -225,6 +227,8 @@ public class MzIdentMlExporter {
      * @return true if the CV was added or already present
      */
     private boolean updateCvList(String cvRef) throws IOException {
+        boolean present = true;
+
         if (!cvs.containsKey(cvRef)) {
             Cv cv = getMzIdentMlElement("/CvList/" + cvRef, Cv.class);
 
@@ -245,11 +249,12 @@ public class MzIdentMlExporter {
             if (cv != null) {
                 //add it to the used CVs
                 cvs.put(cvRef, cv);
-
-                return true;
+            } else {
+                present = false;
             }
         }
-        return false;
+
+        return present;
     }
 
     /**
@@ -724,8 +729,162 @@ public class MzIdentMlExporter {
         //get the protein group DTOs associated with the analytical runs
         List<Long> runIds = analyticalRuns.stream().map(AnalyticalRun::getId).collect(Collectors.toList());
         List<ProteinGroupDTO> proteinGroupDTOs = proteinGroupService.getProteinGroupDTOsForRuns(runIds);
+        List<ProteinGroup> proteinGroups = proteinGroupService.getProteinGroupsForRuns(runIds);
+
+        //keep track of the DB sequences
+        Map<Long, DBSequence> dbSequences = new HashMap<>();
         //iterate over the protein groups
+        for (ProteinGroup proteinGroup : proteinGroups) {
+            //create an ambiguity group
+            ProteinAmbiguityGroup proteinAmbiguityGroup = new ProteinAmbiguityGroup();
+
+            Protein mainGroupProtein = null;
+            //look for the main group protein
+            Optional<ProteinGroupHasProtein> first = proteinGroup.getProteinGroupHasProteins().stream().filter(ProteinGroupHasProtein::getIsMainGroupProtein).findFirst();
+            if (first.isPresent()) {
+                mainGroupProtein = first.get().getProtein();
+            } else {
+                throw new IllegalArgumentException("The protein group with ID " + proteinGroup.getId() + " doesn't have a main protein.");
+            }
+
+            //iterate over the proteins in the protein group
+            for (ProteinGroupHasProtein proteinGroupHasProtein : proteinGroup.getProteinGroupHasProteins()) {
+                Protein protein = proteinGroupHasProtein.getProtein();
+
+                DBSequence dbSequence;
+                if (!dbSequences.containsKey(protein.getId())) {
+                    dbSequence = populateDBSequence(proteinGroupHasProtein.getProteinAccession(), protein.getSequence());
+                    dbSequence.setId(String.format(DB_SEQUENCE_ID, protein.getId()));
+                    sequenceCollection.getDBSequence().add(dbSequence);
+
+                    dbSequences.put(protein.getId(), dbSequence);
+                } else {
+                    dbSequence = dbSequences.get(protein.getId());
+                }
+
+                //create a protein detection hypothesis
+                ProteinDetectionHypothesis proteinDetectionHypothesis = new ProteinDetectionHypothesis();
+                proteinDetectionHypothesis.setDBSequence(dbSequence);
+                //TODO: 5/01/17 what to do with this threshold
+                proteinDetectionHypothesis.setPassThreshold(true);
+                proteinDetectionHypothesis.setId(String.format(PROTEIN_DETECTION_HYPOTHESIS_ID, proteinGroupHasProtein.getId()));
+
+                proteinAmbiguityGroup.getProteinDetectionHypothesis().add(proteinDetectionHypothesis);
+
+                proteinDetectionList.getProteinAmbiguityGroup().add(proteinAmbiguityGroup);
+            }
+
+            //get the peptide DTOs associated with this protein group
+            List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOs(proteinGroup.getId(), runIds);
+            //keep track of the peptide DTOs - mzIdentML peptides that represent the same peptides
+            Map<PeptideDTO, uk.ac.ebi.jmzidml.model.mzidml.Peptide> samePeptides = new HashMap<>();
+
+            //iterate over the protein group peptide DTOs
+            for (PeptideDTO peptideDTO : peptideDTOs) {
+                Peptide colimsPeptide = peptideDTO.getPeptide();
+
+                uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide;
+                if (!samePeptides.containsKey(peptideDTO)) {
+                    mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide();
+
+                    mzPeptide.setId(String.format(PEPTIDE_ID, colimsPeptide.getId()));
+                    mzPeptide.setPeptideSequence(colimsPeptide.getSequence());
+
+                    //add the peptide modifications
+                    for (PeptideHasModification peptideHasMod : colimsPeptide.getPeptideHasModifications()) {
+                        mzPeptide.getModification().add(populateModification(peptideHasMod));
+                    }
+
+                    //add to the sequence collection
+                    sequenceCollection.getPeptide().add(mzPeptide);
+
+                    //add to the same peptides
+                    samePeptides.put(peptideDTO, mzPeptide);
+                } else {
+                    mzPeptide = samePeptides.get(peptideDTO);
+                }
+
+                //get the peptide's spectrum
+                Spectrum spectrum = colimsPeptide.getSpectrum();
+                SpectrumIdentification spectrumIdentification = new SpectrumIdentification();
+                spectrumIdentification.setId(String.format(SPECTRUM_ID, spectrum.getId()));
+                spectrumIdentification.getInputSpectra().add(inputSpectra);
+
+                //iterate over the spectrum files
+                for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
+                    //do nothing for the moment
+                }
+
+                SpectrumIdentificationItem spectrumIdentificationItem = populateSpectrumIdentificationItem(spectrum);
+                spectrumIdentificationItem.setPeptide(mzPeptide);
+
+                //calculate peptide location values
+                //more than one position is possible
+                //iterate over the proteins in the protein group
+                for (ProteinGroupHasProtein proteinGroupHasProtein : proteinGroup.getProteinGroupHasProteins()) {
+                    Protein protein = proteinGroupHasProtein.getProtein();
+                    List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(protein.getSequence(), colimsPeptide.getSequence());
+                    for (PeptidePosition peptidePosition : peptidePositions) {
+                        PeptideEvidence peptideEvidence = new PeptideEvidence();
+
+                        DBSequence dbSequence = dbSequences.get(protein.getId());
+                        peptideEvidence.setDBSequence(dbSequence);
+                        peptideEvidence.setPeptide(mzPeptide);
+                        peptideEvidence.setId("PE-" + sequenceCollection.getPeptideEvidence().size());
+
+                        peptideEvidence.setStart(peptidePosition.getStartPosition());
+                        peptideEvidence.setEnd(peptidePosition.getEndPosition());
+                        peptideEvidence.setPre(peptidePosition.getPreAA().toString());
+                        peptideEvidence.setPost(peptidePosition.getPostAA().toString());
+
+                        sequenceCollection.getPeptideEvidence().add(peptideEvidence);
+
+                        PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
+                        evidenceRef.setPeptideEvidence(peptideEvidence);
+                        spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
+
+                        SearchDatabaseRef searchDatabaseRef = searchDatabases.get(dbSequence.getSearchDatabase());
+                        if (!spectrumIdentification.getSearchDatabaseRef().contains(searchDatabaseRef)) {
+                            spectrumIdentification.getSearchDatabaseRef().add(searchDatabaseRef);
+                        }
+                    }
+                }
+
+                SpectrumIdentificationResult spectrumIdentificationResult;
+                //handle chimeric spectra
+                //check whether the spectrum has only one identification
+                if (spectrum.getPeptides().size() == 1) {
+                    spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum);
+                    spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
+                    spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
+                }
+                //otherwise it's a chimeric spectrum
+                else {
+                    //check if the spectrum identification result is already present in the map
+                    if (!spectrumIdentificationResults.containsKey(spectrum.getId())) {
+                        spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum);
+                        spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
+                        spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
+
+                        //add to the map
+                        spectrumIdentificationResults.put(spectrum.getId(), spectrumIdentificationResult);
+                    } else {
+                        spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().add(spectrumIdentificationItem);
+                    }
+                    //update the ID
+                    int idSuffix = spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().size();
+                    spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
+                }
+
+                spectrumIdentification.setSpectrumIdentificationList(spectrumIdentificationList);
+                spectrumIdentification.setSpectrumIdentificationProtocol(mzIdentML.getAnalysisProtocolCollection().getSpectrumIdentificationProtocol().get(0));
+
+                analysisCollection.getSpectrumIdentification().add(spectrumIdentification);
+            }
+        }
+
         for (ProteinGroupDTO proteinGroupDTO : proteinGroupDTOs) {
+
             DBSequence dbSequence = populateDBSequence(proteinGroupDTO.getMainAccession(), proteinGroupDTO.getMainSequence());
             dbSequence.setId(String.format(DB_SEQUENCE_ID, proteinGroupDTO.getMainId()));
             sequenceCollection.getDBSequence().add(dbSequence);
@@ -736,12 +895,11 @@ public class MzIdentMlExporter {
             //add the sequences for the ambiguity members
             for (ProteinGroupHasProtein ambiguityMember : ambiguityMembers) {
                 dbSequence = populateDBSequence(ambiguityMember.getProteinAccession(), ambiguityMember.getProtein().getSequence());
-                dbSequence.setId(String.format(DB_SEQUENCE_ID, ambiguityMember.getProtein().getId());
+                dbSequence.setId(String.format(DB_SEQUENCE_ID, ambiguityMember.getProtein().getId()));
                 sequenceCollection.getDBSequence().add(dbSequence);
             }
             ProteinAmbiguityGroup proteinAmbiguityGroup = populateProteinAmbiguityGroup(proteinGroupDTO, ambiguityMembers);
 
-            Map<String, >
             //get the peptide DTOs associated with this protein group
             List<Peptide> peptideS = peptideService.getPeptides(proteinGroupDTO.getId(), runIds);
             //iterate over the protein group peptides
@@ -871,7 +1029,7 @@ public class MzIdentMlExporter {
         ProteinDetectionHypothesis proteinDetectionHypothesis = new ProteinDetectionHypothesis();
 //        proteinDetectionHypothesis
         PeptideHypothesis peptideHypothesis = new PeptideHypothesis();
-        peptideHypothesis.g
+//        peptideHypothesis.g
 
         return proteinAmbiguityGroup;
     }

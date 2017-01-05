@@ -1,8 +1,8 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.repository.hibernate.SortDirection;
+import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
-import java.util.ArrayList;
+import com.compomics.colims.repository.hibernate.SortDirection;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -109,6 +110,16 @@ public class ProteinGroupRepositoryTest {
 
         proteinGroupCountForRun = proteinGroupRepository.getProteinGroupCountForRun(analyticalRunIds, "NOTAPROTEIN");
         assertThat(proteinGroupCountForRun, is(0L));
+    }
+
+    @Test
+    public void testGetProteinGroupsForRuns() {
+        List<Long> analyticalRunIds = new ArrayList<>();
+        analyticalRunIds.add(1L);
+
+        List<ProteinGroup> proteinGroupsForRuns = proteinGroupRepository.getProteinGroupsForRuns(analyticalRunIds);
+
+        Assert.assertEquals(2, proteinGroupsForRuns.size());
     }
 
 //    @Test

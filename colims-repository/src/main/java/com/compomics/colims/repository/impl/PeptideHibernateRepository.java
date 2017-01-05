@@ -29,7 +29,7 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     public List<PeptideDTO> getPeptideDTOsByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds) {
         Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideDTOsByProteinGroupId");
         query.setLong("proteinGroupId", proteinGroupId);
-        query.setParameterList("analyticalRunId", analyticalRunIds);
+        query.setParameterList("analyticalRunIds", analyticalRunIds);
 
         List list = query.list();
 
@@ -69,7 +69,7 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     public List<Peptide> getPeptidesByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds) {
         Query query = getCurrentSession().getNamedQuery("Peptide.getPeptidesByProteinGroupId");
         query.setLong("proteinGroupId", proteinGroupId);
-        query.setParameterList("analyticalRunId", analyticalRunIds);
+        query.setParameterList("analyticalRunIds", analyticalRunIds);
 
         return query.list();
     }
@@ -88,7 +88,7 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
         Query query = getCurrentSession().getNamedQuery("Peptide.getDistinctPeptideSequencesByProteinGroupIdAndRunIds");
 
         query.setLong("proteinGroupId", proteinGroupId);
-        query.setParameterList("analyticalRunId", analyticalRunIds);
+        query.setParameterList("analyticalRunIds", analyticalRunIds);
 
         return query.list();
     }
@@ -111,7 +111,7 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     @Override
     public Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAndRunIds(List<Long> analyticalRunIds) {
         Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideHasProteinGroupsByRunIds");
-        query.setParameterList("analyticalRunId", analyticalRunIds);
+        query.setParameterList("analyticalRunIds", analyticalRunIds);
 
         List list = query.list();
 
