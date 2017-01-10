@@ -66,6 +66,8 @@ public class MzIdentMlExporterTest {
         try (
                 BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
         ) {
+            bufferedWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            bufferedWriter.newLine();
             exporter.export(bufferedWriter, analyticalRuns);
         }
     }

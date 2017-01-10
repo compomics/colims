@@ -13,10 +13,7 @@ import com.compomics.colims.core.util.SequenceUtils;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.SearchModification;
-import com.compomics.colims.model.enums.FastaDbType;
-import com.compomics.colims.model.enums.MassAccuracyType;
-import com.compomics.colims.model.enums.ModificationType;
-import com.compomics.colims.model.enums.ScoreType;
+import com.compomics.colims.model.enums.*;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -63,6 +60,7 @@ public class MzIdentMlExporter {
     private static final String PEPTIDE_ID = "PEP-%d";
     private static final String SPECTRUM_ID = "SPEC-%d";
     private static final String SPECTRUM_DATA_ID = "SPECDAT-%d";
+    private static final String SPECTRUM_IDENTIFICATION_ID = "SI-%d";
     private static final String SPECTRUM_IDENTIFICATION_ITEM_ID = "SII-%d";
     private static final String SPECTRUM_IDENTIFICATION_RESULT_ID = "SIR-%d";
     private static final String SPECTRUM_IDENTIFICATION_LIST_ID = "SIL-%d";
@@ -685,8 +683,14 @@ public class MzIdentMlExporter {
      * with it.
      */
     private void populateSpectrumData() throws IOException {
+        //set up the spectrum identification list
         SpectrumIdentificationList spectrumIdentificationList = new SpectrumIdentificationList();
         spectrumIdentificationList.setId(String.format(SPECTRUM_IDENTIFICATION_LIST_ID, 1));
+
+        //set up the spectrum identification
+        SpectrumIdentification spectrumIdentification = new SpectrumIdentification();
+        spectrumIdentification.setId(String.format(SPECTRUM_IDENTIFICATION_ID, 1));
+        spectrumIdentification.setSpectrumIdentificationList(spectrumIdentificationList);
 
         //calculate the number of sequences searched and compose a list of SearchDatabaseRef instances
         long numberOfSequencesSearched = 0;
@@ -696,16 +700,16 @@ public class MzIdentMlExporter {
             searchDatabaseRef.setSearchDatabase(entry.getValue());
             searchDatabaseRefs.add(searchDatabaseRef);
 
+            //add the search database ref to the spectrum identification
+            spectrumIdentification.getSearchDatabaseRef().add(searchDatabaseRef);
+
             numberOfSequencesSearched += proteinAccessions.get(entry.getKey()).size();
         }
         spectrumIdentificationList.setNumSequencesSearched(numberOfSequencesSearched);
+        spectrumIdentification.setSpectrumIdentificationProtocol(mzIdentML.getAnalysisProtocolCollection().getSpectrumIdentificationProtocol().get(0));
+        mzIdentML.getDataCollection().getAnalysisData().getSpectrumIdentificationList().add(spectrumIdentificationList);
 
-        ProteinDetectionList proteinDetectionList = new ProteinDetectionList();
-        proteinDetectionList.setId(String.format(PROTEIN_DETECTION_LIST_ID, 1));
-
-        SequenceCollection sequenceCollection = new SequenceCollection();
-        AnalysisCollection analysisCollection = new AnalysisCollection();
-
+        //set up spectra data
         FileFormat spectrumFileFormat = new FileFormat();
         spectrumFileFormat.setCvParam(getMzIdentMlElement("/FileFormat/Mascot MGF", CvParam.class));
 
@@ -717,29 +721,55 @@ public class MzIdentMlExporter {
         spectraData.setLocation("data.mgf");                        // NOTE: may not be accurate
         spectraData.setFileFormat(spectrumFileFormat);
         spectraData.setSpectrumIDFormat(spectrumIDFormat);
-
         mzIdentML.getDataCollection().getInputs().getSpectraData().add(spectraData);
 
+        //add the input spectra to the spectrum identification
         InputSpectra inputSpectra = new InputSpectra();
         inputSpectra.setSpectraData(spectraData);
+        spectrumIdentification.getInputSpectra().add(inputSpectra);
 
         //map the keep track of spectra with more than one identification (chimeric spectra)
         Map<Long, SpectrumIdentificationResult> spectrumIdentificationResults = new HashMap<>();
 
-        //get the protein group DTOs associated with the analytical runs
-        List<Long> runIds = analyticalRuns.stream().map(AnalyticalRun::getId).collect(Collectors.toList());
-        List<ProteinGroupDTO> proteinGroupDTOs = proteinGroupService.getProteinGroupDTOsForRuns(runIds);
-        List<ProteinGroup> proteinGroups = proteinGroupService.getProteinGroupsForRuns(runIds);
+        //set up the protein detection list
+        ProteinDetectionList proteinDetectionList = new ProteinDetectionList();
+        proteinDetectionList.setId(String.format(PROTEIN_DETECTION_LIST_ID, 1));
+        mzIdentML.getDataCollection().getAnalysisData().setProteinDetectionList(proteinDetectionList);
 
-        //keep track of the DB sequences
+        //set up the sequence collection
+        SequenceCollection sequenceCollection = new SequenceCollection();
+        mzIdentML.setSequenceCollection(sequenceCollection);
+
+        //
+        InputSpectrumIdentifications inputSpectrumIdentifications = new InputSpectrumIdentifications();
+        inputSpectrumIdentifications.setSpectrumIdentificationList(spectrumIdentificationList);
+
+        //set up the protein detection
+        ProteinDetection proteinDetection = new ProteinDetection();
+        proteinDetection.setId(String.format(PROTEIN_DETECTION_ID, 1));
+        proteinDetection.setProteinDetectionList(proteinDetectionList);
+        proteinDetection.setProteinDetectionProtocol(mzIdentML.getAnalysisProtocolCollection().getProteinDetectionProtocol());
+        proteinDetection.getInputSpectrumIdentifications().add(inputSpectrumIdentifications);
+
+        //set up the analysis collection
+        AnalysisCollection analysisCollection = new AnalysisCollection();
+        analysisCollection.getSpectrumIdentification().add(spectrumIdentification);
+        analysisCollection.setProteinDetection(proteinDetection);
+        mzIdentML.setAnalysisCollection(analysisCollection);
+
+        //map to keep track of protein ID - DB sequence pairs
         Map<Long, DBSequence> dbSequences = new HashMap<>();
+
+        //get the protein groups associated with the analytical runs
+        List<Long> runIds = analyticalRuns.stream().map(AnalyticalRun::getId).collect(Collectors.toList());
+        List<ProteinGroup> proteinGroups = proteinGroupService.getProteinGroupsForRuns(runIds);
         //iterate over the protein groups
         for (ProteinGroup proteinGroup : proteinGroups) {
             //create an ambiguity group
             ProteinAmbiguityGroup proteinAmbiguityGroup = new ProteinAmbiguityGroup();
 
-            Protein mainGroupProtein = null;
             //look for the main group protein
+            Protein mainGroupProtein = null;
             Optional<ProteinGroupHasProtein> first = proteinGroup.getProteinGroupHasProteins().stream().filter(ProteinGroupHasProtein::getIsMainGroupProtein).findFirst();
             if (first.isPresent()) {
                 mainGroupProtein = first.get().getProtein();
@@ -768,23 +798,27 @@ public class MzIdentMlExporter {
                 //TODO: 5/01/17 what to do with this threshold
                 proteinDetectionHypothesis.setPassThreshold(true);
                 proteinDetectionHypothesis.setId(String.format(PROTEIN_DETECTION_HYPOTHESIS_ID, proteinGroupHasProtein.getId()));
+                //TODO: set the main protein as leading protein
 
+                //add to the protein ambiguity group
                 proteinAmbiguityGroup.getProteinDetectionHypothesis().add(proteinDetectionHypothesis);
-
-                proteinDetectionList.getProteinAmbiguityGroup().add(proteinAmbiguityGroup);
             }
+
+            //add the protein ambiguity group to the protein detection list
+            proteinDetectionList.getProteinAmbiguityGroup().add(proteinAmbiguityGroup);
 
             //get the peptide DTOs associated with this protein group
             List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOs(proteinGroup.getId(), runIds);
-            //keep track of the peptide DTOs - mzIdentML peptides that represent the same peptides
-            Map<PeptideDTO, uk.ac.ebi.jmzidml.model.mzidml.Peptide> samePeptides = new HashMap<>();
-
+            //keep track of the peptide DTOs - mzIdentML peptide pairs that represent the "unique" peptides;
+            //same sequence, same modifications
+            Map<PeptideDTO, uk.ac.ebi.jmzidml.model.mzidml.Peptide> uniquePeptides = new HashMap<>();
             //iterate over the protein group peptide DTOs
             for (PeptideDTO peptideDTO : peptideDTOs) {
                 Peptide colimsPeptide = peptideDTO.getPeptide();
-
                 uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide;
-                if (!samePeptides.containsKey(peptideDTO)) {
+
+                //check if a similar peptide (same sequence, modifications) is already present
+                if (!uniquePeptides.containsKey(peptideDTO)) {
                     mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide();
 
                     mzPeptide.setId(String.format(PEPTIDE_ID, colimsPeptide.getId()));
@@ -798,24 +832,21 @@ public class MzIdentMlExporter {
                     //add to the sequence collection
                     sequenceCollection.getPeptide().add(mzPeptide);
 
-                    //add to the same peptides
-                    samePeptides.put(peptideDTO, mzPeptide);
+                    //add to the "unique" peptides
+                    uniquePeptides.put(peptideDTO, mzPeptide);
                 } else {
-                    mzPeptide = samePeptides.get(peptideDTO);
+                    mzPeptide = uniquePeptides.get(peptideDTO);
                 }
 
                 //get the peptide's spectrum
                 Spectrum spectrum = colimsPeptide.getSpectrum();
-                SpectrumIdentification spectrumIdentification = new SpectrumIdentification();
-                spectrumIdentification.setId(String.format(SPECTRUM_ID, spectrum.getId()));
-                spectrumIdentification.getInputSpectra().add(inputSpectra);
 
                 //iterate over the spectrum files
                 for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
                     //do nothing for the moment
                 }
 
-                SpectrumIdentificationItem spectrumIdentificationItem = populateSpectrumIdentificationItem(spectrum);
+                SpectrumIdentificationItem spectrumIdentificationItem = populateSpectrumIdentificationItem(spectrum, colimsPeptide);
                 spectrumIdentificationItem.setPeptide(mzPeptide);
 
                 //calculate peptide location values
@@ -843,10 +874,13 @@ public class MzIdentMlExporter {
                         evidenceRef.setPeptideEvidence(peptideEvidence);
                         spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
 
-                        SearchDatabaseRef searchDatabaseRef = searchDatabases.get(dbSequence.getSearchDatabase());
-                        if (!spectrumIdentification.getSearchDatabaseRef().contains(searchDatabaseRef)) {
-                            spectrumIdentification.getSearchDatabaseRef().add(searchDatabaseRef);
-                        }
+                        PeptideHypothesis peptideHypothesis = new PeptideHypothesis();
+                        peptideHypothesis.setPeptideEvidence(peptideEvidence);
+                        SpectrumIdentificationItemRef spectrumIdentificationItemRef = new SpectrumIdentificationItemRef();
+                        spectrumIdentificationItemRef.setSpectrumIdentificationItem(spectrumIdentificationItem);
+                        peptideHypothesis.getSpectrumIdentificationItemRef().add(spectrumIdentificationItemRef);
+
+                        proteinAmbiguityGroup.getProteinDetectionHypothesis().forEach(proteinDetectionHypothesis -> proteinDetectionHypothesis.getPeptideHypothesis().add(peptideHypothesis));
                     }
                 }
 
@@ -854,7 +888,7 @@ public class MzIdentMlExporter {
                 //handle chimeric spectra
                 //check whether the spectrum has only one identification
                 if (spectrum.getPeptides().size() == 1) {
-                    spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum);
+                    spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum, spectraData);
                     spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
                     spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
                 }
@@ -862,7 +896,7 @@ public class MzIdentMlExporter {
                 else {
                     //check if the spectrum identification result is already present in the map
                     if (!spectrumIdentificationResults.containsKey(spectrum.getId())) {
-                        spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum);
+                        spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum, spectraData);
                         spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
                         spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
 
@@ -875,150 +909,25 @@ public class MzIdentMlExporter {
                     int idSuffix = spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().size();
                     spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
                 }
-
-                spectrumIdentification.setSpectrumIdentificationList(spectrumIdentificationList);
-                spectrumIdentification.setSpectrumIdentificationProtocol(mzIdentML.getAnalysisProtocolCollection().getSpectrumIdentificationProtocol().get(0));
-
-                analysisCollection.getSpectrumIdentification().add(spectrumIdentification);
             }
         }
-
-        for (ProteinGroupDTO proteinGroupDTO : proteinGroupDTOs) {
-
-            DBSequence dbSequence = populateDBSequence(proteinGroupDTO.getMainAccession(), proteinGroupDTO.getMainSequence());
-            dbSequence.setId(String.format(DB_SEQUENCE_ID, proteinGroupDTO.getMainId()));
-            sequenceCollection.getDBSequence().add(dbSequence);
-
-            //for each protein group, populate a ProteinAmbiguityGroup instance
-            //check for ambiguity members
-            List<ProteinGroupHasProtein> ambiguityMembers = proteinGroupService.getAmbiguityMembers(proteinGroupDTO.getId());
-            //add the sequences for the ambiguity members
-            for (ProteinGroupHasProtein ambiguityMember : ambiguityMembers) {
-                dbSequence = populateDBSequence(ambiguityMember.getProteinAccession(), ambiguityMember.getProtein().getSequence());
-                dbSequence.setId(String.format(DB_SEQUENCE_ID, ambiguityMember.getProtein().getId()));
-                sequenceCollection.getDBSequence().add(dbSequence);
-            }
-            ProteinAmbiguityGroup proteinAmbiguityGroup = populateProteinAmbiguityGroup(proteinGroupDTO, ambiguityMembers);
-
-            //get the peptide DTOs associated with this protein group
-            List<Peptide> peptideS = peptideService.getPeptides(proteinGroupDTO.getId(), runIds);
-            //iterate over the protein group peptides
-            for (Peptide colimsPeptide : peptideS) {
-                uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide = new uk.ac.ebi.jmzidml.model.mzidml.Peptide();
-
-                mzPeptide.setId(String.format(PEPTIDE_ID, colimsPeptide.getId()));
-                mzPeptide.setPeptideSequence(colimsPeptide.getSequence());
-
-                //add the peptide modifications
-                for (PeptideHasModification peptideHasMod : colimsPeptide.getPeptideHasModifications()) {
-                    mzPeptide.getModification().add(populateModification(peptideHasMod));
-                }
-
-                //add to the sequence collection
-                sequenceCollection.getPeptide().add(mzPeptide);
-
-                //get the peptide's spectrum
-                Spectrum spectrum = colimsPeptide.getSpectrum();
-                SpectrumIdentification spectrumIdentification = new SpectrumIdentification();
-                spectrumIdentification.setId(String.format(SPECTRUM_ID, spectrum.getId()));
-                spectrumIdentification.getInputSpectra().add(inputSpectra);
-
-                //iterate over the spectrum files
-                for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
-                    //do nothing for the moment
-                }
-
-                SpectrumIdentificationItem spectrumIdentificationItem = populateSpectrumIdentificationItem(spectrum);
-                spectrumIdentificationItem.setPeptide(mzPeptide);
-
-                //calculate peptide location values
-                //more than one position is possible
-                List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(proteinGroupDTO.getMainSequence(), colimsPeptide.getSequence());
-                for (PeptidePosition peptidePosition : peptidePositions) {
-                    PeptideEvidence peptideEvidence = new PeptideEvidence();
-                    peptideEvidence.setDBSequence(dbSequence);
-                    peptideEvidence.setPeptide(mzPeptide);
-                    peptideEvidence.setId("PE-" + sequenceCollection.getPeptideEvidence().size());
-
-                    peptideEvidence.setStart(peptidePosition.getStartPosition());
-                    peptideEvidence.setEnd(peptidePosition.getEndPosition());
-                    peptideEvidence.setPre(peptidePosition.getPreAA().toString());
-                    peptideEvidence.setPost(peptidePosition.getPostAA().toString());
-
-                    sequenceCollection.getPeptideEvidence().add(peptideEvidence);
-
-                    PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
-                    evidenceRef.setPeptideEvidence(peptideEvidence);
-                    spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
-                }
-
-                SearchDatabaseRef searchDatabaseRef = searchDatabases.get(dbSequence.getSearchDatabase());
-                if (!spectrumIdentification.getSearchDatabaseRef().contains(searchDatabaseRef)) {
-                    spectrumIdentification.getSearchDatabaseRef().add(searchDatabaseRef);
-                }
-
-                SpectrumIdentificationResult spectrumIdentificationResult;
-                //handle chimeric spectra
-                //check whether the spectrum has only one identification
-                if (spectrum.getPeptides().size() == 1) {
-                    spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum);
-                    spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
-                    spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
-                }
-                //otherwise it's a chimeric spectrum
-                else {
-                    //check if the spectrum identification result is already present in the map
-                    if (!spectrumIdentificationResults.containsKey(spectrum.getId())) {
-                        spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum);
-                        spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
-                        spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
-
-                        //add to the map
-                        spectrumIdentificationResults.put(spectrum.getId(), spectrumIdentificationResult);
-                    } else {
-                        spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().add(spectrumIdentificationItem);
-                    }
-                    //update the ID
-                    int idSuffix = spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().size();
-                    spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
-                }
-
-                spectrumIdentification.setSpectrumIdentificationList(spectrumIdentificationList);
-                spectrumIdentification.setSpectrumIdentificationProtocol(mzIdentML.getAnalysisProtocolCollection().getSpectrumIdentificationProtocol().get(0));
-
-                analysisCollection.getSpectrumIdentification().add(spectrumIdentification);
-            }
-        }
-
-        ProteinDetection proteinDetection = new ProteinDetection();
-        proteinDetection.setId(String.format(PROTEIN_DETECTION_ID, 1));
-        proteinDetection.setProteinDetectionList(proteinDetectionList);
-        proteinDetection.setProteinDetectionProtocol(mzIdentML.getAnalysisProtocolCollection().getProteinDetectionProtocol());
-
-        InputSpectrumIdentifications inputSpectrumIdentifications = new InputSpectrumIdentifications();
-        inputSpectrumIdentifications.setSpectrumIdentificationList(spectrumIdentificationList);
-
-        proteinDetection.getInputSpectrumIdentifications().add(inputSpectrumIdentifications);
-        analysisCollection.setProteinDetection(proteinDetection);
-
-        mzIdentML.getDataCollection().getAnalysisData().getSpectrumIdentificationList().add(spectrumIdentificationList);
-        mzIdentML.getDataCollection().getAnalysisData().setProteinDetectionList(proteinDetectionList);
-        mzIdentML.setSequenceCollection(sequenceCollection);
-        mzIdentML.setAnalysisCollection(analysisCollection);
     }
 
     /**
      * Create a spectrum identification result from a Colims spectrum.
      *
-     * @param spectrum the Colims {@link Spectrum} instance
+     * @param spectrum    the Colims {@link Spectrum} instance
+     * @param spectraData the spectra data instance
      * @return Spectrum identification result
      */
-    private SpectrumIdentificationResult populateSpectrumIdentificationResult(Spectrum spectrum) {
+    private SpectrumIdentificationResult populateSpectrumIdentificationResult(Spectrum spectrum, SpectraData spectraData) {
         SpectrumIdentificationResult spectrumIdentificationResult = new SpectrumIdentificationResult();
 
         spectrumIdentificationResult.setId(String.format(SPECTRUM_IDENTIFICATION_RESULT_ID, spectrum.getId()));
-        spectrumIdentificationResult.setSpectraData(inputs.getSpectraData().get(0));
+        spectrumIdentificationResult.setSpectraData(spectraData);
         spectrumIdentificationResult.setSpectrumID(spectrum.getId().toString());
+
+        //TODO add the spectrum title as a CV Param
 
         return spectrumIdentificationResult;
     }
@@ -1038,16 +947,42 @@ public class MzIdentMlExporter {
      * Create a spectrum identification item from a Colims spectrum.
      *
      * @param spectrum the Colims {@link Spectrum} instance
+     * @param peptide  the Colims {@link Peptide} instance
      * @return the populated {@link SpectrumIdentification} instance
      */
-    private SpectrumIdentificationItem populateSpectrumIdentificationItem(Spectrum spectrum) {
+    private SpectrumIdentificationItem populateSpectrumIdentificationItem(Spectrum spectrum, Peptide peptide) throws IOException {
         SpectrumIdentificationItem spectrumIdentificationItem = new SpectrumIdentificationItem();
 
-        spectrumIdentificationItem.setId(String.format(SPECTRUM_IDENTIFICATION_ITEM_ID, spectrum.getId()));
+        spectrumIdentificationItem.setId(String.format(SPECTRUM_IDENTIFICATION_ITEM_ID, peptide.getId()));
         spectrumIdentificationItem.setChargeState(spectrum.getCharge());
         spectrumIdentificationItem.setExperimentalMassToCharge(spectrum.getMzRatio());
+        //TODO what to do with the rank and threshold
         spectrumIdentificationItem.setPassThreshold(true);
         spectrumIdentificationItem.setRank(0);
+
+        //add the scores
+        if (searchEngine.getSearchEngineType() == SearchEngineType.PEPTIDESHAKER) {
+            if (peptide.getPsmProbability() != null) {
+                CvParam psmScore = getMzIdentMlElement("/Scores/PSM/PS_score", CvParam.class);
+                psmScore.setValue(Double.toString(peptide.getPsmProbability()));
+                spectrumIdentificationItem.getCvParam().add(psmScore);
+            }
+            if (peptide.getPsmPostErrorProbability() != null) {
+                CvParam psmConfidence = getMzIdentMlElement("/Scores/PSM/PS_confidence", CvParam.class);
+                psmConfidence.setValue(Double.toString(peptide.getPsmPostErrorProbability()));
+                spectrumIdentificationItem.getCvParam().add(psmConfidence);
+            }
+        } else {
+            //TODO add maxquant scores here
+        }
+
+        //add the theoretical mass
+        if (peptide.getTheoreticalMass() != null) {
+            CvParam theoreticalMass = getMzIdentMlElement("/PSM/Theoretical mass", CvParam.class);
+            theoreticalMass.setValue(Double.toString(peptide.getTheoreticalMass()));
+            addMassUnit(theoreticalMass, MassAccuracyType.DA);
+            spectrumIdentificationItem.getCvParam().add(theoreticalMass);
+        }
 
         return spectrumIdentificationItem;
     }

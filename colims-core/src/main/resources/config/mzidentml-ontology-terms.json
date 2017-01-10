@@ -316,5 +316,26 @@
       "accession": "MS:1001412",
       "name": "search tolerance plus value"
     }
+  },
+  "Scores": {
+    "PSM": {
+      "PS_score": {
+        "cvRef": "MS",
+        "accession": "MS:1002466",
+        "name": "PeptideShaker PSM score"
+      },
+      "PS_confidence": {
+        "cvRef": "MS",
+        "accession": "MS:1002467",
+        "name": "PeptideShaker PSM confidence"
+      }
+    }
+  },
+  "PSM": {
+    "Theoretical mass": {
+      "cvRef": "MS",
+      "accession": "MS:1001117",
+      "name": "theoretical mass"
+    }
   }
 }
