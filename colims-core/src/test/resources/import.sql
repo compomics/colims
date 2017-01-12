@@ -96,6 +96,7 @@ INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_r
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (2, 'MS:00000002', 1, 'CID', 187, 325.56, 745, 44745, 345, 'Test Spectrum 2', 1);
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (3, 'MS:00000003', 2, 'CID', 149494, 1494.5, 7435, 447545, 3445, 'Test Spectrum 3', 1);
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (4, 'MS:00000004', 2, 'CID', 149423, 894.5, 7535, 447845, 34445, 'Test Spectrum 4', 1);
+INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (5, 'MS:00000005', 3, 'CID', 149423, 894.5, 7535, 447845, 34445, 'Test Spectrum 5', 1);
 
 -- insert a spectrum file
 INSERT INTO spectrum_file (id, content, l_spectrum_id) VALUES (1, 'AABBCC', 1), (2, 'AWDWFABBCC', 2), (3, 'ADDFABBCC', 3), (4, 'ADDDDFABBCC', 4);
@@ -129,9 +130,10 @@ INSERT INTO quantification_settings (id, creation_date, modification_date, user_
 
 -- insert test peptides
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (1, 1, 0.5, 0.55, 'PWEGGLVSWPPAP', 145.6, 1);
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (5, 1, 0.5, 0.55, 'PWEGGLVSWPPAP', 145.6, 1);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (5, 1, 0.5, 0.55, 'PWEGGLVSWPPAP', 145.6, 4);
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (2, 1, 0.3, 0.33, 'SACGPRPGRCCI', 148.6, 2);
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (3, 2, 0.43, 0.433, 'SACGPRPGRCCI', 148.6, 3);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (6, 3, 0.432, 0.4333, 'HEEKEQIKCLNSRFAAFIDKVRFLEQQ', 348.6, 5);
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (4, 2, 0.4, 0.44, 'IVGLSIYTVSSEVADF', 1789.2, 2);
 
 -- insert a test peptide has modification
@@ -154,3 +156,4 @@ INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_pr
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (2, 0.2, 0.22, 2, 2);
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (3, 0.2, 0.22, 3, 2);
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (4, 0.3, 0.33, 4, 3);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (6, 0.6, 0.66, 6, 2);

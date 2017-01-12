@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -162,7 +163,7 @@ public class MzTabExporter {
      */
     private final Map<Long, Integer> analyticalRunIndexRef = new HashMap<>();
     /**
-     * Software name
+     * Software name.
      */
     private String software;
     private final ProteinGroupService proteinGroupService;
@@ -179,6 +180,7 @@ public class MzTabExporter {
      */
     private MzTabExport mzTabExport;
 
+    @Autowired
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
                          FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantLabeledService proteinGroupQuantLabeledService,
                          ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbAccessionParser fastaDbAccessionParser,

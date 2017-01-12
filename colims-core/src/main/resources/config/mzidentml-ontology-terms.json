@@ -328,6 +328,11 @@
         "cvRef": "MS",
         "accession": "MS:1002467",
         "name": "PeptideShaker PSM confidence"
+      },
+      "MQ_score": {
+        "cvRef": "MS",
+        "accession": "MS:1002467",
+        "name": "PeptideShaker PSM confidence"
       }
     }
   },
