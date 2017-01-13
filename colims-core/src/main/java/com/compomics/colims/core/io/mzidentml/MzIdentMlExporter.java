@@ -21,6 +21,7 @@ import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import org.apache.commons.math.util.FastMath;
 import org.apache.commons.math.util.MathUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,11 +111,7 @@ public class MzIdentMlExporter {
     /**
      * This map links the used {@link FastaDb} instances to their corresponding {@link SearchDatabase} instances.
      */
-    private Map<FastaDb, SearchDatabase> fastaDbToSearchDatabases = new HashMap<>();
-    /**
-     * This map holds the link between {@link SearchDatabase} and {@link SearchDatabaseRef} instances.
-     */
-    private Map<SearchDatabase, SearchDatabaseRef> searchDatabases = new HashMap<>();
+    private final Map<FastaDb, SearchDatabase> fastaDbToSearchDatabases = new HashMap<>();
     /**
      * The Ontology Lookup Service (OLS) service.
      */
@@ -154,7 +151,6 @@ public class MzIdentMlExporter {
      *
      * @param writer         the {@link Writer} instance
      * @param analyticalRuns the analytical runs to export.
-     * @return the mzIdentML String
      * @throws IOException error thrown in case of a I/O related problem
      */
     public void export(Writer writer, List<AnalyticalRun> analyticalRuns) throws IOException {
@@ -177,7 +173,6 @@ public class MzIdentMlExporter {
         mzIdentML = null;
         analyticalRuns.clear();
         proteinAccessions.clear();
-        searchDatabases.clear();
         fastaDbToSearchDatabases.clear();
         cvs.clear();
         searchEngine = null;
@@ -219,43 +214,6 @@ public class MzIdentMlExporter {
 
         //add all the used CVs
         mzIdentML.getCvList().getCv().addAll(cvs.values());
-    }
-
-    /**
-     * Update the CV list if the given CV reference is not present.
-     *
-     * @param cvRef the CV reference String
-     * @return true if the CV was added or already present
-     */
-    private boolean updateCvList(String cvRef) throws IOException {
-        boolean present = true;
-
-        if (!cvs.containsKey(cvRef)) {
-            Cv cv = getMzIdentMlElement("/CvList/" + cvRef, Cv.class);
-
-            if (cv == null) {
-                //look up the ontology with the OLS service
-                List<String> namespaces = new ArrayList<>();
-                namespaces.add(cvRef.toLowerCase());
-                List<Ontology> ontologies = olsService.getOntologiesByNamespace(namespaces);
-                if (!ontologies.isEmpty()) {
-                    Ontology ontology = ontologies.get(0);
-                    cv = new Cv();
-                    cv.setId(ontology.getPrefix());
-                    cv.setFullName(ontology.getTitle());
-                    cv.setUri(ontology.getIdUrl());
-                }
-            }
-
-            if (cv != null) {
-                //add it to the used CVs
-                cvs.put(cvRef, cv);
-            } else {
-                present = false;
-            }
-        }
-
-        return present;
     }
 
     /**
@@ -397,7 +355,7 @@ public class MzIdentMlExporter {
         //first check if the FASTA DB files directory exists
         Path fastasDirectory = Paths.get(fastasPath);
         if (!Files.exists(fastasDirectory)) {
-            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasPath.toString() + " doesn't exist.");
+            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasPath + " doesn't exist.");
         }
         //order the used FASTA DB files by type, check their existence and pass them to the accession parser
         LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
@@ -420,14 +378,7 @@ public class MzIdentMlExporter {
             SearchSettingsHasFastaDb searchSettingsHasFastaDb = searchAndValidationSettings.getSearchSettingsHasFastaDbs().get(i);
             FastaDb fastaDb = searchSettingsHasFastaDb.getFastaDb();
 
-            SearchDatabase searchDatabase = new SearchDatabase();
-            searchDatabase.setId(String.format(SEARCH_DB_ID, i));
-            searchDatabase.setLocation(fastaDb.getFilePath());
-            searchDatabase.setName(fastaDb.getName());
-            searchDatabase.setVersion(fastaDb.getVersion());
-            searchDatabase.setFileFormat(new FileFormat());
-            searchDatabase.getFileFormat().setCvParam(getMzIdentMlElement("/FileFormat/FASTA", CvParam.class));
-            searchDatabase.getCvParam().add(getMzIdentMlElement("/SearchDatabase/Type", CvParam.class));
+            SearchDatabase searchDatabase = populateSearchDatabase(fastaDb, i);
 
             //NOTE: if decoy database used then cv param should be child of MS:1001450 here
             if (fastaDb.getDatabaseName() != null && !fastaDb.getDatabaseName().isEmpty()) {
@@ -451,15 +402,71 @@ public class MzIdentMlExporter {
             }
 
             fastaDbToSearchDatabases.put(fastaDb, searchDatabase);
-            SearchDatabaseRef searchDatabaseRef = new SearchDatabaseRef();
-            searchDatabaseRef.setSearchDatabase(searchDatabase);
-            searchDatabases.put(searchDatabase, searchDatabaseRef);
             inputs.getSearchDatabase().add(searchDatabase);
         }
 
         dataCollection.setAnalysisData(new AnalysisData());
 
         return dataCollection;
+    }
+
+    /**
+     * Update the CV list if the given CV reference is not present.
+     *
+     * @param cvRef the CV reference String
+     * @return true if the CV was added or already present
+     */
+    private boolean updateCvList(String cvRef) throws IOException {
+        boolean present = true;
+
+        if (!cvs.containsKey(cvRef)) {
+            Cv cv = getMzIdentMlElement("/CvList/" + cvRef, Cv.class);
+
+            if (cv == null) {
+                //look up the ontology with the OLS service
+                List<String> namespaces = new ArrayList<>();
+                namespaces.add(cvRef.toLowerCase());
+                List<Ontology> ontologies = olsService.getOntologiesByNamespace(namespaces);
+                if (!ontologies.isEmpty()) {
+                    Ontology ontology = ontologies.get(0);
+                    cv = new Cv();
+                    cv.setId(ontology.getPrefix());
+                    cv.setFullName(ontology.getTitle());
+                    cv.setUri(ontology.getIdUrl());
+                }
+            }
+
+            if (cv != null) {
+                //add it to the used CVs
+                cvs.put(cvRef, cv);
+            } else {
+                present = false;
+            }
+        }
+
+        return present;
+    }
+
+    /**
+     * Populate a {@link SearchDatabase} instance
+     *
+     * @param fastaDb the {@link FastaDb} instance
+     * @param id      the search database ID
+     * @return the populated search database instance
+     * @throws IOException in case of a JSON parsing related problem
+     */
+    private SearchDatabase populateSearchDatabase(FastaDb fastaDb, int id) throws IOException {
+        SearchDatabase searchDatabase = new SearchDatabase();
+
+        searchDatabase.setId(String.format(SEARCH_DB_ID, id));
+        searchDatabase.setLocation(fastaDb.getFilePath());
+        searchDatabase.setName(fastaDb.getName());
+        searchDatabase.setVersion(fastaDb.getVersion());
+        searchDatabase.setFileFormat(new FileFormat());
+        searchDatabase.getFileFormat().setCvParam(getMzIdentMlElement("/FileFormat/FASTA", CvParam.class));
+        searchDatabase.getCvParam().add(getMzIdentMlElement("/SearchDatabase/Type", CvParam.class));
+
+        return searchDatabase;
     }
 
     /**
@@ -682,8 +689,9 @@ public class MzIdentMlExporter {
     }
 
     /**
-     * Iterate the identification data for this run and populate the necessary objects
-     * with it.
+     * Iterate over the identification data associated with the runs and populate the necessary objects.
+     *
+     * @throws IOException in case of a JSON parsing related problem
      */
     private void populateIdentificationData() throws IOException {
         //set up the spectrum identification list
@@ -728,23 +736,17 @@ public class MzIdentMlExporter {
             ProteinAmbiguityGroup proteinAmbiguityGroup = new ProteinAmbiguityGroup();
             proteinAmbiguityGroup.setId(String.format(PROTEIN_AMBIGUITY_GROUP_ID, proteinGroup.getId()));
 
-            //look for the main group protein
-            Protein mainGroupProtein = null;
-            Optional<ProteinGroupHasProtein> first = proteinGroup.getProteinGroupHasProteins().stream().filter(ProteinGroupHasProtein::getIsMainGroupProtein).findFirst();
-            if (first.isPresent()) {
-                mainGroupProtein = first.get().getProtein();
-            } else {
-                throw new IllegalArgumentException("The protein group with ID " + proteinGroup.getId() + " doesn't have a main protein.");
-            }
-
-            //iterate over the proteins in the protein group
+            //iterate over the proteins in the protein group,
+            //add the protein sequence to the sequence collection and
+            //add a protein hypothesis to the protein ambiguity group
+            ProteinDetectionHypothesis mainProteinDetectionHypothesis;
+            String mainSequence;
             for (ProteinGroupHasProtein proteinGroupHasProtein : proteinGroup.getProteinGroupHasProteins()) {
                 Protein protein = proteinGroupHasProtein.getProtein();
 
                 DBSequence dbSequence;
                 if (!dbSequences.containsKey(protein.getId())) {
-                    dbSequence = populateDBSequence(proteinGroupHasProtein.getProteinAccession(), protein.getSequence());
-                    dbSequence.setId(String.format(DB_SEQUENCE_ID, protein.getId()));
+                    dbSequence = populateDBSequence(proteinGroupHasProtein.getProteinAccession(), protein.getSequence(), protein.getId());
                     sequenceCollection.getDBSequence().add(dbSequence);
 
                     dbSequences.put(protein.getId(), dbSequence);
@@ -758,7 +760,17 @@ public class MzIdentMlExporter {
                 //TODO: 5/01/17 what to do with this threshold
                 proteinDetectionHypothesis.setPassThreshold(true);
                 proteinDetectionHypothesis.setId(String.format(PROTEIN_DETECTION_HYPOTHESIS_ID, proteinGroupHasProtein.getId()));
-                //TODO: set the main protein as leading protein
+
+                //add some CV params for the main protein only
+                if (proteinGroupHasProtein.getIsMainGroupProtein()) {
+                    mainProteinDetectionHypothesis = proteinDetectionHypothesis;
+                    CvParam groupRepresentative = getMzIdentMlElement("/Protein/Group representative/", CvParam.class);
+                    proteinDetectionHypothesis.getCvParam().add(groupRepresentative);
+                    CvParam leadingProtein = getMzIdentMlElement("/Protein/Leading protein/", CvParam.class);
+                    proteinDetectionHypothesis.getCvParam().add(leadingProtein);
+                    CvParam sequenceCoverage = getMzIdentMlElement("/Protein/Sequence coverage/", CvParam.class);
+                    proteinDetectionHypothesis.getCvParam().add(sequenceCoverage);
+                }
 
                 //add to the protein ambiguity group
                 proteinAmbiguityGroup.getProteinDetectionHypothesis().add(proteinDetectionHypothesis);
@@ -821,17 +833,9 @@ public class MzIdentMlExporter {
                         UniqueEvidence uniqueEvidence = new UniqueEvidence(protein.getId(), peptideDTO, peptidePosition);
                         int index = uniqueEvidences.indexOf(uniqueEvidence);
                         if (index == -1) {
-                            peptideEvidence = new PeptideEvidence();
-
                             DBSequence dbSequence = dbSequences.get(protein.getId());
-                            peptideEvidence.setDBSequence(dbSequence);
-                            peptideEvidence.setPeptide(mzPeptide);
-                            peptideEvidence.setId(String.format(PEPTIDE_EVIDENCE_ID, sequenceCollection.getPeptideEvidence().size()));
 
-                            peptideEvidence.setStart(peptidePosition.getStartPosition());
-                            peptideEvidence.setEnd(peptidePosition.getEndPosition());
-                            peptideEvidence.setPre(peptidePosition.getPreAA().toString());
-                            peptideEvidence.setPost(peptidePosition.getPostAA().toString());
+                            peptideEvidence = populatePeptideEvidence(dbSequence, sequenceCollection.getPeptideEvidence().size(), mzPeptide, peptidePosition);
 
                             sequenceCollection.getPeptideEvidence().add(peptideEvidence);
 
@@ -887,7 +891,33 @@ public class MzIdentMlExporter {
                     spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
                 }
             }
+
+            uni
         }
+    }
+
+    /**
+     * Populate a peptide evidence instance.
+     *
+     * @param dbSequence      the {@link DBSequence} instance
+     * @param id              the peptide evidence ID
+     * @param mzPeptide       the {@link uk.ac.ebi.jmzidml.model.mzidml.Peptide} instance
+     * @param peptidePosition the {@link PeptidePosition} instance
+     * @return the populated {@link PeptideEvidence} instance
+     */
+    private PeptideEvidence populatePeptideEvidence(DBSequence dbSequence, int id, uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide, PeptidePosition peptidePosition) {
+        PeptideEvidence peptideEvidence = new PeptideEvidence();
+
+        peptideEvidence.setDBSequence(dbSequence);
+        peptideEvidence.setPeptide(mzPeptide);
+        peptideEvidence.setId(String.format(PEPTIDE_EVIDENCE_ID, id));
+
+        peptideEvidence.setStart(peptidePosition.getStartPosition());
+        peptideEvidence.setEnd(peptidePosition.getEndPosition());
+        peptideEvidence.setPre(peptidePosition.getPreAA().toString());
+        peptideEvidence.setPost(peptidePosition.getPostAA().toString());
+
+        return peptideEvidence;
     }
 
     /**
@@ -947,7 +977,7 @@ public class MzIdentMlExporter {
      * Set up the spectra data.
      *
      * @return the {@link SpectraData} instance
-     * @throws IOException
+     * @throws IOException in case of an JSON parsing related problem
      */
     private SpectraData setupSpectraData() throws IOException {
         SpectraData spectraData = new SpectraData();
@@ -1030,12 +1060,16 @@ public class MzIdentMlExporter {
             case PEPTIDESHAKER:
                 if (peptide.getPsmProbability() != null) {
                     CvParam psmScore = getMzIdentMlElement("/Scores/PSM/PS_score", CvParam.class);
-                    psmScore.setValue(Double.toString(peptide.getPsmProbability()));
+                    psmScore.setValue(Double.toString(getScore(peptide.getPsmProbability())));
                     spectrumIdentificationItem.getCvParam().add(psmScore);
                 }
                 if (peptide.getPsmPostErrorProbability() != null) {
                     CvParam psmConfidence = getMzIdentMlElement("/Scores/PSM/PS_confidence", CvParam.class);
-                    psmConfidence.setValue(Double.toString(peptide.getPsmPostErrorProbability()));
+                    double confidence = 100.0 * (1 - peptide.getPsmPostErrorProbability());
+                    if (confidence <= 0) {
+                        confidence = 0;
+                    }
+                    psmConfidence.setValue(Double.toString(confidence));
                     spectrumIdentificationItem.getCvParam().add(psmConfidence);
                 }
                 break;
@@ -1046,9 +1080,9 @@ public class MzIdentMlExporter {
                     spectrumIdentificationItem.getCvParam().add(psmScore);
                 }
                 if (peptide.getPsmPostErrorProbability() != null) {
-                    CvParam psmConfidence = getMzIdentMlElement("/Scores/PSM/PS_confidence", CvParam.class);
-                    psmConfidence.setValue(Double.toString(peptide.getPsmPostErrorProbability()));
-                    spectrumIdentificationItem.getCvParam().add(psmConfidence);
+                    CvParam psmPep = getMzIdentMlElement("/Scores/PSM/MQ_PEP", CvParam.class);
+                    psmPep.setValue(Double.toString(peptide.getPsmPostErrorProbability()));
+                    spectrumIdentificationItem.getCvParam().add(psmPep);
                 }
                 break;
             default:
@@ -1067,10 +1101,30 @@ public class MzIdentMlExporter {
     }
 
     /**
+     * Returns a score from a raw score where the score = -10*log(rawScore). The maximum score is 100 and raw scores
+     * smaller or equal to zero have a score of 100.
+     *
+     * @param rawScore the raw score
+     * @return the score
+     */
+    private Double getScore(Double rawScore) {
+        double score;
+        if (rawScore <= 0) {
+            score = 100;
+        } else {
+            score = -10 * FastMath.log10(rawScore);
+            if (score > 100) {
+                score = 100;
+            }
+        }
+        return score;
+    }
+
+    /**
      * Create an mzIdentML modification from a Colims equivalent.
      *
      * @param peptideHasMod Peptide to modification representation
-     * @return Equivalent modification
+     * @return the populated {@link Modification} instance
      */
     private Modification populateModification(PeptideHasModification peptideHasMod) throws IOException {
         Modification modification = new Modification();
@@ -1087,13 +1141,16 @@ public class MzIdentMlExporter {
      *
      * @param accession the protein accession
      * @param sequence  the protein sequence
+     * @param id        the db sequence ID
      * @return representative DBSequence
      */
-    private DBSequence populateDBSequence(String accession, String sequence) throws IOException {
+    private DBSequence populateDBSequence(String accession, String sequence, Long id) throws IOException {
         DBSequence dbSequence = new DBSequence();
         dbSequence.setAccession(accession);
         dbSequence.setLength(sequence.length());
         dbSequence.setSeq(sequence);
+        dbSequence.setId(String.format(DB_SEQUENCE_ID, id));
+
         SearchDatabase searchDatabase = getSearchDatabaseForAccession(accession);
         dbSequence.setSearchDatabase(searchDatabase);
 
@@ -1281,19 +1338,15 @@ class UniqueEvidence {
 
         UniqueEvidence that = (UniqueEvidence) o;
 
-        if (this.proteinId != that.proteinId) return false;
+        if (!Objects.equals(this.proteinId, that.proteinId)) return false;
         if (!peptideDTO.equals(that.peptideDTO)) return false;
-        if (this.peptidePosition.getStartPosition() != that.peptidePosition.getStartPosition()) {
+        if (!Objects.equals(this.peptidePosition.getStartPosition(), that.peptidePosition.getStartPosition())) {
             return false;
         }
-        if (this.peptidePosition.getEndPosition() != that.peptidePosition.getEndPosition()) {
+        if (!Objects.equals(this.peptidePosition.getEndPosition(), that.peptidePosition.getEndPosition())) {
             return false;
         }
-        if (this.peptidePosition.getPreAA() != that.peptidePosition.getPreAA()) {
-            return false;
-        }
-        if (this.peptidePosition.getPostAA() != that.peptidePosition.getPostAA()) return false;
-        return true;
+        return this.peptidePosition.getPreAA() == that.peptidePosition.getPreAA() && this.peptidePosition.getPostAA() == that.peptidePosition.getPostAA();
     }
 
     @Override

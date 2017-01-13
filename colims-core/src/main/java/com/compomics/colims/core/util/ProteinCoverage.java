@@ -18,12 +18,12 @@ public class ProteinCoverage {
     /**
      * Calculate protein coverage by using protein sequence and peptide sequence.
      *
-     * @param protein
-     * @param peptides
-     * @return
+     * @param proteinSequence the protein sequence
+     * @param peptides        the list op peptide sequences
+     * @return the protein sequence coverage
      */
-    public static double calculateProteinCoverage(String protein, List<String> peptides) {
-        String mappedProtein = map(protein, peptides);
+    public static double calculateProteinCoverage(String proteinSequence, List<String> peptides) {
+        String mappedProtein = map(proteinSequence, peptides);
 
         String mergedPeptideAnnotations = mergePeptideAnnotations(mappedProtein);
 
@@ -37,7 +37,7 @@ public class ProteinCoverage {
             mergedPeptideSize += m.group(1).length();
         }
 
-        double proteinSize = protein.length();
+        double proteinSize = proteinSequence.length();
 
         double coverage = mergedPeptideSize / proteinSize;
 
@@ -180,8 +180,8 @@ public class ProteinCoverage {
     /**
      * Find start position of the peptide in the protein sequence.
      *
-     * @param protein
-     * @param peptide
+     * @param protein the protein sequence
+     * @param peptide the peptide sequence
      * @return position
      */
     public static String findStartPositionOfPeptide(String protein, String peptide) {
@@ -198,8 +198,8 @@ public class ProteinCoverage {
     /**
      * Find end position of the peptide in the protein sequence.
      *
-     * @param protein
-     * @param peptide
+     * @param protein the protein sequence
+     * @param peptide the peptide sequence
      * @return position
      */
     public static String findEndPositionOfPeptide(String protein, String peptide) {
@@ -207,7 +207,7 @@ public class ProteinCoverage {
         peptide = peptide.toUpperCase(Locale.US);
         // N-terminus of the protein position is 1
         if (protein.contains(peptide)) {
-            return String.valueOf(protein.indexOf(peptide) + +peptide.length());
+            return String.valueOf(protein.indexOf(peptide) + peptide.length());
         } else {
             return null;
         }
