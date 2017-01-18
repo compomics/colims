@@ -40,7 +40,8 @@ public class FastaDbAccessionParser {
      *
      * @param fastaDbs the FASTA files to parse and their associated (absolute) path
      * @return the map of parsed accessions (key: the {@link FastaDb} instance; value: the set of protein accessions).
-     * @throws IOException thrown in case of an input/output related problem
+     * @throws IOException           thrown in case of an input/output related problem
+     * @throws IllegalStateException if the set of parsed accessions of the one of the FASTA DB files is empty
      */
     public LinkedHashMap<FastaDb, Set<String>> parseFastas(LinkedHashMap<FastaDb, Path> fastaDbs) throws IOException {
         LinkedHashMap<FastaDb, Set<String>> parsedFastas = new LinkedHashMap<>();
@@ -65,18 +66,17 @@ public class FastaDbAccessionParser {
                     line = bufferedReader.readLine();
                     while (line != null) {
                         if (line.startsWith(BLOCK_SEPARATOR)) {
-                            try {
-                                Matcher matcher = pattern.matcher(line.substring(1).split(SPLITTER)[0]);
-                                if (matcher.find()) {
-                                    accessions.add(matcher.group(1));
-                                } else {
-                                    accessions.add(line.substring(1).split(SPLITTER)[0]);
-                                }
-                            } catch (StringIndexOutOfBoundsException ex) {
-                                System.out.println("=====");
+                            Matcher matcher = pattern.matcher(line.substring(1).split(SPLITTER)[0]);
+                            if (matcher.find()) {
+                                accessions.add(matcher.group(1));
+                            } else {
+                                accessions.add(line.substring(1).split(SPLITTER)[0]);
                             }
                         }
                         line = bufferedReader.readLine();
+                    }
+                    if (accessions.isEmpty()) {
+                        throw new IllegalStateException("No accessions could be parsed for FASTA DB file " + entry.getValue().toString() + ". Are you using the correct parse rule?");
                     }
                     parsedFastas.put(fastaDb, accessions);
                 }

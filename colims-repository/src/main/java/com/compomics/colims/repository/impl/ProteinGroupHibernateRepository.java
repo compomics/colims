@@ -7,8 +7,8 @@ import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.colims.repository.hibernate.SortDirection;
-import java.util.HashMap;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -16,9 +16,9 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.hibernate.Query;
 
 /**
  * @author Niels Hulstaert
@@ -118,7 +118,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public List<ProteinGroupDTO> getProteinGroupsForRun(List<Long> analyticalRunIds) {
+    public List<ProteinGroupDTO> getProteinGroupDTOsForRuns(List<Long> analyticalRunIds) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
         //joins
@@ -141,12 +141,43 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         projectionList.add(Projections.property("proteinGroup.proteinPostErrorProbability").as("proteinPostErrorProbability"));
         projectionList.add(Projections.property("proteinGroupHasProtein.proteinAccession").as("mainAccession"));
         projectionList.add(Projections.property("protein.sequence").as("mainSequence"));
+        projectionList.add(Projections.property("protein.id").as("mainId"));
         criteria.setProjection(projectionList);
 
-        //transform results into ProteinGroupForRun instances
+        //transform results into ProteinGroupDTO instances
         criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroupDTO.class));
 
         return criteria.list();
+    }
+
+    @Override
+    public List<ProteinGroup> getProteinGroupsForRuns(List<Long> analyticalRunIds) {
+//        Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
+//
+//        //joins
+//        criteria.createAlias("peptide.spectrum", "spectrum");
+//        criteria.createAlias("peptideHasProteinGroup.peptide", "peptide");
+//        criteria.createAlias("proteinGroup.peptideHasProteinGroups", "peptideHasProteinGroup");
+//        criteria.createAlias("proteinGroup.proteinGroupHasProteins", "proteinGroupHasProtein");
+//        criteria.createAlias("proteinGroupHasProtein.protein", "protein");
+//
+//        //restrictions
+//        criteria.add(Restrictions.in("spectrum.analyticalRun.id", analyticalRunIds));
+//
+//        //projections
+//        ProjectionList projectionList = Projections.projectionList();
+//        projectionList.add(Projections.groupProperty("id").as("id"));
+//        criteria.setProjection(projectionList);
+//
+//        //transform results into ProteinGroup instances
+//        criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroup.class));
+
+        Query query = getCurrentSession().getNamedQuery("ProteinGroup.getProteinGroupsByRunIds");
+        query.setParameterList("analyticalRunIds", analyticalRunIds);
+
+        List list = query.list();
+
+        return list;
     }
 
     @Override
@@ -160,8 +191,8 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinbyProteinGroupId(Long proteinGroupId) {
-        
+    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinsByProteinGroupId(Long proteinGroupId) {
+
         Query query = getCurrentSession().getNamedQuery("Protein.getProteinByProteinGroupId");
         query.setParameter("proteinGroupId", proteinGroupId);
 
@@ -169,7 +200,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
 
         Map<ProteinGroupHasProtein, Protein> proteins = new HashMap<>();
         for (Object object : list) {
-            Object[] objectArray = (Object[]) object;  
+            Object[] objectArray = (Object[]) object;
             proteins.put((ProteinGroupHasProtein) objectArray[1], (Protein) objectArray[0]);
         }
 

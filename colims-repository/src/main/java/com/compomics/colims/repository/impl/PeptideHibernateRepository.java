@@ -14,12 +14,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This interface provides repository methods for the Peptide class.
@@ -31,10 +26,10 @@ import java.util.Set;
 public class PeptideHibernateRepository extends GenericHibernateRepository<Peptide, Long> implements PeptideRepository {
 
     @Override
-    public List<PeptideDTO> getPeptideDTOByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds) {
-        Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideDTOByProteinGroupId");
+    public List<PeptideDTO> getPeptideDTOsByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds) {
+        Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideDTOsByProteinGroupId");
         query.setLong("proteinGroupId", proteinGroupId);
-        query.setParameterList("analyticalRunId", analyticalRunIds);
+        query.setParameterList("analyticalRunIds", analyticalRunIds);
 
         List list = query.list();
 
@@ -71,6 +66,15 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     }
 
     @Override
+    public List<Peptide> getPeptidesByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds) {
+        Query query = getCurrentSession().getNamedQuery("Peptide.getPeptidesByProteinGroupId");
+        query.setLong("proteinGroupId", proteinGroupId);
+        query.setParameterList("analyticalRunIds", analyticalRunIds);
+
+        return query.list();
+    }
+
+    @Override
     public List<PeptideHasModification> fetchPeptideHasModifications(Long peptideId) {
         Criteria criteria = getCurrentSession().createCriteria(PeptideHasModification.class);
 
@@ -80,19 +84,19 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     }
 
     @Override
-    public List<String> getDistinctPeptideSequenceByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds) {
-        Query query = getCurrentSession().getNamedQuery("Peptide.getDistinctPeptideSequenceByProteinGroupIdAndAnalyticalRunIds");
+    public List<String> getDistinctPeptideSequenceByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds) {
+        Query query = getCurrentSession().getNamedQuery("Peptide.getDistinctPeptideSequencesByProteinGroupIdAndRunIds");
 
         query.setLong("proteinGroupId", proteinGroupId);
-        query.setParameterList("analyticalRunId", analyticalRunIds);
+        query.setParameterList("analyticalRunIds", analyticalRunIds);
 
         return query.list();
     }
 
     @Override
-    public List<Peptide> getUniquePeptideByProteinGroupIdAnalyticalRunId(Long proteinGroupId, List<Long> analyticalRunIds) {
+    public List<Peptide> getUniquePeptideByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds) {
         List<Peptide> peptides = new ArrayList<>();
-        List<PeptideDTO> peptideDTOs = getPeptideDTOByProteinGroupIdAnalyticalRunId(proteinGroupId, analyticalRunIds);
+        List<PeptideDTO> peptideDTOs = getPeptideDTOsByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
         peptideDTOs.forEach(peptideDto -> {
             Criteria criteria = getCurrentSession().createCriteria(PeptideHasProteinGroup.class);
             criteria.add(Restrictions.eq("peptide.id", peptideDto.getPeptide().getId()));
@@ -105,15 +109,15 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     }
 
     @Override
-    public Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAnalyticalRunId(List<Long> analyticalRunIds) {
-        Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideHasProteinGroupByAnalyticalRunIds");
-        query.setParameterList("analyticalRunId", analyticalRunIds);
+    public Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAndRunIds(List<Long> analyticalRunIds) {
+        Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideHasProteinGroupsByRunIds");
+        query.setParameterList("analyticalRunIds", analyticalRunIds);
 
         List list = query.list();
 
         Map<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroups = new HashMap<>();
         for (Object object : list) {
-            Object[] objectArray = (Object[]) object;  
+            Object[] objectArray = (Object[]) object;
             peptideHasProteinGroups.put((PeptideHasProteinGroup) objectArray[1], (AnalyticalRun) objectArray[2]);
         }
         return peptideHasProteinGroups;

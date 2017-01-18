@@ -287,7 +287,7 @@ public class ProteinOverviewController implements Controllable {
 
                     mainController.getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
                     //get the PeptideDTO instances for the selected protein group
-                    List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTO(selectedProteinGroupDTO.getId(), getSelectedAnalyticalRunIds());
+                    List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOs(selectedProteinGroupDTO.getId(), getSelectedAnalyticalRunIds());
 
                     //map to PeptideTableRow objects
                     List<PeptideTableRow> mappedPeptideTableRows = mapPeptideDTOs(peptideDTOs);

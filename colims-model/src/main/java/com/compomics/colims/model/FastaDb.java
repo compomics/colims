@@ -19,8 +19,6 @@ public class FastaDb extends DatabaseEntity {
 
     private static final long serialVersionUID = -7674593202998529863L;
 
-    public static final String DATABASE_NAME_NOT_PRESENT = "Not in the EMBL-EBI list";
-
     /**
      * The official name of the FASTA db.
      */
@@ -48,18 +46,16 @@ public class FastaDb extends DatabaseEntity {
     /**
      * The database name of the FASTA db.
      */
-    @Basic(optional = false)
-    @NotBlank(message = "Please insert a database name.")
-    @Length(min = 2, max = 200, message = "Database name must be between {min} and {max} characters.")
-    @Column(name = "database_name", nullable = false)
+    @Basic(optional = true)
+    @Length(max = 250, message = "Database name cannot be bigger than {max} characters.")
+    @Column(name = "database_name", nullable = true)
     private String databaseName;
     /**
      * The version of the FASTA db.
      */
-    @Basic(optional = false)
-    @NotBlank(message = "Please insert a fasta DB version. If you do not know, type N/A")
-    @Length(min = 3, max = 20, message = "Version must be between {min} and {max} characters.")
-    @Column(name = "version", nullable = false)
+    @Basic(optional = true)
+    @Length(max = 20, message = "Version cannot be bigger than {max} characters.")
+    @Column(name = "version", nullable = true)
     private String version;
     /**
      * The MD5 checksum of the FASTA db.
@@ -72,6 +68,7 @@ public class FastaDb extends DatabaseEntity {
      * protein accession.
      */
     @Basic(optional = true)
+    @Length(max = 250, message = "Header parse rule name cannot be bigger than {max} characters.")
     @Column(name = "header_parse_rule", nullable = true)
     private String headerParseRule;
     /**

@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -43,10 +44,15 @@ public class MzIdentMlExporterTest {
      */
     @Test
     public void testExport() throws IOException {
+        //get the run from the in memory database
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         AnalyticalRun run = repository.findById(1L);
         analyticalRuns.add(run);
 
+        //set the FASTA DB path in the exporter
+        exporter.setFastasPath(new ClassPathResource("data").getFile().getPath());
+
+//        System.out.println("ssss");
 //        try (StringWriter writer = new StringWriter()) {
 //            exporter.export(writer, analyticalRuns);
 //
@@ -56,12 +62,14 @@ public class MzIdentMlExporterTest {
 //            Assert.assertFalse(export.isEmpty());
 //        }
 
-        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
-        try (
-                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
-        ) {
-            exporter.export(bufferedWriter, analyticalRuns);
-        }
+//        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
+//        try (
+//                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
+//        ) {
+//            bufferedWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+//            bufferedWriter.newLine();
+//            exporter.export(bufferedWriter, analyticalRuns);
+//        }
     }
 
     @Test

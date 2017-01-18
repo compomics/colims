@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -100,15 +101,14 @@ public class MzTabExporter {
     private static final String CONTACT_AFFILIATION = "contact[%d]-affiliation";
     private static final String CONTACT_EMAIL = "contact[%d]-email";
     /**
-     * mztab Json mapping
+     * mztab Json mapping.
      */
     private static final int PROTEIN_SEARCH_ENGINE_SCORE_ALIGNMENT = 0;
     private static final int PEPTIDE_SEARCH_ENGINE_SCORE_ALIGNMENT = 1;
     private static final int PSM_SEARCH_ENGINE_SCORE_ALIGNMENT = 2;
     private static final int SOFTWARE_ALIGNMENT = 4;
-
     /**
-     * Common headers for all sections
+     * Common headers for all sections.
      */
     private static final String ACCESSION = "accession";
     private static final String DATABASE = "database";
@@ -116,7 +116,7 @@ public class MzTabExporter {
     private static final String SEARCH_ENGINE = "search_engine";
     private static final String MODIFICATIONS = "modifications";
     /**
-     * protein section
+     * Protein section.
      */
     private static final String TAXID = "taxid";
     private static final String SPECIES = "species";
@@ -131,9 +131,8 @@ public class MzTabExporter {
     private static final String NUM_PEPTIDES_DISTINCT_MS_RUN = "num_peptides_distinct_ms_run[%d]";
     private static final String NUM_PEPTIDE_UNIQUE_MS_RUN = "num_peptide_unique_ms_run[%d]";
     private static final String PROTEIN_ABUNDANCE_ASSAY = "protein_abundance_assay[%d]";
-
     /**
-     * psm section
+     * PSM section.
      */
     private static final String SEQUENCE = "sequence";
     private static final String PSM_ID = "PSM_ID";
@@ -164,7 +163,7 @@ public class MzTabExporter {
      */
     private final Map<Long, Integer> analyticalRunIndexRef = new HashMap<>();
     /**
-     * Software name
+     * Software name.
      */
     private String software;
     private final ProteinGroupService proteinGroupService;
@@ -181,6 +180,7 @@ public class MzTabExporter {
      */
     private MzTabExport mzTabExport;
 
+    @Autowired
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
                          FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantLabeledService proteinGroupQuantLabeledService,
                          ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbAccessionParser fastaDbAccessionParser,
@@ -464,39 +464,39 @@ public class MzTabExporter {
         List<ProteinGroupDTO> proteinList = getProteinGroupsForAnalyticalRuns(analyticalRunIds);
         SearchAndValidationSettings searchAndValidationSettings = searchAndValidationSettingsService.getByAnalyticalRun(mzTabExport.getRuns().get(0));
         Map<FastaDb, FastaDbType> fastaDbs = fastaDbService.findBySearchAndValidationSettings(searchAndValidationSettings);
-        
+
         LinkedHashMap<FastaDb, Path> fastaDbsWithPath = new LinkedHashMap();
         fastaDbs.keySet().stream().filter((fastaDb) -> (fastaDbs.get(fastaDb).equals(FastaDbType.PRIMARY))).forEach((fastaDb) -> {
             fastaDbsWithPath.put(fastaDb, Paths.get(fastaDb.getFilePath()));
         });
-        
+
         fastaDbs.keySet().stream().filter((fastaDb) -> (fastaDbs.get(fastaDb).equals(FastaDbType.ADDITIONAL))).forEach((fastaDb) -> {
             fastaDbsWithPath.put(fastaDb, Paths.get(fastaDb.getFilePath()));
         });
-        
+
         fastaDbs.keySet().stream().filter((fastaDb) -> (fastaDbs.get(fastaDb).equals(FastaDbType.CONTAMINANTS))).forEach((fastaDb) -> {
             fastaDbsWithPath.put(fastaDb, Paths.get(fastaDb.getFilePath()));
         });
-        
+
         Map<FastaDb, Set<String>> parsedFastas = fastaDbAccessionParser.parseFastas(fastaDbsWithPath);
-        
+
         for (int i = 0; i < proteinList.size(); i++) {
             StringBuilder proteins = new StringBuilder();
             // set prefix and accession
             proteins.append(PROTEINS_PREFIX).append(COLUMN_DELIMITER).append(proteinList.get(i).getMainAccession()).append(COLUMN_DELIMITER);
-            
+
             // we do not know which fasta file protein sequence comes from.
             FastaDb fastaFile = new FastaDb();
-            
+
             for (FastaDb fastaDb : parsedFastas.keySet()) {
-                if(parsedFastas.get(fastaDb).contains(proteinList.get(i).getMainSequence())){
+                if (parsedFastas.get(fastaDb).contains(proteinList.get(i).getMainSequence())) {
                     fastaFile = fastaDb;
                     break;
                 }
             }
             //(key: information type; value: protein sequence and functional information)
             Map<String, String> uniProtMap = uniprotProteinUtils.getFastaDbUniprotInformation(proteinList.get(i).getMainAccession(), fastaFile);
-            
+
             // if uniprot map has values
             if (!uniProtMap.isEmpty()) {
                 // set description, taxid, species, database, database version
@@ -507,7 +507,7 @@ public class MzTabExporter {
                 proteins.append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append(fastaFile.getDatabaseName())
                         .append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
             }
-            
+
             // set search engine
             proteins.append(getSearchEngine()).append(COLUMN_DELIMITER);
 
@@ -577,7 +577,7 @@ public class MzTabExporter {
                 for (int j = 0; j < mzTabExport.getRuns().size(); j++) {
                     List<Long> analyticalRunIdList = new ArrayList<>(1);
                     analyticalRunIdList.add(mzTabExport.getRuns().get(j).getId());
-                    proteins.append(peptideService.getPeptideDTO(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
+                    proteins.append(peptideService.getPeptideDTOs(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
                     proteins.append(peptideService.getDistinctPeptideSequence(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
                     proteins.append(peptideService.getUniquePeptides(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
                 }
@@ -623,7 +623,7 @@ public class MzTabExporter {
         Map<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroups = getPeptideHasProteinGroupForAnalyticalRuns(analyticalRunIds);
         for (Map.Entry<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroup : peptideHasProteinGroups.entrySet()) {
             StringBuilder psms = new StringBuilder();
-            Map<ProteinGroupHasProtein, Protein> proteinGroupHasProtein = proteinGroupService.getProteinGroupHasProteinbyProteinGroupId(peptideHasProteinGroup.getKey().getProteinGroup().getId());
+            Map<ProteinGroupHasProtein, Protein> proteinGroupHasProtein = proteinGroupService.getProteinGroupHasProteinByProteinGroupId(peptideHasProteinGroup.getKey().getProteinGroup().getId());
 
             psms.append(PSM_PREFIX).append(COLUMN_DELIMITER).append(peptideHasProteinGroup.getKey().getPeptide().getSequence()).append(COLUMN_DELIMITER).append(peptideHasProteinGroup.getKey().getPeptide().getId())
                     .append(COLUMN_DELIMITER).append(proteinGroupHasProtein.entrySet().stream().findFirst().get().getKey().getProteinAccession())
@@ -800,7 +800,7 @@ public class MzTabExporter {
      * @return list of ProteinGroupDTO object
      */
     private List<ProteinGroupDTO> getProteinGroupsForAnalyticalRuns(List<Long> analyticalRunIds) {
-        return proteinGroupService.getProteinGroupsForRuns(analyticalRunIds);
+        return proteinGroupService.getProteinGroupDTOsForRuns(analyticalRunIds);
     }
 
     /**
