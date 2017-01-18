@@ -891,8 +891,7 @@ public class MzIdentMlExporter {
                     spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
                 }
             }
-
-            uni
+//            mainProteinDetectionHypothesis.
         }
     }
 

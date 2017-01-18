@@ -52,7 +52,7 @@ public class MzIdentMlExporterTest {
         //set the FASTA DB path in the exporter
         exporter.setFastasPath(new ClassPathResource("data").getFile().getPath());
 
-        System.out.println("ssss");
+//        System.out.println("ssss");
 //        try (StringWriter writer = new StringWriter()) {
 //            exporter.export(writer, analyticalRuns);
 //
@@ -62,14 +62,14 @@ public class MzIdentMlExporterTest {
 //            Assert.assertFalse(export.isEmpty());
 //        }
 
-        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
-        try (
-                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
-        ) {
-            bufferedWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            bufferedWriter.newLine();
-            exporter.export(bufferedWriter, analyticalRuns);
-        }
+//        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
+//        try (
+//                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
+//        ) {
+//            bufferedWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+//            bufferedWriter.newLine();
+//            exporter.export(bufferedWriter, analyticalRuns);
+//        }
     }
 
     @Test
