@@ -45,6 +45,7 @@ public class AccessionConverter {
         List<String> accessions = new ArrayList<>();
         StringBuilder url = new StringBuilder();
         url.append("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=");
+ 
         // if database is defined, search using given database
         if (!databaseName.equals("CONTAMINANTS")) {
             url.append(accession).append("&database=").append(databaseName);
@@ -66,6 +67,7 @@ public class AccessionConverter {
             if (accession.contains("CON")) {
                 accession = org.apache.commons.lang3.StringUtils.substringAfter(accession, "CON__");
             }
+            
             url.append(accession);
             // read the database properties file
             try {

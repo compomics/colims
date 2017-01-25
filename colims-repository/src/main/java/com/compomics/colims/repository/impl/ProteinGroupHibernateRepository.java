@@ -193,7 +193,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     @Override
     public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinsByProteinGroupId(Long proteinGroupId) {
 
-        Query query = getCurrentSession().getNamedQuery("Protein.getProteinByProteinGroupId");
+        Query query = getCurrentSession().getNamedQuery("Protein.getProteinsByProteinGroupId");
         query.setParameter("proteinGroupId", proteinGroupId);
 
         List list = query.list();

@@ -321,6 +321,8 @@ public class FastaDbSaveUpdateController implements Controllable {
 
         if (fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(UNKNOWN)) {
             fastaDbToEdit.setVersion(null);
+        }else{
+            fastaDbToEdit.setVersion(fastaDbSaveUpdatePanel.getVersionTextField().getText());
         }
 
         int taxonomyIndex = fastaDbSaveUpdatePanel.getTaxomomyComboBox().getSelectedIndex();
@@ -340,6 +342,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         int databaseIndex = fastaDbSaveUpdatePanel.getDatabaseComboBox().getSelectedIndex();
         if (databaseIndex == 0) {
             fastaDbToEdit.setDatabaseName(null);
+            
         } else {
             fastaDbToEdit.setDatabaseName(databaseNames.get(databaseIndex));
         }

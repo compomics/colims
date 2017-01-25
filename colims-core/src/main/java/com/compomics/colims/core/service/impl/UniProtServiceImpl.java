@@ -74,23 +74,37 @@ public class UniProtServiceImpl implements UniProtService {
 
             Document document = builder.parse(is);
             document.getDocumentElement().normalize();
-            NodeList recommendedName = document.getElementsByTagName("recommendedName");
-
-            Node node = recommendedName.item(0);
-            Element element = (Element) node;
-            if (element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")) {
-                uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
+            
+            Element element;
+            
+            NodeList nodeList = document.getElementsByTagName("recommendedName");
+            Node node = nodeList.item(0);
+            if(node != null){
+                element = (Element) node;
+                if (element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")) {
+                    uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
+                }
+            }else{
+                nodeList = document.getElementsByTagName("protein");
+                node = nodeList.item(0);
+                if(node != null){
+                    element = (Element) node;
+                    if (element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")) {
+                        uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
+                    }
+                }
             }
+            
 
-            NodeList organism = document.getElementsByTagName("organism");
-            node = organism.item(0);
+            nodeList = document.getElementsByTagName("organism");
+            node = nodeList.item(0);
             element = (Element) node;
             if (element.getElementsByTagName("name").item(0).getTextContent() != null && !element.getElementsByTagName("name").item(0).getTextContent().equals("")) {
                 uniProt.put("species", element.getElementsByTagName("name").item(0).getTextContent());
             }
 
-            NodeList dbReference = document.getElementsByTagName("dbReference");
-            node = dbReference.item(0);
+            nodeList = document.getElementsByTagName("dbReference");
+            node = nodeList.item(0);
             element = (Element) node;
             if (element.getAttribute("id") != null && !element.getAttribute("id").equals("")) {
                 uniProt.put("taxid", element.getAttribute("id"));

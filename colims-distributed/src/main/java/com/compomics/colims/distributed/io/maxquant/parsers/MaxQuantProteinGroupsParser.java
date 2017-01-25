@@ -78,7 +78,7 @@ public class MaxQuantProteinGroupsParser {
      * Parse the proteinGroups.txt file.
      *
      * @param proteinGroupsFile   MaxQuant protein groups file
-     * @param fastaDbs            the map of {@link FastaDb} instances
+     * @param fastaDbMap            the map of {@link FastaDb} instances
      * @param includeContaminants whether or not to include contaminants
      * @param optionalHeaders     the list of optional headers
      * @throws IOException in case of an Input/Output related problem

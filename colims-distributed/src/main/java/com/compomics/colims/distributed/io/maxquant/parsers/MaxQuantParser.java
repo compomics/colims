@@ -148,6 +148,10 @@ public class MaxQuantParser {
 
         //add the identified spectra for each run and set the entity relations
         analyticalRuns.forEach((runName, run) -> {
+            
+            //set analytical run for search settings
+            run.getSearchAndValidationSettings().setAnalyticalRun(run);
+            
             //get the spectrum apl keys for each run
             Set<String> aplKeys = maxQuantSpectraParser.getMaxQuantSpectra().getRunToSpectrums().get(runName);
             aplKeys.forEach(aplKey -> {

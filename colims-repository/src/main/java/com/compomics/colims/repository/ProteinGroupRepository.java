@@ -82,6 +82,7 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
 
     /**
      * Get ProteinGroupHasProtein object by proteinGroupId
+     * (only main protein of the group)
      * if nothing found return null
      *
      * @param proteinGroupId

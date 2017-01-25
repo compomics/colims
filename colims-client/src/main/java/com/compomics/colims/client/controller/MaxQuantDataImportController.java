@@ -54,6 +54,7 @@ public class MaxQuantDataImportController implements Controllable {
     //model
     private Path mqparFile;
     private Path combinedDirectory;
+    private Path fullCombinedDirectory;
     private FastaDb primaryFastaDb;
     private FastaDb contaminantsFastaDb;
     private boolean includeContaminants;
@@ -94,7 +95,7 @@ public class MaxQuantDataImportController implements Controllable {
 
         Path experimentsDirectory = Paths.get(experimentsPath);
         if (!Files.exists(experimentsDirectory)) {
-            throw new IllegalArgumentException("The experiments directory defined in the client properties file " + experimentsPath.toString() + " doesn't exist.");
+            throw new IllegalArgumentException("The experiments directory defined in the client properties file " + experimentsPath+ " doesn't exist.");
         }
 
         //init the mqpar file directory selection
@@ -134,7 +135,7 @@ public class MaxQuantDataImportController implements Controllable {
             int returnVal = maxQuantDataImportPanel.getCombinedFolderChooser().showOpenDialog(maxQuantDataImportPanel);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
-                    Path fullCombinedDirectory = maxQuantDataImportPanel.getCombinedFolderChooser().getSelectedFile().toPath();
+                    fullCombinedDirectory = maxQuantDataImportPanel.getCombinedFolderChooser().getSelectedFile().toPath();
                     combinedDirectory = PathUtils.getRelativeChildPath(experimentsDirectory, fullCombinedDirectory);
                     //show combined directory name in label
                     maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(combinedDirectory.toString());
@@ -292,7 +293,7 @@ public class MaxQuantDataImportController implements Controllable {
         });
         fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDbIDs);
 
-        return new MaxQuantImport(mqparFile, combinedDirectory, fastaDbIds, includeContaminants,
+        return new MaxQuantImport(mqparFile, combinedDirectory, fullCombinedDirectory, fastaDbIds, includeContaminants,
                 includeUnidentifiedSpectra, selectedProteinGroupHeaders, analyticalRunsAdditionController.getSelectedLabel());
     }
 

@@ -64,27 +64,23 @@ public class UniprotProteinUtils {
         if(cache.getFromCache(accession) != null){
             uniProtMap = (Map<String, String>) cache.getFromCache(accession);
             return uniProtMap;
-        } else {
-            // define uniprot accession list
-            List<String> uniprotAccessions = new ArrayList<>();
-
+        } else if(fastaDb.getDatabaseName() != null){
             switch (fastaDb.getDatabaseName()) {
                 case "UNIPROT":
-                    uniprotAccessions.add(accession);
-                    uniProtMap = uniProtService.getUniProtByAccession(uniprotAccessions.get(0));
-                    break;
-                case "Not in the EMBL-EBI list":
+                    uniProtMap = uniProtService.getUniProtByAccession(accession);
                     break;
                 default:
-                    uniprotAccessions = AccessionConverter.convertToUniProt(accession, fastaDb.getDatabaseName());
-                    uniProtMap = uniProtService.getUniProtByAccession(uniprotAccessions.get(0));
+                    List<String> uniprotAccessions = AccessionConverter.convertToUniProt(accession, fastaDb.getDatabaseName());
+                    if(!uniprotAccessions.isEmpty()){
+                        uniProtMap = uniProtService.getUniProtByAccession(uniprotAccessions.get(0));
+                    }
                     break;
             }
-
             cache.putInCache(accession, uniProtMap);
 
             return uniProtMap;
+        } else{
+            return uniProtMap;
         }
-
     }
 }
