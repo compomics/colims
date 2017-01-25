@@ -29,13 +29,13 @@ public class UniProtServiceTest {
     
     @Test
     public void testGetUniProtByAccession() throws RestClientException, IOException{
-        String accession = "P15056";
+        
+        String accession = "P05787";
         
         Map<String, String> uniProt = uniProtService.getUniProtByAccession(accession);
         assertThat(uniProt.get("description"), is("Serine/threonine-protein kinase B-raf"));
         assertThat(uniProt.get("species"), is("Homo sapiens"));
         assertThat(uniProt.get("taxid"), is("9606"));
-        
     }
     
 }

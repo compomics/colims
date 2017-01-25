@@ -5,6 +5,7 @@ import com.compomics.colims.core.io.mztab.enums.MzTabType;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Sample;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -39,6 +40,12 @@ public class MzTabExport {
      * The mzTab export directory.
      */
     private File exportDirectory;
+    
+    /**
+     * The fasta files directory.
+     */
+    private Path fastaDirectory;
+    
     /**
      * The samples to export.
      */
@@ -98,6 +105,14 @@ public class MzTabExport {
 
     public void setExportDirectory(File exportDirectory) {
         this.exportDirectory = exportDirectory;
+    }
+
+    public Path getFastaDirectory() {
+        return fastaDirectory;
+    }
+
+    public void setFastaDirectory(Path fastaDirectory) {
+        this.fastaDirectory = fastaDirectory;
     }
 
     public List<Sample> getSamples() {
