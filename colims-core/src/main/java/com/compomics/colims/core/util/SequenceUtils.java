@@ -82,8 +82,8 @@ public class SequenceUtils {
     }
 
     /**
-     * Returns the amino acids surrounding a peptide in the sequence of the
-     * given protein.
+     * Returns the amino acids surrounding a peptide in the sequence of the given protein. One of the two elements of
+     * the Character array will be null in case of an N-terminal or C-terminal peptide.
      *
      * @param proteinSequence the protein sequence
      * @param peptideSequence the sequence of the peptide of interest
@@ -112,10 +112,10 @@ public class SequenceUtils {
      * Calculate protein coverage by using protein sequence and peptide sequence.
      *
      * @param proteinSequence  the protein sequence
-     * @param peptideSequences the list op peptide sequences
+     * @param peptideSequences the set of peptide sequences
      * @return the protein sequence coverage
      */
-    public static double calculateProteinCoverage(String proteinSequence, List<String> peptideSequences) {
+    public static double calculateProteinCoverage(String proteinSequence, Set<String> peptideSequences) {
         TreeMap<Integer, Boolean> coverageAnnotations = mapPeptideSequences(proteinSequence, peptideSequences);
 
         int coveredLength = 0;
@@ -132,7 +132,7 @@ public class SequenceUtils {
     }
 
     /**
-     * Maps a list of peptide sequences onto a protein sequence.
+     * Maps a set of peptide sequences onto a protein sequence.
      *
      * @param protein  the protein to match
      * @param peptides the peptides to match
@@ -140,7 +140,7 @@ public class SequenceUtils {
      * false for end)
      * @throws IllegalArgumentException if a peptide sequence doesn't occur on the protein
      */
-    public static TreeMap<Integer, Boolean> mapPeptideSequences(String protein, List<String> peptides) throws IllegalArgumentException {
+    public static TreeMap<Integer, Boolean> mapPeptideSequences(String protein, Set<String> peptides) throws IllegalArgumentException {
         TreeMap<Integer, Boolean> coverageAnnotations = new TreeMap<>();
 
         for (String peptide : peptides) {
@@ -158,13 +158,19 @@ public class SequenceUtils {
                     coverageAnnotations.put(peptidePosition.getEndPosition() - 1, false);
                 } else {
                     //iterate over the entries
-                    for (Map.Entry<Integer, Boolean> entry : new TreeMap<>(tailMap).entrySet()) {
-                        if (entry.getKey() < peptidePosition.getEndPosition()) {
-                            coverageAnnotations.remove(entry.getKey());
-                        } else if (entry.getValue()) {
-                            coverageAnnotations.put(peptidePosition.getEndPosition() - 1, false);
-                            break;
+                    Iterator<Map.Entry<Integer, Boolean>> tailIterator = new TreeMap<>(tailMap).entrySet().iterator();
+                    while (tailIterator.hasNext()) {
+                        Map.Entry<Integer, Boolean> tailEntry = tailIterator.next();
+                        if (tailEntry.getKey() < peptidePosition.getEndPosition()) {
+                            coverageAnnotations.remove(tailEntry.getKey());
+                            //add the closing tag if it's the last entry
+                            if(!tailIterator.hasNext()){
+                                coverageAnnotations.put(peptidePosition.getEndPosition() - 1, false);
+                            }
                         } else {
+                            if (tailEntry.getValue()) {
+                                coverageAnnotations.put(peptidePosition.getEndPosition() - 1, false);
+                            }
                             break;
                         }
                     }

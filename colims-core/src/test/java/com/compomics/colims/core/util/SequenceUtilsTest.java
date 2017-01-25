@@ -4,8 +4,9 @@ package com.compomics.colims.core.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -91,11 +92,21 @@ public class SequenceUtilsTest {
 
         Assert.assertEquals(Character.valueOf('B'), surroundingAAs[0]);
         Assert.assertEquals(Character.valueOf('M'), surroundingAAs[1]);
+
+        surroundingAAs = SequenceUtils.getSurroundingAAs(proteinSequence2, peptideSequence, 1);
+
+        Assert.assertNull(surroundingAAs[0]);
+        Assert.assertEquals(Character.valueOf('M'), surroundingAAs[1]);
+
+        surroundingAAs = SequenceUtils.getSurroundingAAs(proteinSequence3, peptideSequence, 18);
+
+        Assert.assertEquals(Character.valueOf('B'), surroundingAAs[0]);
+        Assert.assertNull(surroundingAAs[1]);
     }
 
     @Test
     public void testMapPeptideSequences() {
-        List<String> peptides = new ArrayList<>();
+        Set<String> peptides = new HashSet<>();
         peptides.add(peptideSequence);
 
         TreeMap<Integer, Boolean> coverageAnnotations = SequenceUtils.mapPeptideSequences(proteinSequence1, peptides);
@@ -120,7 +131,7 @@ public class SequenceUtilsTest {
         Assert.assertEquals(Boolean.TRUE, coverageAnnotations.get(39));
         Assert.assertEquals(Boolean.FALSE, coverageAnnotations.get(45));
 
-        peptides.add(0, "TRANNEL");
+        peptides.add("TRANNEL");
         peptides.add("ARTKAAA");
         coverageAnnotations = SequenceUtils.mapPeptideSequences(proteinSequence5, peptides);
         Assert.assertEquals(6, coverageAnnotations.size());
@@ -130,11 +141,21 @@ public class SequenceUtilsTest {
         Assert.assertEquals(Boolean.FALSE, coverageAnnotations.get(35));
         Assert.assertEquals(Boolean.TRUE, coverageAnnotations.get(40));
         Assert.assertEquals(Boolean.FALSE, coverageAnnotations.get(46));
+
+        peptides.add("ARTVAAA");
+        coverageAnnotations = SequenceUtils.mapPeptideSequences(proteinSequence5, peptides);
+        Assert.assertEquals(6, coverageAnnotations.size());
+        Assert.assertEquals(Boolean.TRUE, coverageAnnotations.get(17));
+        Assert.assertEquals(Boolean.FALSE, coverageAnnotations.get(27));
+        Assert.assertEquals(Boolean.TRUE, coverageAnnotations.get(29));
+        Assert.assertEquals(Boolean.FALSE, coverageAnnotations.get(35));
+        Assert.assertEquals(Boolean.TRUE, coverageAnnotations.get(40));
+        Assert.assertEquals(Boolean.FALSE, coverageAnnotations.get(50));
     }
 
     @Test
     public void testCalculateProteinCoverage() {
-        List<String> peptides = new ArrayList<>();
+        Set<String> peptides = new HashSet<>();
         peptides.add(peptideSequence);
 
         double coverage = SequenceUtils.calculateProteinCoverage(proteinSequence1, peptides);
@@ -149,7 +170,7 @@ public class SequenceUtilsTest {
         coverage = SequenceUtils.calculateProteinCoverage(proteinSequence4, peptides);
         Assert.assertEquals(0.2641, coverage, 0.001);
 
-        peptides.add(0, "TRANNEL");
+        peptides.add("TRANNEL");
         peptides.add("ARTKAAA");
         coverage = SequenceUtils.calculateProteinCoverage(proteinSequence5, peptides);
         Assert.assertEquals(0.4629, coverage, 0.001);

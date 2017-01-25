@@ -739,8 +739,8 @@ public class MzIdentMlExporter {
             //iterate over the proteins in the protein group,
             //add the protein sequence to the sequence collection and
             //add a protein hypothesis to the protein ambiguity group
-            ProteinDetectionHypothesis mainProteinDetectionHypothesis;
-            String mainSequence;
+            ProteinDetectionHypothesis mainProteinDetectionHypothesis = null;
+            String mainSequence = null;
             for (ProteinGroupHasProtein proteinGroupHasProtein : proteinGroup.getProteinGroupHasProteins()) {
                 Protein protein = proteinGroupHasProtein.getProtein();
 
@@ -764,12 +764,11 @@ public class MzIdentMlExporter {
                 //add some CV params for the main protein only
                 if (proteinGroupHasProtein.getIsMainGroupProtein()) {
                     mainProteinDetectionHypothesis = proteinDetectionHypothesis;
-                    CvParam groupRepresentative = getMzIdentMlElement("/Protein/Group representative/", CvParam.class);
+                    mainSequence = dbSequence.getSeq();
+                    CvParam groupRepresentative = getMzIdentMlElement("/Protein/Group representative", CvParam.class);
                     proteinDetectionHypothesis.getCvParam().add(groupRepresentative);
-                    CvParam leadingProtein = getMzIdentMlElement("/Protein/Leading protein/", CvParam.class);
+                    CvParam leadingProtein = getMzIdentMlElement("/Protein/Leading protein", CvParam.class);
                     proteinDetectionHypothesis.getCvParam().add(leadingProtein);
-                    CvParam sequenceCoverage = getMzIdentMlElement("/Protein/Sequence coverage/", CvParam.class);
-                    proteinDetectionHypothesis.getCvParam().add(sequenceCoverage);
                 }
 
                 //add to the protein ambiguity group
@@ -785,6 +784,7 @@ public class MzIdentMlExporter {
             //same sequence, same modifications
             Map<PeptideDTO, uk.ac.ebi.jmzidml.model.mzidml.Peptide> uniquePeptides = new HashMap<>();
             List<UniqueEvidence> uniqueEvidences = new ArrayList<>();
+            Set<String> peptideSequences = new HashSet<>();
             //iterate over the protein group peptide DTOs
             for (PeptideDTO peptideDTO : peptideDTOs) {
                 Peptide colimsPeptide = peptideDTO.getPeptide();
@@ -806,6 +806,8 @@ public class MzIdentMlExporter {
 
                     //add to the "unique" peptides
                     uniquePeptides.put(peptideDTO, mzPeptide);
+
+                    peptideSequences.add(mzPeptide.getPeptideSequence());
                 } else {
                     mzPeptide = uniquePeptides.get(peptideDTO);
                 }
@@ -891,7 +893,13 @@ public class MzIdentMlExporter {
                     spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
                 }
             }
-//            mainProteinDetectionHypothesis.
+
+            //calculate the protein sequence coverage and add it to the main group protein
+            CvParam sequenceCoverage = getMzIdentMlElement("/Protein/Sequence coverage", CvParam.class);
+            //calculate the sequence coverage for the main group protein
+            double coverage = SequenceUtils.calculateProteinCoverage(mainSequence, peptideSequences);
+            sequenceCoverage.setValue(Double.toString(MathUtils.round(coverage, 2)));
+            mainProteinDetectionHypothesis.getCvParam().add(sequenceCoverage);
         }
     }
 

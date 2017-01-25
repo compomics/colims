@@ -17,7 +17,6 @@ import uk.ac.ebi.jmzidml.model.mzidml.Cv;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +61,14 @@ public class MzIdentMlExporterTest {
 //            Assert.assertFalse(export.isEmpty());
 //        }
 
-//        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
-//        try (
-//                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
-//        ) {
-//            bufferedWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-//            bufferedWriter.newLine();
-//            exporter.export(bufferedWriter, analyticalRuns);
-//        }
+        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
+        try (
+                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
+        ) {
+            bufferedWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            bufferedWriter.newLine();
+            exporter.export(bufferedWriter, analyticalRuns);
+        }
     }
 
     @Test
