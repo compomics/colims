@@ -3,10 +3,8 @@ package com.compomics.colims.core.io.mzidentml;
 import com.compomics.colims.core.io.fasta.FastaDbAccessionParser;
 import com.compomics.colims.core.ontology.ols.Ontology;
 import com.compomics.colims.core.ontology.ols.OntologyTerm;
-import com.compomics.colims.core.service.OlsService;
-import com.compomics.colims.core.service.PeptideService;
-import com.compomics.colims.core.service.ProteinGroupService;
-import com.compomics.colims.core.service.SearchAndValidationSettingsService;
+import com.compomics.colims.core.service.*;
+import com.compomics.colims.core.util.IOUtils;
 import com.compomics.colims.core.util.PeptidePosition;
 import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.core.util.SequenceUtils;
@@ -18,6 +16,9 @@ import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.model.enums.ScoreType;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
+import com.compomics.util.experiment.biology.AminoAcidPattern;
+import com.compomics.util.experiment.biology.PTM;
+import com.compomics.util.experiment.biology.PTMFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -35,11 +36,11 @@ import uk.ac.ebi.jmzidml.model.mzidml.Role;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLMarshaller;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,7 @@ import java.util.stream.Collectors;
  * the MzIdentMLMarshaller to marshal them into valid XML.
  *
  * @author Iain
+ * @author Niels Hulstaert
  */
 @Component("mzIdentMlExporter")
 public class MzIdentMlExporter {
@@ -76,11 +78,6 @@ public class MzIdentMlExporter {
     private final String MZIDENTML_VERSION = "1.1.0";
     @Value("${colims-core.version}")
     private final String COLIMS_VERSION = "latest";
-    /**
-     * The FASTAs location as provided in the client properties file.
-     */
-    @Value("${fastas.path}")
-    private String fastasPath = "";
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ObjectReader objectReader = objectMapper.reader();
     private JsonNode ontologyTerms;
@@ -92,6 +89,14 @@ public class MzIdentMlExporter {
      * The used search engine.
      */
     private SearchEngine searchEngine;
+    /**
+     * The path of the file where the spectra will be written to.
+     */
+    private Path mgfPath;
+    /**
+     * The path of the FASTA files directory.
+     */
+    private Path fastasDirectory;
     /**
      * The MzIdentML instance from the MzIdentML object model.
      */
@@ -120,18 +125,16 @@ public class MzIdentMlExporter {
     private final FastaDbAccessionParser fastaDbAccessionParser;
     private final ProteinGroupService proteinGroupService;
     private final PeptideService peptideService;
+    private final SpectrumService spectrumService;
 
     @Autowired
-    public MzIdentMlExporter(OlsService olsService, SearchAndValidationSettingsService searchAndValidationSettingsService, FastaDbAccessionParser fastaDbAccessionParser, ProteinGroupService proteinGroupService, PeptideService peptideService) {
+    public MzIdentMlExporter(OlsService olsService, SearchAndValidationSettingsService searchAndValidationSettingsService, FastaDbAccessionParser fastaDbAccessionParser, ProteinGroupService proteinGroupService, PeptideService peptideService, SpectrumService spectrumService) {
         this.olsService = olsService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbAccessionParser = fastaDbAccessionParser;
         this.proteinGroupService = proteinGroupService;
         this.peptideService = peptideService;
-    }
-
-    public void setFastasPath(String fastasPath) {
-        this.fastasPath = fastasPath;
+        this.spectrumService = spectrumService;
     }
 
     /**
@@ -149,21 +152,38 @@ public class MzIdentMlExporter {
     /**
      * Export the given analytical runs in mzIdentML format.
      *
-     * @param writer         the {@link Writer} instance
-     * @param analyticalRuns the analytical runs to export.
+     * @param mzIdentMlPath   the path of the mzIdentML file that will be written
+     * @param mgfPath         the path of the MGF file where the spectra will be written to. If this instance is null,
+     *                        no spectrum files will be exported into an MGF file.
+     * @param fastasDirectory the path of the directory containing the FASTA files
+     * @param analyticalRuns  the analytical runs to export.
      * @throws IOException error thrown in case of a I/O related problem
      */
-    public void export(Writer writer, List<AnalyticalRun> analyticalRuns) throws IOException {
+    public void export(Path mzIdentMlPath, Path mgfPath, Path fastasDirectory, List<AnalyticalRun> analyticalRuns) throws IOException {
+        this.mgfPath = mgfPath;
+        //first check if the FASTA DB files directory exists
+        this.fastasDirectory = fastasDirectory;
+        if (!Files.exists(fastasDirectory)) {
+            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasDirectory.toString() + " doesn't exist.");
+        }
         this.analyticalRuns = analyticalRuns;
         this.searchEngine = analyticalRuns.get(0).getSearchAndValidationSettings().getSearchEngine();
 
-        populate();
+        try (
+                BufferedWriter mzIdentMlWriter = Files.newBufferedWriter(mzIdentMlPath);
+                OutputStream mgfOutputStream = Files.newOutputStream(mgfPath)
+        ) {
+            //populate the mzIdentML object model
+            populate(mgfOutputStream);
 
-        MzIdentMLMarshaller mzIdentMLMarshaller = new MzIdentMLMarshaller();
+            MzIdentMLMarshaller mzIdentMLMarshaller = new MzIdentMLMarshaller();
 
-        mzIdentMLMarshaller.marshal(mzIdentML, writer);
+            mzIdentMlWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            mzIdentMlWriter.newLine();
+            mzIdentMLMarshaller.marshal(mzIdentML, mzIdentMlWriter);
 
-        clear();
+            clear();
+        }
     }
 
     /**
@@ -176,15 +196,16 @@ public class MzIdentMlExporter {
         fastaDbToSearchDatabases.clear();
         cvs.clear();
         searchEngine = null;
-        cvs.clear();
         inputs = null;
+        mgfPath = null;
     }
 
     /**
-     * Assemble necessary data into an mzIdentML object and it's many
-     * properties.
+     * Assemble necessary data into an mzIdentML object and it's many properties.
+     *
+     * @param mgfOutputStream the output stream for writing the spectra to.
      */
-    private void populate() throws IOException {
+    private void populate(OutputStream mgfOutputStream) throws IOException {
         mzIdentML = new MzIdentML();
 
         mzIdentML.setId("Colims-" + COLIMS_VERSION);
@@ -210,7 +231,7 @@ public class MzIdentMlExporter {
         AnalysisProtocolCollection analysisProtocolCollection = populateAnalysisProtocolCollection(analysisSoftware);
         mzIdentML.setAnalysisProtocolCollection(analysisProtocolCollection);
 
-        populateIdentificationData();
+        populateIdentificationData(mgfOutputStream);
 
         //add all the used CVs
         mzIdentML.getCvList().getCv().addAll(cvs.values());
@@ -352,11 +373,6 @@ public class MzIdentMlExporter {
         searchAndValidationSettingsService.fetchSearchSettingsHasFastaDb(searchAndValidationSettings);
 
         //parse the protein accessions from the FASTA DB files
-        //first check if the FASTA DB files directory exists
-        Path fastasDirectory = Paths.get(fastasPath);
-        if (!Files.exists(fastasDirectory)) {
-            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasPath + " doesn't exist.");
-        }
         //order the used FASTA DB files by type, check their existence and pass them to the accession parser
         LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
         Arrays.stream(FastaDbType.values()).forEach(fastaDbType -> {
@@ -398,6 +414,9 @@ public class MzIdentMlExporter {
                     taxonomy.setCv(cv);
                     taxonomy.setAccession(fastaDb.getTaxonomy().getAccession());
                     taxonomy.setName(fastaDb.getTaxonomy().getName());
+
+                    //add the taxonomy to the search database
+                    searchDatabase.getCvParam().add(taxonomy);
                 }
             }
 
@@ -414,7 +433,7 @@ public class MzIdentMlExporter {
      * Update the CV list if the given CV reference is not present.
      *
      * @param cvRef the CV reference String
-     * @return true if the CV was added or already present
+     * @return true if the CV was added or already present, false if the CV was not found by it's reference
      */
     private boolean updateCvList(String cvRef) throws IOException {
         boolean present = true;
@@ -527,6 +546,12 @@ public class MzIdentMlExporter {
 
             for (SearchParametersHasModification searchParametersHasModification : searchParameters.getSearchParametersHasModifications()) {
                 SearchModification colimsSearchModification = searchParametersHasModification.getSearchModification();
+
+                if(colimsSearchModification.getUtilitiesName() != null){
+                    PTM ptm = PTMFactory.getInstance().getPTM(colimsSearchModification.getUtilitiesName());
+                    AminoAcidPattern pattern = ptm.getPattern();
+                    
+                }
 
                 uk.ac.ebi.jmzidml.model.mzidml.SearchModification mzSearchModification = new uk.ac.ebi.jmzidml.model.mzidml.SearchModification();
                 mzSearchModification.setFixedMod(searchParametersHasModification.getModificationType() == ModificationType.FIXED);
@@ -691,9 +716,10 @@ public class MzIdentMlExporter {
     /**
      * Iterate over the identification data associated with the runs and populate the necessary objects.
      *
+     * @param mgfOutputStream the output stream for writing the spectra to.
      * @throws IOException in case of a JSON parsing related problem
      */
-    private void populateIdentificationData() throws IOException {
+    private void populateIdentificationData(OutputStream mgfOutputStream) throws IOException {
         //set up the spectrum identification list
         SpectrumIdentificationList spectrumIdentificationList = setupSpectrumIdentificationList();
 
@@ -774,6 +800,8 @@ public class MzIdentMlExporter {
                 //add to the protein ambiguity group
                 proteinAmbiguityGroup.getProteinDetectionHypothesis().add(proteinDetectionHypothesis);
             }
+            //add the protein scores
+            addProteinScores(proteinGroup, proteinAmbiguityGroup);
 
             //add the protein ambiguity group to the protein detection list
             proteinDetectionList.getProteinAmbiguityGroup().add(proteinAmbiguityGroup);
@@ -815,9 +843,13 @@ public class MzIdentMlExporter {
                 //get the peptide's spectrum
                 Spectrum spectrum = colimsPeptide.getSpectrum();
 
-                //iterate over the spectrum files
-                for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
-                    //do nothing for the moment
+                if (mgfOutputStream != null) {
+                    spectrumService.fetchSpectrumFiles(spectrum);
+                    //iterate over the spectrum files
+                    for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
+                        byte[] unzippedBytes = IOUtils.unzip(spectrumFile.getContent());
+                        mgfOutputStream.write(unzippedBytes);
+                    }
                 }
 
                 SpectrumIdentificationItem spectrumIdentificationItem = populateSpectrumIdentificationItem(spectrum, colimsPeptide);
@@ -993,10 +1025,11 @@ public class MzIdentMlExporter {
         spectrumFileFormat.setCvParam(getMzIdentMlElement("/FileFormat/Mascot MGF", CvParam.class));
 
         SpectrumIDFormat spectrumIDFormat = new SpectrumIDFormat();
-        spectrumIDFormat.setCvParam(getMzIdentMlElement("/SpectrumIDFormat/Mascot query number", CvParam.class));
+        spectrumIDFormat.setCvParam(getMzIdentMlElement("/SpectrumIDFormat/Multiple peak list", CvParam.class));
 
         spectraData.setId(String.format(SPECTRUM_DATA_ID, 1));
-        spectraData.setLocation("data.mgf");                        // NOTE: may not be accurate
+        String spectraDataLocation = mgfPath == null ? "data.mgf" : mgfPath.toString();
+        spectraData.setLocation(spectraDataLocation);                        // NOTE: may not be accurate
         spectraData.setFileFormat(spectrumFileFormat);
         spectraData.setSpectrumIDFormat(spectrumIDFormat);
         mzIdentML.getDataCollection().getInputs().getSpectraData().add(spectraData);
@@ -1038,11 +1071,48 @@ public class MzIdentMlExporter {
 
         spectrumIdentificationResult.setId(String.format(SPECTRUM_IDENTIFICATION_RESULT_ID, spectrum.getId()));
         spectrumIdentificationResult.setSpectraData(spectraData);
-        spectrumIdentificationResult.setSpectrumID(spectrum.getId().toString());
+        spectrumIdentificationResult.setSpectrumID(spectrum.getTitle());
 
         //TODO add the spectrum title as a CV Param
 
         return spectrumIdentificationResult;
+    }
+
+    /**
+     * Add the protein scores to the {@link ProteinAmbiguityGroup} instance.
+     *
+     * @param proteinGroup          the protein group instance
+     * @param proteinAmbiguityGroup the protein ambiguity group instance
+     */
+    private void addProteinScores(ProteinGroup proteinGroup, ProteinAmbiguityGroup proteinAmbiguityGroup) throws IOException {
+        //add the scores
+        switch (searchEngine.getSearchEngineType()) {
+            case PEPTIDESHAKER:
+                if (proteinGroup.getProteinProbability() != null) {
+                    CvParam proteinScore = getMzIdentMlElement("/Scores/Protein/PS_score", CvParam.class);
+                    proteinScore.setValue(Double.toString(getScore(proteinGroup.getProteinProbability())));
+                    proteinAmbiguityGroup.getCvParam().add(proteinScore);
+                }
+                if (proteinGroup.getProteinPostErrorProbability() != null) {
+                    CvParam proteinConfidence = getMzIdentMlElement("/Scores/Protein/PS_confidence", CvParam.class);
+                    double confidence = 100.0 * (1 - proteinGroup.getProteinPostErrorProbability());
+                    if (confidence <= 0) {
+                        confidence = 0;
+                    }
+                    proteinConfidence.setValue(Double.toString(confidence));
+                    proteinAmbiguityGroup.getCvParam().add(proteinConfidence);
+                }
+                break;
+            case MAXQUANT:
+                if (proteinGroup.getProteinPostErrorProbability() != null) {
+                    CvParam proteinPep = getMzIdentMlElement("/Scores/Protein/MQ_PEP", CvParam.class);
+                    proteinPep.setValue(Double.toString(proteinGroup.getProteinPostErrorProbability()));
+                    proteinAmbiguityGroup.getCvParam().add(proteinPep);
+                }
+                break;
+            default:
+                throw new IllegalStateException("Should not get here");
+        }
     }
 
     /**
@@ -1197,10 +1267,10 @@ public class MzIdentMlExporter {
 
         //try to get the modification ontology by it's prefix
         if (modification.getAccession().contains(MODIFICATION_ACCESSION_DELIMITER)) {
-            modParam = getMzIdentMlElement("/GenericCV/" + modification.getAccession().substring(0, modification.getAccession().indexOf(MODIFICATION_ACCESSION_DELIMITER)), CvParam.class);
+            modParam = getMzIdentMlElement("/ModCV/" + modification.getAccession().substring(0, modification.getAccession().indexOf(MODIFICATION_ACCESSION_DELIMITER)), CvParam.class);
         }
         if (modParam == null) {
-            modParam = getMzIdentMlElement("/GenericCV/UNKNOWN", CvParam.class);
+            modParam = getMzIdentMlElement("/ModCV/UNKNOWN", CvParam.class);
         }
         modParam.setName(modification.getName());
         modParam.setAccession(modification.getAccession());

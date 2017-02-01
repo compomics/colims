@@ -78,7 +78,7 @@ public class MaxQuantProteinGroupsParser {
      * Parse the proteinGroups.txt file.
      *
      * @param proteinGroupsFile   MaxQuant protein groups file
-     * @param fastaDbMap            the map of {@link FastaDb} instances
+     * @param fastaDbMap          the map of {@link FastaDb} instances
      * @param includeContaminants whether or not to include contaminants
      * @param optionalHeaders     the list of optional headers
      * @throws IOException in case of an Input/Output related problem
@@ -105,6 +105,8 @@ public class MaxQuantProteinGroupsParser {
     private ProteinGroup parseProteinGroup(Map<String, String> proteinGroupsEntry, Map<String, String> fastaEntries, boolean includeContaminants, List<String> optionalHeaders) {
         ProteinGroup proteinGroup = new ProteinGroup();
 
+        //set the protein group posterior error probability, which is derived from
+        //peptide posterior error probabilities
         proteinGroup.setProteinPostErrorProbability(Double.parseDouble(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.SCORE))));
 
         String parsedAccession = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ACCESSION));
@@ -238,7 +240,7 @@ public class MaxQuantProteinGroupsParser {
         proteinGroupHasProtein.setProtein(protein);
         proteinGroupHasProtein.setProteinGroup(proteinGroup);
 
-        //    proteinGroup.getProteinGroupHasProteins().add(proteinGroupHasProtein);
+        //proteinGroup.getProteinGroupHasProteins().add(proteinGroupHasProtein);
 
         return proteinGroupHasProtein;
     }

@@ -4,14 +4,13 @@
  */
 package com.compomics.colims.core.util;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.zip.GZIPInputStream;
-
-import org.apache.commons.io.FileUtils;
-
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -42,7 +41,7 @@ public final class IOUtils {
      * Write the byte array to file.
      *
      * @param bytes the byte array
-     * @param file the file to be written to
+     * @param file  the file to be written to
      * @throws java.io.IOException exception thrown in case of an IO problem
      */
     public static void write(final byte[] bytes, final File file) throws IOException {
@@ -61,7 +60,7 @@ public final class IOUtils {
 
         //gzip the byte array
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                GZIPOutputStream gzipos = new GZIPOutputStream(baos)) {
+             GZIPOutputStream gzipos = new GZIPOutputStream(baos)) {
             gzipos.write(bytes);
 
             gzipos.flush();
@@ -84,8 +83,8 @@ public final class IOUtils {
         byte[] unzippedBytes;
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-                GZIPInputStream gzipis = new GZIPInputStream(bais)) {
+             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+             GZIPInputStream gzipis = new GZIPInputStream(bais)) {
             //unzip
             //this method uses a buffer internally
             org.apache.commons.io.IOUtils.copy(gzipis, baos);
@@ -118,7 +117,7 @@ public final class IOUtils {
      * Unzip and write the byte array to file.
      *
      * @param bytes the byte array
-     * @param file the file to be written to
+     * @param file  the file to be written to
      * @throws java.io.IOException exception thrown in case of an IO problem
      */
     public static void unzipAndWrite(final byte[] bytes, final File file) throws IOException {

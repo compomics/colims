@@ -14,10 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.ebi.jmzidml.model.mzidml.AnalysisSoftware;
 import uk.ac.ebi.jmzidml.model.mzidml.Cv;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,27 +46,12 @@ public class MzIdentMlExporterTest {
         AnalyticalRun run = repository.findById(1L);
         analyticalRuns.add(run);
 
-        //set the FASTA DB path in the exporter
-        exporter.setFastasPath(new ClassPathResource("data").getFile().getPath());
+        File mzIdentMLFile = File.createTempFile("/home/niels/Desktop/testMzIdentMl.mzid", ".mzid");
+        File mgfFile = File.createTempFile("/home/niels/Desktop/testMgf", "mgf");
 
-//        System.out.println("ssss");
-//        try (StringWriter writer = new StringWriter()) {
-//            exporter.export(writer, analyticalRuns);
-//
-//            String export = writer.toString();
-////            System.out.println(export);
-//
-//            Assert.assertFalse(export.isEmpty());
-//        }
+        exporter.export(mzIdentMLFile.toPath(), mgfFile.toPath(), new ClassPathResource("data").getFile().toPath(), analyticalRuns);
 
-        File testExportFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
-        try (
-                BufferedWriter bufferedWriter = Files.newBufferedWriter(testExportFile.toPath())
-        ) {
-            bufferedWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            bufferedWriter.newLine();
-            exporter.export(bufferedWriter, analyticalRuns);
-        }
+
     }
 
     @Test
