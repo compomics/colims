@@ -50,8 +50,6 @@ public class MzIdentMlExporterTest {
         File mgfFile = File.createTempFile("/home/niels/Desktop/testMgf", "mgf");
 
         exporter.export(mzIdentMLFile.toPath(), mgfFile.toPath(), new ClassPathResource("data").getFile().toPath(), analyticalRuns);
-
-
     }
 
     @Test

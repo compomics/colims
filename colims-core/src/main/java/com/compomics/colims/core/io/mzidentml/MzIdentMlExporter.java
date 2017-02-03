@@ -73,6 +73,8 @@ public class MzIdentMlExporter {
     private static final String PROTEIN_DETECTION_ID = "PD-%d";
     private static final String PROTEIN_DETECTION_HYPOTHESIS_ID = "PDH-%d";
     private static final String PROTEIN_AMBIGUITY_GROUP_ID = "PAG-%d";
+    private static final String RESIDUES_ANY = ".";
+    private static final String RESIDUES_UNKNOWN = "N/A";
 
     @Value("${mzidentml.version}")
     private final String MZIDENTML_VERSION = "1.1.0";
@@ -547,18 +549,26 @@ public class MzIdentMlExporter {
             for (SearchParametersHasModification searchParametersHasModification : searchParameters.getSearchParametersHasModifications()) {
                 SearchModification colimsSearchModification = searchParametersHasModification.getSearchModification();
 
-                if(colimsSearchModification.getUtilitiesName() != null){
-                    PTM ptm = PTMFactory.getInstance().getPTM(colimsSearchModification.getUtilitiesName());
-                    AminoAcidPattern pattern = ptm.getPattern();
-                    
-                }
-
                 uk.ac.ebi.jmzidml.model.mzidml.SearchModification mzSearchModification = new uk.ac.ebi.jmzidml.model.mzidml.SearchModification();
                 mzSearchModification.setFixedMod(searchParametersHasModification.getModificationType() == ModificationType.FIXED);
                 mzSearchModification.setMassDelta(colimsSearchModification.getAverageMassShift().floatValue());
 
                 CvParam modificationParam = modificationToCvParam(colimsSearchModification);
                 mzSearchModification.getCvParam().add(modificationParam);
+
+                if (colimsSearchModification.getUtilitiesName() != null) {
+                    PTM ptm = PTMFactory.getInstance().getPTM(colimsSearchModification.getUtilitiesName());
+                    AminoAcidPattern pattern = ptm.getPattern();
+                    if (pattern != null) {
+                        mzSearchModification.getResidues().add(pattern.toString());
+                    } else {
+                        mzSearchModification.getResidues().add(RESIDUES_ANY);
+                    }
+                } else {
+                    if (true) {
+
+                    }
+                }
 
                 spectrumIdentificationProtocol.getModificationParams().getSearchModification().add(mzSearchModification);
             }

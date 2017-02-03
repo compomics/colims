@@ -16,8 +16,6 @@ public class OntologyTerm {
     @JsonProperty(value = "obo_id")
     private String oboId;
     private String label;
-    @JsonProperty(value = "affected_AAs")
-    private String affectedAminoAcids;
 
     /**
      * No-arg constructor.
@@ -49,14 +47,6 @@ public class OntologyTerm {
         this.label = label;
     }
 
-    public String getAffectedAminoAcids() {
-        return affectedAminoAcids;
-    }
-
-    public void setAffectedAminoAcids(String affectedAminoAcids) {
-        this.affectedAminoAcids = affectedAminoAcids;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,8 +56,7 @@ public class OntologyTerm {
 
         if (!ontologyPrefix.equals(that.ontologyPrefix)) return false;
         if (!oboId.equals(that.oboId)) return false;
-        if (label != null ? !label.equals(that.label) : that.label != null) return false;
-        return affectedAminoAcids != null ? affectedAminoAcids.equals(that.affectedAminoAcids) : that.affectedAminoAcids == null;
+        return label != null ? label.equals(that.label) : that.label == null;
     }
 
     @Override
