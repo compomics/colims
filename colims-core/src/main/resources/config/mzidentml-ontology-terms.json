@@ -47,7 +47,7 @@
       "fullName": "Units of measurement"
     },
     "NCBITaxon": {
-      "id": "NCBI",
+      "id": "NCBITaxon",
       "uri": "http://purl.obolibrary.org/obo/ncbitaxon",
       "fullName": "NCBI organismal classification"
     }

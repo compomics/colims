@@ -63,7 +63,7 @@ INSERT INTO material_cv_param (id, creation_date, modification_date, user_name, 
 INSERT INTO material (id, creation_date, modification_date, user_name, name, l_cell_type_cv_id, l_compartment_cv_id, l_species_cv_id, l_tissue_cv_id) VALUES (1,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 1', '3', '4', '1', '2'),(2,'2012-11-08 16:51:11','2012-11-08 16:51:11','admin', 'material 2', '3', '4', '1', '2');
 
 -- insert test modifications
-INSERT INTO modification (id, name, accession, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'methionine oxidation with neutral loss of 64 Da', 'MOD:00935', '-64.1', '-63.998286');
+INSERT INTO modification (id, name, accession, utilities_name, average_mass_shift, monoisotopic_mass_shift) VALUES (1, 'monohydroxylated residue', 'MOD:00425', 'Oxidation of M', '16.0', '15.994915');
 
 -- insert test proteins
 INSERT INTO protein (id, protein_sequence) VALUES (1, 'MATASPAADGGRGRPWEGGLVSWPPAPPLTLPWTWMGPSWGQHPGHWGFPALTEPSASPAAGLGIFEVRRVLDASGCSMLAPLQTGAARFSSYLLSRARKVLGSHLFSPCGVPEFCSISTRKLAAHGFGASMAAMVSFPPQRYHYFLVLDFEATCDKPQIHPQEIIEFPILKLNGRTMEIESTFHMYVQPVVHPQLTPFCTELTGIIQAMVDGQPSLQQVLERVDEWMAKEGLLDPNVKSIFVTCGDWDLKVMLPGQCQYLGLPVADYFKQWINLKKAYSFAMGCWPKNGLLDMNKGLSLQHIGRPHSGIDDCKNIANIMKTLAYRGFIFKQTSKPF');
@@ -117,19 +117,19 @@ INSERT INTO search_and_validation_settings (id, creation_date, modification_date
 INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fasta_db_id, fasta_db_type) VALUES (1, 1, 1, 1), (2, 1, 2, 2);
 
 -- insert test quantification method cv param
-INSERT INTO quantification_method_cv_param (id, accession, label, name) VALUES (1, 'PRIDE', 'PRIDE:0000315', 'SILAC');
+INSERT INTO quantification_method (id, accession, label, name) VALUES (1, 'PRIDE', 'PRIDE:0000315', 'SILAC');
 
 -- insert quantification reagent
 INSERT INTO quantification_reagent (id, accession, label, name) VALUES (1, 'PRIDE', 'PRIDE:0000326', 'SILAC light');
 
 -- insert quantification method has reagent
-INSERT INTO quantification_method_has_reagent (id, l_quantification_method_cv_param_id, l_quantification_reagent_id) VALUES (1, 1, 1);
+INSERT INTO quantification_method_has_reagent (id, l_quantification_method_id, l_quantification_reagent_id) VALUES (1, 1, 1);
 
 -- insert quantification engine
 INSERT INTO quantification_engine (id, accession, label, name, type, version) VALUES (1,'MS:1001583','MS','MaxQuant','MAXQUANT','0.0.0');
 
 -- insert quantification settings
-INSERT INTO quantification_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_quant_engine_id, l_quant_method_cv_param) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1);
+INSERT INTO quantification_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_quant_engine_id, l_quant_method_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1);
 
 -- insert test peptides
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (1, 1, 0.5, 0.55, 'PWEGGLVSWPPAP', 145.6, 1);

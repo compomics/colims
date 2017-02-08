@@ -931,8 +931,9 @@ public class MzIdentMlExporter {
                         spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().add(spectrumIdentificationItem);
                     }
                     //update the ID
-                    int idSuffix = spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().size();
-                    spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
+                    //TODO check if not updating the ID causes problems
+                    //int idSuffix = spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().size();
+                    //spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
                 }
             }
 

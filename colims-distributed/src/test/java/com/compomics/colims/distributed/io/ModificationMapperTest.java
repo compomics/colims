@@ -62,7 +62,8 @@ public class ModificationMapperTest {
         Modification modification = modificationMapper.mapByOntologyTerm(
                 "UNIMOD",
                 "UNIMOD:1580",
-                "dHex(1)HexNAc(3)"
+                "dHex(1)HexNAc(3)",
+                null
         );
 
         Assert.assertNotNull(modification);
@@ -81,7 +82,8 @@ public class ModificationMapperTest {
         Modification modification = modificationMapper.mapByOntologyTerm(
                 "MOD",
                 "MOD:00090",
-                "L-alanine amide"
+                "L-alanine amide",
+                null
         );
 
         Assert.assertNotNull(modification);

@@ -350,7 +350,7 @@ use colims;
         user_name varchar(255) not null,
         l_analytical_run_id bigint,
         l_quant_engine_id bigint,
-        l_quant_method_cv_param bigint,
+        l_quant_method_id bigint,
         primary key (id)
     );
 
@@ -764,7 +764,7 @@ use colims;
 
     alter table colims.quantification_settings
         add constraint FKeft721jpbxfi5v8k27d73hqmj
-        foreign key (l_quant_method_cv_param)
+        foreign key (l_quant_method_id)
         references colims.quantification_method (id);
 
     alter table colims.role_has_permission

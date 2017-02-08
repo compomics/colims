@@ -16,6 +16,8 @@ import uk.ac.ebi.jmzidml.model.mzidml.Cv;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +48,10 @@ public class MzIdentMlExporterTest {
         AnalyticalRun run = repository.findById(1L);
         analyticalRuns.add(run);
 
-        File mzIdentMLFile = File.createTempFile("/home/niels/Desktop/testMzIdentMl.mzid", ".mzid");
-        File mgfFile = File.createTempFile("/home/niels/Desktop/testMgf", "mgf");
+//        File mzIdentMLFile = File.createTempFile("/home/niels/Desktop/testMzIdentMl", ".mzid");
+        File mzIdentMLFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
+//        File mgfFile = File.createTempFile("/home/niels/Desktop/testMgf", "mgf");
+        File mgfFile = new File("/home/niels/Desktop/testMgf.mgf");
 
         exporter.export(mzIdentMLFile.toPath(), mgfFile.toPath(), new ClassPathResource("data").getFile().toPath(), analyticalRuns);
     }

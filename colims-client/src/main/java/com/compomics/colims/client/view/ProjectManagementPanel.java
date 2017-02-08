@@ -95,6 +95,10 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
         return viewRunsMenuItem;
     }
 
+    public JMenuItem getMzIdentMlExportMenuItem() {
+        return mzIdentMlExportMenuItem;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -107,6 +111,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
 
         samplePopupMenu = new javax.swing.JPopupMenu();
         addRunsMenuItem = new javax.swing.JMenuItem();
+        mzIdentMlExportMenuItem = new javax.swing.JMenuItem();
         mzTabExportMenuItem = new javax.swing.JMenuItem();
         viewRunsMenuItem = new javax.swing.JMenuItem();
         projectsOverviewPanel = new javax.swing.JPanel();
@@ -131,6 +136,9 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
 
         addRunsMenuItem.setText("add run(s)...");
         samplePopupMenu.add(addRunsMenuItem);
+
+        mzIdentMlExportMenuItem.setText("export to MzIdentML");
+        samplePopupMenu.add(mzIdentMlExportMenuItem);
 
         mzTabExportMenuItem.setText("export to mzTab...");
         samplePopupMenu.add(mzTabExportMenuItem);
@@ -386,6 +394,7 @@ public class ProjectManagementPanel extends javax.swing.JPanel {
     private javax.swing.JPanel experimentsOverviewPanel;
     private javax.swing.JTable experimentsTable;
     private javax.swing.JScrollPane experimentsTableScrollPane;
+    private javax.swing.JMenuItem mzIdentMlExportMenuItem;
     private javax.swing.JMenuItem mzTabExportMenuItem;
     private javax.swing.JButton otherSampleActionsButton;
     private javax.swing.JPanel projectsOverviewPanel;
