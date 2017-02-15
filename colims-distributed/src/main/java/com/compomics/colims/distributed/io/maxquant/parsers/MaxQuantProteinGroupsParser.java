@@ -88,7 +88,7 @@ public class MaxQuantProteinGroupsParser {
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
-            ProteinGroup proteinGroup = parseProteinGroup(values, fastaDbParser.parseFastas(fastaDbMap), includeContaminants, optionalHeaders);
+            ProteinGroup proteinGroup = parseProteinGroup(values, fastaDbParser.parse(fastaDbMap), includeContaminants, optionalHeaders);
             if (proteinGroup.getMainProtein() != null) {
                 proteinGroups.put(Integer.parseInt(values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))), proteinGroup);
             }

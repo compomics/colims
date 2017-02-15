@@ -1,5 +1,6 @@
 package com.compomics.colims.core.io.mzidentml;
 
+import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import org.junit.Assert;
@@ -16,8 +17,6 @@ import uk.ac.ebi.jmzidml.model.mzidml.Cv;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +31,11 @@ public class MzIdentMlExporterTest {
 
     @Autowired
     private MzIdentMlExporter exporter;
-
     @Autowired
     private AnalyticalRunRepository repository;
+    @Autowired
+    private UserService userService;
+
 
     /**
      * Test the MZIdentML export of an analytical run.
@@ -53,7 +54,8 @@ public class MzIdentMlExporterTest {
 //        File mgfFile = File.createTempFile("/home/niels/Desktop/testMgf", "mgf");
         File mgfFile = new File("/home/niels/Desktop/testMgf.mgf");
 
-        exporter.export(mzIdentMLFile.toPath(), mgfFile.toPath(), new ClassPathResource("data").getFile().toPath(), analyticalRuns);
+        MzIdentMlExport mzIdentMlExport = new MzIdentMlExport(new ClassPathResource("data").getFile().toPath(), mzIdentMLFile.toPath(), mgfFile.toPath(), analyticalRuns, userService.findById(1L));
+        exporter.export(mzIdentMlExport);
     }
 
     @Test

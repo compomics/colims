@@ -1,22 +1,38 @@
 package com.compomics.colims.client.controller;
 
+import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.progress.ProgressEndEvent;
+import com.compomics.colims.client.event.progress.ProgressStartEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.MzIdentMlExportDialog;
+import com.compomics.colims.core.io.mzidentml.MzIdentMlExport;
 import com.compomics.colims.core.io.mzidentml.MzIdentMlExporter;
+import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.User;
+import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JComboBoxBinding;
+import org.jdesktop.swingbinding.SwingBindings;
 
 /**
  * The mzIdentML export view controller.
@@ -35,19 +51,33 @@ public class MzIdentMlExportController implements Controllable {
     private static final String MZIDENTML_EXTENSION = ".mzid";
     private static final String MZTAB_EXTENSION = ".mtab";
 
+    /**
+     * The FASTA DBs location as provided in the distributed properties file.
+     */
+    @Value("${fastas.path}")
+    private String fastasPath = "";
+    //model
+    private ObservableList<User> userBindingList;
+    private BindingGroup bindingGroup;
     //view
     private MzIdentMlExportDialog mzIdentMlExportDialog;
     //parent controller
     private final MainController mainController;
+    private final SampleRunsController sampleRunsController;
     //services
+    private final UserService userService;
     private final EventBus eventBus;
     private final MzIdentMlExporter mzIdentMlExporter;
+    private final UserBean userBean;
 
     @Autowired
-    public MzIdentMlExportController(MzIdentMlExporter mzIdentMlExporter, EventBus eventBus, MainController mainController) {
+    public MzIdentMlExportController(MzIdentMlExporter mzIdentMlExporter, EventBus eventBus, MainController mainController, SampleRunsController sampleRunsController, UserService userService, UserBean userBean) {
         this.mzIdentMlExporter = mzIdentMlExporter;
         this.eventBus = eventBus;
         this.mainController = mainController;
+        this.sampleRunsController = sampleRunsController;
+        this.userService = userService;
+        this.userBean = userBean;
     }
 
     /**
@@ -63,7 +93,7 @@ public class MzIdentMlExportController implements Controllable {
     @PostConstruct
     public void init() {
         //init view
-        mzIdentMlExportDialog = new MzIdentMlExportDialog(mainController.getMainFrame(), true);
+        mzIdentMlExportDialog = new MzIdentMlExportDialog(sampleRunsController.getSampleRunsDialog(), true);
 
         //register to event bus
         eventBus.register(this);
@@ -77,6 +107,16 @@ public class MzIdentMlExportController implements Controllable {
 
         mzIdentMlExportDialog.getMgfExportChooser().setMultiSelectionEnabled(false);
         mzIdentMlExportDialog.getMgfExportChooser().setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+        //add binding
+        bindingGroup = new BindingGroup();
+
+        userBindingList = ObservableCollections.observableList(userService.findAll());
+
+        JComboBoxBinding ownerComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, userBindingList, mzIdentMlExportDialog.getUserComboBox());
+        bindingGroup.addBinding(ownerComboBoxBinding);
+
+        bindingGroup.bind();
 
         //add action listeners
         mzIdentMlExportDialog.getBrowseMzIdentMlButton().addActionListener(e -> {
@@ -107,6 +147,19 @@ public class MzIdentMlExportController implements Controllable {
             mzIdentMlExportDialog.getMgfTextField().setText("");
         });
 
+        mzIdentMlExportDialog.getExportButton().addActionListener(e -> {
+            List<String> validationMessages = validate();
+            if (validationMessages.isEmpty()) {
+                MzIdentMlExporterWorker mzIdentMlExporterWorker = new MzIdentMlExporterWorker();
+                ProgressStartEvent progressStartEvent = new ProgressStartEvent(mainController.getMainFrame(), true, 1, "MzTab export progress. ");
+                eventBus.post(progressStartEvent);
+                mzIdentMlExporterWorker.execute();
+            } else {
+                MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+        });
+
         mzIdentMlExportDialog.getCloseButton().addActionListener(e -> mzIdentMlExportDialog.dispose());
 
     }
@@ -117,7 +170,10 @@ public class MzIdentMlExportController implements Controllable {
         mzIdentMlExportDialog.getExportSpectraCheckBox().setEnabled(true);
         mzIdentMlExportDialog.getMgfTextField().setText("");
 
-        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), mzIdentMlExportDialog);
+        //set the selected item in the user combobox
+        mzIdentMlExportDialog.getUserComboBox().getModel().setSelectedItem(userBean.getCurrentUser());
+
+        GuiUtils.centerDialogOnComponent(sampleRunsController.getSampleRunsDialog(), mzIdentMlExportDialog);
         mzIdentMlExportDialog.setVisible(true);
     }
 
@@ -129,6 +185,17 @@ public class MzIdentMlExportController implements Controllable {
     private List<String> validate() {
         List<String> validationMessages = new ArrayList<>();
 
+        Path fastasDirectory = Paths.get(fastasPath);
+        if (!Files.exists(fastasDirectory)) {
+            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasDirectory + " doesn't exist.");
+        }
+        if (mzIdentMlExportDialog.getMzIdentMlTextField().getText().isEmpty()) {
+            validationMessages.add("Please select an mzIdentML export file.");
+        }
+        if (mzIdentMlExportDialog.getExportSpectraCheckBox().isSelected() && mzIdentMlExportDialog.getMgfTextField().getText().isEmpty()) {
+            validationMessages.add("Please select an MGF export file.");
+        }
+
         return validationMessages;
     }
 
@@ -139,18 +206,23 @@ public class MzIdentMlExportController implements Controllable {
 
         @Override
         protected Void doInBackground() throws Exception {
-
-//            LOGGER.info("Exporting mzIdentML file " + mzTabExport.getFileName() + " to directory " + mzTabExport.getExportDirectory());
-//            try {
-//                mzTabExport.setFastaDirectory(Paths.get(fastasPath));
-//                mzTabExporter.export(mzTabExport);
-//                ProgressEndEvent progressEndEvent = new ProgressEndEvent();
-//                eventBus.post(progressEndEvent);
-//                eventBus.post(new MessageEvent("Info", "Exporting mzTab file has finished", JOptionPane.INFORMATION_MESSAGE));
-//                LOGGER.info("Finished exporting mzTab file " + mzTabExport.getFileName());
-//            } catch (Exception e) {
-//                eventBus.post(new MessageEvent("Error", e.getMessage(), JOptionPane.ERROR_MESSAGE));
-//            }
+            Path fastasDirectory = Paths.get(fastasPath);
+            Path mzIdentMlExportPath = Paths.get(mzIdentMlExportDialog.getMzIdentMlTextField().getText());
+            Path mgfExportPath = mzIdentMlExportDialog.getExportSpectraCheckBox().isSelected() ? Paths.get(mzIdentMlExportDialog.getMzIdentMlTextField().getText()) : null;
+            User user = userBindingList.get(mzIdentMlExportDialog.getUserComboBox().getSelectedIndex());
+            //fetch the institution
+            userService.fetchInstitution(user);
+            LOGGER.info("Exporting runs to mzIdentML file " + mzIdentMlExportPath);
+            try {
+                mzIdentMlExporter.export(new MzIdentMlExport(fastasDirectory, mzIdentMlExportPath, mgfExportPath, sampleRunsController.getSelectedAnalyticalRuns(), user));
+                ProgressEndEvent progressEndEvent = new ProgressEndEvent();
+                eventBus.post(progressEndEvent);
+                eventBus.post(new MessageEvent("Info", "mzIdentML export to " + mzIdentMlExportPath + " has finished", JOptionPane.INFORMATION_MESSAGE));
+                LOGGER.info("Finished exporting mzIdentML file " + mzIdentMlExportPath);
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+                eventBus.post(new MessageEvent("Error", e.getMessage(), JOptionPane.ERROR_MESSAGE));
+            }
             Thread.sleep(1000);
 
             return null;
@@ -162,6 +234,7 @@ public class MzIdentMlExportController implements Controllable {
                 get();
             } catch (InterruptedException | ExecutionException ex) {
                 LOGGER.error(ex.getMessage(), ex);
+                eventBus.post(new MessageEvent("Error", ex.getMessage(), JOptionPane.ERROR_MESSAGE));
             } catch (CancellationException ex) {
                 LOGGER.info("Cancelling mzIdentML export.");
             } finally {

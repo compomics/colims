@@ -1,8 +1,9 @@
 package com.compomics.colims.client.view;
 
-import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 
@@ -27,7 +28,7 @@ public class MzIdentMlExportDialog extends javax.swing.JDialog {
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
-    public MzIdentMlExportDialog(final Frame parent, final boolean modal) {
+    public MzIdentMlExportDialog(final JDialog parent, final boolean modal) {
         super(parent, modal);
 
         initComponents();
@@ -81,6 +82,10 @@ public class MzIdentMlExportDialog extends javax.swing.JDialog {
         return mgfExportChooser;
     }
 
+    public JComboBox<String> getUserComboBox() {
+        return userComboBox;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -100,6 +105,8 @@ public class MzIdentMlExportDialog extends javax.swing.JDialog {
         exportSpectraCheckBox = new javax.swing.JCheckBox();
         browseMgfButton = new javax.swing.JButton();
         browseMzIdentMlButton = new javax.swing.JButton();
+        userComboBox = new javax.swing.JComboBox<>();
+        userLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("MzIdentML export");
@@ -143,6 +150,8 @@ public class MzIdentMlExportDialog extends javax.swing.JDialog {
         browseMzIdentMlButton.setMinimumSize(new java.awt.Dimension(80, 25));
         browseMzIdentMlButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        userLabel.setText("User:");
+
         javax.swing.GroupLayout mzIdentMlExportPanelLayout = new javax.swing.GroupLayout(mzIdentMlExportPanel);
         mzIdentMlExportPanel.setLayout(mzIdentMlExportPanelLayout);
         mzIdentMlExportPanelLayout.setHorizontalGroup(
@@ -156,12 +165,19 @@ public class MzIdentMlExportDialog extends javax.swing.JDialog {
                         .addComponent(mzIdentMlTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE))
                     .addComponent(exportSpectraCheckBox)
                     .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
-                        .addComponent(mgfLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(mgfTextField))
-                    .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(exportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(exportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
+                        .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(userLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(mgfLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(mgfTextField))
+                            .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(userComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(browseMgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -181,9 +197,13 @@ public class MzIdentMlExportDialog extends javax.swing.JDialog {
                 .addComponent(exportSpectraCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(mgfLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(mgfTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(browseMgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(browseMgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(mgfLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(userComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(userLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(exportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -215,5 +235,7 @@ public class MzIdentMlExportDialog extends javax.swing.JDialog {
     private javax.swing.JPanel mzIdentMlExportPanel;
     private javax.swing.JLabel mzIdentMlLabel;
     private javax.swing.JTextField mzIdentMlTextField;
+    private javax.swing.JComboBox<String> userComboBox;
+    private javax.swing.JLabel userLabel;
     // End of variables declaration//GEN-END:variables
 }

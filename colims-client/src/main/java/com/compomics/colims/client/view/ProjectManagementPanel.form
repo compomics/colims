@@ -13,11 +13,6 @@
             <Property name="text" type="java.lang.String" value="add run(s)..."/>
           </Properties>
         </MenuItem>
-        <MenuItem class="javax.swing.JMenuItem" name="mzIdentMlExportMenuItem">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="export to MzIdentML"/>
-          </Properties>
-        </MenuItem>
         <MenuItem class="javax.swing.JMenuItem" name="mzTabExportMenuItem">
           <Properties>
             <Property name="text" type="java.lang.String" value="export to mzTab..."/>

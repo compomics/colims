@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Niels Hulstaert on 7/10/16.
@@ -42,6 +43,7 @@ public class FastaDbParserTest {
         contaminantsFastaDb.setFileName("contaminants.fasta");
         contaminantsFastaDb.setFilePath(new ClassPathResource("data" + File.separator + "contaminants.fasta").getFile().getPath());
         contaminantsFastaDb.setVersion("N/A");
+        contaminantsFastaDb.setHeaderParseRule("&gt;([^ ]*)");
         contaminantsFastaDb.setDatabaseName("N/A");
     }
 
@@ -51,7 +53,7 @@ public class FastaDbParserTest {
         fastaDbs.put(testFastaDb, Paths.get(testFastaDb.getFilePath()));
         fastaDbs.put(contaminantsFastaDb, Paths.get(contaminantsFastaDb.getFilePath()));
 
-        Map<String, String> parsedFastas = fastaDbParser.parseFastas(fastaDbs);
+        Map<String, String> parsedFastas = fastaDbParser.parse(fastaDbs);
 
         Assert.assertFalse(parsedFastas.containsKey(null));
         Assert.assertEquals(20379, parsedFastas.size());
@@ -79,5 +81,43 @@ public class FastaDbParserTest {
                 "NIKKQCQTLQVSVADAEQRGENALKDAHSKRVELEAALQQAKEELARMLREYQELMSVKLALDIEIAT" +
                 "YRKLLEGEEYRMSGECQSAVSISVVSGSTSTGGISGGLGSGSGFGLSSGFGSGSGSGFGFGGSVSGSS" +
                 "SSKIISTTTLNKRR", parsedFastas.get("P19013"));
+    }
+
+    @Test
+    public void testParseAccessions() throws IOException {
+        LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap();
+        fastaDbs.put(testFastaDb, Paths.get(testFastaDb.getFilePath()));
+        fastaDbs.put(contaminantsFastaDb, Paths.get(contaminantsFastaDb.getFilePath()));
+
+        Map<FastaDb, Set<String>> parsedFastas = fastaDbParser.parseAccessions(fastaDbs);
+
+        Assert.assertEquals(2, parsedFastas.size());
+        Assert.assertEquals(20195, parsedFastas.get(testFastaDb).size());
+        Assert.assertEquals(245, parsedFastas.get(contaminantsFastaDb).size());
+        //look for the first protein
+        Assert.assertTrue(parsedFastas.get(testFastaDb).contains("P24844"));
+        //look for a protein
+        Assert.assertTrue(parsedFastas.get(testFastaDb).contains("O00571"));
+        //look for the last protein
+        Assert.assertTrue(parsedFastas.get(testFastaDb).contains("E9PAV3"));
+        //look for 3 contaminants proteins
+        Assert.assertTrue(parsedFastas.get(contaminantsFastaDb).contains("P09870"));
+        Assert.assertTrue(parsedFastas.get(contaminantsFastaDb).contains("P05784"));
+        Assert.assertTrue(parsedFastas.get(contaminantsFastaDb).contains("H-INV:HIT000292931"));
+
+        //check duplicates: both FASTA DBs contain the protein with accession "P19013"
+        Assert.assertTrue(parsedFastas.get(testFastaDb).contains("P19013"));
+        Assert.assertTrue(parsedFastas.get(contaminantsFastaDb).contains("P19013"));
+    }
+
+    @Test
+    public void testTestParseRule() throws IOException {
+        Map<String, String> headers = fastaDbParser.testParseRule(Paths.get(testFastaDb.getFilePath()), testFastaDb.getHeaderParseRule(), 10);
+
+        System.out.println("========");
+
+        headers = fastaDbParser.testParseRule(Paths.get(contaminantsFastaDb.getFilePath()), contaminantsFastaDb.getHeaderParseRule(), 10);
+
+        System.out.println("========");
     }
 }

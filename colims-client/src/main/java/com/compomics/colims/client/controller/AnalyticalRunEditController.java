@@ -58,7 +58,7 @@ public class AnalyticalRunEditController implements Controllable {
     private AnalyticalRunBinaryFileDialog analyticalRunBinaryFileDialog;
     //parent controller
     @Autowired
-    private AnalyticalRunsSearchSettingsController analyticalRunsSearchSettingsController;
+    private SampleRunsController analyticalRunsSearchSettingsController;
     //services
     @Autowired
     private AnalyticalRunService analyticalRunService;
@@ -85,7 +85,7 @@ public class AnalyticalRunEditController implements Controllable {
         eventBus.register(this);
 
         //init view
-        analyticalRunEditDialog = new AnalyticalRunEditDialog(analyticalRunsSearchSettingsController.getAnalyticalRunsSearchSettingsDialog(), true);
+        analyticalRunEditDialog = new AnalyticalRunEditDialog(analyticalRunsSearchSettingsController.getSampleRunsDialog(), true);
         analyticalRunBinaryFileDialog = new AnalyticalRunBinaryFileDialog(analyticalRunEditDialog, true);
         analyticalRunBinaryFileDialog.getBinaryFileManagementPanel().init(AnalyticalRunBinaryFile.class);
 
@@ -186,7 +186,7 @@ public class AnalyticalRunEditController implements Controllable {
 
     @Override
     public void showView() {
-        GuiUtils.centerDialogOnComponent(analyticalRunsSearchSettingsController.getAnalyticalRunsSearchSettingsDialog(), analyticalRunEditDialog);
+        GuiUtils.centerDialogOnComponent(analyticalRunsSearchSettingsController.getSampleRunsDialog(), analyticalRunEditDialog);
         analyticalRunEditDialog.setVisible(true);
     }
 

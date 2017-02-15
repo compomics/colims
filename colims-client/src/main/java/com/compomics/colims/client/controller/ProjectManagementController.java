@@ -78,16 +78,13 @@ public class ProjectManagementController implements Controllable {
     private SampleEditController sampleEditController;
     @Autowired
     @Lazy
-    private AnalyticalRunsSearchSettingsController analyticalRunsSearchSettingsController;
+    private SampleRunsController analyticalRunsSearchSettingsController;
     @Autowired
     @Lazy
     private AnalyticalRunsAdditionController analyticalRunsAdditionController;
     @Autowired
     @Lazy
     private MzTabExportController mzTabExportController;
-    @Autowired
-    @Lazy
-    private MzIdentMlExportController mzIdentMlExportController;
     //parent controller
     @Autowired
     private MainController mainController;
@@ -210,7 +207,6 @@ public class ProjectManagementController implements Controllable {
         //add action listeners to other sample actions popup menu items
         SampleMenuActionListener samplePopupMenuActionListener = new SampleMenuActionListener();
         projectManagementPanel.getAddRunsMenuItem().addActionListener(samplePopupMenuActionListener);
-        projectManagementPanel.getMzIdentMlExportMenuItem().addActionListener(samplePopupMenuActionListener);
         projectManagementPanel.getMzTabExportMenuItem().addActionListener(samplePopupMenuActionListener);
         projectManagementPanel.getViewRunsMenuItem().addActionListener(samplePopupMenuActionListener);
 
@@ -697,13 +693,6 @@ public class ProjectManagementController implements Controllable {
                     mzTabExportController.showView();
                 } else {
                     eventBus.post(new MessageEvent("MzTab export", validationMessages, JOptionPane.INFORMATION_MESSAGE));
-                }
-            } else if (menuItemLabel.equals(projectManagementPanel.getMzIdentMlExportMenuItem().getText())) {
-                List<String> validationMessages = validateExportSampleSelection();
-                if (validationMessages.isEmpty()) {
-                    mzIdentMlExportController.showView();
-                } else {
-                    eventBus.post(new MessageEvent("MzIdentML export", validationMessages, JOptionPane.INFORMATION_MESSAGE));
                 }
             } else if (menuItemLabel.equals(projectManagementPanel.getViewRunsMenuItem().getText())) {
                 Sample selectedSample = getSelectedSample();
