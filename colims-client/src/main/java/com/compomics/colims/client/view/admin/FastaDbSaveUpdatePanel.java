@@ -112,15 +112,15 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         taxonomyLabel = new javax.swing.JLabel();
         browseTaxonomyButton = new javax.swing.JButton();
         fastaDbStateInfoLabel = new javax.swing.JLabel();
-        backButton = new javax.swing.JButton();
         HeaderParseRuleLabel = new javax.swing.JLabel();
         taxomomyComboBox = new javax.swing.JComboBox<>();
-        saveOrUpdateButton = new javax.swing.JButton();
         headerParseRuleComboBox = new javax.swing.JComboBox<>();
         addHeaderParseRuleButtton = new javax.swing.JButton();
         databaseLabel = new javax.swing.JLabel();
         databaseComboBox = new javax.swing.JComboBox<>();
         testHeaderParseRuleButtton = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
+        saveOrUpdateButton = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setPreferredSize(new java.awt.Dimension(564, 361));
@@ -168,21 +168,9 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         fastaDbStateInfoLabel.setMinimumSize(new java.awt.Dimension(100, 20));
         fastaDbStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
-        backButton.setText("back");
-        backButton.setToolTipText("go back to the fasta database overview panel");
-        backButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        backButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        backButton.setPreferredSize(new java.awt.Dimension(80, 25));
-
         HeaderParseRuleLabel.setText("Parse rule");
 
         taxomomyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        saveOrUpdateButton.setText("save");
-        saveOrUpdateButton.setToolTipText("save a new fasta db or update an existing one");
-        saveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        saveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        saveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         headerParseRuleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -234,17 +222,13 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
                                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(taxomomyComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(fastaDbDetailPanelLayout.createSequentialGroup()
                                         .addComponent(headerParseRuleComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(testHeaderParseRuleButtton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(browseTaxonomyButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(addHeaderParseRuleButtton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                                    .addComponent(addHeaderParseRuleButtton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
         );
         fastaDbDetailPanelLayout.setVerticalGroup(
             fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -281,14 +265,22 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
                     .addComponent(addHeaderParseRuleButtton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(HeaderParseRuleLabel)
                     .addComponent(testHeaderParseRuleButtton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
-                .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fastaDbStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(fastaDbStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(11, 11, 11))
         );
+
+        backButton.setText("back");
+        backButton.setToolTipText("go back to the fasta database overview panel");
+        backButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        backButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        backButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
+        saveOrUpdateButton.setText("save");
+        saveOrUpdateButton.setToolTipText("save a new fasta db or update an existing one");
+        saveOrUpdateButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        saveOrUpdateButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        saveOrUpdateButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -296,14 +288,24 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(fastaDbDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fastaDbDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 552, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(fastaDbDetailPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+                .addComponent(fastaDbDetailPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 319, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(saveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents

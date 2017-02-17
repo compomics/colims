@@ -108,7 +108,7 @@ public class FastaDbParser {
      * @param fastaPath       the FASTA DB file path
      * @param parseRule       the header parse rule
      * @param numberOfHeaders the number of headers that will be returned
-     * @return the map of parsed headers (key: the original header; value: the parsed accession)
+     * @return the map of parsed headers (key: the parsed accession; value: the original header)
      * @throws IOException           thrown in case of an input/output related problem
      * @throws IllegalStateException if the set of parsed accessions of the one of the FASTA DB files is empty
      */
@@ -288,9 +288,9 @@ public class FastaDbParser {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
                     Matcher matcher = pattern.matcher(line.substring(1).split(SPLITTER)[0]);
                     if (matcher.find()) {
-                        headers.put(line, matcher.group(1));
+                        headers.put(matcher.group(1), line);
                     } else {
-                        headers.put(line, line.substring(1).split(SPLITTER)[0]);
+                        headers.put(line.substring(1).split(SPLITTER)[0], line);
                     }
                 }
             }
@@ -316,7 +316,7 @@ public class FastaDbParser {
             while ((line = bufferedReader.readLine()) != null && headers.size() < numberOfHeaders) {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
                     Header header = Header.parseFromFASTA(line);
-                    headers.put(line, header.getAccessionOrRest());
+                    headers.put(header.getAccessionOrRest(), line);
                 }
             }
         }

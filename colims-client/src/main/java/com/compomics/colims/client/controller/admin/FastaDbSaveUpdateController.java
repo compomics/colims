@@ -5,13 +5,16 @@
  */
 package com.compomics.colims.client.controller.admin;
 
+import com.compomics.colims.client.compoment.TableColumnAdjuster;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.model.table.model.HeaderParseRuleTestTableModel;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.admin.FastaDbSaveUpdatePanel;
 import com.compomics.colims.client.view.admin.HeaderParseRuleAdditionDialog;
+import com.compomics.colims.client.view.admin.HeaderParseRuleTestDialog;
 import com.compomics.colims.core.io.fasta.FastaDbParser;
 import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.FastaDbService;
@@ -48,11 +51,10 @@ import java.util.*;
 
 import static com.compomics.colims.client.controller.admin.FastaDbManagementController.DATABASE_NAME_NOT_PRESENT;
 import static com.compomics.colims.client.controller.admin.FastaDbManagementController.UNKNOWN;
-import com.compomics.colims.client.model.table.model.HeaderParseRuleTestTableModel;
-import com.compomics.colims.client.view.admin.HeaderParseRuleTestDialog;
 
 /**
  * @author demet
+ * @author niels
  */
 @Component("fastaDbSaveUpdateController")
 @Lazy
@@ -96,6 +98,7 @@ public class FastaDbSaveUpdateController implements Controllable {
     private boolean saveUpdate = false;
     private FastaDb fastaDbToEdit;
     private HeaderParseRuleTestTableModel headerParseRuleTestTableModel = new HeaderParseRuleTestTableModel();
+    private TableColumnAdjuster tableColumnAdjuster;
     //view
     private FastaDbSaveUpdatePanel fastaDbSaveUpdatePanel;
     private HeaderParseRuleAdditionDialog headerParseRuleAdditionDialog;
@@ -178,6 +181,7 @@ public class FastaDbSaveUpdateController implements Controllable {
 
         //set table model for the headers table
         headerParseRuleTestDialog.getHeadersTable().setModel(headerParseRuleTestTableModel);
+        tableColumnAdjuster = new TableColumnAdjuster(headerParseRuleTestDialog.getHeadersTable());
 
         //add listeners
         fastaDbSaveUpdatePanel.getBrowseTaxonomyButton().addActionListener(e -> {
@@ -198,10 +202,21 @@ public class FastaDbSaveUpdateController implements Controllable {
 
         fastaDbSaveUpdatePanel.getTestHeaderParseRuleButtton().addActionListener(e -> {
             //parse the first ten headers of the FASTA file
-//            fastaDbParser.testParseRule()
+            Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDbToEdit.getFilePath());
+            HeaderParseRule selectedHeaderParseRule = headerParseRules.get(fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getSelectedIndex());
+            try {
+                Map<String, String> headers = fastaDbParser.testParseRule(absoluteFastaDbPath, selectedHeaderParseRule.getParseRule(), 10);
+                headerParseRuleTestTableModel.setParsedAccessions(headers);
+                headerParseRuleTestTableModel.fireTableDataChanged();
+                tableColumnAdjuster.adjustColumns();
 
-            GuiUtils.centerDialogOnComponent(fastaDbSaveUpdatePanel, headerParseRuleTestDialog);
-            headerParseRuleTestDialog.setVisible(true);
+                GuiUtils.centerDialogOnComponent(fastaDbSaveUpdatePanel, headerParseRuleTestDialog);
+                headerParseRuleTestDialog.setVisible(true);
+            } catch (IOException e1) {
+                LOGGER.error(e1.getMessage(), e1);
+                MessageEvent messageEvent = new MessageEvent("Cannot parse FASTA file", "The FASTA file " + absoluteFastaDbPath + " cannot be parsed.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
         });
 
         fastaDbSaveUpdatePanel.getBrowseFastaButton().addActionListener(e -> {
@@ -261,10 +276,6 @@ public class FastaDbSaveUpdateController implements Controllable {
             }
             saveUpdate = false;
             fastaDbManagementController.showOverviewPanel();
-        });
-
-        fastaDbSaveUpdatePanel.getTestHeaderParseRuleButtton().addActionListener(e -> {
-
         });
 
         headerParseRuleAdditionDialog.getSaveParseRuleButton().addActionListener(e -> {
@@ -439,8 +450,7 @@ public class FastaDbSaveUpdateController implements Controllable {
     /**
      * Populate the Database Combo Box.
      *
-     * @param dbNames the set of database names as read from the properties
-     * files
+     * @param dbNames the set of database names as read from the properties files
      */
     private void populateDatabaseComboBox(TreeSet<String> dbNames) {
         databaseNamesBindingList.add(DATABASE_NAME_NOT_PRESENT);
@@ -477,7 +487,7 @@ class HeaderParseRule {
     /**
      * Constructor.
      *
-     * @param parseRule the parse rule
+     * @param parseRule   the parse rule
      * @param explanation the explanation
      */
     public HeaderParseRule(String parseRule, String explanation) {

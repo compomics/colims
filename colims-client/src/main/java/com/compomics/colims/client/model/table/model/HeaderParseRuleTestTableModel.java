@@ -1,5 +1,6 @@
 package com.compomics.colims.client.model.table.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 
@@ -9,19 +10,11 @@ import javax.swing.table.AbstractTableModel;
  */
 public class HeaderParseRuleTestTableModel extends AbstractTableModel {
 
-    private final String[] columnNames = {"header", "parsed accession"};
-    private static final int HEADER_INDEX = 0;
-    private static final int PARSED_ACCESSION_INDEX = 1;
-    private Map<String, String> parsedAccessions;
+    private final String[] columnNames = {"Parsed accession", "Original header"};
+    private static final int PARSED_ACCESSION_INDEX = 0;
+    private static final int HEADER_INDEX = 1;
+    private Map<String, String> parsedAccessions = new HashMap<>();
     private String[] keys;
-
-    public HeaderParseRuleTestTableModel() {
-    }
-
-    public HeaderParseRuleTestTableModel(Map<String, String> parsedAccessions) {
-        this.parsedAccessions = parsedAccessions;
-        this.keys = parsedAccessions.keySet().toArray(new String[parsedAccessions.size()]);
-    }
 
     public void setParsedAccessions(Map<String, String> parsedAccessions) {
         this.parsedAccessions = parsedAccessions;
@@ -48,9 +41,9 @@ public class HeaderParseRuleTestTableModel extends AbstractTableModel {
         String header = keys[rowIndex];
 
         switch (columnIndex) {
-            case HEADER_INDEX:
-                return header;
             case PARSED_ACCESSION_INDEX:
+                return header;
+            case HEADER_INDEX:
                 return parsedAccessions.get(header);
             default:
                 throw new IllegalArgumentException("Invalid column index: " + columnIndex);
