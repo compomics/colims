@@ -6,6 +6,7 @@
 package com.compomics.colims.client.controller.admin;
 
 import com.compomics.colims.client.compoment.TableColumnAdjuster;
+import com.compomics.colims.client.controller.AnalyticalRunsAdditionController;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
@@ -51,6 +52,7 @@ import java.util.*;
 
 import static com.compomics.colims.client.controller.admin.FastaDbManagementController.DATABASE_NAME_NOT_PRESENT;
 import static com.compomics.colims.client.controller.admin.FastaDbManagementController.UNKNOWN;
+import com.compomics.colims.core.distributed.model.enums.PersistType;
 
 /**
  * @author demet
@@ -112,6 +114,8 @@ public class FastaDbSaveUpdateController implements Controllable {
     private FastaDbService fastaDbService;
     @Autowired
     private FastaDbParser fastaDbParser;
+    @Autowired
+    private AnalyticalRunsAdditionController analyticalRunsAdditionController;
     @Autowired
     private FastaDbManagementController fastaDbManagementController;
     //child controller
@@ -328,10 +332,18 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbSaveUpdatePanel.getFileNameTextField().setText(fastaDbToEdit.getFileName());
         fastaDbSaveUpdatePanel.getFilePathTextField().setText(fastaDbToEdit.getFilePath());
         fastaDbSaveUpdatePanel.getVersionTextField().setText(fastaDbToEdit.getVersion());
-        HeaderParseRule headerParseRule = new HeaderParseRule(fastaDb.getHeaderParseRule());
-        if (headerParseRules.contains(headerParseRule)) {
-            fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getModel().setSelectedItem(headerParseRules.get(headerParseRules.indexOf(headerParseRule)));
+
+        boolean enableHeaderParseRules = analyticalRunsAdditionController.getSelectedStorageType().equals(PersistType.MAX_QUANT);
+        if (enableHeaderParseRules) {
+            HeaderParseRule headerParseRule = new HeaderParseRule(fastaDb.getHeaderParseRule());
+            if (headerParseRules.contains(headerParseRule)) {
+                fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getModel().setSelectedItem(headerParseRules.get(headerParseRules.indexOf(headerParseRule)));
+            }
         }
+        fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().setEnabled(enableHeaderParseRules);
+        fastaDbSaveUpdatePanel.getTestHeaderParseRuleButtton().setEnabled(enableHeaderParseRules);
+        fastaDbSaveUpdatePanel.getAddHeaderParseRuleButtton().setEnabled(enableHeaderParseRules);
+
         fastaDbSaveUpdatePanel.getDatabaseComboBox().getModel().setSelectedItem(fastaDb.getDatabaseName());
     }
 
@@ -450,7 +462,8 @@ public class FastaDbSaveUpdateController implements Controllable {
     /**
      * Populate the Database Combo Box.
      *
-     * @param dbNames the set of database names as read from the properties files
+     * @param dbNames the set of database names as read from the properties
+     * files
      */
     private void populateDatabaseComboBox(TreeSet<String> dbNames) {
         databaseNamesBindingList.add(DATABASE_NAME_NOT_PRESENT);
@@ -487,7 +500,7 @@ class HeaderParseRule {
     /**
      * Constructor.
      *
-     * @param parseRule   the parse rule
+     * @param parseRule the parse rule
      * @param explanation the explanation
      */
     public HeaderParseRule(String parseRule, String explanation) {

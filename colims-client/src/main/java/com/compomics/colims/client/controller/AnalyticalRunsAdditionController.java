@@ -269,7 +269,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * Show the view with the given DataImport en PersistMetadata instances for
      * updating a runs addition task.
      *
-     * @param dataImport      the DataImport instance
+     * @param dataImport the DataImport instance
      * @param persistMetaData the PersistMetadata instance
      */
     public void showEditView(DataImport dataImport, PersistMetadata persistMetaData) {
@@ -303,6 +303,26 @@ public class AnalyticalRunsAdditionController implements Controllable {
         } else {
             eventBus.post(new MessageEvent("Authorization problem", "User " + userBean.getCurrentUser().getName() + " has no rights to add a run.", JOptionPane.INFORMATION_MESSAGE));
         }
+    }
+
+    /**
+     * Get the selected storage type.
+     *
+     * @return the selected StorageType
+     */
+    public PersistType getSelectedStorageType() {
+        PersistType selectedStorageType = null;
+
+        //iterate over the radio buttons in the group
+        for (Enumeration<AbstractButton> buttons = analyticalRunsAdditionDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+
+            if (button.isSelected()) {
+                selectedStorageType = PersistType.getByUserFriendlyName(button.getText());
+            }
+        }
+
+        return selectedStorageType;
     }
 
     /**
@@ -361,7 +381,8 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * queue cannot be reached or in case of an IOException thrown by the
      * sendDbTask method.
      *
-     * @param dataImport the DataImport instance with the necessary import information
+     * @param dataImport the DataImport instance with the necessary import
+     * information
      */
     private void sendStorageTask(DataImport dataImport) {
         String storageDescription = analyticalRunsAdditionDialog.getStorageDescriptionTextField().getText();
@@ -455,26 +476,6 @@ public class AnalyticalRunsAdditionController implements Controllable {
     }
 
     /**
-     * Get the selected storage type.
-     *
-     * @return the selected StorageType
-     */
-    private PersistType getSelectedStorageType() {
-        PersistType selectedStorageType = null;
-
-        //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = analyticalRunsAdditionDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
-            AbstractButton button = buttons.nextElement();
-
-            if (button.isSelected()) {
-                selectedStorageType = PersistType.getByUserFriendlyName(button.getText());
-            }
-        }
-
-        return selectedStorageType;
-    }
-
-    /**
      * Get the selected instrument. Returns null if no instrument was selected.
      *
      * @return the selected Instrument
@@ -510,6 +511,5 @@ public class AnalyticalRunsAdditionController implements Controllable {
     public MaxQuantDataImportController getMaxQuantDataImportController() {
         return maxQuantDataImportController;
     }
-
 
 }

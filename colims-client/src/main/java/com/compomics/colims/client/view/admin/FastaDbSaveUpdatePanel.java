@@ -168,7 +168,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         fastaDbStateInfoLabel.setMinimumSize(new java.awt.Dimension(100, 20));
         fastaDbStateInfoLabel.setPreferredSize(new java.awt.Dimension(100, 20));
 
-        HeaderParseRuleLabel.setText("Parse rule");
+        HeaderParseRuleLabel.setText("<html>Parse rule<br>(MaxQuant only)</html>");
 
         taxomomyComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -263,7 +263,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
                 .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(headerParseRuleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addHeaderParseRuleButtton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(HeaderParseRuleLabel)
+                    .addComponent(HeaderParseRuleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(testHeaderParseRuleButtton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(fastaDbStateInfoLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

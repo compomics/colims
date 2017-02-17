@@ -49,6 +49,7 @@ public class HeaderParseRuleTestDialog extends javax.swing.JDialog {
         parentPanel = new javax.swing.JPanel();
         headersTableScrollPane = new javax.swing.JScrollPane();
         headersTable = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
         closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -78,21 +79,21 @@ public class HeaderParseRuleTestDialog extends javax.swing.JDialog {
         headersTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         headersTableScrollPane.setViewportView(headersTable);
 
+        jLabel1.setText("The parsed protein accession should match the protein ID in the proteinGroups.txt file.");
+
         javax.swing.GroupLayout parentPanelLayout = new javax.swing.GroupLayout(parentPanel);
         parentPanel.setLayout(parentPanelLayout);
         parentPanelLayout.setHorizontalGroup(
             parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(parentPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(headersTableScrollPane)
-                .addContainerGap())
+            .addComponent(headersTableScrollPane)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         parentPanelLayout.setVerticalGroup(
             parentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(parentPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(headersTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, parentPanelLayout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(headersTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         closeButton.setText("close");
@@ -130,6 +131,7 @@ public class HeaderParseRuleTestDialog extends javax.swing.JDialog {
     private javax.swing.JButton closeButton;
     private javax.swing.JTable headersTable;
     private javax.swing.JScrollPane headersTableScrollPane;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel parentPanel;
     // End of variables declaration//GEN-END:variables
 }
