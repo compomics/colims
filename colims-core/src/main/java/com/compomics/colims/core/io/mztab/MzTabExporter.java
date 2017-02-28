@@ -5,7 +5,7 @@
  */
 package com.compomics.colims.core.io.mztab;
 
-import com.compomics.colims.core.io.fasta.FastaDbAccessionParser;
+import com.compomics.colims.core.io.fasta.FastaDbParser;
 import com.compomics.colims.core.service.*;
 import com.compomics.colims.core.util.ProteinCoverage;
 import com.compomics.colims.core.util.UniprotProteinUtils;
@@ -27,9 +27,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * @author Niels Hulstaert
@@ -186,7 +184,7 @@ public class MzTabExporter {
     private final SearchAndValidationSettingsService searchAndValidationSettingsService;
     private final FastaDbService fastaDbService;
     private final UniProtService uniProtService;
-    private final FastaDbAccessionParser fastaDbAccessionParser;
+    private final FastaDbParser fastaDbParser;
     private final UniprotProteinUtils uniprotProteinUtils;
     private final QuantificationMethodService quantificationMethodService;
     /**
@@ -197,7 +195,7 @@ public class MzTabExporter {
     @Autowired
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
                          FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantLabeledService proteinGroupQuantLabeledService,
-                         ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbAccessionParser fastaDbAccessionParser,
+                         ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
                          UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
         this.proteinGroupService = proteinGroupService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
@@ -206,7 +204,7 @@ public class MzTabExporter {
         this.proteinGroupQuantLabeledService = proteinGroupQuantLabeledService;
         this.proteinGroupQuantService = proteinGroupQuantService;
         this.peptideService = peptideService;
-        this.fastaDbAccessionParser = fastaDbAccessionParser;
+        this.fastaDbParser = fastaDbParser;
         this.uniprotProteinUtils = uniprotProteinUtils;
         this.quantificationMethodService = quantificationMethodService;
     }
@@ -998,6 +996,6 @@ public class MzTabExporter {
             fastaDbsWithPath.put(fastaDb, absoluteFastaDbPath);
         });
 
-        parsedFastas = fastaDbAccessionParser.parseFastas(fastaDbsWithPath);
+        parsedFastas = fastaDbParser.parseAccessions(fastaDbsWithPath);
     }
 }

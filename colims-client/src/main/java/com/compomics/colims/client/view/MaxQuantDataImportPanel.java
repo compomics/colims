@@ -185,7 +185,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                             .addComponent(maxQuantDirectorySelectionLabel)
                             .addComponent(contaminantsCheckBox)
                             .addComponent(unidentifiedSpectraCheckBox))
-                        .addGap(0, 228, Short.MAX_VALUE)))
+                        .addGap(0, 110, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         leftPanelLayout.setVerticalGroup(
@@ -246,7 +246,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         selectContaminantsFastaDbButton.setMinimumSize(new java.awt.Dimension(80, 25));
         selectContaminantsFastaDbButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        additionalFastaFileSelectionLabel.setText("Select an additional FASTA file (with e.g. some additional sequences):");
+        additionalFastaFileSelectionLabel.setText("Select additional FASTA file(s) (with e.g. some additional sequences):");
 
         additionalFastaDbScrollPane.setMaximumSize(new java.awt.Dimension(32767222, 32767222));
 
@@ -292,7 +292,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(additionalFastaFileSelectionLabel)
                     .addGroup(rightPanelLayout.createSequentialGroup()
-                        .addComponent(additionalFastaDbScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE)
+                        .addComponent(additionalFastaDbScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(selectAdditionalFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)

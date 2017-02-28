@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 public class ProjectEditDialog extends javax.swing.JDialog {
 
     /**
-     * Dialog constructor
+     * Dialog constructor.
      *
      * @param parent the parent frame
      * @param modal the modal boolean

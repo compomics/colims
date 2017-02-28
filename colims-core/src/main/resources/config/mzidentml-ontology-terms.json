@@ -47,7 +47,7 @@
       "fullName": "Units of measurement"
     },
     "NCBITaxon": {
-      "id": "NCBI",
+      "id": "NCBITaxon",
       "uri": "http://purl.obolibrary.org/obo/ncbitaxon",
       "fullName": "NCBI organismal classification"
     }
@@ -111,15 +111,15 @@
       "name": "XTandem XML file"
     }
   },
-  "GenericCV": {
-    "MS": {
-      "cvRef": "MS"
-    },
+  "ModCV": {
     "MOD": {
       "cvRef": "MOD"
     },
     "UNIMOD": {
       "cvRef": "UNIMOD"
+    },
+    "MS": {
+      "cvRef": "MS"
     },
     "UNKNOWN": {
       "cvRef": "N/A"
@@ -343,6 +343,23 @@
         "cvRef": "MS",
         "accession": "MS:1002352",
         "name": "PSM-level p-value"
+      }
+    },
+    "Protein": {
+      "PS_score": {
+        "cvRef": "MS",
+        "accession": "MS:1002470",
+        "name": "PeptideShaker protein group score"
+      },
+      "PS_confidence": {
+        "cvRef": "MS",
+        "accession": "MS:1002471",
+        "name": "PeptideShaker protein group confidence"
+      },
+      "MQ_PEP": {
+        "cvRef": "MS",
+        "accession": "MS:1002376",
+        "name": "protein group-level probability"
       }
     }
   },

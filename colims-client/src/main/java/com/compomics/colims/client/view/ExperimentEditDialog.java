@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 public class ExperimentEditDialog extends javax.swing.JDialog {
 
     /**
-     * Dialog constructor
+     * Dialog constructor.
      *
      * @param parent the parent dialog
      * @param modal is the dialog modal

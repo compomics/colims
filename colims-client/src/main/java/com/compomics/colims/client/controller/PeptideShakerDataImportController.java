@@ -75,7 +75,7 @@ public class PeptideShakerDataImportController implements Controllable {
 
         Path experimentsDirectory = Paths.get(experimentsPath);
         if (!Files.exists(experimentsDirectory)) {
-            throw new IllegalArgumentException("The experiments directory defined in the client properties file " + experimentsPath.toString() + " doesn't exist.");
+            throw new IllegalArgumentException("The experiments directory defined in the client properties file " + experimentsPath + " doesn't exist.");
         }
 
         //init cps file selection
@@ -83,7 +83,6 @@ public class PeptideShakerDataImportController implements Controllable {
         peptideShakerDataImportPanel.getCpsFileChooser().setMultiSelectionEnabled(false);
         //set cps file filter
         peptideShakerDataImportPanel.getCpsFileChooser().setFileFilter(new CpsFileFilter());
-
         peptideShakerDataImportPanel.getCpsFileChooser().setCurrentDirectory(experimentsDirectory.toFile());
 
         peptideShakerDataImportPanel.getSelectCpsButton().addActionListener(e -> {

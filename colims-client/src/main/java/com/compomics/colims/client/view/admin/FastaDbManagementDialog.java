@@ -290,18 +290,18 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
             }
         });
 
-        nameLabel.setText("Name*");
+        nameLabel.setText("Name");
         nameLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
-        fileNameLabel.setText("File Name*");
+        fileNameLabel.setText("File Name");
 
         fileNameTextField.setEditable(false);
 
-        filePathLabel.setText("File Path*");
+        filePathLabel.setText("File Path");
 
         filePathTextField.setEditable(false);
 
-        versionLabel.setText("Version*");
+        versionLabel.setText("Version");
         versionLabel.setPreferredSize(new java.awt.Dimension(48, 14));
 
         versionTextField.setEditable(false);
@@ -314,7 +314,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
 
         taxonomyTextField.setEditable(false);
 
-        databaseLabel.setText("Database*");
+        databaseLabel.setText("Database");
 
         databaseTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -334,7 +334,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
                             .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(fileNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(filePathLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(12, 12, 12)
+                        .addGap(18, 18, 18)
                         .addGroup(fastaDbDetailPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(fileNameTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
                             .addComponent(filePathTextField)

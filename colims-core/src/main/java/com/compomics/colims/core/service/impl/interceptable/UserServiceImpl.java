@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
         } catch (LazyInitializationException e) {
             //merge the user
             User merge = userRepository.merge(user);
-            user.getInstitution().getId();
+            merge.getInstitution().getId();
             user.setInstitution(merge.getInstitution());
         }
     }

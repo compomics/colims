@@ -14,15 +14,15 @@ import javax.swing.ListSelectionModel;
  *
  * @author demet
  */
-public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
+public class SampleRunsDialog extends javax.swing.JDialog {
 
     /**
-     * Creates new form AnalyticalRunsSearchSettingsDialog
+     * Constructor.
      *
      * @param parent the parent dialog
      * @param modal is the dialog modal
      */
-    public AnalyticalRunsSearchSettingsDialog(java.awt.Frame parent, boolean modal) {
+    public SampleRunsDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
 
@@ -86,6 +86,10 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
         return closeButton;
     }
 
+    public JButton getExportMzIdentMlButton() {
+        return exportMzIdentMlButton;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -101,6 +105,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
         analyticalRunsTable = new javax.swing.JTable();
         deleteAnalyticalRunButton = new javax.swing.JButton();
         editAnalyticalRunButton = new javax.swing.JButton();
+        exportMzIdentMlButton = new javax.swing.JButton();
         SearchSettingsAndRunDetails = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
@@ -125,7 +130,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
         closeButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Analytical Runs and Search Settings");
+        setTitle("Sample analytical runs management");
 
         analyticalRunsSearchSettingsParentPanel.setBackground(new java.awt.Color(255, 255, 255));
         analyticalRunsSearchSettingsParentPanel.setPreferredSize(new java.awt.Dimension(695, 691));
@@ -158,6 +163,12 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
         editAnalyticalRunButton.setMinimumSize(new java.awt.Dimension(80, 25));
         editAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
+        exportMzIdentMlButton.setText("export...");
+        exportMzIdentMlButton.setToolTipText("edit one or more runs to mzIdentML");
+        exportMzIdentMlButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        exportMzIdentMlButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        exportMzIdentMlButton.setPreferredSize(new java.awt.Dimension(80, 25));
+
         javax.swing.GroupLayout analyticalRunsPanelLayout = new javax.swing.GroupLayout(analyticalRunsPanel);
         analyticalRunsPanel.setLayout(analyticalRunsPanelLayout);
         analyticalRunsPanelLayout.setHorizontalGroup(
@@ -168,6 +179,8 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
                     .addComponent(analyticalRunsTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
                     .addGroup(analyticalRunsPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(exportMzIdentMlButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(deleteAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -181,7 +194,8 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(analyticalRunsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(deleteAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(editAnalyticalRunButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(exportMzIdentMlButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -454,42 +468,6 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_preMasTolTextFieldActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AnalyticalRunsSearchSettingsDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(() -> {
-            AnalyticalRunsSearchSettingsDialog dialog = new AnalyticalRunsSearchSettingsDialog(new javax.swing.JFrame(), true);
-            dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosing(java.awt.event.WindowEvent e) {
-                    System.exit(0);
-                }
-            });
-            dialog.setVisible(true);
-        });
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel SearchSettingsAndRunDetails;
     private javax.swing.JPanel analyticalRunsPanel;
@@ -503,6 +481,7 @@ public class AnalyticalRunsSearchSettingsDialog extends javax.swing.JDialog {
     private javax.swing.JButton editAnalyticalRunButton;
     private javax.swing.JLabel enzymeLabel;
     private javax.swing.JTextField enzymeTextField;
+    private javax.swing.JButton exportMzIdentMlButton;
     private javax.swing.JLabel fastaNameLabel;
     private javax.swing.JTextField fastaNameTextField;
     private javax.swing.JLabel instrumentLabel;

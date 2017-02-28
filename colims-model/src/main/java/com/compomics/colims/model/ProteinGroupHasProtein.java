@@ -21,8 +21,7 @@ public class ProteinGroupHasProtein extends DatabaseEntity {
     @Column(name = "main_group_protein", nullable = false)
     private Boolean isMainGroupProtein = false;
     /**
-     * The protein accession. It's important to note that the accession is also added (if not already present) to the
-     * {@link ProteinAccession} table. It's stored as well here for auditing purposes.
+     * The protein accession.
      */
     @Basic(optional = true)
     @Column(name = "protein_accession", nullable = true)

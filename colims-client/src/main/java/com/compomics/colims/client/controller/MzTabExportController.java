@@ -11,15 +11,12 @@ import com.compomics.colims.core.io.mztab.enums.MzTabMode;
 import com.compomics.colims.core.io.mztab.enums.MzTabType;
 import com.compomics.colims.core.service.ProteinGroupQuantLabeledService;
 import com.compomics.colims.core.service.QuantificationMethodService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.QuantificationMethod;
-import com.compomics.colims.model.QuantificationMethodHasReagent;
-import com.compomics.colims.model.QuantificationSettings;
-import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +34,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  * The mzTab export view controller.
@@ -69,13 +65,13 @@ public class MzTabExportController implements Controllable {
     private final DefaultTreeModel studyVariableTreeModel = new DefaultTreeModel(studyVariableRootNode);
     private final DefaultMutableTreeNode analyticalRunRootNode = new DefaultMutableTreeNode("Analytical runs");
     private final DefaultTreeModel analyticalRunTreeModel = new DefaultTreeModel(analyticalRunRootNode);
-    
+
     /**
      * The FASTA DBs location as provided in the distributed properties file.
      */
     @Value("${fastas.path}")
     private String fastasPath = "";
-    
+
     private int assayNumber = 0;
     //view
     private MzTabExportDialog mzTabExportDialog;
@@ -88,8 +84,8 @@ public class MzTabExportController implements Controllable {
     private final QuantificationMethodService quantificationMethodService;
 
     @Autowired
-    public MzTabExportController(MzTabExporter mzTabExporter, EventBus eventBus, MainController mainController, 
-            ProteinGroupQuantLabeledService proteinGroupQuantLabeledService, QuantificationMethodService quantificationMethodService) {
+    public MzTabExportController(MzTabExporter mzTabExporter, EventBus eventBus, MainController mainController,
+                                 ProteinGroupQuantLabeledService proteinGroupQuantLabeledService, QuantificationMethodService quantificationMethodService) {
         this.mzTabExporter = mzTabExporter;
         this.eventBus = eventBus;
         this.mainController = mainController;
@@ -750,7 +746,7 @@ public class MzTabExportController implements Controllable {
 
         List<QuantificationMethodHasReagent> quantificationMethodHasReagents = quantificationMethodService.fetchQuantificationMethodHasReagents(
                 getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod());
-        
+
         if (quantificationMethodHasReagents.isEmpty()) {
             mzTabExportDialog.getQuantificationLabelList().setVisible(false);
             mzTabExportDialog.getQuantificationReagentTree().setVisible(false);

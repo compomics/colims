@@ -21,7 +21,7 @@ import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMes
 import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
 import com.compomics.colims.client.model.table.format.AnalyticalRunManagementTableFormat;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.AnalyticalRunsSearchSettingsDialog;
+import com.compomics.colims.client.view.SampleRunsDialog;
 import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.service.AnalyticalRunService;
 import com.compomics.colims.core.service.BinaryFileService;
@@ -32,6 +32,8 @@ import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.eventbus.EventBus;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
@@ -42,20 +44,20 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 /**
- * Analytical Runs and Search Settings controller
+ * Controller for viewing and editing sample runs.
  *
  * @author demet
  */
-@Component("analyticalRunsSearchSettingsController")
+@Component("sampleRunsController")
 @Lazy
-public class AnalyticalRunsSearchSettingsController implements Controllable {
+public class SampleRunsController implements Controllable {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(AnalyticalRunsSearchSettingsController.class);
+    private static final Logger LOGGER = Logger.getLogger(SampleRunsController.class);
     //view
-    AnalyticalRunsSearchSettingsDialog analyticalRunsSearchSettingsDialog;
+    SampleRunsDialog sampleRunsDialog;
     //model
     private final EventList<AnalyticalRun> analyticalRuns = new BasicEventList<>();
     private AdvancedTableModel<AnalyticalRun> analyticalRunsTableModel;
@@ -71,12 +73,13 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
     private MainController mainController;
     @Autowired
     private ProjectManagementController projectManagementController;
-
     //child controller
     @Autowired
     @Lazy
     private AnalyticalRunEditController analyticalRunEditController;
-
+    @Autowired
+    @Lazy
+    private MzIdentMlExportController mzIdentMlExportController;
     //services
     @Autowired
     private QueueManager queueManager;
@@ -95,32 +98,32 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
         //register to event bus
         eventBus.register(this);
 
-        analyticalRunsSearchSettingsDialog = new AnalyticalRunsSearchSettingsDialog(mainController.getMainFrame(), true);
+        sampleRunsDialog = new SampleRunsDialog(mainController.getMainFrame(), true);
 
         //init sample analytical runs table
         SortedList<AnalyticalRun> sortedAnalyticalRuns = new SortedList<>(analyticalRuns, new IdComparator());
         analyticalRunsTableModel = GlazedListsSwing.eventTableModel(sortedAnalyticalRuns, new AnalyticalRunManagementTableFormat());
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().setModel(analyticalRunsTableModel);
+        sampleRunsDialog.getAnalyticalRunsTable().setModel(analyticalRunsTableModel);
         analyticalRunsSelectionModel = new DefaultEventSelectionModel<>(sortedAnalyticalRuns);
         analyticalRunsSelectionModel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().setSelectionModel(analyticalRunsSelectionModel);
+        sampleRunsDialog.getAnalyticalRunsTable().setSelectionModel(analyticalRunsSelectionModel);
 
         //set column widths
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setPreferredWidth(35);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setMaxWidth(35);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setMinWidth(35);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NAME).setPreferredWidth(200);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setPreferredWidth(80);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setMaxWidth(80);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setMinWidth(80);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setPreferredWidth(80);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setMaxWidth(80);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setMinWidth(80);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(80);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(80);
-        analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setMinWidth(80);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setPreferredWidth(35);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setMaxWidth(35);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.RUN_ID).setMinWidth(35);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NAME).setPreferredWidth(200);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setPreferredWidth(80);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setMaxWidth(80);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.START_DATE).setMinWidth(80);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setPreferredWidth(80);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setMaxWidth(80);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.CREATED).setMinWidth(80);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setPreferredWidth(80);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setMaxWidth(80);
+        sampleRunsDialog.getAnalyticalRunsTable().getColumnModel().getColumn(AnalyticalRunManagementTableFormat.NUMBER_OF_SPECTRA).setMinWidth(80);
 
-        analyticalRunsSearchSettingsDialog.getEditAnalyticalRunButton().addActionListener(e -> {
+        sampleRunsDialog.getEditAnalyticalRunButton().addActionListener(e -> {
             EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
 
             if (selectedAnalyticalRuns.size() == 1) {
@@ -129,9 +132,9 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
                 eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to edit.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
-        analyticalRunsSearchSettingsDialog.getDeleteAnalyticalRunButton().addActionListener(e -> {
-            EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
 
+        sampleRunsDialog.getDeleteAnalyticalRunButton().addActionListener(e -> {
+            EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
             if (selectedAnalyticalRuns.size() == 1) {
                 boolean deleteConfirmation = deleteEntity(selectedAnalyticalRuns.get(0), AnalyticalRun.class);
                 if (deleteConfirmation) {
@@ -145,10 +148,19 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
 
                     //remove analytical run from the selected sample and update the table
                     sampleToEdit.getAnalyticalRuns().remove(selectedAnalyticalRun);
-                    analyticalRunsSearchSettingsDialog.getAnalyticalRunsTable().updateUI();
+                    sampleRunsDialog.getAnalyticalRunsTable().updateUI();
                 }
             } else {
                 eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
+            }
+        });
+
+        sampleRunsDialog.getExportMzIdentMlButton().addActionListener(e -> {
+            EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
+            if (!selectedAnalyticalRuns.isEmpty()) {
+                mzIdentMlExportController.showView();
+            } else {
+                eventBus.post(new MessageEvent("Analytical run selection", "Please select at least one analytical run to export.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
 
@@ -159,13 +171,13 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
             }
         });
 
-        analyticalRunsSearchSettingsDialog.getCloseButton().addActionListener(e -> analyticalRunsSearchSettingsDialog.dispose());
+        sampleRunsDialog.getCloseButton().addActionListener(e -> sampleRunsDialog.dispose());
     }
 
     @Override
     public void showView() {
-        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), analyticalRunsSearchSettingsDialog);
-        analyticalRunsSearchSettingsDialog.setVisible(true);
+        GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), sampleRunsDialog);
+        sampleRunsDialog.setVisible(true);
     }
 
     /**
@@ -178,11 +190,11 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
         sampleToEdit = sample;
 
         if (sampleToEdit.getId() != null) {
-            analyticalRunsSearchSettingsDialog.getEditAnalyticalRunButton().setEnabled(true);
-            analyticalRunsSearchSettingsDialog.getDeleteAnalyticalRunButton().setEnabled(true);
+            sampleRunsDialog.getEditAnalyticalRunButton().setEnabled(true);
+            sampleRunsDialog.getDeleteAnalyticalRunButton().setEnabled(true);
         } else {
-            analyticalRunsSearchSettingsDialog.getEditAnalyticalRunButton().setEnabled(false);
-            analyticalRunsSearchSettingsDialog.getDeleteAnalyticalRunButton().setEnabled(false);
+            sampleRunsDialog.getEditAnalyticalRunButton().setEnabled(false);
+            sampleRunsDialog.getDeleteAnalyticalRunButton().setEnabled(false);
         }
         //fill analytical runs table
         GlazedLists.replaceAll(analyticalRuns, sampleToEdit.getAnalyticalRuns(), false);
@@ -235,7 +247,7 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
      *
      * @return the selected run, null if no run is selected
      */
-    public AnalyticalRun getSelectedAnalyticalRun() {
+    private AnalyticalRun getSelectedAnalyticalRun() {
         AnalyticalRun selectedAnalyticalRun = null;
 
         EventList<AnalyticalRun> selectedAnalyticalRuns = analyticalRunsSelectionModel.getSelected();
@@ -244,6 +256,18 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
         }
 
         return selectedAnalyticalRun;
+    }
+
+    /**
+     * Get the selected analytical runs from the analytical runs table.
+     *
+     * @return the selected runs, an empty list if nothing is selected
+     */
+    public List<AnalyticalRun> getSelectedAnalyticalRuns() {
+        EventList<AnalyticalRun> selectedAnalyticalRunEventList = analyticalRunsSelectionModel.getSelected();
+        List<AnalyticalRun> selectedAnalyticalRuns = selectedAnalyticalRunEventList.stream().collect(Collectors.toList());
+
+        return selectedAnalyticalRuns;
     }
 
     /**
@@ -256,43 +280,43 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
         if (analyticalRun != null) {
             // fetch all needed fields
             fetchAnalyticalRun(analyticalRun);
-            analyticalRunsSearchSettingsDialog.getNameTextField().setText(analyticalRun.getName());
-            analyticalRunsSearchSettingsDialog.getStartDateTextField().setText(analyticalRun.getStartDate().toString());
+            sampleRunsDialog.getNameTextField().setText(analyticalRun.getName());
+            sampleRunsDialog.getStartDateTextField().setText(analyticalRun.getStartDate().toString());
 
-            analyticalRunsSearchSettingsDialog.getInstrumentTextField().setText(analyticalRun.getInstrument().getName());
+            sampleRunsDialog.getInstrumentTextField().setText(analyticalRun.getInstrument().getName());
 
             if (analyticalRun.getStorageLocation() != null) {
-                analyticalRunsSearchSettingsDialog.getLocationTextField().setText(analyticalRun.getStorageLocation());
+                sampleRunsDialog.getLocationTextField().setText(analyticalRun.getStorageLocation());
             } else {
-                analyticalRunsSearchSettingsDialog.getLocationTextField().setText("");
+                sampleRunsDialog.getLocationTextField().setText("");
             }
 
             if (analyticalRun.getId() != null) {
-                analyticalRunsSearchSettingsDialog.getAttachmentsTextField().setText(analyticalRun.getBinaryFiles().stream().map(BinaryFile::toString).collect(Collectors.joining(", ")));
+                sampleRunsDialog.getAttachmentsTextField().setText(analyticalRun.getBinaryFiles().stream().map(BinaryFile::toString).collect(Collectors.joining(", ")));
             } else {
-                analyticalRunsSearchSettingsDialog.getAttachmentsTextField().setText("");
+                sampleRunsDialog.getAttachmentsTextField().setText("");
             }
 
-            analyticalRunsSearchSettingsDialog.getSearchEngineTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchEngine().toString());
+            sampleRunsDialog.getSearchEngineTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchEngine().toString());
             analyticalRun.getSearchAndValidationSettings().getSearchSettingsHasFastaDbs().forEach(fastaDb -> {
                 if (fastaDb.getFastaDbType().equals(FastaDbType.PRIMARY)) {
-                    analyticalRunsSearchSettingsDialog.getFastaNameTextField().setText(fastaDb.getFastaDb().getFileName());
+                    sampleRunsDialog.getFastaNameTextField().setText(fastaDb.getFastaDb().getFileName());
                 }
             });
-            analyticalRunsSearchSettingsDialog.getEnzymeTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getEnzymes());
-            analyticalRunsSearchSettingsDialog.getMaxMissedCleTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getNumberOfMissedCleavages());
-            analyticalRunsSearchSettingsDialog.getPreMasTolTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance().toString());
+            sampleRunsDialog.getEnzymeTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getEnzymes());
+            sampleRunsDialog.getMaxMissedCleTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getNumberOfMissedCleavages());
+            sampleRunsDialog.getPreMasTolTextField().setText(analyticalRun.getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance().toString());
         } else {
-            analyticalRunsSearchSettingsDialog.getNameTextField().setText("");
-            analyticalRunsSearchSettingsDialog.getStartDateTextField().setText("");
-            analyticalRunsSearchSettingsDialog.getInstrumentTextField().setText("");
-            analyticalRunsSearchSettingsDialog.getLocationTextField().setText("");
-            analyticalRunsSearchSettingsDialog.getAttachmentsTextField().setText("");
-            analyticalRunsSearchSettingsDialog.getSearchEngineTextField().setText("");
-            analyticalRunsSearchSettingsDialog.getFastaNameTextField().setText("");
-            analyticalRunsSearchSettingsDialog.getEnzymeTextField().setText("");
-            analyticalRunsSearchSettingsDialog.getMaxMissedCleTextField().setText("");
-            analyticalRunsSearchSettingsDialog.getPreMasTolTextField().setText("");
+            sampleRunsDialog.getNameTextField().setText("");
+            sampleRunsDialog.getStartDateTextField().setText("");
+            sampleRunsDialog.getInstrumentTextField().setText("");
+            sampleRunsDialog.getLocationTextField().setText("");
+            sampleRunsDialog.getAttachmentsTextField().setText("");
+            sampleRunsDialog.getSearchEngineTextField().setText("");
+            sampleRunsDialog.getFastaNameTextField().setText("");
+            sampleRunsDialog.getEnzymeTextField().setText("");
+            sampleRunsDialog.getMaxMissedCleTextField().setText("");
+            sampleRunsDialog.getPreMasTolTextField().setText("");
         }
     }
 
@@ -313,12 +337,12 @@ public class AnalyticalRunsSearchSettingsController implements Controllable {
     }
 
     /**
-     * Get analyticalRunsSearchSettingsDialog
+     * Get sampleRunsDialog
      *
-     * @return analyticalRunsSearchSettingsDialog
+     * @return sampleRunsDialog
      */
-    public AnalyticalRunsSearchSettingsDialog getAnalyticalRunsSearchSettingsDialog() {
-        return analyticalRunsSearchSettingsDialog;
+    public SampleRunsDialog getSampleRunsDialog() {
+        return sampleRunsDialog;
     }
 
     /**

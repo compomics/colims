@@ -127,6 +127,8 @@
     <query name="ProteinGroup.getProteinGroupsByRunIds">
         select distinct proteinGroup
         from ProteinGroup as proteinGroup
+        join fetch proteinGroup.proteinGroupHasProteins as proteinGroupHasProtein
+        join fetch proteinGroupHasProtein.protein
         join proteinGroup.peptideHasProteinGroups as peptideHasProteinGroup
         join peptideHasProteinGroup.peptide as peptide
         join peptide.spectrum as spectrum

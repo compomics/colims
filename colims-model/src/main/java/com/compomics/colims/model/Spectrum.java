@@ -25,7 +25,8 @@ public class Spectrum extends DatabaseEntity {
     @Column(name = "accession", length = 500, nullable = false)
     private String accession;
     /**
-     * The spectrum title.
+     * The spectrum title. This should be the same as the MGF TITLE header value in the associated {@link SpectrumFile}
+     * content.
      */
     @Basic(optional = true)
     @Column(name = "title", length = 500, nullable = true)
