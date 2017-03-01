@@ -11,7 +11,7 @@ import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.message.DbConstraintMessageEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.admin.FastaDbManagementDialog;
+import com.compomics.colims.client.view.fasta.FastaDbManagementDialog;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.TaxonomyCvParam;

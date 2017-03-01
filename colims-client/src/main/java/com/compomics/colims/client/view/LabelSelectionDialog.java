@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.client.view.admin;
+package com.compomics.colims.client.view;
 
 import com.compomics.colims.client.compoment.DualList;
 import java.awt.Dialog;
@@ -51,7 +51,7 @@ public class LabelSelectionDialog extends javax.swing.JDialog {
         closeLabelButton = new javax.swing.JButton();
         labelPanel = new javax.swing.JPanel();
         labelDualList = new com.compomics.colims.client.compoment.DualList<>();
-        jLabel1 = new javax.swing.JLabel();
+        infoLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Label selection dialog");
@@ -83,7 +83,7 @@ public class LabelSelectionDialog extends javax.swing.JDialog {
                 .addComponent(labelDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
         );
 
-        jLabel1.setText("Please select the optional protein group quantification headerValues to store");
+        infoLabel.setText("Please select the optional quantification headers to store.");
 
         javax.swing.GroupLayout labelSelectionPanelLayout = new javax.swing.GroupLayout(labelSelectionPanel);
         labelSelectionPanel.setLayout(labelSelectionPanelLayout);
@@ -93,7 +93,7 @@ public class LabelSelectionDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(labelSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(labelSelectionPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 416, Short.MAX_VALUE)
+                        .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(labelSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -110,7 +110,7 @@ public class LabelSelectionDialog extends javax.swing.JDialog {
                     .addComponent(closeLabelButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(labelSelectionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(labelSaveOrUpdateButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel1)))
+                        .addComponent(infoLabel)))
                 .addContainerGap())
         );
 
@@ -137,7 +137,7 @@ public class LabelSelectionDialog extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton closeLabelButton;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel infoLabel;
     private com.compomics.colims.client.compoment.DualList<String> labelDualList;
     private javax.swing.JPanel labelPanel;
     private javax.swing.JButton labelSaveOrUpdateButton;

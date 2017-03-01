@@ -13,9 +13,10 @@ import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.table.model.HeaderParseRuleTestTableModel;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.client.view.admin.FastaDbSaveUpdatePanel;
-import com.compomics.colims.client.view.admin.HeaderParseRuleAdditionDialog;
-import com.compomics.colims.client.view.admin.HeaderParseRuleTestDialog;
+import com.compomics.colims.client.view.fasta.FastaDbSaveUpdatePanel;
+import com.compomics.colims.client.view.fasta.HeaderParseRuleAdditionDialog;
+import com.compomics.colims.client.view.fasta.HeaderParseRuleTestDialog;
+import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.core.io.fasta.FastaDbParser;
 import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.FastaDbService;
@@ -52,7 +53,6 @@ import java.util.*;
 
 import static com.compomics.colims.client.controller.admin.FastaDbManagementController.DATABASE_NAME_NOT_PRESENT;
 import static com.compomics.colims.client.controller.admin.FastaDbManagementController.UNKNOWN;
-import com.compomics.colims.core.distributed.model.enums.PersistType;
 
 /**
  * @author demet
@@ -205,6 +205,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         });
 
         fastaDbSaveUpdatePanel.getTestHeaderParseRuleButtton().addActionListener(e -> {
+            updateFastaToEdit();
             //parse the first ten headers of the FASTA file
             Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDbToEdit.getFilePath());
             HeaderParseRule selectedHeaderParseRule = headerParseRules.get(fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getSelectedIndex());
@@ -374,7 +375,7 @@ public class FastaDbSaveUpdateController implements Controllable {
     }
 
     /**
-     * Update the instance fields of the selected fastaDb in the fastaDb
+     * Update the instance fields of the selected {@link FastaDb} instance in the fastaDb
      * management dialog.
      */
     private void updateFastaToEdit() {
@@ -462,8 +463,7 @@ public class FastaDbSaveUpdateController implements Controllable {
     /**
      * Populate the Database Combo Box.
      *
-     * @param dbNames the set of database names as read from the properties
-     * files
+     * @param dbNames the set of database names as read from the properties files
      */
     private void populateDatabaseComboBox(TreeSet<String> dbNames) {
         databaseNamesBindingList.add(DATABASE_NAME_NOT_PRESENT);
@@ -500,7 +500,7 @@ class HeaderParseRule {
     /**
      * Constructor.
      *
-     * @param parseRule the parse rule
+     * @param parseRule   the parse rule
      * @param explanation the explanation
      */
     public HeaderParseRule(String parseRule, String explanation) {

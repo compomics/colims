@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.client.view.admin;
+package com.compomics.colims.client.view.fasta;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -175,6 +175,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         headerParseRuleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         addHeaderParseRuleButtton.setText("add");
+        addHeaderParseRuleButtton.setToolTipText("add a new header parse rule");
         addHeaderParseRuleButtton.setMaximumSize(new java.awt.Dimension(80, 25));
         addHeaderParseRuleButtton.setMinimumSize(new java.awt.Dimension(80, 25));
         addHeaderParseRuleButtton.setPreferredSize(new java.awt.Dimension(80, 25));
@@ -184,6 +185,7 @@ public class FastaDbSaveUpdatePanel extends javax.swing.JPanel {
         databaseComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         testHeaderParseRuleButtton.setText("test");
+        testHeaderParseRuleButtton.setToolTipText("test the selected header parse rule by parsing the first entries in the FASTA file");
         testHeaderParseRuleButtton.setMaximumSize(new java.awt.Dimension(80, 25));
         testHeaderParseRuleButtton.setMinimumSize(new java.awt.Dimension(80, 25));
         testHeaderParseRuleButtton.setPreferredSize(new java.awt.Dimension(80, 25));

@@ -51,7 +51,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="jLabel1" pref="416" max="32767" attributes="0"/>
+                          <Component id="infoLabel" pref="416" max="32767" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="labelSaveOrUpdateButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -72,7 +72,7 @@
                       <Component id="closeLabelButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                           <Component id="labelSaveOrUpdateButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="infoLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -146,9 +146,9 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JLabel" name="jLabel1">
+        <Component class="javax.swing.JLabel" name="infoLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Please select the optional protein group quantification headerValues to store"/>
+            <Property name="text" type="java.lang.String" value="Please select the optional quantification headers to store."/>
           </Properties>
         </Component>
       </SubComponents>

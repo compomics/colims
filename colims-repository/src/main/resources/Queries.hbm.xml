@@ -54,26 +54,33 @@
         join instrument.analyticalRuns as analyticalRun
         where analyticalRun.id = :analyticalRunId
     </query>
-    
+
     <query name="QuantificationSettings.findByAnalyticalRunId">
         select distinct quantificationSettings
         from QuantificationSettings as quantificationSettings
         join quantificationSettings.analyticalRun as analyticalRun
         where analyticalRun.id = :analyticalRunId
     </query>
-    
+
     <query name="SearchAndValidationSettings.findByAnalyticalRunId">
         select distinct searchAndValidationSettings
         from SearchAndValidationSettings as searchAndValidationSettings
         join searchAndValidationSettings.analyticalRun as analyticalRun
         where analyticalRun.id = :analyticalRunId
     </query>
-    
+
     <query name="FastaDb.findByFastaDbType">
         select distinct fastaDb
         from FastaDb as fastaDb
         join fastaDb.searchSettingsHasFastaDbs as searchSettingsHasFastaDb
         where searchSettingsHasFastaDb.fastaDbType in (:fastaDbTypeOrdinals)
+    </query>
+
+    <query name="Spectrum.getPeptideCount">
+        select count(peptide)
+        from Spectrum as spectrum
+        join spectrum.peptides as peptide
+        where spectrum.id = :spectrumId
     </query>
 
     <query name="Peptide.getPeptideDTOsByProteinGroupId">
@@ -97,7 +104,7 @@
         where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
         and spectrum.analyticalRun.id in (:analyticalRunIds)
     </query>
-    
+
     <query name="Peptide.getPeptideHasProteinGroupsByRunIds">
         select peptide, peptideHasProteinGroup, spectrum.analyticalRun
         from PeptideHasProteinGroup as peptideHasProteinGroup
@@ -105,7 +112,7 @@
         join fetch peptide.spectrum as spectrum
         where spectrum.analyticalRun.id in (:analyticalRunIds)
     </query>
-    
+
     <query name="Peptide.getDistinctPeptideSequencesByProteinGroupIdAndRunIds">
         select peptide.sequence
         from Peptide as peptide

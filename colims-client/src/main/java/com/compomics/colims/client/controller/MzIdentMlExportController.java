@@ -11,7 +11,14 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
+import org.jdesktop.beansbinding.AutoBinding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdesktop.swingbinding.JComboBoxBinding;
+import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -27,12 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BindingGroup;
-import org.jdesktop.observablecollections.ObservableCollections;
-import org.jdesktop.observablecollections.ObservableList;
-import org.jdesktop.swingbinding.JComboBoxBinding;
-import org.jdesktop.swingbinding.SwingBindings;
 
 /**
  * The mzIdentML export view controller.
@@ -49,7 +50,7 @@ public class MzIdentMlExportController implements Controllable {
     private static final Logger LOGGER = Logger.getLogger(MzIdentMlExportController.class);
 
     private static final String MZIDENTML_EXTENSION = ".mzid";
-    private static final String MZTAB_EXTENSION = ".mtab";
+    private static final String MGF_EXTENSION = ".mgf";
 
     /**
      * The FASTA DBs location as provided in the distributed properties file.
@@ -137,7 +138,7 @@ public class MzIdentMlExportController implements Controllable {
                 File mgfFile = mzIdentMlExportDialog.getMgfExportChooser().getSelectedFile();
 
                 //show file path in textfield
-                mzIdentMlExportDialog.getMgfTextField().setText(mgfFile.getAbsolutePath() + MZTAB_EXTENSION);
+                mzIdentMlExportDialog.getMgfTextField().setText(mgfFile.getAbsolutePath() + MGF_EXTENSION);
             }
         });
 
@@ -151,7 +152,7 @@ public class MzIdentMlExportController implements Controllable {
             List<String> validationMessages = validate();
             if (validationMessages.isEmpty()) {
                 MzIdentMlExporterWorker mzIdentMlExporterWorker = new MzIdentMlExporterWorker();
-                ProgressStartEvent progressStartEvent = new ProgressStartEvent(mainController.getMainFrame(), true, 1, "MzTab export progress. ");
+                ProgressStartEvent progressStartEvent = new ProgressStartEvent(mainController.getMainFrame(), true, 1, "MzIdentMl export progress. ");
                 eventBus.post(progressStartEvent);
                 mzIdentMlExporterWorker.execute();
             } else {
@@ -208,7 +209,7 @@ public class MzIdentMlExportController implements Controllable {
         protected Void doInBackground() throws Exception {
             Path fastasDirectory = Paths.get(fastasPath);
             Path mzIdentMlExportPath = Paths.get(mzIdentMlExportDialog.getMzIdentMlTextField().getText());
-            Path mgfExportPath = mzIdentMlExportDialog.getExportSpectraCheckBox().isSelected() ? Paths.get(mzIdentMlExportDialog.getMzIdentMlTextField().getText()) : null;
+            Path mgfExportPath = mzIdentMlExportDialog.getExportSpectraCheckBox().isSelected() ? Paths.get(mzIdentMlExportDialog.getMgfTextField().getText()) : null;
             User user = userBindingList.get(mzIdentMlExportDialog.getUserComboBox().getSelectedIndex());
             //fetch the institution
             userService.fetchInstitution(user);
@@ -221,7 +222,13 @@ public class MzIdentMlExportController implements Controllable {
                 LOGGER.info("Finished exporting mzIdentML file " + mzIdentMlExportPath);
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);
-                eventBus.post(new MessageEvent("Error", e.getMessage(), JOptionPane.ERROR_MESSAGE));
+                String message;
+                if (e.getMessage() != null) {
+                    message = e.getMessage();
+                } else {
+                    message = ExceptionUtils.getStackTrace(e);
+                }
+                eventBus.post(new MessageEvent("Error", message, JOptionPane.ERROR_MESSAGE));
             }
             Thread.sleep(1000);
 

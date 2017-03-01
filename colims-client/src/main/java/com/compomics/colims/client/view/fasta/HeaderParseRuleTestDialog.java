@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.compomics.colims.client.view.admin;
+package com.compomics.colims.client.view.fasta;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;

@@ -49,7 +49,7 @@ public class FastaDbParser {
                 //check if the FASTA has an associated header parse rule and parse accordingly
                 //otherwise, use the Compomics Utilities library
                 if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
-                    parseWithoutRule(proteinSequences, fastaDb, fastaPath);
+                    parseWithoutRule(proteinSequences, fastaPath);
                 } else {
                     parseWithRule(proteinSequences, fastaDb, fastaPath);
                 }
@@ -85,7 +85,7 @@ public class FastaDbParser {
                 //otherwise, use the Compomics Utilities library
                 Set<String> accessions;
                 if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
-                    accessions = parseAccessionsWithoutRule(fastaDb, fastaPath);
+                    accessions = parseAccessionsWithoutRule(fastaPath);
                 } else {
                     accessions = parseAccessionsWithRule(fastaDb, fastaPath);
                 }
@@ -112,13 +112,13 @@ public class FastaDbParser {
      * @throws IOException           thrown in case of an input/output related problem
      * @throws IllegalStateException if the set of parsed accessions of the one of the FASTA DB files is empty
      */
-    public Map<String, String> testParseRule(Path fastaPath, String parseRule, int numberOfHeaders) throws IOException {
-        Map<String, String> headers;
+    public LinkedHashMap<String, String> testParseRule(Path fastaPath, String parseRule, int numberOfHeaders) throws IOException {
+        LinkedHashMap<String, String> headers;
         try {
             //check if the FASTA has an associated header parse rule and parse accordingly
             //otherwise, use the Compomics Utilities library
             if (parseRule == null || parseRule.equals("")) {
-                headers = testParseWithoutRule(fastaPath, parseRule, numberOfHeaders);
+                headers = testParseWithoutRule(fastaPath, numberOfHeaders);
             } else {
                 headers = testParseWithRule(fastaPath, parseRule, numberOfHeaders);
             }
@@ -178,11 +178,10 @@ public class FastaDbParser {
      * Parse the given FASTA file in case no header parse rule is present.
      *
      * @param proteinSequences the protein sequences map
-     * @param fastaDb          the {@link FastaDb} instance
      * @param fastaPath        the FASTA path
      * @throws IOException in case of file reading related problem
      */
-    private void parseWithoutRule(Map<String, String> proteinSequences, FastaDb fastaDb, Path fastaPath) throws IOException {
+    private void parseWithoutRule(Map<String, String> proteinSequences, Path fastaPath) throws IOException {
         try (BufferedReader bufferedReader = Files.newBufferedReader(fastaPath)) {
             //start reading the file
             final StringBuilder sequenceBuilder = new StringBuilder();
@@ -242,12 +241,11 @@ public class FastaDbParser {
     /**
      * Parse the given FASTA file in case no header parse rule is present.
      *
-     * @param fastaDb   the {@link FastaDb} instance
      * @param fastaPath the FASTA path
      * @return the set of parsed protein accessions
      * @throws IOException in case of file reading related problem
      */
-    private Set<String> parseAccessionsWithoutRule(FastaDb fastaDb, Path fastaPath) throws IOException {
+    private Set<String> parseAccessionsWithoutRule(Path fastaPath) throws IOException {
         Set<String> accessions = new HashSet<>();
         try (BufferedReader bufferedReader = Files.newBufferedReader(fastaPath)) {
             //start reading the file
@@ -272,8 +270,8 @@ public class FastaDbParser {
      * @return the set of parsed protein accessions
      * @throws IOException in case of file reading related problem
      */
-    private Map<String, String> testParseWithRule(Path fastaPath, String parseRule, int numberOfHeaders) throws IOException {
-        Map<String, String> headers = new HashMap<>();
+    private LinkedHashMap<String, String> testParseWithRule(Path fastaPath, String parseRule, int numberOfHeaders) throws IOException {
+        LinkedHashMap<String, String> headers = new LinkedHashMap<>();
         try (BufferedReader bufferedReader = Files.newBufferedReader(fastaPath)) {
             //compile the pattern
             Pattern pattern;
@@ -303,13 +301,12 @@ public class FastaDbParser {
      * Parse the given FASTA file in case no header parse rule is present.
      *
      * @param fastaPath       the FASTA DB path
-     * @param parseRule       the header parse rule
      * @param numberOfHeaders the number of headers that will be parsed
      * @return the set of parsed protein accessions
      * @throws IOException in case of file reading related problem
      */
-    private Map<String, String> testParseWithoutRule(Path fastaPath, String parseRule, int numberOfHeaders) throws IOException {
-        Map<String, String> headers = new HashMap<>();
+    private LinkedHashMap<String, String> testParseWithoutRule(Path fastaPath, int numberOfHeaders) throws IOException {
+        LinkedHashMap<String, String> headers = new LinkedHashMap<>();
         try (BufferedReader bufferedReader = Files.newBufferedReader(fastaPath)) {
             //start reading the file
             String line;
