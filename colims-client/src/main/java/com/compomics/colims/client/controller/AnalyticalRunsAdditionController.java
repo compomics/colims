@@ -8,7 +8,7 @@ import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMes
 import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.AnalyticalRunsAdditionDialog;
-import com.compomics.colims.client.view.admin.LabelSelectionDialog;
+import com.compomics.colims.client.view.LabelSelectionDialog;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.core.distributed.model.PersistMetadata;
 import com.compomics.colims.core.distributed.model.enums.PersistType;

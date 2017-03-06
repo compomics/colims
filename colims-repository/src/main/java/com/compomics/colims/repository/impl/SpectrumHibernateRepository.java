@@ -176,3 +176,4 @@ public class SpectrumHibernateRepository extends GenericHibernateRepository<Spec
         getCurrentSession().saveOrUpdate(spectrum);
     }
 }
+

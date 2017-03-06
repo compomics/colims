@@ -75,6 +75,7 @@ public class MzIdentMlExporter {
     private static final String PROTEIN_AMBIGUITY_GROUP_ID = "PAG-%d";
     private static final String RESIDUES_ANY = ".";
     private static final String RESIDUES_UNKNOWN = "N/A";
+    private static final String NO_POST_PRE_AA = "-";
 
     @Value("${mzidentml.version}")
     private final String MZIDENTML_VERSION = "1.1.0";
@@ -731,7 +732,7 @@ public class MzIdentMlExporter {
         //set up the spectrum identification
         SpectrumIdentification spectrumIdentification = setupSpectrumIdentification(spectraData, spectrumIdentificationList);
 
-        //map the keep track of spectra with more than one identification (chimeric spectra)
+        //map the keep track of spectrum ID-SpectrumIdentificationResult associations (to keep track of chimeric spectra)
         Map<Long, SpectrumIdentificationResult> spectrumIdentificationResults = new HashMap<>();
 
         //set up the protein detection list
@@ -815,6 +816,8 @@ public class MzIdentMlExporter {
             Map<PeptideDTO, uk.ac.ebi.jmzidml.model.mzidml.Peptide> uniquePeptides = new HashMap<>();
             List<UniqueEvidence> uniqueEvidences = new ArrayList<>();
             Set<String> peptideSequences = new HashSet<>();
+            //keep track of the spectrum-peptide associations to be able to handle chimeric spectra
+            Map<Long, Set<Long>> spectrumToPeptides = new HashMap<>();
             //iterate over the protein group peptide DTOs
             for (PeptideDTO peptideDTO : peptideDTOs) {
                 Peptide colimsPeptide = peptideDTO.getPeptide();
@@ -903,29 +906,43 @@ public class MzIdentMlExporter {
 
                 SpectrumIdentificationResult spectrumIdentificationResult;
                 //handle chimeric spectra
-                //check whether the spectrum has only one identification
-                if (spectrum.getPeptides().size() == 1) {
+                //check whether the spectrum already has an SpectrumIdentificationResult associated with it
+                if (!spectrumIdentificationResults.containsKey(spectrum.getId())) {
                     spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum, spectraData);
                     spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
                     spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
+
+                    //add to the map
+                    spectrumIdentificationResults.put(spectrum.getId(), spectrumIdentificationResult);
                 } //otherwise it's a chimeric spectrum
                 else {
-                    //check if the spectrum identification result is already present in the map
-                    if (!spectrumIdentificationResults.containsKey(spectrum.getId())) {
-                        spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum, spectraData);
-                        spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
-                        spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
-
-                        //add to the map
-                        spectrumIdentificationResults.put(spectrum.getId(), spectrumIdentificationResult);
-                    } else {
-                        spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().add(spectrumIdentificationItem);
-                    }
-                    //update the ID
-                    //TODO check if not updating the ID causes problems
-                    //int idSuffix = spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().size();
-                    //spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
+                    spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().add(spectrumIdentificationItem);
                 }
+
+//                //get the number of peptides associated with the spectrum
+//                int peptideCount = spectrumService.getPeptideCount(spectrum.getId());
+//                if (peptideCount == 1) {
+//                    spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum, spectraData);
+//                    spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
+//                    spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
+//                } //otherwise it's a chimeric spectrum
+//                else {
+//                    //check if the spectrum identification result is already present in the map
+//                    if (!spectrumIdentificationResults.containsKey(spectrum.getId())) {
+//                        spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum, spectraData);
+//                        spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
+//                        spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
+//
+//                        //add to the map
+//                        spectrumIdentificationResults.put(spectrum.getId(), spectrumIdentificationResult);
+//                    } else {
+//                        spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().add(spectrumIdentificationItem);
+//                    }
+//                    //update the ID
+//                    //TODO check if not updating the ID causes problems
+//                    //int idSuffix = spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().size();
+//                    //spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
+//                }
             }
 
             //calculate the protein sequence coverage and add it to the main group protein
@@ -955,8 +972,16 @@ public class MzIdentMlExporter {
 
         peptideEvidence.setStart(peptidePosition.getStartPosition());
         peptideEvidence.setEnd(peptidePosition.getEndPosition());
-        peptideEvidence.setPre(peptidePosition.getPreAA().toString());
-        peptideEvidence.setPost(peptidePosition.getPostAA().toString());
+        if (peptidePosition.getPreAA() != null) {
+            peptideEvidence.setPre(peptidePosition.getPreAA().toString());
+        } else {
+            peptideEvidence.setPre(NO_POST_PRE_AA);
+        }
+        if (peptidePosition.getPostAA() != null) {
+            peptideEvidence.setPost(peptidePosition.getPostAA().toString());
+        } else {
+            peptideEvidence.setPost(NO_POST_PRE_AA);
+        }
 
         return peptideEvidence;
     }
@@ -1127,7 +1152,9 @@ public class MzIdentMlExporter {
         SpectrumIdentificationItem spectrumIdentificationItem = new SpectrumIdentificationItem();
 
         spectrumIdentificationItem.setId(String.format(SPECTRUM_IDENTIFICATION_ITEM_ID, peptide.getId()));
-        spectrumIdentificationItem.setChargeState(spectrum.getCharge());
+        if (spectrum.getCharge() != null) {
+            spectrumIdentificationItem.setChargeState(spectrum.getCharge());
+        }
         spectrumIdentificationItem.setExperimentalMassToCharge(spectrum.getMzRatio());
         //TODO what to do with the rank and threshold
         spectrumIdentificationItem.setPassThreshold(true);

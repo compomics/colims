@@ -1,5 +1,6 @@
-package com.compomics.colims.client.view.admin;
+package com.compomics.colims.client.view.fasta;
 
+import com.compomics.colims.client.view.fasta.FastaDbSaveUpdatePanel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -141,7 +142,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
         taxonomyTextField = new javax.swing.JTextField();
         databaseLabel = new javax.swing.JLabel();
         databaseTextField = new javax.swing.JTextField();
-        fastaDbSaveUpdatePanel = new com.compomics.colims.client.view.admin.FastaDbSaveUpdatePanel();
+        fastaDbSaveUpdatePanel = new com.compomics.colims.client.view.fasta.FastaDbSaveUpdatePanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Fasta database management");
@@ -477,7 +478,7 @@ public class FastaDbManagementDialog extends javax.swing.JDialog {
     private javax.swing.JPanel fastaDbManagementPanel;
     private javax.swing.JPanel fastaDbManagmentParentPanel;
     private javax.swing.JPanel fastaDbOverviewPanel;
-    private com.compomics.colims.client.view.admin.FastaDbSaveUpdatePanel fastaDbSaveUpdatePanel;
+    private com.compomics.colims.client.view.fasta.FastaDbSaveUpdatePanel fastaDbSaveUpdatePanel;
     private javax.swing.JLabel fastaDbTypesLabel;
     private javax.swing.JPanel fastaDbTypesPanel;
     private javax.swing.JLabel fileNameLabel;

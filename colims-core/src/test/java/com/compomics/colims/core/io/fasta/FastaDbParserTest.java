@@ -13,9 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Niels Hulstaert on 7/10/16.
@@ -112,12 +110,26 @@ public class FastaDbParserTest {
 
     @Test
     public void testTestParseRule() throws IOException {
-        Map<String, String> headers = fastaDbParser.testParseRule(Paths.get(testFastaDb.getFilePath()), testFastaDb.getHeaderParseRule(), 10);
+        //test with parse rule
+        LinkedHashMap<String, String> headers = fastaDbParser.testParseRule(Paths.get(testFastaDb.getFilePath()), testFastaDb.getHeaderParseRule(), 10);
 
-        System.out.println("========");
+        //check size
+        Assert.assertEquals(10, headers.size());
 
+        //check first and last entry
+        List<String> headerKeys = new ArrayList<>(headers.keySet());
+        Assert.assertEquals("P13746", headerKeys.get(0));
+        Assert.assertEquals("P18463", headerKeys.get(9));
+
+        //test without parse rule
         headers = fastaDbParser.testParseRule(Paths.get(contaminantsFastaDb.getFilePath()), contaminantsFastaDb.getHeaderParseRule(), 10);
 
-        System.out.println("========");
+        //check size
+        Assert.assertEquals(10, headers.size());
+
+        //check first and last entry
+        headerKeys = new ArrayList<>(headers.keySet());
+        Assert.assertEquals("P00761", headerKeys.get(0));
+        Assert.assertEquals("P13717", headerKeys.get(9));
     }
 }

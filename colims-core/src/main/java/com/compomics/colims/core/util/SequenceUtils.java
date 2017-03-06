@@ -18,7 +18,7 @@ public class SequenceUtils {
     /**
      * Default {@link SequenceMatchingPreferences} instance;
      */
-    private static final SequenceMatchingPreferences SEQUENCE_MATCHING_PREFERENCES = new SequenceMatchingPreferences();
+    private static final SequenceMatchingPreferences SEQUENCE_MATCHING_PREFERENCES = SequenceMatchingPreferences.getDefaultSequenceMatching();
 
     /**
      * Private no-arg constructor.

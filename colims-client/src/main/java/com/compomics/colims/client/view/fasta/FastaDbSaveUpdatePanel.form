@@ -306,6 +306,7 @@
         <Component class="javax.swing.JButton" name="addHeaderParseRuleButtton">
           <Properties>
             <Property name="text" type="java.lang.String" value="add"/>
+            <Property name="toolTipText" type="java.lang.String" value="add a new header parse rule"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
@@ -340,6 +341,7 @@
         <Component class="javax.swing.JButton" name="testHeaderParseRuleButtton">
           <Properties>
             <Property name="text" type="java.lang.String" value="test"/>
+            <Property name="toolTipText" type="java.lang.String" value="test the selected header parse rule by parsing the first entries in the FASTA file"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[80, 25]"/>
             </Property>
