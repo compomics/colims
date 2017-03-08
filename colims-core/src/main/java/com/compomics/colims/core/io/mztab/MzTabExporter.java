@@ -7,11 +7,13 @@ package com.compomics.colims.core.io.mztab;
 
 import com.compomics.colims.core.io.fasta.FastaDbParser;
 import com.compomics.colims.core.service.*;
-import com.compomics.colims.core.util.ProteinCoverage;
+import com.compomics.colims.core.util.PeptidePosition;
+import com.compomics.colims.core.util.SequenceUtils;
 import com.compomics.colims.core.util.UniprotProteinUtils;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.ModificationType;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,15 +60,16 @@ public class MzTabExporter {
     /**
      * Metadata section.
      */
-    private static final String MZTAB_VERSION = "mzTab_version";
+    private static final String MZTAB_VERSION = "mzTab-version";
     private static final String VERSION = "1.0.0";
-    private static final String MZTAB_MODE = "mzTab_mode";
+    private static final String MZTAB_MODE = "mzTab-mode";
     private static final String MODE_SUMMARY = "Summary";
     private static final String MZTAB_COMPLETE = "Complete";
-    private static final String MZTAB_TYPE = "mzTab_type";
+    private static final String MZTAB_TYPE = "mzTab-type";
     private static final String MZTAB_ID = "mzTab_ID";
     private static final String DESCRIPTION = "description";
     private static final String RUN_LOCATION = "ms_run[%d]-location";
+    private static final String RUN_LOCATION_DESCRIPTION = "file://";
     private static final String FIXED_MOD = "fixed_mod[%d]";
     private static final String VARIABLE_MOD = "variable_mod[%d]";
     private static final String STUDY_VARIABLE_ASSAY_REFS = "study_variable[%d]-assay_refs";
@@ -87,9 +90,9 @@ public class MzTabExporter {
      * Quantification metadata.
      */
     private static final String QUANTIFICATION_METHOD = "quantification_method";
-    private static final String PROTEIN_QUANTIFICATION_UNIT = "protein-quantification-unit";
-    private static final String PEPTIDE_QUANTIFICATION_UNIT = "peptide-quantification-unit";
-    private static final String SMALL_MOLECULE_QUANTIFICATION_UNIT = "smallmolecule-quantification-unit";
+    private static final String PROTEIN_QUANTIFICATION_UNIT = "protein-quantification_unit";
+    private static final String PEPTIDE_QUANTIFICATION_UNIT = "peptide-quantification_unit";
+    private static final String SMALL_MOLECULE_QUANTIFICATION_UNIT = "smallmolecule-quantification_unit";
     /**
      * Instrument metadata.
      */
@@ -129,7 +132,7 @@ public class MzTabExporter {
     private static final String SEARCH_ENGINE_SCORE_MS_RUN = "search_engine_score[%d]_ms_run[%d]";
     private static final String NUM_PSMS_MS_RUN = "num_psms_ms_run[%d]";
     private static final String NUM_PEPTIDES_DISTINCT_MS_RUN = "num_peptides_distinct_ms_run[%d]";
-    private static final String NUM_PEPTIDE_UNIQUE_MS_RUN = "num_peptide_unique_ms_run[%d]";
+    private static final String NUM_PEPTIDE_UNIQUE_MS_RUN = "num_peptides_unique_ms_run[%d]";
     private static final String PROTEIN_ABUNDANCE_ASSAY = "protein_abundance_assay[%d]";
     private static final String CONTAMINANT_PREFIX = "CON";
     private static final String CONTAMINANT_LONG_PREFIX = "CON__";
@@ -167,7 +170,7 @@ public class MzTabExporter {
     /**
      * Software name.
      */
-    private String software; 
+    private String software;
     /**
      * parsed FASTA files (key : fastaDb, value : set of accessions)
      */
@@ -176,7 +179,7 @@ public class MzTabExporter {
      * FASTA files with type (key : fastaDb, value : FastaDbType)
      */
     Map<FastaDb, FastaDbType> fastaDbs = new HashMap<>();
-    
+
     private final ProteinGroupService proteinGroupService;
     private final PeptideService peptideService;
     private final ProteinGroupQuantLabeledService proteinGroupQuantLabeledService;
@@ -194,9 +197,9 @@ public class MzTabExporter {
 
     @Autowired
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
-                         FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantLabeledService proteinGroupQuantLabeledService,
-                         ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
-                         UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
+            FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantLabeledService proteinGroupQuantLabeledService,
+            ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
+            UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
         this.proteinGroupService = proteinGroupService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbService = fastaDbService;
@@ -233,9 +236,9 @@ public class MzTabExporter {
         this.mzTabExport = mzTabExport;
 
         try (FileOutputStream fos = new FileOutputStream(new File(mzTabExport.getExportDirectory(), mzTabExport.getFileName() + MZTAB_EXTENSION));
-             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-             BufferedWriter bw = new BufferedWriter(osw);
-             PrintWriter pw = new PrintWriter(bw)) {
+                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+                BufferedWriter bw = new BufferedWriter(osw);
+                PrintWriter pw = new PrintWriter(bw)) {
 
             switch (mzTabExport.getMzTabType()) {
                 case QUANTIFICATION:
@@ -281,7 +284,7 @@ public class MzTabExporter {
         //run locations
         for (int i = 0; i < mzTabExport.getRuns().size(); i++) {
             analyticalRunIndexRef.put(mzTabExport.getRuns().get(i).getId(), i + 1);
-            pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(RUN_LOCATION, i + 1)).append(COLUMN_DELIMITER).append(mzTabExport.getRuns().get(i).getStorageLocation()).append("\\").append(mzTabExport.getRuns().get(i).getName()));
+            pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(RUN_LOCATION, i + 1)).append(COLUMN_DELIMITER).append(RUN_LOCATION_DESCRIPTION).append(mzTabExport.getRuns().get(i).getStorageLocation()).append("\\").append(mzTabExport.getRuns().get(i).getName()));
         }
         if (type == 1 || type == 2) {
             //protein quantification unit (relative quantification unit from mztab.json)
@@ -358,8 +361,8 @@ public class MzTabExporter {
                 if (quantificationMethodHasReagents.isEmpty()) {
                     int assayNumber = mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[counter];
                     pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(ASSAY_QUANTIFICATION_REAGENT, assayNumber)).append(COLUMN_DELIMITER).
-                            append(createOntology(mzTabParams.get(5).getMzTabParamOptions().get(2).getOntology(), mzTabParams.get(5).getMzTabParamOptions().get(2).getAccession(), mzTabParams.get(5).getMzTabParamOptions().get(2).getName())));
-                    assayReagentRef.put(String.format(ASSAY, assayNumber), mzTabParams.get(5).getMzTabParamOptions().get(2).getName());
+                            append(createOntology(mzTabParams.get(5).getMzTabParamOptions().get(0).getOntology(), mzTabParams.get(5).getMzTabParamOptions().get(0).getAccession(), mzTabParams.get(5).getMzTabParamOptions().get(0).getName())));
+                    assayReagentRef.put(String.format(ASSAY, assayNumber), mzTabParams.get(5).getMzTabParamOptions().get(0).getName());
                 }
                 // labeled
                 for (QuantificationMethodHasReagent quantificationMethodHasReagent : quantificationMethodHasReagents) {
@@ -375,22 +378,31 @@ public class MzTabExporter {
 
         // assay ms run reference
         for (int i = 0; i < mzTabExport.getRuns().size(); i++) {
-            List<QuantificationMethodHasReagent> quantificationMethodHasReagents = quantificationMethodService.fetchQuantificationMethodHasReagents(
-                    getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationMethod());
-            // label free
-            if (quantificationMethodHasReagents.isEmpty()) {
-                int assayNumber = mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[0];
+            if (mzTabExport.getRuns().get(i).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType().equals(SearchEngineType.MAXQUANT)) {
+                List<QuantificationMethodHasReagent> quantificationMethodHasReagents = quantificationMethodService.fetchQuantificationMethodHasReagents(
+                        getQuantificationSettings(mzTabExport.getRuns().get(i)).getQuantificationMethod());
+                // label free
+                if (quantificationMethodHasReagents.isEmpty()) {
+                    int assayNumber = mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[0];
+                    pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(ASSAY_RUN_REF, assayNumber)).append(COLUMN_DELIMITER).
+                            append(String.format(MS_RUN_REF, i + 1)));
+                    assayAnalyticalRunRef.put(String.format(ASSAY, assayNumber), mzTabExport.getRuns().get(i));
+                }
+                // labeled
+                for (int j = 0; j < quantificationMethodHasReagents.size(); j++) {
+                    int assayNumber = mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[j];
+                    pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(ASSAY_RUN_REF, assayNumber)).append(COLUMN_DELIMITER).
+                            append(String.format(MS_RUN_REF, i + 1)));
+                    assayAnalyticalRunRef.put(String.format(ASSAY, assayNumber), mzTabExport.getRuns().get(i));
+                }
+            } else {
+
+                int assayNumber = 1;
                 pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(ASSAY_RUN_REF, assayNumber)).append(COLUMN_DELIMITER).
                         append(String.format(MS_RUN_REF, i + 1)));
                 assayAnalyticalRunRef.put(String.format(ASSAY, assayNumber), mzTabExport.getRuns().get(i));
             }
-            // labeled
-            for (int j = 0; j < quantificationMethodHasReagents.size(); j++) {
-                int assayNumber = mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[j];
-                pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(ASSAY_RUN_REF, assayNumber)).append(COLUMN_DELIMITER).
-                        append(String.format(MS_RUN_REF, i + 1)));
-                assayAnalyticalRunRef.put(String.format(ASSAY, assayNumber), mzTabExport.getRuns().get(i));
-            }
+
         }
 
         // study variable assay references
@@ -479,119 +491,119 @@ public class MzTabExporter {
         List<Long> analyticalRunIds = new ArrayList<>();
         mzTabExport.getRuns().forEach(analyticalRun -> analyticalRunIds.add(analyticalRun.getId()));
         List<ProteinGroupDTO> proteinList = getProteinGroupsForAnalyticalRuns(analyticalRunIds);
+        List<String> accessions = new ArrayList<>();
         //parse fasta files
         parseFastaFiles();
         for (int i = 0; i < proteinList.size(); i++) {
-            if(proteinList.get(i).getMainAccession().equals("Q16891")){
-                System.out.println("somethhin");
-            }
-            StringBuilder proteins = new StringBuilder();
-            // set prefix and accession
-            proteins.append(PROTEINS_PREFIX).append(COLUMN_DELIMITER).append(proteinList.get(i).getMainAccession()).append(COLUMN_DELIMITER);
+            if (!accessions.contains(proteinList.get(i).getMainAccession())) {
+                StringBuilder proteins = new StringBuilder();
+                // set prefix and accession
+                proteins.append(PROTEINS_PREFIX).append(COLUMN_DELIMITER).append(proteinList.get(i).getMainAccession()).append(COLUMN_DELIMITER);
 
-            // we do not know which fasta file protein sequence comes from.
-            FastaDb fastaFile = findFastaDb(proteinList.get(i).getMainAccession());
-            
-            //(key: information type; value: protein sequence and functional information)
-            // no need to contaminant prefix because accession converter handles the prefix.
-            Map<String, String> uniProtMap = uniprotProteinUtils.getFastaDbUniprotInformation(proteinList.get(i).getMainAccession(), fastaFile);
+                // we do not know which fasta file protein sequence comes from.
+                FastaDb fastaFile = findFastaDb(proteinList.get(i).getMainAccession());
 
-            // if uniprot map has values
-            if (!uniProtMap.isEmpty()) {
-                // set description, taxid, species, database, database version
-                proteins.append(uniProtMap.get("description")).append(COLUMN_DELIMITER).append(uniProtMap.get("taxid")).append(COLUMN_DELIMITER).append(uniProtMap.get("species"))
-                        .append(COLUMN_DELIMITER).append(fastaFile.getDatabaseName()).append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
-            } else {
-                // set N/A (for description, taxid, species) , database, database version
-                proteins.append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append(fastaFile.getDatabaseName())
-                        .append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
-            }
+                //(key: information type; value: protein sequence and functional information)
+                // no need to contaminant prefix because accession converter handles the prefix.
+                Map<String, String> uniProtMap = uniprotProteinUtils.getFastaDbUniprotInformation(proteinList.get(i).getMainAccession(), fastaFile);
 
-            // set search engine
-            proteins.append(getSearchEngine()).append(COLUMN_DELIMITER);
-
-            // set best search engine score for protein. 
-            proteins.append(proteinList.get(i).getProteinPostErrorProbability()).append(COLUMN_DELIMITER);
-
-            // set ambiguity members
-            proteins.append(getAmbiguityMembers(proteinList.get(i).getId())).append(COLUMN_DELIMITER);
-
-            // set modification (null, beacuse protein level modification is not reported)
-            proteins.append("null").append(COLUMN_DELIMITER);
-
-            // set protein coverage
-            if (type == 2 || type == 4) {
-                List<String> peptideSequences = new ArrayList<>();
-                for (PeptideHasProteinGroup peptideHasProteinGroup : proteinGroupService.findById(proteinList.get(i).getId()).getPeptideHasProteinGroups()) {
-                    peptideSequences.add(peptideHasProteinGroup.getPeptide().getSequence());
+                // if uniprot map has values
+                if (!uniProtMap.isEmpty()) {
+                    // set description, taxid, species, database, database version
+                    proteins.append(uniProtMap.get("description")).append(COLUMN_DELIMITER).append(uniProtMap.get("taxid")).append(COLUMN_DELIMITER).append(uniProtMap.get("species"))
+                            .append(COLUMN_DELIMITER).append(fastaFile.getDatabaseName()).append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
+                } else {
+                    // set N/A (for description, taxid, species) , database, database version
+                    proteins.append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append(fastaFile.getDatabaseName())
+                            .append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
                 }
-                proteins.append(ProteinCoverage.calculateProteinCoverage(proteinList.get(i).getMainSequence(), peptideSequences)).append(COLUMN_DELIMITER);
 
-            }
+                // set search engine
+                proteins.append(getSearchEngine()).append(COLUMN_DELIMITER);
 
-            //set protein abundance study variable,  protein abundance standard deviation study variable, protein abundance standard error study variable
-            if (type == 1 || type == 2) {
-                for (Map.Entry<String, int[]> studyVariablesAssaysRefs : mzTabExport.getStudyVariablesAssaysRefs().entrySet()) {
-                    double abundanceSum = 0.0;
-                    double[] abundanceArray = new double[studyVariablesAssaysRefs.getValue().length];
-                    double abundanceMean;
-                    double stdDev;
-                    for (int j = 0; j < studyVariablesAssaysRefs.getValue().length; j++) {
-                        abundanceArray[j] = getProteinAbundanceForAssay(proteinList.get(i), String.format(ASSAY, studyVariablesAssaysRefs.getValue()[j]));
-                        abundanceSum += abundanceArray[j];
+                // set best search engine score for protein. 
+                proteins.append(proteinList.get(i).getProteinPostErrorProbability()).append(COLUMN_DELIMITER);
+
+                // set ambiguity members
+                proteins.append(getAmbiguityMembers(proteinList.get(i).getId())).append(COLUMN_DELIMITER);
+
+                // set modification (null, beacuse protein level modification is not reported)
+                proteins.append("null").append(COLUMN_DELIMITER);
+
+                // set protein coverage
+                if (type == 2 || type == 4) {
+                    Set<String> peptideSequences = new HashSet<>();
+                    for (PeptideHasProteinGroup peptideHasProteinGroup : proteinGroupService.findById(proteinList.get(i).getId()).getPeptideHasProteinGroups()) {
+                        peptideSequences.add(peptideHasProteinGroup.getPeptide().getSequence());
                     }
-                    if (studyVariablesAssaysRefs.getValue().length != 0) {
-                        abundanceMean = abundanceSum / studyVariablesAssaysRefs.getValue().length;
-                        // set protein abundance study variable
-                        proteins.append(abundanceMean).append(COLUMN_DELIMITER);
-                        abundanceSum = 0.0;
-                        //find the square of each abundance's distance to the mean.
-                        for (int arr = 0; arr < abundanceArray.length; arr++) {
-                            abundanceArray[arr] = Math.pow((abundanceArray[arr] - abundanceMean), 2);
-                            abundanceSum += abundanceArray[arr];
+                    proteins.append(SequenceUtils.calculateProteinCoverage(proteinList.get(i).getMainSequence(), peptideSequences)).append(COLUMN_DELIMITER);
+
+                }
+
+                //set protein abundance study variable,  protein abundance standard deviation study variable, protein abundance standard error study variable
+                if (type == 1 || type == 2) {
+                    for (Map.Entry<String, int[]> studyVariablesAssaysRefs : mzTabExport.getStudyVariablesAssaysRefs().entrySet()) {
+                        double abundanceSum = 0.0;
+                        double[] abundanceArray = new double[studyVariablesAssaysRefs.getValue().length];
+                        double abundanceMean;
+                        double stdDev;
+                        for (int j = 0; j < studyVariablesAssaysRefs.getValue().length; j++) {
+                            abundanceArray[j] = getProteinAbundanceForAssay(proteinList.get(i), String.format(ASSAY, studyVariablesAssaysRefs.getValue()[j]));
+                            abundanceSum += abundanceArray[j];
                         }
-                        // calculate new abundance mean
-                        abundanceMean = abundanceSum / abundanceArray.length;
-                        stdDev = Math.sqrt(abundanceMean);
-                        // set protein abundance standard deviation study variable
-                        proteins.append(stdDev).append(COLUMN_DELIMITER);
-                        // set protein abundance standard error study variable
-                        proteins.append(stdDev / Math.sqrt(abundanceArray.length)).append(COLUMN_DELIMITER);
-                    } else {
-                        proteins.append("null").append(COLUMN_DELIMITER).append("null").append(COLUMN_DELIMITER).append("null").append(COLUMN_DELIMITER);
+                        if (studyVariablesAssaysRefs.getValue().length != 0) {
+                            abundanceMean = abundanceSum / studyVariablesAssaysRefs.getValue().length;
+                            // set protein abundance study variable
+                            proteins.append(abundanceMean).append(COLUMN_DELIMITER);
+                            abundanceSum = 0.0;
+                            //find the square of each abundance's distance to the mean.
+                            for (int arr = 0; arr < abundanceArray.length; arr++) {
+                                abundanceArray[arr] = Math.pow((abundanceArray[arr] - abundanceMean), 2);
+                                abundanceSum += abundanceArray[arr];
+                            }
+                            // calculate new abundance mean
+                            abundanceMean = abundanceSum / abundanceArray.length;
+                            stdDev = Math.sqrt(abundanceMean);
+                            // set protein abundance standard deviation study variable
+                            proteins.append(stdDev).append(COLUMN_DELIMITER);
+                            // set protein abundance standard error study variable
+                            proteins.append(stdDev / Math.sqrt(abundanceArray.length)).append(COLUMN_DELIMITER);
+                        } else {
+                            proteins.append("null").append(COLUMN_DELIMITER).append("null").append(COLUMN_DELIMITER).append("null").append(COLUMN_DELIMITER);
+                        }
                     }
                 }
-            }
 
-
-            // add search engine score per run (both maxquant and peptideshaker do not provide search engine score per run)
-            if (type == 2 || type == 4) {
-                mzTabExport.getRuns().stream().forEach(run -> {
-                    proteins.append("null").append(COLUMN_DELIMITER);
-                });
-            }
-
-            // set psms count, number of distinct peptide and unique peptide per run
-            if (type == 4) {
-                for (int j = 0; j < mzTabExport.getRuns().size(); j++) {
-                    List<Long> analyticalRunIdList = new ArrayList<>(1);
-                    analyticalRunIdList.add(mzTabExport.getRuns().get(j).getId());
-                    proteins.append(peptideService.getPeptideDTOs(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
-                    proteins.append(peptideService.getDistinctPeptideSequence(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
-                    proteins.append(peptideService.getUniquePeptides(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
+                // add search engine score per run (both maxquant and peptideshaker do not provide search engine score per run)
+                if (type == 2 || type == 4) {
+                    mzTabExport.getRuns().stream().forEach(run -> {
+                        proteins.append("null").append(COLUMN_DELIMITER);
+                    });
                 }
-            }
 
-            // set protein abundance for every assay
-            if (type == 1 || type == 2) {
-                for (int r = 0; r < mzTabExport.getRuns().size(); r++) {
-                    for (int j = 0; j < mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(r)).length; j++) {
-                        proteins.append(getProteinAbundanceForAssay(proteinList.get(i), String.format(ASSAY, mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(r))[j]))).append(COLUMN_DELIMITER);
+                // set psms count, number of distinct peptide and unique peptide per run
+                if (type == 4) {
+                    for (int j = 0; j < mzTabExport.getRuns().size(); j++) {
+                        List<Long> analyticalRunIdList = new ArrayList<>(1);
+                        analyticalRunIdList.add(mzTabExport.getRuns().get(j).getId());
+                        proteins.append(peptideService.getPeptideDTOs(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
+                        proteins.append(peptideService.getDistinctPeptideSequence(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
+                        proteins.append(peptideService.getUniquePeptides(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
                     }
                 }
-            }
 
-            pw.println(proteins);
+                // set protein abundance for every assay
+                if (type == 1 || type == 2) {
+                    for (int r = 0; r < mzTabExport.getRuns().size(); r++) {
+                        for (int j = 0; j < mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(r)).length; j++) {
+                            proteins.append(getProteinAbundanceForAssay(proteinList.get(i), String.format(ASSAY, mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(r))[j]))).append(COLUMN_DELIMITER);
+                        }
+                    }
+                }
+
+                pw.println(proteins);
+                accessions.add(proteinList.get(i).getMainAccession());
+            }
         }
     }
 
@@ -626,16 +638,16 @@ public class MzTabExporter {
             psms.append(PSM_PREFIX).append(COLUMN_DELIMITER).append(peptideHasProteinGroup.getKey().getPeptide().getSequence()).append(COLUMN_DELIMITER).append(peptideHasProteinGroup.getKey().getPeptide().getId())
                     .append(COLUMN_DELIMITER).append(proteinGroupHasProtein.entrySet().stream().findFirst().get().getKey().getProteinAccession())
                     .append(COLUMN_DELIMITER);
-            
+
             // if peptide was seen more than once in peptideHasProteinGroups list, it is not unique
             if (isPeptideUnique(peptideHasProteinGroups, peptideHasProteinGroup.getKey().getPeptide())) {
                 psms.append("1").append(COLUMN_DELIMITER);
             } else {
                 psms.append("0").append(COLUMN_DELIMITER);
             }
-            
+
             FastaDb fastaFile = findFastaDb(proteinGroupHasProtein.entrySet().stream().findFirst().get().getKey().getProteinAccession());
-            
+
             // database and version
             psms.append(fastaFile.getDatabaseName()).append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
 
@@ -662,18 +674,19 @@ public class MzTabExporter {
 
             // spectra reference
             psms.append(createSpectraRef(peptideHasProteinGroup.getKey().getPeptide().getSpectrum(), peptideHasProteinGroup.getValue())).append(COLUMN_DELIMITER);
-
+            
+            List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(proteinGroupHasProtein.entrySet().stream().findFirst().get().getValue().getSequence(), peptideHasProteinGroup.getKey().getPeptide().getSequence());
             // preceding amino acid (pre)
-            psms.append(ProteinCoverage.findAminoAcidPrecedingPeptide(proteinGroupHasProtein.entrySet().stream().findFirst().get().getValue().getSequence(), peptideHasProteinGroup.getKey().getPeptide().getSequence())).append(COLUMN_DELIMITER);
+            psms.append(peptidePositions.get(0).getPreAA()).append(COLUMN_DELIMITER);
 
             // following amino acid (post)
-            psms.append(ProteinCoverage.findAminoAcidFollowingPeptide(proteinGroupHasProtein.entrySet().stream().findFirst().get().getValue().getSequence(), peptideHasProteinGroup.getKey().getPeptide().getSequence())).append(COLUMN_DELIMITER);
+            psms.append(peptidePositions.get(0).getPostAA()).append(COLUMN_DELIMITER);
 
             // start position of the peptide
-            psms.append(ProteinCoverage.findStartPositionOfPeptide(proteinGroupHasProtein.entrySet().stream().findFirst().get().getValue().getSequence(), peptideHasProteinGroup.getKey().getPeptide().getSequence())).append(COLUMN_DELIMITER);
+            psms.append(peptidePositions.get(0).getStartPosition()).append(COLUMN_DELIMITER);
 
             // end position of the peptide
-            psms.append(ProteinCoverage.findEndPositionOfPeptide(proteinGroupHasProtein.entrySet().stream().findFirst().get().getValue().getSequence(), peptideHasProteinGroup.getKey().getPeptide().getSequence())).append(COLUMN_DELIMITER);
+            psms.append(peptidePositions.get(0).getEndPosition()).append(COLUMN_DELIMITER);
 
             pw.println(psms);
         }
@@ -768,8 +781,8 @@ public class MzTabExporter {
      * @return ontology list string
      */
     private String createOntology(String ontology, String accession, String name) {
-        String ontologyBuilder = OPEN_BRACKET + ontology + COMMA_SEPARATOR + accession + COMMA_SEPARATOR +
-                name + COMMA_SEPARATOR + CLOSE_BRACKET;
+        String ontologyBuilder = OPEN_BRACKET + ontology + COMMA_SEPARATOR + accession + COMMA_SEPARATOR
+                + name + COMMA_SEPARATOR + CLOSE_BRACKET;
         return ontologyBuilder;
     }
 
@@ -827,7 +840,7 @@ public class MzTabExporter {
             ambiguityMembers.append(proteinGroupHasProtein.getProteinAccession()).append(",");
         });
         if (ambiguityMembers.toString().equals("")) {
-            return ambiguityMembers.toString();
+            return null;
         } else {
             return ambiguityMembers.deleteCharAt(ambiguityMembers.length() - 1).toString();
         }
@@ -916,6 +929,9 @@ public class MzTabExporter {
         StringBuilder modifications = new StringBuilder();
         peptideService.fetchPeptideHasModifications(peptide);
         for (PeptideHasModification peptideHasModification : peptide.getPeptideHasModifications()) {
+            if(peptideHasModification.getModification().getAccession() == null){
+                return null;
+            }
             modifications.append(peptideHasModification.getLocation());
             if (software.equals("PeptideShaker")) {
                 modifications.append(createOntology(mzTabParams.get(5).getMzTabParamOptions().get(1).getOntology(), mzTabParams.get(5).getMzTabParamOptions().get(1).getAccession(), mzTabParams.get(5).getMzTabParamOptions().get(1).getName()));
@@ -924,18 +940,19 @@ public class MzTabExporter {
             }
             modifications = modifications.deleteCharAt(modifications.length() - 1);
             modifications.append(peptideHasModification.getProbabilityScore()).append(CLOSE_BRACKET).append("-");
-            modifications.append(peptideHasModification.getModification().getAccession()).append(VERTICAL_BAR);
+            modifications.append(peptideHasModification.getModification().getAccession()).append(COMMA_SEPARATOR);
         }
-        if (modifications.length() > 0) {
+        if (modifications.length() > 0 ) {
             return modifications.deleteCharAt(modifications.length() - 1).toString();
         } else {
             return null;
         }
 
     }
-    
+
     /**
      * Find which FASTA file given protein sequence comes from.
+     *
      * @param proteinAccession protein accession
      * @return FASTA file
      */
@@ -959,12 +976,13 @@ public class MzTabExporter {
 
         return fastaFile;
     }
-    
+
     /**
      * Parse all FASTA files found by search and validation settings
-     * @throws IOException 
+     *
+     * @throws IOException
      */
-    private void parseFastaFiles() throws IOException{
+    private void parseFastaFiles() throws IOException {
         SearchAndValidationSettings searchAndValidationSettings = searchAndValidationSettingsService.getByAnalyticalRun(mzTabExport.getRuns().get(0));
         fastaDbs = fastaDbService.findBySearchAndValidationSettings(searchAndValidationSettings);
 

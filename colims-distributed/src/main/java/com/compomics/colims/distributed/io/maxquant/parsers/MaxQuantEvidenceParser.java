@@ -217,7 +217,7 @@ public class MaxQuantEvidenceParser {
             return peptideHasModifications;
         } else {
             for (String modificationString : modificationsEntry.split(MODIFICATION_DELIMITER)) {
-                EvidenceModification evidenceModification = new EvidenceModification(modificationString);
+                EvidenceModification evidenceModification = new EvidenceModification(modificationString.replaceAll("\"", ""));
                 Modification modification;
                 //look for the modification by it's name in the modification ontology terms
                 if (modificationMappings.containsKey(evidenceModification.getFullModificationName())) {
@@ -252,7 +252,7 @@ public class MaxQuantEvidenceParser {
                     //Array to store the parsed scores and the affected amino acid location.
                     //(Element 0: the probability score; element 1: the delta score; element 2: the affected amino acid location starting from 1)
                     List<Object[]> scoresAndLocations = new ArrayList<>();
-                    if (!probabilitiesString.isEmpty() && !deltasString.isEmpty()) {
+                    if (probabilitiesString != null && deltasString != null && !probabilitiesString.isEmpty() && !deltasString.isEmpty()) {
                         //first, parse the modification probability scores and delta scores between brackets
                         Matcher probabilities = MODIFICATION_PATTERN.matcher(probabilitiesString);
                         Matcher deltas = MODIFICATION_PATTERN.matcher(deltasString);

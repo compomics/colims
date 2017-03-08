@@ -29,7 +29,7 @@ public class MaxQuantEvidenceParserTest {
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
 
     public MaxQuantEvidenceParserTest() throws IOException {
-        evidenceFile = new ClassPathResource("data/maxquant/evidence_unit_test_modifications.txt").getFile().toPath();
+        evidenceFile = new ClassPathResource("data/maxquant/evidence_unit_test_3.txt").getFile().toPath();
     }
 
     @Test

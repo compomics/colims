@@ -51,14 +51,14 @@ public class SequenceUtilsTest {
         PeptidePosition peptidePosition2 = SequenceUtils.getPeptidePositions(proteinSequence2, peptideSequence).get(0);
         Assert.assertEquals(1, peptidePosition2.getStartPosition().intValue());
         Assert.assertEquals(peptideSequence.length(), peptidePosition2.getEndPosition().intValue());
-        Assert.assertNull(peptidePosition2.getPreAA());
+        Assert.assertEquals(Character.valueOf('-'),peptidePosition2.getPreAA());
         Assert.assertEquals(Character.valueOf('M'), peptidePosition2.getPostAA());
 
         PeptidePosition peptidePosition3 = SequenceUtils.getPeptidePositions(proteinSequence3, peptideSequence).get(0);
         Assert.assertEquals(18, peptidePosition3.getStartPosition().intValue());
         Assert.assertEquals(proteinSequence3.length(), peptidePosition3.getEndPosition().intValue());
         Assert.assertEquals(Character.valueOf('B'), peptidePosition3.getPreAA());
-        Assert.assertNull(peptidePosition3.getPostAA());
+        Assert.assertEquals(Character.valueOf('-'), peptidePosition3.getPostAA());
 
         //there should be 2 occurrences of the peptide in the protein sequence
         List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(proteinSequence4, peptideSequence);
@@ -95,13 +95,13 @@ public class SequenceUtilsTest {
 
         surroundingAAs = SequenceUtils.getSurroundingAAs(proteinSequence2, peptideSequence, 1);
 
-        Assert.assertNull(surroundingAAs[0]);
+        Assert.assertEquals(Character.valueOf('-'),surroundingAAs[0]);
         Assert.assertEquals(Character.valueOf('M'), surroundingAAs[1]);
 
         surroundingAAs = SequenceUtils.getSurroundingAAs(proteinSequence3, peptideSequence, 18);
 
         Assert.assertEquals(Character.valueOf('B'), surroundingAAs[0]);
-        Assert.assertNull(surroundingAAs[1]);
+        Assert.assertEquals(Character.valueOf('-'),surroundingAAs[1]);
     }
 
     @Test

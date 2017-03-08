@@ -29,6 +29,7 @@ public class UtilitiesSpectrumMapper {
      */
     private static final Logger LOGGER = Logger.getLogger(UtilitiesSpectrumMapper.class);
 
+    private static final String SCAN_NUMBER = "scan=";
     /**
      * Map the utilities spectrum onto the Colims spectrum.
      *
@@ -53,6 +54,8 @@ public class UtilitiesSpectrumMapper {
         targetSpectrum.setTitle(sourceSpectrum.getSpectrumTitle());
         if (sourceSpectrum.getScanNumber() != null && !sourceSpectrum.getScanNumber().isEmpty()) {
             targetSpectrum.setScanNumber(Long.valueOf(sourceSpectrum.getScanNumber()));
+        }else{
+            targetSpectrum.setScanNumber(Long.valueOf(org.apache.commons.lang3.StringUtils.substringAfter(sourceSpectrum.getSpectrumTitle(), SCAN_NUMBER).replace("\"", "").trim()));
         }
         targetSpectrum.setScanTime(sourceSpectrum.getScanStartTime());
         targetSpectrum.setMzRatio(precursor.getMz());

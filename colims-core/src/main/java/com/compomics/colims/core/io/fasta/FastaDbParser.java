@@ -171,6 +171,16 @@ public class FastaDbParser {
                     sequenceBuilder.append(line);
                 }
             }
+            // last line
+            if (sequenceBuilder.length() > 0) {
+                Matcher matcher = pattern.matcher(fastaHeader.substring(1).split(SPLITTER)[0]);
+                if (matcher.find()) {
+                    proteinSequences.putIfAbsent(matcher.group(1), sequenceBuilder.toString().trim());
+                } else {
+                    proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                }
+                sequenceBuilder.setLength(0);
+            }
         }
     }
 
