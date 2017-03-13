@@ -10,14 +10,13 @@ import com.compomics.colims.core.io.mztab.MzTabExporter;
 import com.compomics.colims.core.io.mztab.enums.MzTabMode;
 import com.compomics.colims.core.io.mztab.enums.MzTabType;
 import com.compomics.colims.core.service.ProteinGroupQuantLabeledService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.QuantificationMethod;
-import com.compomics.colims.model.QuantificationSettings;
-import com.compomics.colims.model.Sample;
+import com.compomics.colims.core.service.QuantificationMethodService;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +28,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -66,6 +66,12 @@ public class MzTabExportController implements Controllable {
     private final DefaultMutableTreeNode analyticalRunRootNode = new DefaultMutableTreeNode("Analytical runs");
     private final DefaultTreeModel analyticalRunTreeModel = new DefaultTreeModel(analyticalRunRootNode);
 
+    /**
+     * The FASTA DBs location as provided in the distributed properties file.
+     */
+    @Value("${fastas.path}")
+    private String fastasPath = "";
+
     private int assayNumber = 0;
     //view
     private MzTabExportDialog mzTabExportDialog;
@@ -75,13 +81,16 @@ public class MzTabExportController implements Controllable {
     private final EventBus eventBus;
     private final MzTabExporter mzTabExporter;
     private final ProteinGroupQuantLabeledService proteinGroupQuantLabeledService;
+    private final QuantificationMethodService quantificationMethodService;
 
     @Autowired
-    public MzTabExportController(MzTabExporter mzTabExporter, EventBus eventBus, MainController mainController, ProteinGroupQuantLabeledService proteinGroupQuantLabeledService) {
+    public MzTabExportController(MzTabExporter mzTabExporter, EventBus eventBus, MainController mainController,
+                                 ProteinGroupQuantLabeledService proteinGroupQuantLabeledService, QuantificationMethodService quantificationMethodService) {
         this.mzTabExporter = mzTabExporter;
         this.eventBus = eventBus;
         this.mainController = mainController;
         this.proteinGroupQuantLabeledService = proteinGroupQuantLabeledService;
+        this.quantificationMethodService = quantificationMethodService;
     }
 
     public MzTabExport getMzTabExport() {
@@ -493,7 +502,7 @@ public class MzTabExportController implements Controllable {
                 if (!firstQuantificationMethodCvParam.equals(runs.get(i).getQuantificationSettings().getQuantificationMethod())) {
                     validationMessages.add("All runs should have the same quantification method");
                 }
-                if (runs.get(i).getQuantificationSettings().getQuantificationMethod().getQuantificationMethodHasReagents().size() != mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length) {
+                if (quantificationMethodService.fetchQuantificationMethodHasReagents(runs.get(i).getQuantificationSettings().getQuantificationMethod()).size() != mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length) {
                     validationMessages.add("Assay number should be the same with quantification reagent of the run " + runs.get(i).getName());
                 }
             }
@@ -702,9 +711,10 @@ public class MzTabExportController implements Controllable {
             //the analytical runs are on node level 2
             if (node.getLevel() == 2) {
                 AnalyticalRun analyticalRun = (AnalyticalRun) node.getUserObject();
-                int[] assayArray = new int[getQuantificationSettings(analyticalRun).getQuantificationMethod().getQuantificationMethodHasReagents().size()];
+                List<QuantificationMethodHasReagent> quantificationMethodHasReagents = quantificationMethodService.fetchQuantificationMethodHasReagents(getQuantificationSettings(analyticalRun).getQuantificationMethod());
+                int[] assayArray = new int[quantificationMethodHasReagents.size()];
                 // label free experiments
-                if (getQuantificationSettings(analyticalRun).getQuantificationMethod().getQuantificationMethodHasReagents().isEmpty()) {
+                if (quantificationMethodHasReagents.isEmpty()) {
                     assayNumber++;
                     //add to tree and expand node
                     DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(ASSAY + assayNumber);
@@ -713,7 +723,7 @@ public class MzTabExportController implements Controllable {
                     mzTabExportDialog.getAssayWithRunsTree().expandPath(new TreePath(node.getPath()));
                 }
                 // labeled experiments
-                for (int counter = 0; counter < getQuantificationSettings(analyticalRun).getQuantificationMethod().getQuantificationMethodHasReagents().size(); counter++) {
+                for (int counter = 0; counter < quantificationMethodHasReagents.size(); counter++) {
                     assayNumber++;
                     assayArray[counter] = assayNumber;
                     //add to tree and expand node
@@ -734,7 +744,10 @@ public class MzTabExportController implements Controllable {
     private void setQuantificationReagentsAndLabels() {
         int quantLabelIndex = 0;
 
-        if (getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod().getQuantificationMethodHasReagents().isEmpty()) {
+        List<QuantificationMethodHasReagent> quantificationMethodHasReagents = quantificationMethodService.fetchQuantificationMethodHasReagents(
+                getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod());
+
+        if (quantificationMethodHasReagents.isEmpty()) {
             mzTabExportDialog.getQuantificationLabelList().setVisible(false);
             mzTabExportDialog.getQuantificationReagentTree().setVisible(false);
             mzTabExportDialog.getMatchReagentAndLabelButton().setVisible(false);
@@ -745,9 +758,9 @@ public class MzTabExportController implements Controllable {
             mzTabExportDialog.getMatchReagentAndLabelButton().setVisible(true);
             mzTabExportDialog.getRemoveReagentAndLabelButton().setVisible(true);
         }
-        for (int counter = 0; counter < getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod().getQuantificationMethodHasReagents().size(); counter++) {
+        for (int counter = 0; counter < quantificationMethodHasReagents.size(); counter++) {
             quantificationLabelsListModel.add(quantLabelIndex, proteinGroupQuantLabeledService.getProteinGroupQuantLabeledForRun(mzTabExport.getRuns().get(0).getId()).get(counter).getLabel());
-            DefaultMutableTreeNode quantificationReagentTreeNode = new DefaultMutableTreeNode(getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod().getQuantificationMethodHasReagents().get(counter).getQuantificationReagent().getName());
+            DefaultMutableTreeNode quantificationReagentTreeNode = new DefaultMutableTreeNode(quantificationMethodHasReagents.get(counter).getQuantificationReagent().getName());
             quantificationReagentTreeModel.insertNodeInto(quantificationReagentTreeNode, quantificationReagentRootNode, quantificationReagentTreeModel.getChildCount(quantificationReagentRootNode));
             mzTabExportDialog.getQuantificationReagentTree().expandPath(new TreePath(quantificationReagentRootNode.getPath()));
             quantLabelIndex++;
@@ -775,6 +788,7 @@ public class MzTabExportController implements Controllable {
 
             LOGGER.info("Exporting mzTab file " + mzTabExport.getFileName() + " to directory " + mzTabExport.getExportDirectory());
             try {
+                mzTabExport.setFastaDirectory(Paths.get(fastasPath));
                 mzTabExporter.export(mzTabExport);
                 ProgressEndEvent progressEndEvent = new ProgressEndEvent();
                 eventBus.post(progressEndEvent);

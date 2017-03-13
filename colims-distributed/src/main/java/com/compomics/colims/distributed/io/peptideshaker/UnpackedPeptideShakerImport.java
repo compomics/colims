@@ -4,6 +4,7 @@ import com.compomics.colims.core.io.DataImport;
 import eu.isas.peptideshaker.utils.CpsParent;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public class UnpackedPeptideShakerImport extends DataImport {
     /**
      * The list of MGF files.
      */
-    private List<File> mgfFiles;
+    private List<Path> mgfFiles;
     /**
      * The CpsParent instance for interacting with the .cps file.
      */
@@ -62,11 +63,11 @@ public class UnpackedPeptideShakerImport extends DataImport {
         this.unpackedDirectory = unpackedDirectory;
     }
 
-    public List<File> getMgfFiles() {
+    public List<Path> getMgfFiles() {
         return mgfFiles;
     }
 
-    public void setMgfFiles(List<File> mgfFiles) {
+    public void setMgfFiles(List<Path> mgfFiles) {
         this.mgfFiles = mgfFiles;
     }
 
@@ -85,11 +86,11 @@ public class UnpackedPeptideShakerImport extends DataImport {
      * @param mgfResourceName the mgf resource name
      * @return the found mgf resource
      */
-    public File getMgfFileByName(final String mgfResourceName) {
-        File foundMgfFile = null;
+    public Path getMgfFileByName(final String mgfResourceName) {
+        Path foundMgfFile = null;
         if (mgfFiles != null) {
-            for (File mgfFile : mgfFiles) {
-                if (mgfFile.getName().toLowerCase().equals(mgfResourceName.toLowerCase())) {
+            for (Path mgfFile : mgfFiles) {
+                if (mgfFile.getFileName().toString().toLowerCase().equals(mgfResourceName.toLowerCase())) {
                     foundMgfFile = mgfFile;
                     break;
                 }

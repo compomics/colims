@@ -10,6 +10,7 @@ import com.compomics.colims.client.view.ExperimentBinaryFileDialog;
 import com.compomics.colims.client.view.ExperimentEditDialog;
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.ExperimentService;
+import com.compomics.colims.model.BinaryFile;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.google.common.eventbus.EventBus;
@@ -287,7 +288,7 @@ public class ExperimentEditController implements Controllable {
      * @return the joined attachments String
      */
     private String getAttachmentsAsString() {
-        return experimentToEdit.getBinaryFiles().stream().map(binaryFile -> binaryFile.toString()).collect(Collectors.joining(", "));
+        return experimentToEdit.getBinaryFiles().stream().map(BinaryFile::toString).collect(Collectors.joining(", "));
     }
 
 }

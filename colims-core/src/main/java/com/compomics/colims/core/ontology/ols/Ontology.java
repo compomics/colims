@@ -101,10 +101,7 @@ public class Ontology {
         if (!Objects.equals(this.baseUris, other.baseUris)) {
             return false;
         }
-        if (!Objects.equals(this.idUrl, other.idUrl)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.idUrl, other.idUrl);
     }
 
     @Override

@@ -13,6 +13,15 @@
     
     <bean name="accessionConverter" class="com.compomics.colims.core.util.AccessionConverter"/>
     
+    <bean name="uniprotProteinUtils" class="com.compomics.colims.core.util.UniprotProteinUtils"/>
+    
     <bean name="proteinCoverage" class="com.compomics.colims.core.util.ProteinCoverage"/>
 
+    <bean name="fastaDbParser" class="com.compomics.colims.core.io.fasta.FastaDbParser"/>
+
+     <!-- property placeholder -->
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="config/colims-core.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
 </beans>

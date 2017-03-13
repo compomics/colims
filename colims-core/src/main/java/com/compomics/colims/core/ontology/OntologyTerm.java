@@ -57,7 +57,6 @@ public class OntologyTerm {
         if (!ontologyPrefix.equals(that.ontologyPrefix)) return false;
         if (!oboId.equals(that.oboId)) return false;
         return label != null ? label.equals(that.label) : that.label == null;
-
     }
 
     @Override

@@ -30,7 +30,6 @@ import eu.isas.peptideshaker.scoring.maps.ProteinMap;
 import eu.isas.peptideshaker.scoring.targetdecoy.TargetDecoyMap;
 import eu.isas.peptideshaker.scoring.targetdecoy.TargetDecoyResults;
 import eu.isas.peptideshaker.utils.CpsParent;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,6 +37,8 @@ import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -113,7 +114,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
     }
 
     @Override
-    public MappedData mapData(UnpackedPeptideShakerImport dataImport) throws MappingException {
+    public MappedData mapData(UnpackedPeptideShakerImport dataImport, Path experimentsDirectory, Path fastasDirectory) throws MappingException {
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         Set<ProteinGroup> proteinGroups = new HashSet<>();
 
@@ -156,16 +157,23 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
                     throw new IllegalArgumentException("Should not be able to get here.");
             }
 
-            //load the (primary, there's only one) FASTA files
+            //load the (primary, there's only one) FASTA DB file
             FastaDb fastaDb = fastaDbService.findById(dataImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
+            //get the fasta file and make the path absolute
+            Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDb.getFilePath());
+            //check if the Path exists
+            if (!Files.exists(absoluteFastaDbPath)) {
+                throw new IllegalArgumentException("The FASTA DB " + absoluteFastaDbPath.toString() + " doesn't exist.");
+            }
+            //@todo remove this after testing
+//            File fastaDbFile = new File(FilenameUtils.separatorsToSystem(fastaDb.getFilePath()));
+            File fastaDbFile = absoluteFastaDbPath.toFile();
 
             LOGGER.info("Start mapping search settings for PeptideShaker experiment " + msExperiment.getReference());
             SearchAndValidationSettings searchAndValidationSettings = mapSearchSettings(dataImport, analyticalRun, fastaDb, proteinScoreType, proteinThreshold);
             LOGGER.info("Finished mapping search settings for PeptideShaker experiment " + msExperiment.getReference());
 
             LOGGER.info("Start mapping PeptideShaker experiment " + msExperiment.getReference());
-            //get the fasta file
-            File fastaDbFile = new File(FilenameUtils.separatorsToSystem(fastaDb.getFilePath()));
             cpsParent.loadFastaFile(fastaDbFile, null);
 
             //load the spectrum files, peptide en protein matches

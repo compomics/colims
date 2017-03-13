@@ -54,21 +54,21 @@
         join instrument.analyticalRuns as analyticalRun
         where analyticalRun.id = :analyticalRunId
     </query>
-    
+
     <query name="QuantificationSettings.findByAnalyticalRunId">
         select distinct quantificationSettings
         from QuantificationSettings as quantificationSettings
         join quantificationSettings.analyticalRun as analyticalRun
         where analyticalRun.id = :analyticalRunId
     </query>
-    
+
     <query name="SearchAndValidationSettings.findByAnalyticalRunId">
         select distinct searchAndValidationSettings
         from SearchAndValidationSettings as searchAndValidationSettings
         join searchAndValidationSettings.analyticalRun as analyticalRun
         where analyticalRun.id = :analyticalRunId
     </query>
-    
+
     <query name="FastaDb.findByFastaDbType">
         select distinct fastaDb
         from FastaDb as fastaDb
@@ -76,7 +76,14 @@
         where searchSettingsHasFastaDb.fastaDbType in (:fastaDbTypeOrdinals)
     </query>
 
-    <query name="Peptide.getPeptideDTOByProteinGroupId">
+    <query name="Spectrum.getPeptideCount">
+        select count(peptide)
+        from Spectrum as spectrum
+        join spectrum.peptides as peptide
+        where spectrum.id = :spectrumId
+    </query>
+
+    <query name="Peptide.getPeptideDTOsByProteinGroupId">
         select peptide, peptideHasProteinGroup.peptideProbability, peptideHasProteinGroup.peptidePostErrorProbability
         from Peptide as peptide
         join peptide.peptideHasProteinGroups as peptideHasProteinGroup
@@ -84,33 +91,55 @@
         left join fetch peptideHasModification.modification as modification
         join fetch peptide.spectrum as spectrum
         where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
-        and spectrum.analyticalRun.id in (:analyticalRunId)
+        and spectrum.analyticalRun.id in (:analyticalRunIds)
     </query>
-    
-    <query name="Peptide.getPeptideHasProteinGroupByAnalyticalRunIds">
+
+    <query name="Peptide.getPeptidesByProteinGroupId">
+        select distinct peptide
+        from Peptide as peptide
+        join peptide.peptideHasProteinGroups as peptideHasProteinGroup
+        left join fetch peptide.peptideHasModifications as peptideHasModification
+        left join fetch peptideHasModification.modification as modification
+        join fetch peptide.spectrum as spectrum
+        where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
+        and spectrum.analyticalRun.id in (:analyticalRunIds)
+    </query>
+
+    <query name="Peptide.getPeptideHasProteinGroupsByRunIds">
         select peptide, peptideHasProteinGroup, spectrum.analyticalRun
         from PeptideHasProteinGroup as peptideHasProteinGroup
         join peptideHasProteinGroup.peptide as peptide
         join fetch peptide.spectrum as spectrum
-        where spectrum.analyticalRun.id in (:analyticalRunId)
+        where spectrum.analyticalRun.id in (:analyticalRunIds)
     </query>
-    
-    <query name="Peptide.getDistinctPeptideSequenceByProteinGroupIdAndAnalyticalRunIds">
+
+    <query name="Peptide.getDistinctPeptideSequencesByProteinGroupIdAndRunIds">
         select peptide.sequence
         from Peptide as peptide
         join peptide.peptideHasProteinGroups as peptideHasProteinGroup
         join peptide.spectrum as spectrum
         where peptideHasProteinGroup.proteinGroup.id = :proteinGroupId
-        and spectrum.analyticalRun.id in (:analyticalRunId)
+        and spectrum.analyticalRun.id in (:analyticalRunIds)
         group by peptide.sequence
     </query>
 
-    <query name="Protein.getProteinByProteinGroupId">
+    <query name="Protein.getProteinsByProteinGroupId">
         select proteinGroupHasProtein.protein, proteinGroupHasProtein
         from ProteinGroupHasProtein as proteinGroupHasProtein
         join fetch proteinGroupHasProtein.proteinGroup as proteinGroup
         where proteinGroup.id = :proteinGroupId
         and proteinGroupHasProtein.isMainGroupProtein = 1
+    </query>
+
+    <query name="ProteinGroup.getProteinGroupsByRunIds">
+        select distinct proteinGroup
+        from ProteinGroup as proteinGroup
+        join fetch proteinGroup.proteinGroupHasProteins as proteinGroupHasProtein
+        join fetch proteinGroupHasProtein.protein
+        join proteinGroup.peptideHasProteinGroups as peptideHasProteinGroup
+        join peptideHasProteinGroup.peptide as peptide
+        join peptide.spectrum as spectrum
+        where spectrum.analyticalRun.id in (:analyticalRunIds)
     </query>
 
     <query name="ProteinGroup.getProteinGroupsProjections">

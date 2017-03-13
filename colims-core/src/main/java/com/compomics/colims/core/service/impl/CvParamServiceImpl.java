@@ -38,14 +38,14 @@ public class CvParamServiceImpl implements CvParamService {
     @Override
     public CvParam findByAccession(final Class clazz, final String accession) {
         List<CvParam> foundCvParams = cvParamRepository.findByAccession(accession);
-        Optional<CvParam> foundCvParam = foundCvParams.stream().filter(cvParam -> clazz.isInstance(cvParam)).findFirst();
+        Optional<CvParam> foundCvParam = foundCvParams.stream().filter(clazz::isInstance).findFirst();
         return foundCvParam.isPresent() ? foundCvParam.get() : null;
     }
 
     @Override
     public CvParam findByName(final Class clazz, final String name, final boolean ignoreCase) {
         List<CvParam> foundCvParams = cvParamRepository.findByName(name, ignoreCase);
-        Optional<CvParam> foundCvParam = foundCvParams.stream().filter(cvParam -> clazz.isInstance(cvParam)).findFirst();
+        Optional<CvParam> foundCvParam = foundCvParams.stream().filter(clazz::isInstance).findFirst();
         return foundCvParam.isPresent() ? foundCvParam.get() : null;
     }
 
@@ -73,6 +73,6 @@ public class CvParamServiceImpl implements CvParamService {
 
     @Override
     public List<CvParam> findByCvParamByClass(Class clazz) {
-        return cvParamRepository.findAll().stream().filter(cvTerm -> clazz.isInstance(cvTerm)).collect(Collectors.toList());
+        return cvParamRepository.findAll().stream().filter(clazz::isInstance).collect(Collectors.toList());
     }
 }

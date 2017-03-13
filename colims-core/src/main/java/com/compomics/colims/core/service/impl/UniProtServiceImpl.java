@@ -6,38 +6,33 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.UniProtService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+
 /**
  * Implementation of the UniProtService interface.
- * 
+ *
  * @author demet
  */
 @Service("uniProtService")
@@ -55,11 +50,6 @@ public class UniProtServiceImpl implements UniProtService {
      */
     private final RestTemplate restTemplate;
 
-    /**
-     * The JSON mapper.
-     */
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Autowired
     public UniProtServiceImpl(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -72,7 +62,7 @@ public class UniProtServiceImpl implements UniProtService {
         try {
             // Set XML content type explicitly to force response in XML (If not spring gets response in JSON)
             HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(Arrays.asList(MediaType.APPLICATION_XML));
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_XML));
             HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
             ResponseEntity<String> response = restTemplate.exchange(UNIPROT_BASE_URL + "/" + accession + ".xml", HttpMethod.GET, entity, String.class);
@@ -82,29 +72,43 @@ public class UniProtServiceImpl implements UniProtService {
             DocumentBuilder builder = factory.newDocumentBuilder();
             InputSource is = new InputSource(new StringReader(responseBody));
 
-            Document document = (Document) builder.parse(is);
+            Document document = builder.parse(is);
             document.getDocumentElement().normalize();
-            NodeList recommendedName = document.getElementsByTagName("recommendedName");
-
-            Node node = recommendedName.item(0);
-            Element element = (Element) node;
-            if(element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")){
-                uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
+            
+            Element element;
+            
+            NodeList nodeList = document.getElementsByTagName("recommendedName");
+            Node node = nodeList.item(0);
+            if(node != null){
+                element = (Element) node;
+                if (element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")) {
+                    uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
+                }
+            }else{
+                nodeList = document.getElementsByTagName("protein");
+                node = nodeList.item(0);
+                if(node != null){
+                    element = (Element) node;
+                    if (element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")) {
+                        uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
+                    }
+                }
             }
+            
 
-            NodeList organism = document.getElementsByTagName("organism");
-            node = organism.item(0);
+            nodeList = document.getElementsByTagName("organism");
+            node = nodeList.item(0);
             element = (Element) node;
-            if(element.getElementsByTagName("name").item(0).getTextContent() != null && !element.getElementsByTagName("name").item(0).getTextContent().equals("")){
+            if (element.getElementsByTagName("name").item(0).getTextContent() != null && !element.getElementsByTagName("name").item(0).getTextContent().equals("")) {
                 uniProt.put("species", element.getElementsByTagName("name").item(0).getTextContent());
             }
-           
-            NodeList dbReference = document.getElementsByTagName("dbReference");
-            node = dbReference.item(0);
+
+            nodeList = document.getElementsByTagName("dbReference");
+            node = nodeList.item(0);
             element = (Element) node;
-            if(element.getAttribute("id") != null && !element.getAttribute("id").equals("")){
+            if (element.getAttribute("id") != null && !element.getAttribute("id").equals("")) {
                 uniProt.put("taxid", element.getAttribute("id"));
-            }  
+            }
 
         } catch (HttpClientErrorException ex) {
             LOGGER.error(ex.getMessage(), ex);

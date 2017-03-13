@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -20,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
@@ -70,9 +73,12 @@ public class MaxQuantIT {
         fastaDbIds.put(FastaDbType.CONTAMINANTS, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb.getId())));
 
         MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.mqparFile,
-                MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds, false, false, new ArrayList<>(), "label free");
+                MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds, false, false, new ArrayList<>(), "label free");
         maxQuantMapper.clear();
-        MappedData mappedData = maxQuantMapper.mapData(maxQuantImport);
+
+        Path experimentsDirectory = new ClassPathResource("data/maxquant/maxquant_SILAC_integration").getFile().toPath();
+        Path fastasDirectory = new ClassPathResource("data/maxquant/maxquant_SILAC_integration").getFile().toPath();
+        MappedData mappedData = maxQuantMapper.mapData(maxQuantImport, experimentsDirectory, fastasDirectory);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 
         Assert.assertFalse(analyticalRuns.isEmpty());

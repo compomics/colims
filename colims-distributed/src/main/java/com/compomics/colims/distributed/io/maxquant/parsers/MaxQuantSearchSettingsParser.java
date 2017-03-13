@@ -212,6 +212,8 @@ public class MaxQuantSearchSettingsParser {
                 runSettings.put(summaryEntry.get(SummaryHeader.RAW_FILE), searchAndValidationSettings);
             }
         }
+        // match analytical run and related search setting by using run settings map
+        matchAnalyticalRunSearchSettings();
 
     }
 
@@ -499,6 +501,15 @@ public class MaxQuantSearchSettingsParser {
         });
     }
 
+    /**
+     * Match analytical run and related search and validation settings
+     */
+    private void matchAnalyticalRunSearchSettings(){
+        analyticalRuns.keySet().forEach((run) -> {   
+            run.setSearchAndValidationSettings(runSettings.get(run.getName()));
+        });
+    }
+    
     /**
      * Find child element by name, case insensitive. Returns null if nothing was
      * found.

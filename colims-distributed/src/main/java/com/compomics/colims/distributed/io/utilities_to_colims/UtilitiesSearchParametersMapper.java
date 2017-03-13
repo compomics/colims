@@ -11,6 +11,7 @@ import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.colims.model.enums.ModificationType;
+import com.compomics.util.experiment.biology.Enzyme;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
@@ -76,14 +77,14 @@ public class UtilitiesSearchParametersMapper implements Mapper<IdentificationPar
         if (utilitiesSearchParameters.getDigestionPreferences().hasEnzymes()) {
             List<String> enzymeList = utilitiesSearchParameters.getDigestionPreferences().getEnzymes()
                     .stream()
-                    .map(enzyme -> enzyme.getName())
+                    .map(Enzyme::getName)
                     .collect(Collectors.toList());
             List<Integer> missedCleavages = new ArrayList<>();
             enzymeList.stream()
                     .forEach(enzyme -> missedCleavages.add(utilitiesSearchParameters.getDigestionPreferences().getnMissedCleavages(enzyme)));
 
             searchParameters.setEnzymes(enzymeList.stream().collect(Collectors.joining(SearchParameters.DELIMITER)));
-            searchParameters.setNumberOfMissedCleavages(missedCleavages.stream().map(n -> n.toString()).collect(Collectors.joining(SearchParameters.DELIMITER)));
+            searchParameters.setNumberOfMissedCleavages(missedCleavages.stream().map(Object::toString).collect(Collectors.joining(SearchParameters.DELIMITER)));
         }
         //precursor mass tolerance unit
         MassAccuracyType precursorMassAccuracyType = MassAccuracyType.getByUtilitiesMassAccuracyType(utilitiesSearchParameters.getPrecursorAccuracyType());

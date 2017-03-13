@@ -1,11 +1,6 @@
 package com.compomics.colims.distributed.io.peptideshaker;
 
 import com.compomics.colims.core.io.PeptideShakerImport;
-import com.compomics.colims.core.service.FastaDbService;
-import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.User;
-import com.compomics.colims.model.UserBean;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.experiment.MsExperiment;
 import org.apache.commons.compress.archivers.ArchiveException;
@@ -20,51 +15,36 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
-import org.junit.Before;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * @author Niels Hulstaert
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
+@ContextConfiguration(locations = {"classpath:colims-distributed-simple-test-context.xml"})
 public class PeptideShakerIOIT {
 
     @Autowired
-    private FastaDbService fastaDbService;
-    @Autowired
     private PeptideShakerIO peptideShakerIO;
-    @Autowired
-    private UserBean userBean;
-    @Autowired
-    private UserService userService;
-
-    @Before
-    public void setup() throws IOException, XmlPullParserException {
-        //set admin user in authentication bean
-        User adminUser = userService.findByName("admin");
-        userService.fetchAuthenticationRelations(adminUser);
-        userBean.setCurrentUser(adminUser);
-    }
 
     /**
      * Test the unpacking of a PS .cps file.
      *
-     * @throws IOException thrown in case of an IO related problem
-     * @throws ArchiveException thrown in case of an archive related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a
-     * class by it's string name.
-     * @throws java.sql.SQLException thrown in case of a database access error
-     * @throws InterruptedException thrown in case a thread is interrupted
+     * @throws IOException            thrown in case of an IO related problem
+     * @throws ArchiveException       thrown in case of an archive related problem
+     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
+     * @throws java.sql.SQLException  thrown in case of a database access error
+     * @throws InterruptedException   thrown in case a thread is interrupted
      */
     @Test
     public void testUnpackPeptideShakerCpsFile() throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
-        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cpsx").getFile());
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerCpsxArchive(new ClassPathResource("data/peptideshaker/colims_test_ps_file.cpsx").getFile());
 
         Assert.assertNotNull(unpackedPsDataImport);
 
@@ -83,35 +63,25 @@ public class PeptideShakerIOIT {
     /**
      * Test the unpacking of a PeptideShakerImport instance.
      *
-     * @throws IOException thrown in case of an IO related problem
-     * @throws ArchiveException thrown in case of an archive related problem
-     * @throws ClassNotFoundException thrown in case of a failure to load a
-     * class by it's string name.
-     * @throws java.sql.SQLException thrown in case of a database access error
-     * @throws InterruptedException thrown in case a thread is interrupted
+     * @throws IOException            thrown in case of an IO related problem
+     * @throws ArchiveException       thrown in case of an archive related problem
+     * @throws ClassNotFoundException thrown in case of a failure to load a class by it's string name.
+     * @throws java.sql.SQLException  thrown in case of a database access error
+     * @throws InterruptedException   thrown in case a thread is interrupted
      */
     @Test
     public void testUnpackPeptideShakerDataImport() throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
-        File peptideShakerCpsFile = new ClassPathResource("data/peptideshaker/colims_test_ps_file.cpsx").getFile();
-
-        File fastaFile = new ClassPathResource("data/peptideshaker/uniprot-human-reviewed-trypsin-august-2015_concatenated_target_decoy.fasta").getFile();
-        FastaDb fastaDb = new FastaDb();
-        fastaDb.setName(fastaFile.getName());
-        fastaDb.setFileName(fastaFile.getName());
-        fastaDb.setFilePath(fastaFile.getAbsolutePath());
-
-        //save the fasta db. We don't have it as an insert statement in the import.sql file
-        //as the file path might be different depending on the OS
-        fastaDbService.persist(fastaDb);
+        Path peptideShakerCpsFile = Paths.get("colims_test_ps_file.cpsx");
 
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(fastaDb.getId())));
+        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(5L)));
 
-        List<File> mgfFiles = new ArrayList<>();
-        mgfFiles.add(new ClassPathResource("data/peptideshaker/qExactive01819.mgf").getFile());
+        List<Path> mgfFiles = new ArrayList<>();
+        mgfFiles.add(Paths.get("qExactive01819.mgf"));
 
+        Path experimentsDirectory = new ClassPathResource("data/peptideshaker").getFile().toPath();
         PeptideShakerImport peptideShakerImport = new PeptideShakerImport(peptideShakerCpsFile, fastaDbIds, mgfFiles);
-        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerImport(peptideShakerImport);
+        UnpackedPeptideShakerImport unpackedPsDataImport = peptideShakerIO.unpackPeptideShakerImport(peptideShakerImport, experimentsDirectory);
 
         Assert.assertNotNull(unpackedPsDataImport);
 
@@ -122,8 +92,8 @@ public class PeptideShakerIOIT {
         MsExperiment msExperiment = unpackedPsDataImport.getCpsParent().getExperiment();
         Assert.assertNotNull(msExperiment);
 
-        Assert.assertEquals(fastaDb.getId(), unpackedPsDataImport.getFastaDbIds().get(FastaDbType.PRIMARY));
-        Assert.assertEquals(mgfFiles, unpackedPsDataImport.getMgfFiles());
+        Assert.assertEquals(5L, unpackedPsDataImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0).longValue());
+        Assert.assertEquals(mgfFiles.get(0).getFileName(), unpackedPsDataImport.getMgfFiles().get(0).getFileName());
 
         //delete directory
         FileUtils.deleteDirectory(directory);

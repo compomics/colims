@@ -44,7 +44,6 @@ public class QuantificationReagentHibernateRepository extends GenericHibernateRe
             //check name
             if(!exampleInstance.getName().equals(quantificationReagent.getName())){
                 iterator.remove();
-                continue;
             }
         }
         

@@ -21,29 +21,36 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * Fetch a paged list of ProteinGroupForRun instances associated with a given analytical run.
      *
      * @param analyticalRunIds the list of analytical run IDs
-     * @param start         the start point in result list
-     * @param length        the length of the result page
-     * @param orderBy       the column to order results by
-     * @param sortDirection the sort direction
-     * @param filter        the filter text (an empty string matches all results)
+     * @param start            the start point in result list
+     * @param length           the length of the result page
+     * @param orderBy          the column to order results by
+     * @param sortDirection    the sort direction
+     * @param filter           the filter text (an empty string matches all results)
      * @return the list of protein groups
      */
     List<ProteinGroupDTO> getPagedProteinGroupsForRun(List<Long> analyticalRunIds, final int start, final int length, final String orderBy, final SortDirection sortDirection, final String filter);
-    
+
     /**
-     * Fetch a list of ProteinGroupForRun instances associated with a given analytical run.
+     * Fetch a list of {@link ProteinGroupDTO} instances associated with the given analytical runs.
+     *
+     * @param analyticalRunIds the list of analytical run IDs
+     * @return the list of protein group DTO objects
+     */
+    List<ProteinGroupDTO> getProteinGroupDTOsForRuns(List<Long> analyticalRunIds);
+
+    /**
+     * Fetch a list of {@link ProteinGroup} instances associated with the given analytical runs.
      *
      * @param analyticalRunIds the list of analytical run IDs
      * @return the list of protein groups
      */
-    List<ProteinGroupDTO> getProteinGroupsForRun(List<Long> analyticalRunIds);
+    List<ProteinGroup> getProteinGroupsForRuns(List<Long> analyticalRunIds);
 
-    
     /**
      * Count the number of proteins groups related to a given analytical run, including optional filter term.
      *
      * @param analyticalRunIds the list of analytical run IDs of interest
-     * @param filter        the filter string
+     * @param filter           the filter string
      * @return the number of protein groups
      */
     long getProteinGroupCountForRun(final List<Long> analyticalRunIds, final String filter);
@@ -63,10 +70,11 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param proteinGroup the ProteinGroup instance to save or update
      */
     void saveOrUpdate(final ProteinGroup proteinGroup);
-    
+
     /**
      * Get ambiguity members of the given protein group.
      * if nothing found, return empty list
+     *
      * @param proteinGroupId
      * @return list of ambiguity members
      */
@@ -74,9 +82,11 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
 
     /**
      * Get ProteinGroupHasProtein object by proteinGroupId
+     * (only main protein of the group)
      * if nothing found return null
+     *
      * @param proteinGroupId
      * @return ProteinGroupHasProtein and protein
      */
-    Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinbyProteinGroupId (final Long proteinGroupId);
+    Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinsByProteinGroupId(final Long proteinGroupId);
 }

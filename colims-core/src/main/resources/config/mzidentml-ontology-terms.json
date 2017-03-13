@@ -47,7 +47,7 @@
       "fullName": "Units of measurement"
     },
     "NCBITaxon": {
-      "id": "NCBI",
+      "id": "NCBITaxon",
       "uri": "http://purl.obolibrary.org/obo/ncbitaxon",
       "fullName": "NCBI organismal classification"
     }
@@ -111,15 +111,15 @@
       "name": "XTandem XML file"
     }
   },
-  "GenericCV": {
-    "MS": {
-      "cvRef": "MS"
-    },
+  "ModCV": {
     "MOD": {
       "cvRef": "MOD"
     },
     "UNIMOD": {
       "cvRef": "UNIMOD"
+    },
+    "MS": {
+      "cvRef": "MS"
     },
     "UNKNOWN": {
       "cvRef": "N/A"
@@ -249,6 +249,11 @@
       "cvRef": "MS",
       "accession": "MS:1001528",
       "name": "Mascot query number"
+    },
+    "Multiple peak list": {
+      "cvRef": "MS",
+      "accession": "MS:1000774",
+      "name": "multiple peak list nativeID format"
     }
   },
   "Threshold": {
@@ -315,6 +320,71 @@
       "cvRef": "MS",
       "accession": "MS:1001412",
       "name": "search tolerance plus value"
+    }
+  },
+  "Scores": {
+    "PSM": {
+      "PS_score": {
+        "cvRef": "MS",
+        "accession": "MS:1002466",
+        "name": "PeptideShaker PSM score"
+      },
+      "PS_confidence": {
+        "cvRef": "MS",
+        "accession": "MS:1002467",
+        "name": "PeptideShaker PSM confidence"
+      },
+      "MQ_score": {
+        "cvRef": "MS",
+        "accession": "MS:1002338",
+        "name": "Andromeda:score"
+      },
+      "MQ_PEP": {
+        "cvRef": "MS",
+        "accession": "MS:1002352",
+        "name": "PSM-level p-value"
+      }
+    },
+    "Protein": {
+      "PS_score": {
+        "cvRef": "MS",
+        "accession": "MS:1002470",
+        "name": "PeptideShaker protein group score"
+      },
+      "PS_confidence": {
+        "cvRef": "MS",
+        "accession": "MS:1002471",
+        "name": "PeptideShaker protein group confidence"
+      },
+      "MQ_PEP": {
+        "cvRef": "MS",
+        "accession": "MS:1002376",
+        "name": "protein group-level probability"
+      }
+    }
+  },
+  "PSM": {
+    "Theoretical mass": {
+      "cvRef": "MS",
+      "accession": "MS:1001117",
+      "name": "theoretical mass"
+    }
+  },
+  "Protein": {
+    "Group representative": {
+      "cvRef": "MS",
+      "accession": "MS:1002403",
+      "name": "group representative"
+    },
+    "Leading protein": {
+      "cvRef": "MS",
+      "accession": "MS:1002401",
+      "name": "leading protein"
+    },
+    "Sequence coverage": {
+      "cvRef": "MS",
+      "accession": "MS:1001093",
+      "name": "sequence coverage"
     }
   }
 }

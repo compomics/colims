@@ -67,13 +67,13 @@ use colims;
 
     create table colims.fasta_db (
         id bigint not null auto_increment,
-        database_name varchar(255) not null,
+        database_name varchar(250),
         file_name varchar(200) not null,
         file_path varchar(250) not null,
-        header_parse_rule varchar(255),
+        header_parse_rule varchar(250),
         md5_checksum varchar(255),
         name varchar(100) not null,
-        version varchar(20) not null,
+        version varchar(20),
         l_taxonomy_cv_id bigint,
         primary key (id)
     );
@@ -350,7 +350,7 @@ use colims;
         user_name varchar(255) not null,
         l_analytical_run_id bigint,
         l_quant_engine_id bigint,
-        l_quant_method_cv_param bigint,
+        l_quant_method_id bigint,
         primary key (id)
     );
 
@@ -764,7 +764,7 @@ use colims;
 
     alter table colims.quantification_settings
         add constraint FKeft721jpbxfi5v8k27d73hqmj
-        foreign key (l_quant_method_cv_param)
+        foreign key (l_quant_method_id)
         references colims.quantification_method (id);
 
     alter table colims.role_has_permission

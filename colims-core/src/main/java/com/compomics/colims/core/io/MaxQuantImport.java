@@ -24,6 +24,11 @@ public class MaxQuantImport extends DataImport {
      * The directory of Combined Folder.
      */
     private Path combinedDirectory;
+    
+    /**
+     * The full directory of Combined Folder.
+     */
+    private Path fullCombinedDirectory;
 
     /**
      * Whether to import proteins from contaminants file.
@@ -56,6 +61,7 @@ public class MaxQuantImport extends DataImport {
      *
      * @param mqParFile                   the mqpar.xml parameter file
      * @param combinedDirectory           File pointer to MaxQuant combined directory
+     * @param fullCombinedDirectory       File pointer to MaxQuant full combined directory
      * @param fastaDbIds                  the FASTA database map (key: FastaDb type; value: the FastaDb instance ID)
      * @param includeContaminants         whether to import proteins from contaminants file.
      * @param includeUnidentifiedSpectra  whether to import unidentified spectra from APL files.
@@ -65,6 +71,7 @@ public class MaxQuantImport extends DataImport {
      */
     public MaxQuantImport(final Path mqParFile,
                           final Path combinedDirectory,
+                          final Path fullCombinedDirectory,
                           final EnumMap<FastaDbType, List<Long>> fastaDbIds,
                           boolean includeContaminants,
                           boolean includeUnidentifiedSpectra,
@@ -73,6 +80,7 @@ public class MaxQuantImport extends DataImport {
         super(fastaDbIds);
         this.mqParFile = mqParFile;
         this.combinedDirectory = combinedDirectory;
+        this.fullCombinedDirectory = fullCombinedDirectory;
         this.includeContaminants = includeContaminants;
         this.includeUnidentifiedSpectra = includeUnidentifiedSpectra;
         this.selectedProteinGroupHeaders = selectedProteinGroupHeaders;
@@ -103,15 +111,28 @@ public class MaxQuantImport extends DataImport {
         return quantificationLabel;
     }
 
+    public void setMqParFile(Path mqParFile) {
+        this.mqParFile = mqParFile;
+    }
+
+    public void setCombinedDirectory(Path combinedDirectory) {
+        this.combinedDirectory = combinedDirectory;
+    }
+
+    public Path getFullCombinedDirectory() {
+        return fullCombinedDirectory;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 89 * hash + Objects.hashCode(this.mqParFile);
-        hash = 89 * hash + Objects.hashCode(this.combinedDirectory);
-        hash = 89 * hash + (this.includeContaminants ? 1 : 0);
-        hash = 89 * hash + (this.includeUnidentifiedSpectra ? 1 : 0);
-        hash = 89 * hash + Objects.hashCode(this.selectedProteinGroupHeaders);
-        hash = 89 * hash + Objects.hashCode(this.quantificationLabel);
+        hash = 97 * hash + Objects.hashCode(this.mqParFile);
+        hash = 97 * hash + Objects.hashCode(this.combinedDirectory);
+        hash = 97 * hash + Objects.hashCode(this.fullCombinedDirectory);
+        hash = 97 * hash + (this.includeContaminants ? 1 : 0);
+        hash = 97 * hash + (this.includeUnidentifiedSpectra ? 1 : 0);
+        hash = 97 * hash + Objects.hashCode(this.selectedProteinGroupHeaders);
+        hash = 97 * hash + Objects.hashCode(this.quantificationLabel);
         return hash;
     }
 
@@ -127,9 +148,6 @@ public class MaxQuantImport extends DataImport {
             return false;
         }
         final MaxQuantImport other = (MaxQuantImport) obj;
-        if (this.includeContaminants != other.includeContaminants) {
-            return false;
-        }
         if (this.includeUnidentifiedSpectra != other.includeUnidentifiedSpectra) {
             return false;
         }
@@ -139,7 +157,7 @@ public class MaxQuantImport extends DataImport {
         if (!Objects.equals(this.mqParFile, other.mqParFile)) {
             return false;
         }
-        if (!Objects.equals(this.combinedDirectory, other.combinedDirectory)) {
+        if (!Objects.equals(this.fullCombinedDirectory, other.fullCombinedDirectory)) {
             return false;
         }
         if (!Objects.equals(this.selectedProteinGroupHeaders, other.selectedProteinGroupHeaders)) {
@@ -147,6 +165,5 @@ public class MaxQuantImport extends DataImport {
         }
         return true;
     }
-
 
 }

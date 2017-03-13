@@ -161,7 +161,7 @@ public class OlsController implements Controllable {
                         ontologiesToSearch = olsDialog.getOntologiesDualList().getAddedItems();
                     }
                     //get the search metadata
-                    searchResultMetadata = olsService.getPagedSearchMetadata(searchInput, ontologiesToSearch.stream().map(o -> o.getNameSpace()).collect(Collectors.toList()), getSearchFields());
+                    searchResultMetadata = olsService.getPagedSearchMetadata(searchInput, ontologiesToSearch.stream().map(Ontology::getNameSpace).collect(Collectors.toList()), getSearchFields());
                     olsSearchResultTableModel.init(searchResultMetadata.getNumberOfResultPages());
                     //get the search results for the first page
                     doPagedSearch(0, 0);
@@ -325,7 +325,7 @@ public class OlsController implements Controllable {
                     .collect(Collectors.toList());
             List<String> loadedViewPreselectedOntologyNamespaces = viewPreselectedOntologies
                     .stream()
-                    .map(ontology -> ontology.getNameSpace())
+                    .map(Ontology::getNameSpace)
                     .collect(Collectors.toList());
             //look for non loaded ontologies
             List<String> nonLoadedOntologyNamespaces = viewPreselectedOntologyNamespaces.stream().filter(ns -> !loadedViewPreselectedOntologyNamespaces.contains(ns)).collect(Collectors.toList());

@@ -11,34 +11,33 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * @author demet, davy
  */
 public class ProteinCoverage {
 
     /**
-     * Calculate protein coverage by using protein sequence and peptide sequence
+     * Calculate protein coverage by using protein sequence and peptide sequence.
      *
-     * @param protein
-     * @param peptides
-     * @return
+     * @param proteinSequence the protein sequence
+     * @param peptides        the list op peptide sequences
+     * @return the protein sequence coverage
      */
-    public static double calculateProteinCoverage(String protein, List<String> peptides) {
-        String mappedProtein = map(protein, peptides);
+    public static double calculateProteinCoverage(String proteinSequence, List<String> peptides) {
+        String mappedProtein = map(proteinSequence, peptides);
 
         String mergedPeptideAnnotations = mergePeptideAnnotations(mappedProtein);
 
         double mergedPeptideSize = 0.0;
 
         Pattern p = Pattern.compile(Pattern.quote("[") + "(.*?)" + Pattern.quote("]"));
-    
+
         Matcher m = p.matcher(mergedPeptideAnnotations);
-    
+
         while (m.find()) {
             mergedPeptideSize += m.group(1).length();
         }
 
-        double proteinSize = protein.length();
+        double proteinSize = proteinSequence.length();
 
         double coverage = mergedPeptideSize / proteinSize;
 
@@ -46,31 +45,27 @@ public class ProteinCoverage {
     }
 
     /**
-     * maps a group of peptides to a protein string
+     * Maps a group of peptides to a protein string.
      *
-     * @param protein the protein to match
+     * @param protein  the protein to match
      * @param peptides the peptides to match
-     * @return the annotated protein sequence where [ denotes the start of a
-     * peptide and ] the end of a peptide
-     * @throws IllegalArgumentException if a peptide did not belong to the
-     * protein
+     * @return the annotated protein sequence where [ denotes the start of a peptide and ] the end of a peptide
+     * @throws IllegalArgumentException if a peptide did not belong to the protein
      */
     private static String map(String protein, List<String> peptides) throws IllegalArgumentException {
         return map(protein, '[', ']', peptides);
     }
 
     /**
-     * maps a group of peptides to a protein string denoted by the passed
-     * delimiters
+     * Maps a group of peptides to a protein string denoted by the passed
+     * delimiters.
      *
-     * @param protein the protein to match
-     * @param opener the starting delimiter for a peptide
-     * @param closer the closing delimiter for a peptide
+     * @param protein  the protein to match
+     * @param opener   the starting delimiter for a peptide
+     * @param closer   the closing delimiter for a peptide
      * @param peptides the peptides to match
-     * @return the annotated protein sequence where peptides are denoted by the
-     * passed delimiters
-     * @throws IllegalArgumentException if a peptide did not belong to the
-     * protein
+     * @return the annotated protein sequence where peptides are denoted by the passed delimiters
+     * @throws IllegalArgumentException if a peptide did not belong to the protein
      */
     private static String map(String protein, Character opener, Character closer, List<String> peptides) throws IllegalArgumentException {
         StringBuilder builder = new StringBuilder(protein);
@@ -80,7 +75,7 @@ public class ProteinCoverage {
                 int indexOfPeptide = holder.indexOf(aPeptide);
                 String subsequenceHolder = holder.subSequence(0, indexOfPeptide).toString();
                 String subsequenceBuilder = builder.subSequence(0, indexOfPeptide).toString().replace("[", "").replace("]", "");
-                while(!subsequenceBuilder.equals(subsequenceHolder)){
+                while (!subsequenceBuilder.equals(subsequenceHolder)) {
                     indexOfPeptide++;
                     subsequenceBuilder = builder.subSequence(0, indexOfPeptide).toString().replace("[", "").replace("]", "");
                 }
@@ -97,10 +92,9 @@ public class ProteinCoverage {
     }
 
     /**
-     * merges overlapping peptide annotations in a string
+     * Merges overlapping peptide annotations in a String.
      *
-     * @param mappedString the string to merge, assumes delimiters are [ for
-     * start and ] for end
+     * @param mappedString the string to merge, assumes delimiters are [ for start and ] for end
      * @return the merged string
      */
     private static String mergePeptideAnnotations(String mappedString) {
@@ -108,11 +102,11 @@ public class ProteinCoverage {
     }
 
     /**
-     * merges overlapping peptide annotations in a string
+     * Merges overlapping peptide annotations in a String.
      *
      * @param mappedString the string to merge
-     * @param opener the opening delimiter for a peptide
-     * @param closer the closing delimiter for a peptide
+     * @param opener       the opening delimiter for a peptide
+     * @param closer       the closing delimiter for a peptide
      * @return the merged string
      */
     private static String mergePeptideAnnotations(String mappedString, Character opener, Character closer) {
@@ -138,79 +132,83 @@ public class ProteinCoverage {
         //if openframe > 0 something went wrong
         return builder.toString();
     }
-    
+
     /**
-     * find Amino acid preceding the peptide in the protein sequence.
+     * Find Amino acid preceding the peptide in the protein sequence.
+     *
      * @param protein
      * @param peptide
      * @return amino acid if peptide exists in given protein sequence.
      */
-    public static String findAminoAcidPrecedingPeptide(String protein, String peptide){
+    public static String findAminoAcidPrecedingPeptide(String protein, String peptide) {
         protein = protein.toUpperCase(Locale.US);
         peptide = peptide.toUpperCase(Locale.US);
-        if( protein.contains(peptide)){
+        if (protein.contains(peptide)) {
             // if peptide is N-terminal returns "-"
-            if(protein.indexOf(peptide)>0){
-                return String.valueOf(protein.charAt(protein.indexOf(peptide)-1));
-            }else{
+            if (protein.indexOf(peptide) > 0) {
+                return String.valueOf(protein.charAt(protein.indexOf(peptide) - 1));
+            } else {
                 return "-";
             }
-        }else{
-            return null;
-        }  
-    }
-    
-    /**
-     * find Amino acid following the peptide in the protein sequence.
-     * @param protein
-     * @param peptide
-     * @return amino acid if peptide exists in given protein sequence.
-     */
-    public static String findAminoAcidFollowingPeptide(String protein, String peptide){
-        protein = protein.toUpperCase(Locale.US);
-        peptide = peptide.toUpperCase(Locale.US);
-        if( protein.contains(peptide)){
-            // if peptide is C-terminal returns "-"
-            if(protein.indexOf(peptide) + peptide.length() < protein.length()){
-                return String.valueOf(protein.charAt(protein.indexOf(peptide)+ peptide.length()));
-            }else{
-                return "-";
-            }
-        }else{
-            return null;
-        }  
-    }
-    
-    /**
-     * find start position of the peptide in the protein sequence
-     * @param protein
-     * @param peptide
-     * @return position
-     */
-    public static String findStartPositionOfPeptide(String protein, String peptide){
-        protein = protein.toUpperCase(Locale.US);
-        peptide = peptide.toUpperCase(Locale.US);
-        // N-terminus of the protein position is 1
-        if( protein.contains(peptide)){
-            return String.valueOf(protein.indexOf(peptide) + 1) ;
-        }else{
+        } else {
             return null;
         }
     }
-    
+
     /**
-     * find end position of the peptide in the protein sequence
+     * Find Amino acid following the peptide in the protein sequence.
+     *
      * @param protein
      * @param peptide
+     * @return amino acid if peptide exists in given protein sequence.
+     */
+    public static String findAminoAcidFollowingPeptide(String protein, String peptide) {
+        protein = protein.toUpperCase(Locale.US);
+        peptide = peptide.toUpperCase(Locale.US);
+        if (protein.contains(peptide)) {
+            // if peptide is C-terminal returns "-"
+            if (protein.indexOf(peptide) + peptide.length() < protein.length()) {
+                return String.valueOf(protein.charAt(protein.indexOf(peptide) + peptide.length()));
+            } else {
+                return "-";
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Find start position of the peptide in the protein sequence.
+     *
+     * @param protein the protein sequence
+     * @param peptide the peptide sequence
      * @return position
      */
-    public static String findEndPositionOfPeptide(String protein, String peptide){
+    public static String findStartPositionOfPeptide(String protein, String peptide) {
         protein = protein.toUpperCase(Locale.US);
         peptide = peptide.toUpperCase(Locale.US);
         // N-terminus of the protein position is 1
-        if( protein.contains(peptide)){
-            return String.valueOf(protein.indexOf(peptide) + + peptide.length()) ;
-        }else{
+        if (protein.contains(peptide)) {
+            return String.valueOf(protein.indexOf(peptide) + 1);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Find end position of the peptide in the protein sequence.
+     *
+     * @param protein the protein sequence
+     * @param peptide the peptide sequence
+     * @return position
+     */
+    public static String findEndPositionOfPeptide(String protein, String peptide) {
+        protein = protein.toUpperCase(Locale.US);
+        peptide = peptide.toUpperCase(Locale.US);
+        // N-terminus of the protein position is 1
+        if (protein.contains(peptide)) {
+            return String.valueOf(protein.indexOf(peptide) + peptide.length());
+        } else {
             return null;
         }
     }

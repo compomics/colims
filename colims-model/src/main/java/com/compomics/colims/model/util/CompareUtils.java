@@ -32,7 +32,7 @@ public class CompareUtils {
         if (one == null) {
             return two == null;
         } else if (two == null) {
-            return one == null;
+            return false;
         } else {
             return MathUtils.equals(one, two, DOUBLE_EPSILON);
         }

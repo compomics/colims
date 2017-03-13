@@ -5,26 +5,32 @@ import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.view.MaxQuantDataImportPanel;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
+import com.compomics.colims.core.util.PathUtils;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.XmlFileFilter;
 import com.google.common.eventbus.EventBus;
-import java.io.File;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
-
-import javax.swing.*;
-import java.nio.file.Path;
-import java.util.*;
-
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
 
 /**
  * The MaxQuant data import view controller.
@@ -40,9 +46,15 @@ public class MaxQuantDataImportController implements Controllable {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantDataImportController.class);
 
+    /**
+     * The experiments location as provided in the client properties file.
+     */
+    @Value("${experiments.path}")
+    private String experimentsPath = "";
     //model
-    private File parameterFile;
-    private Path combinedFolderDirectory;
+    private Path mqparFile;
+    private Path combinedDirectory;
+    private Path fullCombinedDirectory;
     private FastaDb primaryFastaDb;
     private FastaDb contaminantsFastaDb;
     private boolean includeContaminants;
@@ -61,11 +73,11 @@ public class MaxQuantDataImportController implements Controllable {
     //services
     @Autowired
     private EventBus eventBus;
-
     @Autowired
     private FastaDbService fastaDbService;
 
     @Override
+    @PostConstruct
     public void init() {
         //get view from parent controller
         maxQuantDataImportPanel = analyticalRunsAdditionController.getAnalyticalRunsAdditionDialog().getMaxQuantDataImportPanel();
@@ -78,39 +90,59 @@ public class MaxQuantDataImportController implements Controllable {
         additionalFastaDbBindingList = ObservableCollections.observableList(new ArrayList<>());
         JListBinding additionalFastaDbListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, additionalFastaDbBindingList, maxQuantDataImportPanel.getAdditionalFastaFileList());
         bindingGroup.addBinding(additionalFastaDbListBinding);
-        
+
         bindingGroup.bind();
-        
-        //init parameter file directory selection
+
+        Path experimentsDirectory = Paths.get(experimentsPath);
+        if (!Files.exists(experimentsDirectory)) {
+            throw new IllegalArgumentException("The experiments directory defined in the client properties file " + experimentsPath+ " doesn't exist.");
+        }
+
+        //init the mqpar file directory selection
         //disable select multiple files
-        maxQuantDataImportPanel.getParameterDirectoryChooser().setMultiSelectionEnabled(false);
+        maxQuantDataImportPanel.getMqParDirectoryChooser().setMultiSelectionEnabled(false);
         //set select directories only
-        maxQuantDataImportPanel.getParameterDirectoryChooser().setFileFilter(new XmlFileFilter());
+        maxQuantDataImportPanel.getMqParDirectoryChooser().setFileFilter(new XmlFileFilter());
+
+        maxQuantDataImportPanel.getMqParDirectoryChooser().setCurrentDirectory(experimentsDirectory.toFile());
 
         maxQuantDataImportPanel.getSelectParameterDirectoryButton().addActionListener(e -> {
             //in response to the button click, show open dialog
-            int returnVal = maxQuantDataImportPanel.getParameterDirectoryChooser().showOpenDialog(maxQuantDataImportPanel);
+            int returnVal = maxQuantDataImportPanel.getMqParDirectoryChooser().showOpenDialog(maxQuantDataImportPanel);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                parameterFile = maxQuantDataImportPanel.getParameterDirectoryChooser().getSelectedFile();
-
-                //show MaxQuant directory name in label
-                maxQuantDataImportPanel.getParameterDirectoryTextField().setText(parameterFile.getAbsolutePath());
+                try {
+                    Path fullMqparPath = maxQuantDataImportPanel.getMqParDirectoryChooser().getSelectedFile().toPath();
+                    mqparFile = PathUtils.getRelativeChildPath(experimentsDirectory, fullMqparPath);
+                    //show MaxQuant directory name in label
+                    maxQuantDataImportPanel.getParameterDirectoryTextField().setText(mqparFile.getFileName().toString());
+                } catch (IllegalArgumentException ex) {
+                    MessageEvent messageEvent = new MessageEvent("Invalid mqpar file location", "The mqpar file location doesn't contain the experiments directory as defined in the properties file.", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
             }
         });
 
-        //init Combined Folder directory file selection
+        //init the combined directory file selection
         //disable select multiple files
         maxQuantDataImportPanel.getCombinedFolderChooser().setMultiSelectionEnabled(false);
         //set select directories only
         maxQuantDataImportPanel.getCombinedFolderChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
+        maxQuantDataImportPanel.getCombinedFolderChooser().setCurrentDirectory(experimentsDirectory.toFile());
+
         maxQuantDataImportPanel.getSelectCombinedFolderButton().addActionListener(e -> {
             //in response to the button click, show open dialog
             int returnVal = maxQuantDataImportPanel.getCombinedFolderChooser().showOpenDialog(maxQuantDataImportPanel);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                combinedFolderDirectory = maxQuantDataImportPanel.getCombinedFolderChooser().getSelectedFile().toPath();
-                // show combined folder directory name in label
-                maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(combinedFolderDirectory.toString());
+                try {
+                    fullCombinedDirectory = maxQuantDataImportPanel.getCombinedFolderChooser().getSelectedFile().toPath();
+                    combinedDirectory = PathUtils.getRelativeChildPath(experimentsDirectory, fullCombinedDirectory);
+                    //show combined directory name in label
+                    maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(combinedDirectory.toString());
+                } catch (IllegalArgumentException ex) {
+                    MessageEvent messageEvent = new MessageEvent("Invalid combined directory location", "The combined directory location doesn't contain the experiments directory as defined in the properties file.", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
             }
         });
 
@@ -134,16 +166,16 @@ public class MaxQuantDataImportController implements Controllable {
             }
         });
 
-        maxQuantDataImportPanel.getRemoveAdditionalFastaDbButton().addActionListener(e ->{
-            if(maxQuantDataImportPanel.getAdditionalFastaFileList().getSelectedIndex() != -1){
+        maxQuantDataImportPanel.getRemoveAdditionalFastaDbButton().addActionListener(e -> {
+            if (maxQuantDataImportPanel.getAdditionalFastaFileList().getSelectedIndex() != -1) {
                 additionalFastaDbBindingList.remove(maxQuantDataImportPanel.getAdditionalFastaFileList().getSelectedIndex());
                 maxQuantDataImportPanel.getAdditionalFastaFileList().getSelectionModel().clearSelection();
-            }else {
+            } else {
                 eventBus.post(new MessageEvent("Additional Fasta db selection", "Please select an additional fasta db to remove.", JOptionPane.INFORMATION_MESSAGE));
             }
-            
+
         });
-        
+
         maxQuantDataImportPanel.getSelectContaminantsFastaDbButton().addActionListener(e -> {
             fastaDbManagementController.showView();
             contaminantsFastaDb = fastaDbManagementController.getSelectedFastaDb();
@@ -154,11 +186,11 @@ public class MaxQuantDataImportController implements Controllable {
                 maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
             }
         });
-        
+
         maxQuantDataImportPanel.getContaminantsCheckBox().addActionListener(e -> {
             includeContaminants = true;
         });
-        
+
         maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().addActionListener(e -> {
             includeUnidentifiedSpectra = true;
         });
@@ -184,14 +216,14 @@ public class MaxQuantDataImportController implements Controllable {
         maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().setSelected(false);
     }
 
-    public void showEditView(MaxQuantImport maxQuantImport){
+    public void showEditView(MaxQuantImport maxQuantImport) {
         showView();
         maxQuantDataImportPanel.getParameterDirectoryTextField().setText(maxQuantImport.getMqParFile().toString());
         maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(maxQuantImport.getCombinedDirectory().toString());
-        if(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0) != null){
+        if (maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0) != null) {
             primaryFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
             maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText(primaryFastaDb.getFilePath());
-        }else{
+        } else {
             primaryFastaDb = null;
             maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText("");
         }
@@ -199,10 +231,10 @@ public class MaxQuantDataImportController implements Controllable {
             FastaDb additionalFastaDb = fastaDbService.findById(additionalFastaDbId);
             additionalFastaDbBindingList.add(additionalFastaDb);
         });
-        if(maxQuantImport.getFastaDbIds().get(FastaDbType.CONTAMINANTS).get(0) != null){
+        if (maxQuantImport.getFastaDbIds().get(FastaDbType.CONTAMINANTS).get(0) != null) {
             contaminantsFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.CONTAMINANTS).get(0));
             maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText(contaminantsFastaDb.getFilePath());
-        }else{
+        } else {
             contaminantsFastaDb = null;
             maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
         }
@@ -218,29 +250,29 @@ public class MaxQuantDataImportController implements Controllable {
     public List<String> validate() {
         List<String> validationMessages = new ArrayList<>();
 
-        if (parameterFile == null) {
+        if (mqparFile == null) {
             validationMessages.add("Please select a parameter file.");
         }
-        if (combinedFolderDirectory == null) {
+        if (combinedDirectory == null) {
             validationMessages.add("Please select Combined Folder directory.");
         }
         if (primaryFastaDb == null) {
             validationMessages.add("Please select a primary FASTA file.");
-        }else if(primaryFastaDb.getHeaderParseRule() == null){
-             validationMessages.add("Please add header parse rule to primary FASTA file!");
+        } else if (primaryFastaDb.getHeaderParseRule() == null) {
+            validationMessages.add("Please add header parse rule to primary FASTA file!");
         }
-        
+
         if (contaminantsFastaDb == null) {
             validationMessages.add("Please select a contaminants FASTA file.");
-        }else if(contaminantsFastaDb.getHeaderParseRule()== null){
+        } else if (contaminantsFastaDb.getHeaderParseRule() == null) {
             validationMessages.add("Please add header parse rule to contaminants FASTA file!");
         }
         additionalFastaDbBindingList.stream().forEach(additionalFastaDb -> {
-            if(additionalFastaDb != null && additionalFastaDb.getHeaderParseRule()== null){
+            if (additionalFastaDb != null && additionalFastaDb.getHeaderParseRule() == null) {
                 validationMessages.add("Please add header parse rule to additional FASTA file!");
-            } 
-        });       
-          
+            }
+        });
+
         return validationMessages;
     }
 
@@ -252,56 +284,45 @@ public class MaxQuantDataImportController implements Controllable {
     public MaxQuantImport getDataImport() {
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Collections.singletonList(primaryFastaDb.getId())));
-        fastaDbIds.put(FastaDbType.CONTAMINANTS,new ArrayList<>(Collections.singletonList(contaminantsFastaDb.getId())));
+        fastaDbIds.put(FastaDbType.CONTAMINANTS, new ArrayList<>(Collections.singletonList(contaminantsFastaDb.getId())));
         List<Long> additionalFastaDbIDs = new ArrayList<>();
         additionalFastaDbBindingList.stream().forEach(additionalFastaDb -> {
             if (additionalFastaDb != null) {
-               additionalFastaDbIDs.add(additionalFastaDb.getId());
+                additionalFastaDbIDs.add(additionalFastaDb.getId());
             }
         });
         fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDbIDs);
-        
-        return new MaxQuantImport(parameterFile.toPath(), combinedFolderDirectory, fastaDbIds, includeContaminants, 
+
+        return new MaxQuantImport(mqparFile, combinedDirectory, fullCombinedDirectory, fastaDbIds, includeContaminants,
                 includeUnidentifiedSpectra, selectedProteinGroupHeaders, analyticalRunsAdditionController.getSelectedLabel());
     }
-    
-    public void setParameterFile(File parameterFile) {
-        this.parameterFile = parameterFile;
-    }
-
-    public void setCombinedFolderDirectory(Path combinedFolderDirectory) {
-        this.combinedFolderDirectory = combinedFolderDirectory;
-    }
-
-    public void setContaminantsFastaDb(FastaDb contaminantsFastaDb) {
-        this.contaminantsFastaDb = contaminantsFastaDb;
-    }
-
 
 }
 
 class AdditionalFastaDbListCellRenderer extends DefaultListCellRenderer {
 
     private static final long serialVersionUID = -1577134281957137748L;
+
     /**
      * Add only FASTA DB path to the list.
+     *
      * @param list
      * @param value
      * @param index
      * @param isSelected
      * @param cellHasFocus
-     * @return 
+     * @return
      */
     @Override
     public java.awt.Component getListCellRendererComponent(final JList<?> list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
         FastaDb fastaDb = (FastaDb) list.getModel().getElementAt(index);
-       
+
 
         String labelText = "";
 
-        if(fastaDb != null){
+        if (fastaDb != null) {
             labelText = fastaDb.getFilePath();
         }
 

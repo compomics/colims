@@ -78,7 +78,7 @@ public class ProjectManagementController implements Controllable {
     private SampleEditController sampleEditController;
     @Autowired
     @Lazy
-    private AnalyticalRunsSearchSettingsController analyticalRunsSearchSettingsController;
+    private SampleRunsController analyticalRunsSearchSettingsController;
     @Autowired
     @Lazy
     private AnalyticalRunsAdditionController analyticalRunsAdditionController;
@@ -687,8 +687,8 @@ public class ProjectManagementController implements Controllable {
                     eventBus.post(new MessageEvent("Analytical run addition", "Please select one and only one sample to add the run to.", JOptionPane.INFORMATION_MESSAGE));
                 }
             } else if (menuItemLabel.equals(projectManagementPanel.getMzTabExportMenuItem().getText())) {
-                List<String> validationMessages = validateMzTabExportSampleSelection();
-                if (validateMzTabExportSampleSelection().isEmpty()) {
+                List<String> validationMessages = validateExportSampleSelection();
+                if (validationMessages.isEmpty()) {
                     mzTabExportController.getMzTabExport().setSamples(selectedSamples);
                     mzTabExportController.showView();
                 } else {
@@ -705,11 +705,11 @@ public class ProjectManagementController implements Controllable {
         }
 
         /**
-         * Validate the samples selected for MzTab export.
+         * Validate the samples selected for export purposes.
          *
          * @return the list of validation messages
          */
-        private List<String> validateMzTabExportSampleSelection() {
+        private List<String> validateExportSampleSelection() {
             List<String> validationMessages = new ArrayList<>();
 
             EventList<Sample> selectedSamples = samplesSelectionModel.getSelected();

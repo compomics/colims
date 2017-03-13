@@ -1,7 +1,10 @@
 package com.compomics.colims.distributed.io.maxquant;
 
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantHeadersTest;
-import com.compomics.colims.distributed.io.maxquant.parsers.*;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantEvidenceParserTest;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantProteinGroupsParserTest;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSearchSettingsParserTest;
+import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSpectraParserTest;
 import com.compomics.colims.model.FastaDb;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -22,8 +25,7 @@ import java.nio.file.Path;
         MaxQuantSpectraParserTest.class,
         TabularFileIteratorTest.class,
         FixedTabularFileIteratorTest.class,
-        MaxQuantHeadersTest.class,
-        FastaDbParserTest.class
+        MaxQuantHeadersTest.class
 })
 public class MaxQuantTestSuite {
 
@@ -40,7 +42,9 @@ public class MaxQuantTestSuite {
     public static Path mqparFile;
     public static Path peptidesFile;
     public static FastaDb testFastaDb;
+    public static Path testFastaDbPath;
     public static FastaDb contaminantsFastaDb;
+    public static Path contaminantsFastaDbPath;
 
     static {
         try {
@@ -54,17 +58,19 @@ public class MaxQuantTestSuite {
             evidenceFile = maxQuantTextDirectory.resolve("evidence.txt");
             peptidesFile = maxQuantTextDirectory.resolve("peptides.txt");
             mqparFile = maxQuantIntegrationProjectDirectory.resolve("mqpar.xml");
+            testFastaDbPath = maxQuantIntegrationProjectDirectory.resolve("SP_human.fasta");
             testFastaDb = new FastaDb();
             testFastaDb.setName("test fasta");
             testFastaDb.setFileName("SP_human.fasta");
-            testFastaDb.setFilePath(maxQuantIntegrationProjectDirectory.resolve(testFastaDb.getFileName()).toString());
+            testFastaDb.setFilePath("SP_human.fasta");
             testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
             testFastaDb.setVersion("N/A");
             testFastaDb.setDatabaseName("test db");
+            contaminantsFastaDbPath = maxQuantIntegrationProjectDirectory.resolve("contaminants.fasta");
             contaminantsFastaDb = new FastaDb();
             contaminantsFastaDb.setName("test contaminants fasta");
             contaminantsFastaDb.setFileName("contaminants.fasta");
-            contaminantsFastaDb.setFilePath(maxQuantIntegrationProjectDirectory.resolve(contaminantsFastaDb.getFileName()).toString());
+            contaminantsFastaDb.setFilePath("contaminants.fasta");
             contaminantsFastaDb.setVersion("N/A");
             contaminantsFastaDb.setDatabaseName("N/A");
         } catch (IOException e) {

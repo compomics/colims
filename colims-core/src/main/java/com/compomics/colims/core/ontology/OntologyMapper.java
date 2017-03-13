@@ -114,11 +114,17 @@ public class OntologyMapper {
         while (mappingResourceTypesIterator.hasNext()) {
             Map.Entry<String, JsonNode> mappingResourceType = mappingResourceTypesIterator.next();
             String mappingResourceTypeName = mappingResourceType.getKey();
+            Class<? extends OntologyTerm> valueType = OntologyTerm.class;
+            //for modifications, map to ModificationOntologyTerm instance
+            //TODO make this more generic for other possible subtypes of OntologyTerm
+            if(mappingResourceTypeName.equals("modifications")){
+                valueType = ModificationOntologyTerm.class;
+            }
             Iterator<Map.Entry<String, JsonNode>> mappingsIterator = mappingResourceType.getValue().fields();
             Map<String, OntologyTerm> terms = new HashMap<>();
             while (mappingsIterator.hasNext()) {
                 Map.Entry<String, JsonNode> mapping = mappingsIterator.next();
-                OntologyTerm ontologyTerm = objectReader.treeToValue(mapping.getValue(), OntologyTerm.class);
+                OntologyTerm ontologyTerm = objectReader.treeToValue(mapping.getValue(), valueType);
                 terms.put(mapping.getKey(), ontologyTerm);
             }
             mappings.put(mappingResourceTypeName, terms);

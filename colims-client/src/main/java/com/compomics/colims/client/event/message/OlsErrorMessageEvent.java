@@ -28,7 +28,7 @@ public class OlsErrorMessageEvent extends MessageEvent {
          *
          * @param message the error message
          */
-        private OlsError(String message) {
+        OlsError(String message) {
             this.message = message;
         }
 

@@ -82,12 +82,13 @@ public class MaxQuantParser {
      * Parse the MaxQuant output folder and map the content of the different
      * files to Colims entities.
      *
-     * @param maxQuantImport the {@link MaxQuantImport} instance
+     * @param maxQuantImport  the {@link MaxQuantImport} instance
+     * @param fastasDirectory the FASTA DBs directory
      * @throws IOException          in case of an input/output related problem
      * @throws UnparseableException in case of a problem occured while parsing
      * @throws JDOMException        in case of an XML parsing related problem
      */
-    public void parse(MaxQuantImport maxQuantImport) throws IOException, UnparseableException, JDOMException {
+    public void parse(MaxQuantImport maxQuantImport, Path fastasDirectory) throws IOException, UnparseableException, JDOMException {
         EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
         //get the FASTA db entities from the database
         maxQuantImport.getFastaDbIds().forEach((FastaDbType fastaDbType, List<Long> fastaDbIds) -> {
@@ -113,19 +114,27 @@ public class MaxQuantParser {
 
         //parse the protein groups file
         LOGGER.debug("parsing proteinGroups.txt");
-        List<FastaDb> fastaDbList = new ArrayList<>();
-        fastaDbs.forEach((k, v) -> {
-            v.forEach(fastaDb -> {
-                fastaDbList.add(fastaDb);
+        //we want the FASTA DB files to be parsed in the order the FastaDbType enum values are declared
+        //so use a LinkedHashMap to preserve the natural FastaDbType enum order
+        //(iterating over an EnumMap maintains that order as well)
+        LinkedHashMap<FastaDb, Path> fastaDbMap = new LinkedHashMap<>();
+        for (Map.Entry<FastaDbType, List<FastaDb>> entry : fastaDbs.entrySet()) {
+            entry.getValue().forEach(fastaDb -> {
+                //make the path absolute and check if it exists
+                Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDb.getFilePath());
+                if (!Files.exists(absoluteFastaDbPath)) {
+                    throw new IllegalArgumentException("The FASTA DB file " + absoluteFastaDbPath + " doesn't exist.");
+                }
+                fastaDbMap.put(fastaDb, absoluteFastaDbPath);
             });
-        });
+        }
 
         //look for the proteinGroups.txt file
         Path proteinGroupsFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value());
         if (!Files.exists(proteinGroupsFile)) {
             throw new FileNotFoundException("The proteinGroups.txt " + proteinGroupsFile.toString() + " was not found.");
         }
-        maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbList, maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupHeaders());
+        maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbMap, maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupHeaders());
 
         LOGGER.debug("parsing msms.txt");
         maxQuantSpectraParser.parse(maxQuantImport.getCombinedDirectory(), maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
@@ -139,6 +148,10 @@ public class MaxQuantParser {
 
         //add the identified spectra for each run and set the entity relations
         analyticalRuns.forEach((runName, run) -> {
+            
+            //set analytical run for search settings
+            run.getSearchAndValidationSettings().setAnalyticalRun(run);
+            
             //get the spectrum apl keys for each run
             Set<String> aplKeys = maxQuantSpectraParser.getMaxQuantSpectra().getRunToSpectrums().get(runName);
             aplKeys.forEach(aplKey -> {

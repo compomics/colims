@@ -33,6 +33,11 @@ public class OntologyMapperTest {
 
         Assert.assertFalse(maxQuantMapping.getModifications().isEmpty());
         Assert.assertFalse(maxQuantMapping.getQuantificationReagents().isEmpty());
+
+        OntologyTerm modificationTerm = maxQuantMapping.getModifications().get("Carbamidomethyl (C)");
+        Assert.assertTrue(modificationTerm instanceof ModificationOntologyTerm);
+        Assert.assertEquals("C", ((ModificationOntologyTerm) modificationTerm).getAffectedAminoAcids());
+        Assert.assertEquals("Carbamidomethylation of C", ((ModificationOntologyTerm) modificationTerm).getUtilitiesName());
     }
 
 }

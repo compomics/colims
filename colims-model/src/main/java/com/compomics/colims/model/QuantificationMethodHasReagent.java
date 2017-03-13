@@ -79,10 +79,7 @@ public class QuantificationMethodHasReagent extends DatabaseEntity{
         if (!Objects.equals(this.quantificationMethod, other.quantificationMethod)) {
             return false;
         }
-        if (!Objects.equals(this.quantificationReagent, other.quantificationReagent)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.quantificationReagent, other.quantificationReagent);
     }
     
     

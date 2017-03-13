@@ -4,6 +4,7 @@
  */
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.AnalyticalRunBinaryFile;
 import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.colims.model.QuantificationMethodHasReagent;
 import com.compomics.colims.model.comparator.QuantificationMethodHasReagentsNameComparator;
@@ -13,6 +14,8 @@ import com.compomics.colims.repository.QuantificationMethodRepository;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
@@ -58,8 +61,8 @@ public class QuantificationMethodHibernateRepository extends GenericHibernateRep
             QuantificationMethodHasReagentsNameComparator reagentsNameComparator = new QuantificationMethodHasReagentsNameComparator();
             //create a temporary list to avoid changes in the database
             List<QuantificationMethodHasReagent> sortedList = quantificationMethod.getQuantificationMethodHasReagents();
-            Collections.sort(exampleInstance.getQuantificationMethodHasReagents(), reagentsNameComparator);
-            Collections.sort(sortedList, reagentsNameComparator);
+            (exampleInstance.getQuantificationMethodHasReagents()).sort(reagentsNameComparator);
+            sortedList.sort(reagentsNameComparator);
 
             if (!exampleInstance.getQuantificationMethodHasReagents().equals(sortedList)) {
                 iterator.remove();
@@ -67,5 +70,14 @@ public class QuantificationMethodHibernateRepository extends GenericHibernateRep
         }
         
         return quantificationMethods;
+    }
+
+    @Override
+    public List<QuantificationMethodHasReagent> fetchQuantificationMethodHasReagents(Long quantificationMethodId) {
+        Criteria criteria = getCurrentSession().createCriteria(QuantificationMethodHasReagent.class);
+
+        criteria.add(Restrictions.eq("quantificationMethod.id", quantificationMethodId));
+
+        return criteria.list();
     }
 }

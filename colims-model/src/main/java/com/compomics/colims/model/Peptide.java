@@ -167,8 +167,8 @@ public class Peptide extends DatabaseEntity {
         }
         //sort the lists of PeptideHasModification instances
         PeptideHasModificationLocationComparator locationComparator = new PeptideHasModificationLocationComparator();
-        Collections.sort(peptideHasModifications, locationComparator);
-        Collections.sort(peptide.peptideHasModifications, locationComparator);
+        peptideHasModifications.sort(locationComparator);
+        (peptide.peptideHasModifications).sort(locationComparator);
         //compare on location and modification
         for (int i = 0; i < peptideHasModifications.size(); i++) {
             if (!peptideHasModifications.get(i).hasSameModification(peptide.getPeptideHasModifications().get(i))) {

@@ -5,7 +5,7 @@ import com.compomics.colims.model.Protein;
 //import com.compomics.colims.model.ProteinAccession;
 import com.compomics.colims.repository.ProteinRepository;
 import java.util.HashMap;
-import org.hibernate.LazyInitializationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

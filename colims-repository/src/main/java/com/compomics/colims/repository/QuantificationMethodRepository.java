@@ -5,6 +5,8 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.QuantificationMethod;
+import com.compomics.colims.model.QuantificationMethodHasReagent;
+import java.util.List;
 
 /**
  * This interface provides repository methods for the QuantificationMethodCvParam class.
@@ -13,4 +15,12 @@ import com.compomics.colims.model.QuantificationMethod;
  */
 public interface QuantificationMethodRepository extends GenericRepository<QuantificationMethod, Long> {
 
+    /**
+     * Fetch quantificationMethodHasReagent class by given quantification method. 
+     * Returns empty list if nothing was found.
+     * 
+     * @param quantificationMethodId quantification method id
+     * @return list of QuantificationMethodHasReagent
+     */
+    List<QuantificationMethodHasReagent> fetchQuantificationMethodHasReagents(Long quantificationMethodId);
 }

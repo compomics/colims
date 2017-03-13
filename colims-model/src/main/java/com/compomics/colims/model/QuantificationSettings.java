@@ -23,11 +23,10 @@ public class QuantificationSettings extends AuditableDatabaseEntity {
     @JoinColumn(name = "l_quant_engine_id", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.MERGE)
     private QuantificationEngine quantificationEngine;
-    
     /**
      * The quantification method cv parameters.
      */
-    @JoinColumn(name = "l_quant_method_cv_param", referencedColumnName = "id")
+    @JoinColumn(name = "l_quant_method_id", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.MERGE)
     private QuantificationMethod quantificationMethod;
 

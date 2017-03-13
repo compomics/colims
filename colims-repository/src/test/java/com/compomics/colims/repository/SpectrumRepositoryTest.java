@@ -2,7 +2,6 @@ package com.compomics.colims.repository;
 
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Spectrum;
-import java.util.ArrayList;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,7 +64,7 @@ public class SpectrumRepositoryTest extends TestCase {
         List<Long> analyticalRunIds = new ArrayList<>();
         analyticalRunIds.add(1L);
         Object[] spectraProjections = spectrumRepository.getSpectraProjections(analyticalRunIds);
-        
+
         Assert.assertEquals(6, spectraProjections.length);
         Assert.assertEquals(24.3, (Double) spectraProjections[0], 0.01);
         Assert.assertEquals(26.0, (Double) spectraProjections[1], 0.01);
@@ -73,4 +73,5 @@ public class SpectrumRepositoryTest extends TestCase {
         Assert.assertEquals(1L, ((Integer) spectraProjections[4]).intValue());
         Assert.assertEquals(3L, ((Integer) spectraProjections[5]).intValue());
     }
+
 }

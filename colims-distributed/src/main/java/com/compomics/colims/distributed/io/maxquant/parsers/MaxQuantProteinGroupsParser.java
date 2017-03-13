@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.io.fasta.FastaDbParser;
 import com.compomics.colims.core.service.ProteinService;
 import com.compomics.colims.distributed.io.maxquant.TabularFileIterator;
 import com.compomics.colims.distributed.io.maxquant.headers.ProteinGroupsHeader;
@@ -77,17 +78,17 @@ public class MaxQuantProteinGroupsParser {
      * Parse the proteinGroups.txt file.
      *
      * @param proteinGroupsFile   MaxQuant protein groups file
-     * @param fastaDbs            the list of {@link FastaDb} instances
+     * @param fastaDbMap          the map of {@link FastaDb} instances
      * @param includeContaminants whether or not to include contaminants
      * @param optionalHeaders     the list of optional headers
      * @throws IOException in case of an Input/Output related problem
      */
-    public void parse(Path proteinGroupsFile, List<FastaDb> fastaDbs, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
+    public void parse(Path proteinGroupsFile, LinkedHashMap<FastaDb, Path> fastaDbMap, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
         TabularFileIterator iterator = new TabularFileIterator(proteinGroupsFile, proteinGroupsHeaders.getMandatoryHeaders());
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
-            ProteinGroup proteinGroup = parseProteinGroup(values, fastaDbParser.parseFastas(fastaDbs), includeContaminants, optionalHeaders);
+            ProteinGroup proteinGroup = parseProteinGroup(values, fastaDbParser.parse(fastaDbMap), includeContaminants, optionalHeaders);
             if (proteinGroup.getMainProtein() != null) {
                 proteinGroups.put(Integer.parseInt(values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))), proteinGroup);
             }
@@ -104,6 +105,8 @@ public class MaxQuantProteinGroupsParser {
     private ProteinGroup parseProteinGroup(Map<String, String> proteinGroupsEntry, Map<String, String> fastaEntries, boolean includeContaminants, List<String> optionalHeaders) {
         ProteinGroup proteinGroup = new ProteinGroup();
 
+        //set the protein group posterior error probability, which is derived from
+        //peptide posterior error probabilities
         proteinGroup.setProteinPostErrorProbability(Double.parseDouble(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.SCORE))));
 
         String parsedAccession = proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ACCESSION));
@@ -237,7 +240,7 @@ public class MaxQuantProteinGroupsParser {
         proteinGroupHasProtein.setProtein(protein);
         proteinGroupHasProtein.setProteinGroup(proteinGroup);
 
-        //    proteinGroup.getProteinGroupHasProteins().add(proteinGroupHasProtein);
+        //proteinGroup.getProteinGroupHasProteins().add(proteinGroupHasProtein);
 
         return proteinGroupHasProtein;
     }

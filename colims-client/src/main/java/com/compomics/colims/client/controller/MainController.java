@@ -142,8 +142,6 @@ public class MainController implements Controllable, ActionListener {
             //check for permission exceptions
             if (e instanceof PermissionException) {
                 showPermissionErrorDialog(e.getMessage());
-            } else if (e instanceof ArrayIndexOutOfBoundsException) {
-                showMessageDialog("OLS dialog problem", "Something went wrong in the OLS dialog, please try again.", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 showUnexpectedErrorDialog(e.getMessage());
                 System.exit(0);
@@ -169,7 +167,7 @@ public class MainController implements Controllable, ActionListener {
         org.jdesktop.beansbinding.util.logging.Logger.getLogger(ELProperty.class.getName()).setLevel(Level.SEVERE);
 
         //set close behaviour of main frame
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         //find all projects
         projects.addAll(projectService.findAllWithEagerFetching());

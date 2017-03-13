@@ -118,7 +118,7 @@ INSERT INTO quantification_method_has_reagent (id, l_quantification_method_id, l
 INSERT INTO quantification_engine (id, accession, label, name, type, version) VALUES (1,'MS:1001583','MS','MaxQuant','MAXQUANT','0.0.0');
 
 -- insert quantification settings
-INSERT INTO quantification_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_quant_engine_id, l_quant_method_cv_param) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1);
+INSERT INTO quantification_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_quant_engine_id, l_quant_method_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1);
 
 -- insert test peptides
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1);

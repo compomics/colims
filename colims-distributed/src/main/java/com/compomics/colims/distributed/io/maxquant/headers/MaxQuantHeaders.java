@@ -79,7 +79,7 @@ public abstract class MaxQuantHeaders<T extends Enum<T>> {
      * @return the list of mandatory headers
      */
     public List<MaxQuantHeader> getMandatoryHeaders() {
-        return headersMap.values().stream().filter(maxQuantHeader -> maxQuantHeader.isMandatory()).collect(Collectors.toList());
+        return headersMap.values().stream().filter(MaxQuantHeader::isMandatory).collect(Collectors.toList());
     }
 
     /**

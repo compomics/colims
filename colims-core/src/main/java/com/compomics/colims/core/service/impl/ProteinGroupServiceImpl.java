@@ -76,8 +76,13 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     }
 
     @Override
-    public List<ProteinGroupDTO> getProteinGroupsForRuns(List<Long> analyticalRunIds) {
-         return proteinGroupRepository.getProteinGroupsForRun(analyticalRunIds);
+    public List<ProteinGroupDTO> getProteinGroupDTOsForRuns(List<Long> analyticalRunIds) {
+         return proteinGroupRepository.getProteinGroupDTOsForRuns(analyticalRunIds);
+    }
+
+    @Override
+    public List<ProteinGroup> getProteinGroupsForRuns(List<Long> analyticalRunIds) {
+        return proteinGroupRepository.getProteinGroupsForRuns(analyticalRunIds);
     }
 
     @Override
@@ -86,8 +91,8 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
     }
 
     @Override
-    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinbyProteinGroupId(Long proteinGroupId) {
-        return proteinGroupRepository.getProteinGroupHasProteinbyProteinGroupId(proteinGroupId);
+    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinByProteinGroupId(Long proteinGroupId) {
+        return proteinGroupRepository.getProteinGroupHasProteinsByProteinGroupId(proteinGroupId);
        
     }
 

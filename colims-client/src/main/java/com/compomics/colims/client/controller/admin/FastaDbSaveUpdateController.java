@@ -5,29 +5,30 @@
  */
 package com.compomics.colims.client.controller.admin;
 
+import com.compomics.colims.client.compoment.TableColumnAdjuster;
+import com.compomics.colims.client.controller.AnalyticalRunsAdditionController;
 import com.compomics.colims.client.controller.Controllable;
 import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.admin.CvParamChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.model.table.model.HeaderParseRuleTestTableModel;
 import com.compomics.colims.client.util.GuiUtils;
-import com.compomics.colims.core.util.PropertiesUtil;
-import com.compomics.colims.client.view.admin.FastaDbSaveUpdatePanel;
-import com.compomics.colims.client.view.admin.HeaderParseRuleAdditionDialog;
+import com.compomics.colims.client.view.fasta.FastaDbSaveUpdatePanel;
+import com.compomics.colims.client.view.fasta.HeaderParseRuleAdditionDialog;
+import com.compomics.colims.client.view.fasta.HeaderParseRuleTestDialog;
+import com.compomics.colims.core.distributed.model.enums.PersistType;
+import com.compomics.colims.core.io.fasta.FastaDbParser;
 import com.compomics.colims.core.service.CvParamService;
 import com.compomics.colims.core.service.FastaDbService;
+import com.compomics.colims.core.util.PathUtils;
+import com.compomics.colims.core.util.PropertiesUtil;
+import com.compomics.colims.core.util.ResourceUtils;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.TaxonomyCvParam;
 import com.compomics.colims.model.cv.CvParam;
 import com.compomics.util.io.filefilters.FastaFileFilter;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.logging.Level;
-import javax.annotation.PostConstruct;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
@@ -38,12 +39,24 @@ import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+
+import static com.compomics.colims.client.controller.admin.FastaDbManagementController.DATABASE_NAME_NOT_PRESENT;
+import static com.compomics.colims.client.controller.admin.FastaDbManagementController.UNKNOWN;
+
 /**
- *
  * @author demet
+ * @author niels
  */
 @Component("fastaDbSaveUpdateController")
 @Lazy
@@ -63,30 +76,35 @@ public class FastaDbSaveUpdateController implements Controllable {
      */
     private static final TaxonomyCvParam TAXONOMY_CV_PARAM_NONE = new TaxonomyCvParam("none", "none", "none");
     /**
-     * List to hold map of parse rule and explanation.
+     * The list of {@link HeaderParseRule} instances.
      */
-    private final List<Map<String, String>> headerParseRuleList = new ArrayList<>();
-
-    private final List<String> databaseList = new ArrayList<>();
+    private final List<HeaderParseRule> headerParseRules = new ArrayList<>();
     /**
-     * properties configuration to read properties file.
+     * The list of database names.
+     */
+    private final List<String> databaseNames = new ArrayList<>();
+    /**
+     * The properties configuration to read properties file.
      */
     private PropertiesConfiguration config;
     /**
-     * set to hold database names from properties file
+     * The FASTAs location as provided in the client properties file.
      */
-    private Set<Object> databaseSet = new TreeSet<>();
+    @Value("${fastas.path}")
+    private String fastasPath = "";
     //model
     private BindingGroup bindingGroup;
     private ObservableList<CvParam> taxonomyBindingList;
-    private ObservableList<String> headerParseRuleBindingList;
-    private ObservableList<String> databaseBindingList;
+    private ObservableList<HeaderParseRule> headerParseRuleBindingList;
+    private ObservableList<String> databaseNamesBindingList;
+    private boolean saveUpdate = false;
+    private FastaDb fastaDbToEdit;
+    private HeaderParseRuleTestTableModel headerParseRuleTestTableModel = new HeaderParseRuleTestTableModel();
+    private TableColumnAdjuster tableColumnAdjuster;
     //view
     private FastaDbSaveUpdatePanel fastaDbSaveUpdatePanel;
     private HeaderParseRuleAdditionDialog headerParseRuleAdditionDialog;
-
-    private boolean saveUpdate = false;
-    private FastaDb fastaDbToEdit;
+    private HeaderParseRuleTestDialog headerParseRuleTestDialog;
     //services
     @Autowired
     private EventBus eventBus;
@@ -94,6 +112,10 @@ public class FastaDbSaveUpdateController implements Controllable {
     private CvParamService cvParamService;
     @Autowired
     private FastaDbService fastaDbService;
+    @Autowired
+    private FastaDbParser fastaDbParser;
+    @Autowired
+    private AnalyticalRunsAdditionController analyticalRunsAdditionController;
     @Autowired
     private FastaDbManagementController fastaDbManagementController;
     //child controller
@@ -109,6 +131,7 @@ public class FastaDbSaveUpdateController implements Controllable {
 
         fastaDbSaveUpdatePanel = fastaDbManagementController.getFastaDbManagementDialog().getFastaDbSaveUpdatePanel();
         headerParseRuleAdditionDialog = new HeaderParseRuleAdditionDialog(fastaDbManagementController.getFastaDbManagementDialog(), true);
+        headerParseRuleTestDialog = new HeaderParseRuleTestDialog(fastaDbManagementController.getFastaDbManagementDialog(), true);
         taxonomyBindingList = ObservableCollections.observableList(new ArrayList<>());
         taxonomyBindingList.add(TAXONOMY_CV_PARAM_NONE);
         taxonomyBindingList.addAll(cvParamService.findByCvParamByClass(TaxonomyCvParam.class));
@@ -119,39 +142,50 @@ public class FastaDbSaveUpdateController implements Controllable {
         JComboBoxBinding taxonomyComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, taxonomyBindingList, fastaDbSaveUpdatePanel.getTaxomomyComboBox());
         bindingGroup.addBinding(taxonomyComboBoxBinding);
 
-        headerParseRuleBindingList = ObservableCollections.observableList(new ArrayList<>());
+        headerParseRuleBindingList = ObservableCollections.observableList(headerParseRules);
         try {
             config = PropertiesUtil.parsePropertiesFile("config/header-parse-rule.properties");
         } catch (IOException | ConfigurationException ex) {
-            java.util.logging.Logger.getLogger(FastaDbSaveUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage(), ex);
         }
-        fillHeaderParseRuleComboBox();
+        populateHeaderParseRuleComboBox();
 
         JComboBoxBinding parseRuleComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, headerParseRuleBindingList, fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox());
         bindingGroup.addBinding(parseRuleComboBoxBinding);
 
-        databaseBindingList = ObservableCollections.observableList(new ArrayList<>());
+        databaseNamesBindingList = ObservableCollections.observableList(databaseNames);
         Properties allProperties = new Properties();
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        TreeSet<String> dbNames = new TreeSet<>();
         try {
-            allProperties.load(loader.getResourceAsStream("config/embl-ebi-database.properties"));
-            databaseSet = new TreeSet(allProperties.keySet());
+            allProperties.load(ResourceUtils.getResourceByRelativePath("config/embl-ebi-database.properties").getInputStream());
+            dbNames = new TreeSet(allProperties.keySet());
         } catch (IOException ex) {
-            java.util.logging.Logger.getLogger(FastaDbSaveUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+            MessageEvent messageEvent = new MessageEvent("Database names loading problem", "The database names could not be read from the properties file.", JOptionPane.WARNING_MESSAGE);
+            eventBus.post(messageEvent);
         }
 
-        fillDatabaseComboBox();
+        populateDatabaseComboBox(dbNames);
 
-        JComboBoxBinding databaseComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, databaseBindingList, fastaDbSaveUpdatePanel.getDatabaseComboBox());
+        JComboBoxBinding databaseComboBoxBinding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, databaseNamesBindingList, fastaDbSaveUpdatePanel.getDatabaseComboBox());
         bindingGroup.addBinding(databaseComboBoxBinding);
         bindingGroup.bind();
 
+        Path fastasDirectory = Paths.get(fastasPath);
+        if (!Files.exists(fastasDirectory)) {
+            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasPath.toString() + " doesn't exist.");
+        }
 
         //init FASTA file selection
         //disable select multiple files
         fastaDbSaveUpdatePanel.getFastaFileChooser().setMultiSelectionEnabled(false);
         //set FASTA file filter
         fastaDbSaveUpdatePanel.getFastaFileChooser().setFileFilter(new FastaFileFilter());
+
+        fastaDbSaveUpdatePanel.getFastaFileChooser().setCurrentDirectory(fastasDirectory.toFile());
+
+        //set table model for the headers table
+        headerParseRuleTestDialog.getHeadersTable().setModel(headerParseRuleTestTableModel);
+        tableColumnAdjuster = new TableColumnAdjuster(headerParseRuleTestDialog.getHeadersTable());
 
         //add listeners
         fastaDbSaveUpdatePanel.getBrowseTaxonomyButton().addActionListener(e -> {
@@ -162,32 +196,47 @@ public class FastaDbSaveUpdateController implements Controllable {
             cvParamManagementController.showView();
         });
 
-        fastaDbSaveUpdatePanel.getBrowseHeaderParseRuleButtton().addActionListener(l -> {
+        fastaDbSaveUpdatePanel.getAddHeaderParseRuleButtton().addActionListener(e -> {
             headerParseRuleAdditionDialog.getParseRuleTextField().setText("");
             headerParseRuleAdditionDialog.getDescriptionTextField().setText("");
+
             GuiUtils.centerDialogOnComponent(fastaDbSaveUpdatePanel, headerParseRuleAdditionDialog);
             headerParseRuleAdditionDialog.setVisible(true);
         });
 
-        headerParseRuleAdditionDialog.getSaveParseRuleButton().addActionListener(l -> {
+        fastaDbSaveUpdatePanel.getTestHeaderParseRuleButtton().addActionListener(e -> {
+            updateFastaToEdit();
+            //parse the first ten headers of the FASTA file
+            Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDbToEdit.getFilePath());
+            HeaderParseRule selectedHeaderParseRule = headerParseRules.get(fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getSelectedIndex());
             try {
-                config = PropertiesUtil.addProperty(config,headerParseRuleAdditionDialog.getDescriptionTextField().getText(), headerParseRuleAdditionDialog.getParseRuleTextField().getText());
-            } catch (ConfigurationException | IOException ex) {
-                java.util.logging.Logger.getLogger(FastaDbSaveUpdateController.class.getName()).log(Level.SEVERE, null, ex);
+                Map<String, String> headers = fastaDbParser.testParseRule(absoluteFastaDbPath, selectedHeaderParseRule.getParseRule(), 10);
+                headerParseRuleTestTableModel.setParsedAccessions(headers);
+                headerParseRuleTestTableModel.fireTableDataChanged();
+                tableColumnAdjuster.adjustColumns();
+
+                GuiUtils.centerDialogOnComponent(fastaDbSaveUpdatePanel, headerParseRuleTestDialog);
+                headerParseRuleTestDialog.setVisible(true);
+            } catch (IOException e1) {
+                LOGGER.error(e1.getMessage(), e1);
+                MessageEvent messageEvent = new MessageEvent("Cannot parse FASTA file", "The FASTA file " + absoluteFastaDbPath + " cannot be parsed.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
             }
-            fillHeaderParseRuleComboBox();
-            headerParseRuleAdditionDialog.dispose();
         });
 
         fastaDbSaveUpdatePanel.getBrowseFastaButton().addActionListener(e -> {
             //in response to the button click, show open dialog
             int returnVal = fastaDbSaveUpdatePanel.getFastaFileChooser().showOpenDialog(fastaDbSaveUpdatePanel);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File fastaFile = fastaDbSaveUpdatePanel.getFastaFileChooser().getSelectedFile();
-
-                //show FASTA file name and path in textfields
-                fastaDbSaveUpdatePanel.getFileNameTextField().setText(fastaFile.getName());
-                fastaDbSaveUpdatePanel.getFilePathTextField().setText(fastaFile.getAbsolutePath());
+                try {
+                    Path fullFastaPath = fastaDbSaveUpdatePanel.getFastaFileChooser().getSelectedFile().toPath();
+                    Path relativeFastaPath = PathUtils.getRelativeChildPath(fastasDirectory, fullFastaPath);
+                    fastaDbSaveUpdatePanel.getFileNameTextField().setText(relativeFastaPath.getFileName().toString());
+                    fastaDbSaveUpdatePanel.getFilePathTextField().setText(relativeFastaPath.toString());
+                } catch (IllegalArgumentException ex) {
+                    MessageEvent messageEvent = new MessageEvent("Invalid FASTA location", "The FASTA location doesn't contain the fastas directory as defined in the properties file.", JOptionPane.WARNING_MESSAGE);
+                    eventBus.post(messageEvent);
+                }
             }
         });
 
@@ -225,6 +274,34 @@ public class FastaDbSaveUpdateController implements Controllable {
             saveUpdate = false;
             fastaDbManagementController.showOverviewPanel();
         });
+
+        fastaDbSaveUpdatePanel.getBackButton().addActionListener(e -> {
+            if (!saveUpdate) {
+                fastaDbManagementController.setSelectedFasta(-1);
+            }
+            saveUpdate = false;
+            fastaDbManagementController.showOverviewPanel();
+        });
+
+        headerParseRuleAdditionDialog.getSaveParseRuleButton().addActionListener(e -> {
+            try {
+                config = PropertiesUtil.addProperty(config, headerParseRuleAdditionDialog.getDescriptionTextField().getText(), headerParseRuleAdditionDialog.getParseRuleTextField().getText());
+            } catch (ConfigurationException | IOException ex) {
+                LOGGER.error(ex.getMessage(), ex);
+                MessageEvent messageEvent = new MessageEvent("Header parse rule save problem", "Something went wrong while trying to save the header parse rule to the properties file.", JOptionPane.WARNING_MESSAGE);
+                eventBus.post(messageEvent);
+            }
+            populateHeaderParseRuleComboBox();
+            headerParseRuleAdditionDialog.dispose();
+        });
+
+        headerParseRuleAdditionDialog.getCloseButton().addActionListener(e -> {
+            headerParseRuleAdditionDialog.dispose();
+        });
+
+        headerParseRuleTestDialog.getCloseButton().addActionListener(e -> {
+            headerParseRuleTestDialog.dispose();
+        });
     }
 
     @Override
@@ -256,11 +333,18 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbSaveUpdatePanel.getFileNameTextField().setText(fastaDbToEdit.getFileName());
         fastaDbSaveUpdatePanel.getFilePathTextField().setText(fastaDbToEdit.getFilePath());
         fastaDbSaveUpdatePanel.getVersionTextField().setText(fastaDbToEdit.getVersion());
-        headerParseRuleList.forEach(parseRule -> {
-            if(parseRule.containsKey(fastaDb.getHeaderParseRule())){
-                fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getModel().setSelectedItem(parseRule.get(fastaDb.getHeaderParseRule()));
+
+        boolean enableHeaderParseRules = analyticalRunsAdditionController.getSelectedStorageType().equals(PersistType.MAX_QUANT);
+        if (enableHeaderParseRules) {
+            HeaderParseRule headerParseRule = new HeaderParseRule(fastaDb.getHeaderParseRule());
+            if (headerParseRules.contains(headerParseRule)) {
+                fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getModel().setSelectedItem(headerParseRules.get(headerParseRules.indexOf(headerParseRule)));
             }
-        });
+        }
+        fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().setEnabled(enableHeaderParseRules);
+        fastaDbSaveUpdatePanel.getTestHeaderParseRuleButtton().setEnabled(enableHeaderParseRules);
+        fastaDbSaveUpdatePanel.getAddHeaderParseRuleButtton().setEnabled(enableHeaderParseRules);
+
         fastaDbSaveUpdatePanel.getDatabaseComboBox().getModel().setSelectedItem(fastaDb.getDatabaseName());
     }
 
@@ -291,14 +375,19 @@ public class FastaDbSaveUpdateController implements Controllable {
     }
 
     /**
-     * Update the instance fields of the selected fastaDb in the fastaDb
+     * Update the instance fields of the selected {@link FastaDb} instance in the fastaDb
      * management dialog.
      */
     private void updateFastaToEdit() {
         fastaDbToEdit.setName(fastaDbSaveUpdatePanel.getNameTextField().getText());
         fastaDbToEdit.setFileName(fastaDbSaveUpdatePanel.getFileNameTextField().getText());
         fastaDbToEdit.setFilePath(fastaDbSaveUpdatePanel.getFilePathTextField().getText());
-        fastaDbToEdit.setVersion(fastaDbSaveUpdatePanel.getVersionTextField().getText());
+
+        if (fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(UNKNOWN)) {
+            fastaDbToEdit.setVersion(null);
+        } else {
+            fastaDbToEdit.setVersion(fastaDbSaveUpdatePanel.getVersionTextField().getText());
+        }
 
         int taxonomyIndex = fastaDbSaveUpdatePanel.getTaxomomyComboBox().getSelectedIndex();
         if (taxonomyIndex == 0) {
@@ -308,16 +397,18 @@ public class FastaDbSaveUpdateController implements Controllable {
         }
 
         int parseRuleIndex = fastaDbSaveUpdatePanel.getHeaderParseRuleComboBox().getSelectedIndex();
-        if(parseRuleIndex == 0){
+        if (parseRuleIndex == 0) {
             fastaDbToEdit.setHeaderParseRule(null);
-        }else{
-            headerParseRuleList.get(parseRuleIndex).forEach((k, v) -> fastaDbToEdit.setHeaderParseRule(k));
+        } else {
+            fastaDbToEdit.setHeaderParseRule(headerParseRules.get(parseRuleIndex).getParseRule());
         }
+
         int databaseIndex = fastaDbSaveUpdatePanel.getDatabaseComboBox().getSelectedIndex();
-        if(databaseIndex == 0){
+        if (databaseIndex == 0) {
             fastaDbToEdit.setDatabaseName(null);
-        }else{
-            fastaDbToEdit.setDatabaseName(databaseList.get(databaseIndex));
+
+        } else {
+            fastaDbToEdit.setDatabaseName(databaseNames.get(databaseIndex));
         }
     }
 
@@ -337,55 +428,111 @@ public class FastaDbSaveUpdateController implements Controllable {
     }
 
     /**
-     * Fill Header Parse Rule Combo Box
+     * Populate the Header Parse Rule Combo Box.
      */
-    private void fillHeaderParseRuleComboBox(){
-        headerParseRuleBindingList.clear();
-        headerParseRuleList.clear();
-        headerParseRuleBindingList.add("Please select one parse rule..");
-        Map<String, String> defaultParseRule = new HashMap<>();
-        defaultParseRule.put("none", "none");
-        headerParseRuleList.add(defaultParseRule);
-        // map to hold parse rule and explanation of the rule (key: rule ; value : description).
-        // this map is used to combine all explanations of the same rule.
-        Map<String, String> parseRulesWithExp = new HashMap<>();
+    private void populateHeaderParseRuleComboBox() {
+        headerParseRules.clear();
+        headerParseRules.add(HeaderParseRule.NONE_RULE);
 
+        //map to hold parse rule and explanation of the rule (key: rule ; value : description).
+        //this map is used to combine all explanations of the same rule.
+        Map<String, String> parseRuleWithExplanations = new HashMap<>();
+
+        //get header parse rules from the properties file
         Iterator<String> keys = config.getKeys();
-        while(keys.hasNext()){
+        while (keys.hasNext()) {
             String key = keys.next();
-            if(!parseRulesWithExp.containsKey(config.getString(key))){
-                parseRulesWithExp.put(config.getString(key), key);
-            }else{
-                parseRulesWithExp.put(config.getString(key), parseRulesWithExp.get(config.getString(key)) + ", " + key);
+            if (!parseRuleWithExplanations.containsKey(config.getString(key))) {
+                parseRuleWithExplanations.put(config.getString(key), key);
+            } else {
+                parseRuleWithExplanations.put(config.getString(key), parseRuleWithExplanations.get(config.getString(key)) + ", " + key);
             }
         }
+        //get header parse rules from the database
         List<String> parseRulesFromDb = fastaDbService.getAllParseRules();
-        parseRulesFromDb.stream().filter(p -> !parseRulesWithExp.containsKey(p)).forEach(p -> parseRulesWithExp.put(p, "from Db"));
-        parseRulesWithExp.entrySet().stream().forEach(entry ->{
-            headerParseRuleBindingList.add(entry.getKey() + " [" + entry.getValue() + "]");
-            // parse rule map. (key: parse rule, value: rule with explanation)
-            Map<String, String> parseRule = new HashMap<>();
-            parseRule.put(entry.getKey(), entry.getKey() + " [" + entry.getValue() + "]");
-            headerParseRuleList.add(parseRule);
+        parseRulesFromDb.stream().filter(dbParseRule -> !parseRuleWithExplanations.containsKey(dbParseRule) && dbParseRule != null).forEach(dbParseRule -> parseRuleWithExplanations.put(dbParseRule, "from DB"));
+
+        //add the mapp entries to the headerParseRules list
+        parseRuleWithExplanations.entrySet().stream().forEach(entry -> {
+            HeaderParseRule headerParseRule = new HeaderParseRule(entry.getKey(), entry.getValue());
+            headerParseRules.add(headerParseRule);
         });
 
     }
 
     /**
-     * Fill Database Combo Box
+     * Populate the Database Combo Box.
+     *
+     * @param dbNames the set of database names as read from the properties files
      */
-    private void fillDatabaseComboBox(){
-        databaseBindingList.clear();
-        databaseList.clear();
-        databaseBindingList.add("Please select database..");
-        databaseBindingList.add("Not in the EMBL-EBI list");
-        databaseList.add("none");
-        databaseList.add("N/A");
+    private void populateDatabaseComboBox(TreeSet<String> dbNames) {
+        databaseNamesBindingList.add(DATABASE_NAME_NOT_PRESENT);
 
-        databaseSet.forEach(db -> {
-            databaseList.add((String) db);
-            databaseBindingList.add((String) db);
-        });
+        dbNames.forEach(databaseNames::add);
+    }
+}
 
+/**
+ * Holder class for a parse rule + explanation.
+ */
+class HeaderParseRule {
+
+    public static final HeaderParseRule NONE_RULE = new HeaderParseRule("none", "none");
+
+    /**
+     * The parse rule.
+     */
+    private String parseRule;
+    /**
+     * The explanation.
+     */
+    private String explanation;
+
+    /**
+     * Constructor.
+     *
+     * @param parseRule the parse rule
+     */
+    public HeaderParseRule(String parseRule) {
+        this.parseRule = parseRule;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param parseRule   the parse rule
+     * @param explanation the explanation
+     */
+    public HeaderParseRule(String parseRule, String explanation) {
+        this.parseRule = parseRule;
+        this.explanation = explanation;
+    }
+
+    public String getParseRule() {
+        return parseRule;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        HeaderParseRule that = (HeaderParseRule) o;
+
+        return parseRule != null ? parseRule.equals(that.parseRule) : that.parseRule == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return parseRule != null ? parseRule.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return parseRule + " [" + explanation + "]";
     }
 }
