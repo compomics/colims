@@ -67,47 +67,47 @@ public class UniProtServiceImpl implements UniProtService {
 
             ResponseEntity<String> response = restTemplate.exchange(UNIPROT_BASE_URL + "/" + accession + ".xml", HttpMethod.GET, entity, String.class);
             String responseBody = response.getBody();
+            if (responseBody != null) {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                InputSource is = new InputSource(new StringReader(responseBody));
 
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            InputSource is = new InputSource(new StringReader(responseBody));
+                Document document = builder.parse(is);
+                document.getDocumentElement().normalize();
 
-            Document document = builder.parse(is);
-            document.getDocumentElement().normalize();
-            
-            Element element;
-            
-            NodeList nodeList = document.getElementsByTagName("recommendedName");
-            Node node = nodeList.item(0);
-            if(node != null){
-                element = (Element) node;
-                if (element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")) {
-                    uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
-                }
-            }else{
-                nodeList = document.getElementsByTagName("protein");
-                node = nodeList.item(0);
-                if(node != null){
+                Element element;
+
+                NodeList nodeList = document.getElementsByTagName("recommendedName");
+                Node node = nodeList.item(0);
+                if (node != null) {
                     element = (Element) node;
                     if (element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")) {
                         uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
                     }
+                } else {
+                    nodeList = document.getElementsByTagName("protein");
+                    node = nodeList.item(0);
+                    if (node != null) {
+                        element = (Element) node;
+                        if (element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")) {
+                            uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
+                        }
+                    }
                 }
-            }
-            
 
-            nodeList = document.getElementsByTagName("organism");
-            node = nodeList.item(0);
-            element = (Element) node;
-            if (element.getElementsByTagName("name").item(0).getTextContent() != null && !element.getElementsByTagName("name").item(0).getTextContent().equals("")) {
-                uniProt.put("species", element.getElementsByTagName("name").item(0).getTextContent());
-            }
+                nodeList = document.getElementsByTagName("organism");
+                node = nodeList.item(0);
+                element = (Element) node;
+                if (element.getElementsByTagName("name").item(0).getTextContent() != null && !element.getElementsByTagName("name").item(0).getTextContent().equals("")) {
+                    uniProt.put("species", element.getElementsByTagName("name").item(0).getTextContent());
+                }
 
-            nodeList = document.getElementsByTagName("dbReference");
-            node = nodeList.item(0);
-            element = (Element) node;
-            if (element.getAttribute("id") != null && !element.getAttribute("id").equals("")) {
-                uniProt.put("taxid", element.getAttribute("id"));
+                nodeList = document.getElementsByTagName("dbReference");
+                node = nodeList.item(0);
+                element = (Element) node;
+                if (element.getAttribute("id") != null && !element.getAttribute("id").equals("")) {
+                    uniProt.put("taxid", element.getAttribute("id"));
+                }
             }
 
         } catch (HttpClientErrorException ex) {

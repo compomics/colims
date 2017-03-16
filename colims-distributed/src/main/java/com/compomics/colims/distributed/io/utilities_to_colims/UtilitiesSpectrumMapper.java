@@ -54,7 +54,7 @@ public class UtilitiesSpectrumMapper {
         targetSpectrum.setTitle(sourceSpectrum.getSpectrumTitle());
         if (sourceSpectrum.getScanNumber() != null && !sourceSpectrum.getScanNumber().isEmpty()) {
             targetSpectrum.setScanNumber(Long.valueOf(sourceSpectrum.getScanNumber()));
-        }else{
+        }else if(sourceSpectrum.getSpectrumTitle().contains(SCAN_NUMBER)){
             targetSpectrum.setScanNumber(Long.valueOf(org.apache.commons.lang3.StringUtils.substringAfter(sourceSpectrum.getSpectrumTitle(), SCAN_NUMBER).replace("\"", "").trim()));
         }
         targetSpectrum.setScanTime(sourceSpectrum.getScanStartTime());

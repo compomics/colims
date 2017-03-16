@@ -514,7 +514,7 @@ public class MzTabExporter {
                             .append(COLUMN_DELIMITER).append(fastaFile.getDatabaseName()).append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
                 } else {
                     // set N/A (for description, taxid, species) , database, database version
-                    proteins.append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append(fastaFile.getDatabaseName())
+                    proteins.append("N/A").append(COLUMN_DELIMITER).append("-1").append(COLUMN_DELIMITER).append("N/A").append(COLUMN_DELIMITER).append(fastaFile.getDatabaseName())
                             .append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
                 }
 
