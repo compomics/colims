@@ -14,6 +14,11 @@ public class ProteinGroupHasProtein extends DatabaseEntity {
     private static final long serialVersionUID = -7522445376198555037L;
 
     /**
+     * The MaxQuant contaminants accession prefix.
+     */
+    public static final String CONTAMINANT_PREFIX = "CON__";
+
+    /**
      * Boolean field to keep track of the main protein of the protein group. If there's only one protein, this field
      * will be set to true.
      */

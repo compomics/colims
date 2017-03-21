@@ -332,7 +332,11 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbSaveUpdatePanel.getNameTextField().setText(fastaDbToEdit.getName());
         fastaDbSaveUpdatePanel.getFileNameTextField().setText(fastaDbToEdit.getFileName());
         fastaDbSaveUpdatePanel.getFilePathTextField().setText(fastaDbToEdit.getFilePath());
-        fastaDbSaveUpdatePanel.getVersionTextField().setText(fastaDbToEdit.getVersion());
+        if (fastaDb.getVersion() != null) {
+            fastaDbSaveUpdatePanel.getVersionTextField().setText(fastaDbToEdit.getVersion());
+        } else {
+            fastaDbSaveUpdatePanel.getVersionTextField().setText("");
+        }
 
         boolean enableHeaderParseRules = analyticalRunsAdditionController.getSelectedStorageType().equals(PersistType.MAX_QUANT);
         if (enableHeaderParseRules) {
@@ -383,7 +387,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbToEdit.setFileName(fastaDbSaveUpdatePanel.getFileNameTextField().getText());
         fastaDbToEdit.setFilePath(fastaDbSaveUpdatePanel.getFilePathTextField().getText());
 
-        if (fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(UNKNOWN)) {
+        if (fastaDbSaveUpdatePanel.getVersionTextField().getText().isEmpty() || fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(UNKNOWN)) {
             fastaDbToEdit.setVersion(null);
         } else {
             fastaDbToEdit.setVersion(fastaDbSaveUpdatePanel.getVersionTextField().getText());

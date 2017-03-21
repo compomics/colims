@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.fasta;
 
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.protein.Header;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -70,12 +71,13 @@ public class FastaDbParser {
      * set of protein accessions). The argument is a {@link LinkedHashMap} to be able to return the the parsed
      * accessions in the same order as they were passed.
      *
-     * @param fastaDbs the FASTA files to parse and their associated (absolute) path
+     * @param fastaDbs         the FASTA files to parse and their associated (absolute) path
+     * @param searchEngineType the search engine type
      * @return the map of parsed accessions (key: the {@link FastaDb} instance; value: the set of protein accessions).
      * @throws IOException           thrown in case of an input/output related problem
      * @throws IllegalStateException if the set of parsed accessions of the one of the FASTA DB files is empty
      */
-    public LinkedHashMap<FastaDb, Set<String>> parseAccessions(LinkedHashMap<FastaDb, Path> fastaDbs) throws IOException {
+    public LinkedHashMap<FastaDb, Set<String>> parseAccessions(LinkedHashMap<FastaDb, Path> fastaDbs, SearchEngineType searchEngineType) throws IOException {
         LinkedHashMap<FastaDb, Set<String>> parsedFastas = new LinkedHashMap<>();
         try {
             for (Map.Entry<FastaDb, Path> entry : fastaDbs.entrySet()) {
@@ -84,10 +86,17 @@ public class FastaDbParser {
                 //check if the FASTA has an associated header parse rule and parse accordingly
                 //otherwise, use the Compomics Utilities library
                 Set<String> accessions;
-                if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
-                    accessions = parseAccessionsWithoutRule(fastaPath);
-                } else {
-                    accessions = parseAccessionsWithRule(fastaDb, fastaPath);
+                switch (searchEngineType) {
+                    case MAXQUANT:
+                        if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
+                            accessions = parseAccessionsWithoutRule(fastaPath);
+                        } else {
+                            accessions = parseAccessionsWithRule(fastaDb, fastaPath);
+                        }
+                        break;
+                    case PEPTIDESHAKER:
+
+                        break;
                 }
                 if (accessions.isEmpty()) {
                     throw new IllegalStateException("No accessions could be parsed from FASTA DB file " + entry.getValue().toString() + ". Are you using the correct parse rule?");
@@ -171,7 +180,7 @@ public class FastaDbParser {
                     sequenceBuilder.append(line);
                 }
             }
-            // last line
+            //last line
             if (sequenceBuilder.length() > 0) {
                 Matcher matcher = pattern.matcher(fastaHeader.substring(1).split(SPLITTER)[0]);
                 if (matcher.find()) {
@@ -201,14 +210,18 @@ public class FastaDbParser {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
                     //add limiting check for protein store to avoid growing
                     if (sequenceBuilder.length() > 0) {
-                        Header header = Header.parseFromFASTA(fastaHeader.substring(1).split(SPLITTER)[0]);
-                        proteinSequences.putIfAbsent(header.getAccessionOrRest(), sequenceBuilder.toString().trim());
+                        proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
                         sequenceBuilder.setLength(0);
                     }
                     fastaHeader = line;
                 } else {
                     sequenceBuilder.append(line);
                 }
+            }
+            //last line
+            if (sequenceBuilder.length() > 0) {
+                proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                sequenceBuilder.setLength(0);
             }
         }
     }
@@ -262,8 +275,7 @@ public class FastaDbParser {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
-                    Header header = Header.parseFromFASTA(line);
-                    accessions.add(header.getAccessionOrRest());
+                    accessions.add(line.substring(1).split(SPLITTER)[0]);
                 }
             }
         }
@@ -322,6 +334,7 @@ public class FastaDbParser {
             String line;
             while ((line = bufferedReader.readLine()) != null && headers.size() < numberOfHeaders) {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
+                    //@TODO return the unparsed header or let compomics utilities try to parse it?
                     Header header = Header.parseFromFASTA(line);
                     headers.put(header.getAccessionOrRest(), line);
                 }

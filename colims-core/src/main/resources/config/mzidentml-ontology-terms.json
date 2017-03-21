@@ -370,6 +370,18 @@
       "name": "theoretical mass"
     }
   },
+  "Spectrum": {
+    "spectrum title": {
+      "cvRef": "MS",
+      "accession": "MS:1000796",
+      "name": "spectrum title"
+    },
+    "Retention time": {
+      "cvRef": "MS",
+      "accession": "MS:1000894",
+      "name": "retention time"
+    }
+  },
   "Protein": {
     "Group representative": {
       "cvRef": "MS",

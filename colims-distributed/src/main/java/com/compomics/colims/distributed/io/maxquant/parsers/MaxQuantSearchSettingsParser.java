@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.ontology.ModificationOntologyTerm;
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.OntologyTerm;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
@@ -329,7 +330,6 @@ public class MaxQuantSearchSettingsParser {
             String[] modifications = fixedModifications.split(PARAMETER_DELIMITER);
             for (String modification : modifications) {
                 SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, modification, ModificationType.FIXED);
-
                 searchParametersHasModifications.add(searchParametersHasModification);
             }
         }
@@ -358,11 +358,12 @@ public class MaxQuantSearchSettingsParser {
         SearchModification searchModification;
         //look for the modification in the mapping file
         if (modificationMappings.containsKey(modificationName)) {
-            OntologyTerm modificationTerm = modificationMappings.get(modificationName);
+            ModificationOntologyTerm modificationTerm = (ModificationOntologyTerm) modificationMappings.get(modificationName);
             searchModification = searchModificationMapper.mapByOntologyTerm(
                     modificationTerm.getOntologyPrefix(),
                     modificationTerm.getOboId(),
-                    modificationTerm.getLabel());
+                    modificationTerm.getLabel(),
+                    modificationTerm.getUtilitiesName());
         } else {
             searchModification = searchModificationMapper.mapByName(modificationName.split(MODIFICATION_NAME_ONLY)[0]);
         }
@@ -505,11 +506,11 @@ public class MaxQuantSearchSettingsParser {
      * Match analytical run and related search and validation settings
      */
     private void matchAnalyticalRunSearchSettings(){
-        analyticalRuns.keySet().forEach((run) -> {   
+        analyticalRuns.keySet().forEach((run) -> {
             run.setSearchAndValidationSettings(runSettings.get(run.getName()));
         });
     }
-    
+
     /**
      * Find child element by name, case insensitive. Returns null if nothing was
      * found.

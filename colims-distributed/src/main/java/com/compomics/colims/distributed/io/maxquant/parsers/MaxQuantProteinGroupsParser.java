@@ -22,8 +22,7 @@ import java.util.*;
 @Component("maxQuantProteinGroupParser")
 public class MaxQuantProteinGroupsParser {
 
-    private static final String CONTAMINANT_PREFIX = "CON";
-    private static final String CONTAMINANT_LONG_PREFIX = "CON__";
+    private static final String CONTAMINANT_SHORT_PREFIX = "CON";
     private static final String REVERSE_PREFIX = "REV";
     private static final String ACCESSION_DELIMITER = ";";
 
@@ -36,6 +35,10 @@ public class MaxQuantProteinGroupsParser {
      * these protein groups are not stored in the database.
      */
     private final Set<Integer> omittedProteinGroupIds = new HashSet<>();
+    /**
+     * The map of parsed protein sequences (key: protein accession; value: protein sequence).
+     */
+    private Map<String, String> proteinSequences = new HashMap<>();
     private final ProteinGroupsHeaders proteinGroupsHeaders;
     /**
      * Child beans.
@@ -71,6 +74,7 @@ public class MaxQuantProteinGroupsParser {
     public void clear() {
         proteinGroups.clear();
         omittedProteinGroupIds.clear();
+        proteinSequences.clear();
         proteinService.clear();
     }
 
@@ -88,7 +92,9 @@ public class MaxQuantProteinGroupsParser {
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
-            ProteinGroup proteinGroup = parseProteinGroup(values, fastaDbParser.parse(fastaDbMap), includeContaminants, optionalHeaders);
+            //parse the FASTA files
+            proteinSequences = fastaDbParser.parse(fastaDbMap);
+            ProteinGroup proteinGroup = parseProteinGroup(values, includeContaminants, optionalHeaders);
             if (proteinGroup.getMainProtein() != null) {
                 proteinGroups.put(Integer.parseInt(values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))), proteinGroup);
             }
@@ -99,10 +105,9 @@ public class MaxQuantProteinGroupsParser {
      * Construct a group of proteins.
      *
      * @param proteinGroupsEntry A row of values
-     * @param fastaEntries       the parsed FASTA files entries
      * @return A protein group
      */
-    private ProteinGroup parseProteinGroup(Map<String, String> proteinGroupsEntry, Map<String, String> fastaEntries, boolean includeContaminants, List<String> optionalHeaders) {
+    private ProteinGroup parseProteinGroup(Map<String, String> proteinGroupsEntry, boolean includeContaminants, List<String> optionalHeaders) {
         ProteinGroup proteinGroup = new ProteinGroup();
 
         //set the protein group posterior error probability, which is derived from
@@ -118,7 +123,7 @@ public class MaxQuantProteinGroupsParser {
             String[] accessions = parsedAccession.split(ACCESSION_DELIMITER);
             // if select to omit contaminants and main protein is contaminant exclude that protein group.
             if (!includeContaminants) {
-                if (accessions[0].contains(CONTAMINANT_PREFIX)) {
+                if (accessions[0].contains(CONTAMINANT_SHORT_PREFIX)) {
                     omittedProteinGroup = true;
                     // if main protein is not contaminant, add all accessions except reverse. If reverse, exclude
                 } else {
@@ -146,10 +151,10 @@ public class MaxQuantProteinGroupsParser {
 
                 for (String accession : filteredAccessions) {
                     String accToSearchSeq = accession;
-                    if (accToSearchSeq.contains(CONTAMINANT_PREFIX)) {
-                        accToSearchSeq = org.apache.commons.lang3.StringUtils.substringAfter(accToSearchSeq, CONTAMINANT_LONG_PREFIX);
+                    if (accToSearchSeq.contains(CONTAMINANT_SHORT_PREFIX)) {
+                        accToSearchSeq = org.apache.commons.lang3.StringUtils.substringAfter(accToSearchSeq, ProteinGroupHasProtein.CONTAMINANT_PREFIX);
                     }
-                    String sequence = sequenceInFasta(accToSearchSeq, fastaEntries);
+                    String sequence = getProteinSequence(accToSearchSeq);
                     proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequence, accession, isMainGroup, proteinGroup));
 
                     if (isMainGroup) {
@@ -162,8 +167,8 @@ public class MaxQuantProteinGroupsParser {
 
         } else {
             if (!includeContaminants) {
-                if (!parsedAccession.contains(REVERSE_PREFIX) && !parsedAccession.contains(CONTAMINANT_PREFIX)) {
-                    proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequenceInFasta(parsedAccession, fastaEntries), parsedAccession, true, proteinGroup));
+                if (!parsedAccession.contains(REVERSE_PREFIX) && !parsedAccession.contains(CONTAMINANT_SHORT_PREFIX)) {
+                    proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(getProteinSequence(parsedAccession), parsedAccession, true, proteinGroup));
                 } else {
                     omittedProteinGroupIds.add(Integer.valueOf(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))));
                     omittedProteinGroup = true;
@@ -171,10 +176,10 @@ public class MaxQuantProteinGroupsParser {
             } else {
                 if (!parsedAccession.contains(REVERSE_PREFIX)) {
                     String accToSearchSeq = parsedAccession;
-                    if (accToSearchSeq.contains(CONTAMINANT_PREFIX)) {
-                        accToSearchSeq = org.apache.commons.lang3.StringUtils.substringAfter(accToSearchSeq, CONTAMINANT_LONG_PREFIX);
+                    if (accToSearchSeq.contains(CONTAMINANT_SHORT_PREFIX)) {
+                        accToSearchSeq = org.apache.commons.lang3.StringUtils.substringAfter(accToSearchSeq, ProteinGroupHasProtein.CONTAMINANT_PREFIX);
                     }
-                    proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequenceInFasta(accToSearchSeq, fastaEntries), parsedAccession, true, proteinGroup));
+                    proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(getProteinSequence(accToSearchSeq), parsedAccession, true, proteinGroup));
                 } else {
                     omittedProteinGroupIds.add(Integer.valueOf(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))));
                     omittedProteinGroup = true;
@@ -205,14 +210,13 @@ public class MaxQuantProteinGroupsParser {
     /**
      * Search for a protein sequence in the FASTA entries map by accession.
      *
-     * @param accession    the protein accession
-     * @param parsedFastas the FASTA entries map
+     * @param accession the protein accession
      * @return sequence the found sequence
      * @throws IllegalArgumentException if the accession key is not found
      */
-    private String sequenceInFasta(String accession, Map<String, String> parsedFastas) {
-        if (parsedFastas.containsKey(accession)) {
-            return parsedFastas.get(accession);
+    private String getProteinSequence(String accession) {
+        if (proteinSequences.containsKey(accession)) {
+            return proteinSequences.get(accession);
         } else {
             throw new IllegalArgumentException("The protein with accession " + accession + " has no sequence in the parsed FASTA files.");
         }

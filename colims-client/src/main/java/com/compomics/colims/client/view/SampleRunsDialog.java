@@ -331,7 +331,7 @@ public class SampleRunsDialog extends javax.swing.JDialog {
                         .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(maxMissedCleLabel)
                             .addComponent(preMasTolLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(12, 12, 12)
                         .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(maxMissedCleTextField)
                             .addComponent(preMasTolTextField))))

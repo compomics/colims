@@ -127,7 +127,8 @@ public class MzIdentMlExportController implements Controllable {
                 File mzIdentMlFile = mzIdentMlExportDialog.getMzIdentMlExportChooser().getSelectedFile();
 
                 //show file path in textfield
-                mzIdentMlExportDialog.getMzIdentMlTextField().setText(mzIdentMlFile.getAbsolutePath() + MZIDENTML_EXTENSION);
+                String mzIdentMlFilePath = mzIdentMlFile.getAbsolutePath().endsWith(MZIDENTML_EXTENSION) ? mzIdentMlFile.getAbsolutePath() : mzIdentMlFile.getAbsolutePath() + MZIDENTML_EXTENSION;
+                mzIdentMlExportDialog.getMzIdentMlTextField().setText(mzIdentMlFilePath);
             }
         });
 
@@ -138,7 +139,8 @@ public class MzIdentMlExportController implements Controllable {
                 File mgfFile = mzIdentMlExportDialog.getMgfExportChooser().getSelectedFile();
 
                 //show file path in textfield
-                mzIdentMlExportDialog.getMgfTextField().setText(mgfFile.getAbsolutePath() + MGF_EXTENSION);
+                String mgfFilePath = mgfFile.getAbsolutePath().endsWith(MGF_EXTENSION) ? mgfFile.getAbsolutePath() : mgfFile.getAbsolutePath() + MGF_EXTENSION;
+                mzIdentMlExportDialog.getMgfTextField().setText(mgfFilePath);
             }
         });
 

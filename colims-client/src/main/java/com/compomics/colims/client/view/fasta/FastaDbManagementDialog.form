@@ -147,7 +147,7 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="1" attributes="0">
                                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                                      <Component id="updateButton" min="-2" pref="82" max="-2" attributes="0"/>
+                                      <Component id="editButton" min="-2" pref="82" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="addButton" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -176,7 +176,7 @@
                                       <Component id="deleteButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                                       <Component id="addButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="updateButton" pref="0" max="32767" attributes="0"/>
+                                  <Component id="editButton" pref="0" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -300,9 +300,9 @@
                         </Component>
                       </SubComponents>
                     </Container>
-                    <Component class="javax.swing.JButton" name="updateButton">
+                    <Component class="javax.swing.JButton" name="editButton">
                       <Properties>
-                        <Property name="text" type="java.lang.String" value="update"/>
+                        <Property name="text" type="java.lang.String" value="edit..."/>
                         <Property name="toolTipText" type="java.lang.String" value="update the selected fasta db"/>
                         <Property name="enabled" type="boolean" value="false"/>
                       </Properties>

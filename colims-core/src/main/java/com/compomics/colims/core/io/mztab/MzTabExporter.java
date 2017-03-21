@@ -1014,6 +1014,6 @@ public class MzTabExporter {
             fastaDbsWithPath.put(fastaDb, absoluteFastaDbPath);
         });
 
-        parsedFastas = fastaDbParser.parseAccessions(fastaDbsWithPath);
+        parsedFastas = fastaDbParser.parseAccessions(fastaDbsWithPath, getSearchAndValidationSettings(mzTabExport.getRuns().get(0)).getSearchEngine().getSearchEngineType());
     }
 }

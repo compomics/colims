@@ -1,3 +1,5 @@
+# noinspection SqlNoDataSourceInspectionForFile
+
 use colims;
 
     create table colims.analytical_run (

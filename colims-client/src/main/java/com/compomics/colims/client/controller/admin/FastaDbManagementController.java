@@ -131,8 +131,8 @@ public class FastaDbManagementController implements Controllable {
             if (!e.getValueIsAdjusting()) {
                 if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
                     FastaDb fastaDb = getSelectedFastaDb();
-                    //enable update button if necessary
-                    fastaDbManagementDialog.getUpdateButton().setEnabled(fastaDb.getId() != null);
+                    //enable the edit button if necessary
+                    fastaDbManagementDialog.getEditButton().setEnabled(fastaDb.getId() != null);
 
                     //set "none" taxonomy if necessary
                     TaxonomyCvParam taxonomy = getSelectedFastaDb().getTaxonomy();
@@ -156,7 +156,7 @@ public class FastaDbManagementController implements Controllable {
                     //enable delete button
                     fastaDbManagementDialog.getDeleteButton().setEnabled(true);
                 } else {
-                    fastaDbManagementDialog.getUpdateButton().setEnabled(false);
+                    fastaDbManagementDialog.getEditButton().setEnabled(false);
                     clearFastaDbDetailFields();
                 }
             }
@@ -176,7 +176,7 @@ public class FastaDbManagementController implements Controllable {
             showSaveOrUpdatePanel();
         });
 
-        fastaDbManagementDialog.getUpdateButton().addActionListener(e -> {
+        fastaDbManagementDialog.getEditButton().addActionListener(e -> {
             // send the selected fastaDb to fastaDbSaveUpdateController
             fastaDbSaveUpdateController.updateView(getSelectedFastaDb());
 
@@ -255,7 +255,7 @@ public class FastaDbManagementController implements Controllable {
         //clear the selection
         fastaDbSelectionModel.clearSelection();
 
-        fastaDbManagementDialog.getUpdateButton().setSelected(false);
+        fastaDbManagementDialog.getEditButton().setSelected(false);
         clearFastaDbDetailFields();
 
         showOverviewPanel();
@@ -385,15 +385,15 @@ public class FastaDbManagementController implements Controllable {
         //check which checkboxes are selected
         if (fastaDbManagementDialog.getPrimaryCheckBox().isSelected()) {
             fastaDbTypes.add(FastaDbType.PRIMARY);
-            fastaDbManagementDialog.getUpdateButton().setEnabled(false);
+            fastaDbManagementDialog.getEditButton().setEnabled(false);
         }
         if (fastaDbManagementDialog.getAdditionalCheckBox().isSelected()) {
             fastaDbTypes.add(FastaDbType.ADDITIONAL);
-            fastaDbManagementDialog.getUpdateButton().setEnabled(false);
+            fastaDbManagementDialog.getEditButton().setEnabled(false);
         }
         if (fastaDbManagementDialog.getContaminantsCheckBox().isSelected()) {
             fastaDbTypes.add(FastaDbType.CONTAMINANTS);
-            fastaDbManagementDialog.getUpdateButton().setEnabled(false);
+            fastaDbManagementDialog.getEditButton().setEnabled(false);
         }
 
         if (fastaDbTypes.isEmpty()) {

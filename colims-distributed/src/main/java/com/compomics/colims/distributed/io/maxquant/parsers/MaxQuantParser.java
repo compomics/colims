@@ -34,8 +34,6 @@ public class MaxQuantParser {
      */
     private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
 
-    private static final String MBR_SPECTRUM_ACCESSION = "MBR";
-
     /**
      * The map of analytical runs (key: run name; value: the
      * {@link AnalyticalRun} instance);
@@ -148,10 +146,10 @@ public class MaxQuantParser {
 
         //add the identified spectra for each run and set the entity relations
         analyticalRuns.forEach((runName, run) -> {
-            
+
             //set analytical run for search settings
             run.getSearchAndValidationSettings().setAnalyticalRun(run);
-            
+
             //get the spectrum apl keys for each run
             Set<String> aplKeys = maxQuantSpectraParser.getMaxQuantSpectra().getRunToSpectrums().get(runName);
             aplKeys.forEach(aplKey -> {
@@ -300,7 +298,7 @@ public class MaxQuantParser {
     private Spectrum createDummySpectrum() {
         Spectrum spectrum = new Spectrum();
 
-        spectrum.setAccession(MBR_SPECTRUM_ACCESSION);
+        spectrum.setAccession(Spectrum.MBR_SPECTRUM_ACCESSION);
 
         return spectrum;
     }
