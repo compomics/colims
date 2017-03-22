@@ -50,13 +50,12 @@ public class OlsServiceTest {
     public void testGetOntologiesByNamespace() throws HttpClientErrorException, IOException {
         List<String> namespaces = new ArrayList<>();
         namespaces.add("ms");
-        //add one nonsense namespace
-        namespaces.add("nonsemsnse");
+        namespaces.add("cdao");
         List<Ontology> foundOntologies = olsService.getOntologiesByNamespace(namespaces);
 
         Assert.assertFalse(foundOntologies.isEmpty());
-        //only one ontology is expected to be found
-        Assert.assertEquals(1, foundOntologies.size());
+        //2 ontologies are expected to be found
+        Assert.assertEquals(2, foundOntologies.size());
     }
 
     @Test

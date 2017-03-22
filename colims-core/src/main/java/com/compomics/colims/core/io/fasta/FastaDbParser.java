@@ -83,10 +83,9 @@ public class FastaDbParser {
             for (Map.Entry<FastaDb, Path> entry : fastaDbs.entrySet()) {
                 FastaDb fastaDb = entry.getKey();
                 Path fastaPath = entry.getValue();
-                //check if the FASTA has an associated header parse rule and parse accordingly
-                //otherwise, use the Compomics Utilities library
                 Set<String> accessions;
                 switch (searchEngineType) {
+                    //check if the FASTA has an associated header parse rule and parse accordingly
                     case MAXQUANT:
                         if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
                             accessions = parseAccessionsWithoutRule(fastaPath);
@@ -95,7 +94,10 @@ public class FastaDbParser {
                         }
                         break;
                     case PEPTIDESHAKER:
-
+                        accessions = parseAccessionsWithoutUtilities(fastaPath);
+                        break;
+                    default:
+                        accessions = new HashSet<>();
                         break;
                 }
                 if (accessions.isEmpty()) {
@@ -276,6 +278,29 @@ public class FastaDbParser {
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
                     accessions.add(line.substring(1).split(SPLITTER)[0]);
+                }
+            }
+        }
+
+        return accessions;
+    }
+
+    /**
+     * Parse the given FASTA file with the Compomics utilities library.
+     *
+     * @param fastaPath the FASTA path
+     * @return the set of parsed protein accessions
+     * @throws IOException in case of file reading related problem
+     */
+    private Set<String> parseAccessionsWithoutUtilities(Path fastaPath) throws IOException {
+        Set<String> accessions = new HashSet<>();
+        try (BufferedReader bufferedReader = Files.newBufferedReader(fastaPath)) {
+            //start reading the file
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.startsWith(BLOCK_SEPARATOR)) {
+                    Header header = Header.parseFromFASTA(line);
+                    accessions.add(header.getAccessionOrRest());
                 }
             }
         }
