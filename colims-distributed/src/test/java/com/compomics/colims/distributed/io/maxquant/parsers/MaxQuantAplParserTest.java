@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
+@ContextConfiguration(locations = {"classpath:colims-distributed-simple-test-context.xml"})
 public class MaxQuantAplParserTest {
 
     private static final String APL_HEADER_DELIMITER = "=";
@@ -99,7 +99,7 @@ public class MaxQuantAplParserTest {
         //create some dummy maxQuantSpectra object
         MaxQuantSpectra maxQuantSpectra = new MaxQuantSpectra();
 
-        //create dummy spectrum one
+        //create a dummy spectrum
         String spectrumKey = "RawFile: 20130607_FI_Ubiquitin_7 Index: 3175";
         Spectrum spectrum = new Spectrum();
         spectrum.setAccession("acc_1");
@@ -118,7 +118,8 @@ public class MaxQuantAplParserTest {
         for (List<Spectrum> unidentifiedSpectra : maxQuantSpectra.getUnidentifiedSpectra().values()) {
             numberOfUnidentifiedSpectra += unidentifiedSpectra.size();
         }
-        Assert.assertEquals(2586, numberOfUnidentifiedSpectra);
+        //one identified, 2 omitted
+        Assert.assertEquals(2585, numberOfUnidentifiedSpectra);
 
         //some additional testing
         byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getUnidentifiedSpectra()

@@ -42,10 +42,10 @@ public class MaxQuantEvidenceParser {
     static final String C_TERMINAL_MODIFICATION = "Protein C-term";
 
     /**
-     * The parsed peptides map (key: evidence ID; value: the {@link Peptide}
-     * object).
+     * The parsed peptides map (key: evidence ID; value: the associated {@link Peptide}
+     * objects).
      */
-    private final Map<Integer, Peptide> peptides = new HashMap<>();
+    private final Map<Integer, List<Peptide>> peptides = new HashMap<>();
     /**
      * This map holds the links between spectrum and associated peptides (key:
      * msms ID; value: set of evidence IDs).
@@ -89,7 +89,7 @@ public class MaxQuantEvidenceParser {
         evidenceHeaders = new EvidenceHeaders();
     }
 
-    public Map<Integer, Peptide> getPeptides() {
+    public Map<Integer, List<Peptide>> getPeptides() {
         return peptides;
     }
 
@@ -189,7 +189,14 @@ public class MaxQuantEvidenceParser {
 
         //add to the peptideToProteinGroups map
         peptideToProteinGroups.put(evidenceId, nonOmittedProteinGroupsIds);
-        peptides.put(evidenceId, peptide);
+        //add to the peptides map
+        if (peptides.containsKey(evidenceId)) {
+            peptides.get(evidenceId).add(peptide);
+        } else {
+            List<Peptide> associatedPeptides = new ArrayList<>();
+            associatedPeptides.add(peptide);
+            peptides.put(evidenceId, associatedPeptides);
+        }
     }
 
     /**

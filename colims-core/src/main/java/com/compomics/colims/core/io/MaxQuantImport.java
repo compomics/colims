@@ -19,32 +19,26 @@ public class MaxQuantImport extends DataImport {
      * The mqpar file path.
      */
     private Path mqParFile;
-
     /**
      * The directory of Combined Folder.
      */
     private Path combinedDirectory;
-    
     /**
      * The full directory of Combined Folder.
      */
     private Path fullCombinedDirectory;
-
     /**
      * Whether to import proteins from contaminants file.
      */
     private boolean includeContaminants;
-
     /**
      * Whether to import unidentified spectra from APL files.
      */
     private boolean includeUnidentifiedSpectra;
-
     /**
      * List of selected Protein Group Headers
      */
     private List<String> selectedProteinGroupHeaders;
-
     /**
      * Selected quantification label
      */
@@ -60,8 +54,8 @@ public class MaxQuantImport extends DataImport {
      * Constructor.
      *
      * @param mqParFile                   the mqpar.xml parameter file
-     * @param combinedDirectory           File pointer to MaxQuant combined directory
-     * @param fullCombinedDirectory       File pointer to MaxQuant full combined directory
+     * @param combinedDirectory           File pointer to the MaxQuant combined directory
+     * @param fullCombinedDirectory       File pointer to the MaxQuant full combined directory
      * @param fastaDbIds                  the FASTA database map (key: FastaDb type; value: the FastaDb instance ID)
      * @param includeContaminants         whether to import proteins from contaminants file.
      * @param includeUnidentifiedSpectra  whether to import unidentified spectra from APL files.

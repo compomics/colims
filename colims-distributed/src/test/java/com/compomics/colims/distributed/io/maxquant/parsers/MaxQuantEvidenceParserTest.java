@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,7 +30,7 @@ public class MaxQuantEvidenceParserTest {
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
 
     public MaxQuantEvidenceParserTest() throws IOException {
-        evidenceFile = new ClassPathResource("data/maxquant/evidence_unit_test_3.txt").getFile().toPath();
+        evidenceFile = new ClassPathResource("data/maxquant/evidence_unit_test_modifications.txt").getFile().toPath();
     }
 
     @Test
@@ -53,7 +54,8 @@ public class MaxQuantEvidenceParserTest {
 
         //check the parsed modifications
         //check a peptide with a terminal modification
-        Peptide peptide = maxQuantEvidenceParser.getPeptides().get(737);
+        List<Peptide> peptides = maxQuantEvidenceParser.getPeptides().get(737);
+        Peptide peptide = peptides.get(0);
         Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
         PeptideHasModification peptideHasModification = peptide.getPeptideHasModifications().get(0);
         Assert.assertEquals(0, peptideHasModification.getLocation().intValue());
@@ -64,7 +66,8 @@ public class MaxQuantEvidenceParserTest {
         Assert.assertEquals("UNIMOD:1", modification.getAccession());
 
         //check a peptide with a non-terminal modification
-        peptide = maxQuantEvidenceParser.getPeptides().get(1154);
+        peptides = maxQuantEvidenceParser.getPeptides().get(1154);
+        peptide = peptides.get(0);
         Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
         peptideHasModification = peptide.getPeptideHasModifications().get(0);
         Assert.assertEquals(7, peptideHasModification.getLocation().intValue());
@@ -75,7 +78,8 @@ public class MaxQuantEvidenceParserTest {
         Assert.assertEquals("UNIMOD:35", modification.getAccession());
 
         //check a peptide with 2 modifications
-        peptide = maxQuantEvidenceParser.getPeptides().get(6239);
+        peptides = maxQuantEvidenceParser.getPeptides().get(6239);
+        peptide = peptides.get(0);
         Assert.assertEquals(2, peptide.getPeptideHasModifications().size());
         peptideHasModification = peptide.getPeptideHasModifications().get(0);
         Assert.assertEquals(5, peptideHasModification.getLocation().intValue());
@@ -93,7 +97,8 @@ public class MaxQuantEvidenceParserTest {
         Assert.assertEquals("UNIMOD:21", modification.getAccession());
 
         //check a MBR peptide, modification scores should be empty
-        peptide = maxQuantEvidenceParser.getPeptides().get(2619);
+        peptides = maxQuantEvidenceParser.getPeptides().get(2619);
+        peptide = peptides.get(0);
         Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
         peptideHasModification = peptide.getPeptideHasModifications().get(0);
         Assert.assertEquals(3, peptideHasModification.getLocation().intValue());

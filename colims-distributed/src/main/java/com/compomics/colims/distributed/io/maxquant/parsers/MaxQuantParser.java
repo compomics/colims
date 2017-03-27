@@ -252,6 +252,12 @@ public class MaxQuantParser {
         //get the msms.txt IDs associated with the given spectrum
         Set<Integer> msmsIds = maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToPsms().get(aplKey);
         for (Integer msmsId : msmsIds) {
+            if (msmsId == 1668) {
+                System.out.println("dddddddddddd");
+            }
+            if (msmsId == 1669) {
+                System.out.println("dddddddddddd");
+            }
             //get the evidence IDs associated with the msms ID
             for (Integer evidenceId : maxQuantEvidenceParser.getSpectrumToPeptides().get(msmsId)) {
                 setPeptideRelations(spectrum, evidenceId);
@@ -266,28 +272,62 @@ public class MaxQuantParser {
      * @param evidenceId the peptide evidence ID
      */
     private void setPeptideRelations(Spectrum spectrum, Integer evidenceId) {
-        //get the peptide by it's evidence ID
-        Peptide peptide = maxQuantEvidenceParser.getPeptides().get(evidenceId);
+        //get the associated peptides by their evidence ID
+        List<Peptide> peptides = maxQuantEvidenceParser.getPeptides().get(evidenceId);
 
-        //get the protein groups IDs for each peptide
-        Set<Integer> proteinGroupIds = maxQuantEvidenceParser.getPeptideToProteinGroups().get(evidenceId);
+        //look for a peptide that isn't already associated with a spectrum
+        Optional<Peptide> foundPeptide = peptides.stream().filter(peptide -> peptide.getSpectrum() == null).findAny();
+        if (foundPeptide.isPresent()) {
+            Peptide peptide = foundPeptide.get();
 
-        proteinGroupIds.forEach(proteinGroupId -> {
-            //get the protein group by it's ID
-            ProteinGroup proteinGroup = maxQuantProteinGroupsParser.getProteinGroups().get(proteinGroupId);
+            //get the protein groups IDs for each peptide
+            Set<Integer> proteinGroupIds = maxQuantEvidenceParser.getPeptideToProteinGroups().get(evidenceId);
 
-            PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
-            peptideHasProteinGroup.setPeptide(peptide);
-            peptideHasProteinGroup.setProteinGroup(proteinGroup);
+            proteinGroupIds.forEach(proteinGroupId -> {
+                //get the protein group by it's ID
+                ProteinGroup proteinGroup = maxQuantProteinGroupsParser.getProteinGroups().get(proteinGroupId);
 
-            proteinGroup.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
-            //set peptideHasProteinGroups in peptide
-            peptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
-        });
+                PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
+                peptideHasProteinGroup.setPeptide(peptide);
+                peptideHasProteinGroup.setProteinGroup(proteinGroup);
 
-        //set entity relations between Spectrum and Peptide
-        spectrum.getPeptides().add(peptide);
-        peptide.setSpectrum(spectrum);
+                proteinGroup.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+                //set peptideHasProteinGroups in peptide
+                peptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+            });
+
+            //set entity relations between Spectrum and Peptide
+            spectrum.getPeptides().add(peptide);
+            peptide.setSpectrum(spectrum);
+        } else {
+            throw new IllegalStateException("No peptide without associated spectrum found for " + evidenceId);
+        }
+    }
+
+    /**
+     * Copy the given peptide.
+     *
+     * @param peptide the {@link Peptide} instance
+     * @return the cloned peptide
+     */
+    private Peptide copyPeptide(Peptide peptide) {
+        Peptide copiedPeptide = new Peptide();
+
+//        copiedPeptide.setSequence(peptide.getSequence());
+//        copiedPeptide.setTheoreticalMass(peptide.getTheoreticalMass());
+//        copiedPeptide.setCharge(peptide.getCharge());
+//        copiedPeptide.setPsmProbability(peptide.getPsmProbability());
+//        copiedPeptide.setPsmPostErrorProbability(peptide.getPsmPostErrorProbability());
+//        peptide.getPeptideHasModifications().forEach(peptideHasModification -> {
+//            PeptideHasModification copiedPeptideHasModification = new PeptideHasModification();
+//            copiedPeptideHasModification.setLocation(peptideHasModification.getLocation());
+//            if(peptideHasModification.getProbabilityScore()){
+//
+//            }
+//            peptide.getPeptideHasModifications()
+//        });
+
+        return copiedPeptide;
     }
 
     /**

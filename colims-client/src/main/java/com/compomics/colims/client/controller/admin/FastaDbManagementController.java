@@ -104,6 +104,7 @@ public class FastaDbManagementController implements Controllable {
         bindingGroup = new BindingGroup();
 
         fastaDbs.addAll(fastaDbService.findAll());
+
         sortedFastaDbs = new SortedList<>(fastaDbs, (FastaDb o1, FastaDb o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
         fastaDbListModel = GlazedListsSwing.eventListModel(sortedFastaDbs);
         fastaDbManagementDialog.getFastaDbList().setModel(fastaDbListModel);
@@ -145,7 +146,7 @@ public class FastaDbManagementController implements Controllable {
                     }
                     fastaDbManagementDialog.getDatabaseTextField().setText(fastaDb.getDatabaseName());
                     if (fastaDb.getHeaderParseRule() == null) {
-                        fastaDb.setHeaderParseRule(UNKNOWN);
+                        fastaDb.setHeaderParseRule(HeaderParseRule.NONE_RULE.getParseRule());
                     }
                     fastaDbManagementDialog.getHeaderParseRuleTextField().setText(fastaDb.getHeaderParseRule());
                     if (fastaDb.getVersion() == null) {
@@ -316,16 +317,6 @@ public class FastaDbManagementController implements Controllable {
     public void updateFastaDb() {
         fastaDbManagementDialog.getFastaDbList().updateUI();
         fastaDbSelectionModel.clearSelection();
-    }
-
-    /**
-     * Get the row index of the selected fastaDB in the fastaDb management
-     * panel.
-     *
-     * @return the row index
-     */
-    public int getSelectedFastaDbIndex() {
-        return fastaDbSelectionModel.getLeadSelectionIndex();
     }
 
     /**

@@ -498,7 +498,13 @@ class HeaderParseRule {
      * @param parseRule the parse rule
      */
     public HeaderParseRule(String parseRule) {
-        this.parseRule = parseRule;
+        if(parseRule != null) {
+            this.parseRule = parseRule;
+        }
+        else {
+            this.parseRule = NONE_RULE.parseRule;
+            this.explanation = NONE_RULE.explanation;
+        }
     }
 
     /**
