@@ -154,10 +154,7 @@ public class MaxQuantImport extends DataImport {
         if (!Objects.equals(this.fullCombinedDirectory, other.fullCombinedDirectory)) {
             return false;
         }
-        if (!Objects.equals(this.selectedProteinGroupHeaders, other.selectedProteinGroupHeaders)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.selectedProteinGroupHeaders, other.selectedProteinGroupHeaders);
     }
 
 }

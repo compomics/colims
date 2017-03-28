@@ -483,7 +483,7 @@ public class MzIdentMlExporter {
 
         searchDatabase.setId(String.format(SEARCH_DB_ID, id));
         searchDatabase.setLocation(fastaDb.getFilePath());
-        searchDatabase.setNumDatabaseSequences(Long.valueOf(proteinAccessions.get(fastaDb).size()));
+        searchDatabase.setNumDatabaseSequences((long) proteinAccessions.get(fastaDb).size());
 
         Param databaseNameParam = new Param();
         UserParam databaseName = new UserParam();
@@ -826,7 +826,7 @@ public class MzIdentMlExporter {
 
                 DBSequence dbSequence;
                 if (!dbSequencess.containsKey(proteinGroupHasProtein.getProteinAccession())) {
-                    dbSequence = populateDBSequence(proteinGroupHasProtein.getProteinAccession(), protein.getSequence(), Long.valueOf(dbSequencess.size()));
+                    dbSequence = populateDBSequence(proteinGroupHasProtein.getProteinAccession(), protein.getSequence(), (long) dbSequencess.size());
                     sequenceCollection.getDBSequence().add(dbSequence);
 
                     dbSequencess.put(proteinGroupHasProtein.getProteinAccession(), dbSequence);
@@ -866,9 +866,6 @@ public class MzIdentMlExporter {
             Set<String> peptideSequences = new HashSet<>();
             //iterate over the protein group peptide DTOs
             for (PeptideDTO peptideDTO : peptideDTOs) {
-                if(peptideDTO.getPeptide().getSequence().equals("MNVLADALK")){
-                    System.out.println("test");
-                }
                 Peptide colimsPeptide = peptideDTO.getPeptide();
                 uk.ac.ebi.jmzidml.model.mzidml.Peptide mzPeptide;
 
@@ -1221,6 +1218,7 @@ public class MzIdentMlExporter {
             spectrumIdentificationItem.setChargeState(spectrum.getCharge());
         }
         spectrumIdentificationItem.setExperimentalMassToCharge(spectrum.getMzRatio());
+        spectrumIdentificationItem.setCalculatedMassToCharge(peptide.getTheoreticalMass() / peptide.getCharge());
         //TODO what to do with the rank and threshold
         spectrumIdentificationItem.setPassThreshold(true);
         spectrumIdentificationItem.setRank(1);
@@ -1487,15 +1485,15 @@ class UniqueEvidence {
     /**
      * The protein accession.
      */
-    private String proteinAccession;
+    private final String proteinAccession;
     /**
      * The {@link PeptideDTO} instance.
      */
-    private PeptideDTO peptideDTO;
+    private final PeptideDTO peptideDTO;
     /**
      * The {@link PeptidePosition} instance.
      */
-    private PeptidePosition peptidePosition;
+    private final PeptidePosition peptidePosition;
     /**
      * The {@link PeptideEvidence} instance.
      */
@@ -1554,10 +1552,7 @@ class UniqueEvidence {
         if (!Objects.equals(this.peptidePosition.getStartPosition(), that.peptidePosition.getStartPosition())) {
             return false;
         }
-        if (!Objects.equals(this.peptidePosition.getEndPosition(), that.peptidePosition.getEndPosition())) {
-            return false;
-        }
-        return this.peptidePosition.getPreAA() == that.peptidePosition.getPreAA() && this.peptidePosition.getPostAA() == that.peptidePosition.getPostAA();
+        return Objects.equals(this.peptidePosition.getEndPosition(), that.peptidePosition.getEndPosition()) && this.peptidePosition.getPreAA() == that.peptidePosition.getPreAA() && this.peptidePosition.getPostAA() == that.peptidePosition.getPostAA();
     }
 
     @Override

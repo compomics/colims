@@ -140,8 +140,6 @@ public enum CvParamType {
      */
     private static void addChildren(final CvParamType parent, final List<CvParamType> list) {
         list.addAll(parent.children);
-        parent.children.stream().forEach((child) -> {
-            addChildren(child, list);
-        });
+        parent.children.stream().forEach((child) -> addChildren(child, list));
     }
 }

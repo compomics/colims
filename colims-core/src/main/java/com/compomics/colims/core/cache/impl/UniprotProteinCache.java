@@ -59,6 +59,6 @@ public class UniprotProteinCache extends LinkedHashMap<String, Map<String, Strin
     
     @Override
     protected boolean removeEldestEntry(Map.Entry<String, Map<String, String>> eldest) {
-        return this.size() >= Integer.valueOf(uniprotMaxCashSize);
+        return this.size() >= uniprotMaxCashSize;
     }
 }

@@ -470,7 +470,7 @@ public class MainController implements Controllable, ActionListener {
         Optional<Project> foundProject = projects.stream()
                 .filter(project -> project.getId().equals(projectId))
                 .findFirst();
-        return foundProject.isPresent() ? foundProject.get() : null;
+        return foundProject.orElse(null);
     }
 
     /**
@@ -481,11 +481,10 @@ public class MainController implements Controllable, ActionListener {
      * @return the found Project instance
      */
     private boolean isExperimentPresent(Long experimentId) {
-        boolean match = projects.stream()
+        return projects.stream()
                 .anyMatch(project -> project.getExperiments()
                         .stream()
                         .anyMatch(experiment -> experiment.getId().equals(experimentId)));
-        return match;
     }
 
     /**

@@ -103,9 +103,8 @@ public class OlsServiceImpl implements OlsService {
 
             //get the ontologies of the page
             JsonNode ontologiesNode = responseBody.get(EMBEDDED).get(ONTOLOGIES);
-            Iterator<JsonNode> ontologyIterator = ontologiesNode.iterator();
-            while (ontologyIterator.hasNext()) {
-                JsonNode ontologyConfigNode = ontologyIterator.next().get(CONFIG);
+            for (JsonNode anOntologiesNode : ontologiesNode) {
+                JsonNode ontologyConfigNode = anOntologiesNode.get(CONFIG);
                 Ontology ontology = objectReader.treeToValue(ontologyConfigNode, Ontology.class);
                 ontologies.add(ontology);
                 //add to cache if not already present

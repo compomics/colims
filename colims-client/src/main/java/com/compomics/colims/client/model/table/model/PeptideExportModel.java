@@ -39,7 +39,7 @@ public class PeptideExportModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
         PeptideTableRow peptideTableRow = peptideTableRows.get(rowIndex);
-        String modifications = "";
+        StringBuilder modifications = new StringBuilder();
 
         switch (columnIndex) {
             case 0:
@@ -51,13 +51,11 @@ public class PeptideExportModel extends AbstractTableModel {
                 for (PeptideHasModification peptideHasModification : peptideTableRow.getPeptideHasModifications()) {
                     //@// TODO: 30/09/16 remove if clause after refactoring
 //                    if (peptideHasModification.getModificationType() == (columnIndex == 3 ? ModificationType.FIXED : ModificationType.VARIABLE)) {
-                    modifications += (modifications.length() > 0 ? ", " : "")
-                            + "(" + peptideHasModification.getModification().getName()
-                            + ", " + peptideHasModification.getLocation() + ")";
+                    modifications.append(modifications.length() > 0 ? ", " : "").append("(").append(peptideHasModification.getModification().getName()).append(", ").append(peptideHasModification.getLocation()).append(")");
 //                    }
                 }
 
-                return modifications;
+                return modifications.toString();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + columnIndex);
         }

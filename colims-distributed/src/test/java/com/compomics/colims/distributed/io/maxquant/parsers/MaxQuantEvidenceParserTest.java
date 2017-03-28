@@ -47,7 +47,7 @@ public class MaxQuantEvidenceParserTest {
         Assert.assertEquals(9, maxQuantEvidenceParser.getRunToMbrPeptides().size());
 
         //check the size of the spectrumToPeptides map
-        Assert.assertEquals(13, maxQuantEvidenceParser.getSpectrumToPeptides().size());
+        Assert.assertEquals(14, maxQuantEvidenceParser.getSpectrumToPeptides().size());
 
         //check the size of the peptideToProteins map
         Assert.assertEquals(22, maxQuantEvidenceParser.getPeptideToProteinGroups().size());
@@ -67,6 +67,8 @@ public class MaxQuantEvidenceParserTest {
 
         //check a peptide with a non-terminal modification
         peptides = maxQuantEvidenceParser.getPeptides().get(1154);
+        //check if the this evidence ID has two associated peptides
+        Assert.assertEquals(2, peptides.size());
         peptide = peptides.get(0);
         Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
         peptideHasModification = peptide.getPeptideHasModifications().get(0);

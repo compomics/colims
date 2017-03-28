@@ -63,9 +63,7 @@ public class OlsSearchResultTableFormat implements AdvancedTableFormat<OlsSearch
                 if (searchResult.getMatchedFields().size() == 1) {
                     matches = HTML_OPEN + searchResult.getMatchedFields().values().stream().collect(Collectors.toList()).get(0) + HTML_CLOSE;
                 } else if (searchResult.getMatchedFields().size() > 1) {
-                    matches = HTML_OPEN + searchResult.getMatchedFields().entrySet().stream().map(e -> {
-                        return e.getKey().getQueryValue() + ": " + e.getValue();
-                    }).collect(Collectors.joining(", ")) + HTML_CLOSE;
+                    matches = HTML_OPEN + searchResult.getMatchedFields().entrySet().stream().map(e -> e.getKey().getQueryValue() + ": " + e.getValue()).collect(Collectors.joining(", ")) + HTML_CLOSE;
                 }
                 return matches.isEmpty() ? "not available" : matches;
             default:

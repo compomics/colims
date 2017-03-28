@@ -2,9 +2,6 @@
 package com.compomics.colims.core.service;
 
 import com.compomics.colims.model.ProteinGroup;
-import com.compomics.colims.model.User;
-import com.compomics.colims.model.UserQuery;
-import com.compomics.colims.repository.UserQueryRepository;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +12,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -37,7 +33,8 @@ public class ProteinGroupServiceTest {
         runIds.add(1L);
 
         List<ProteinGroup> proteinGroupsForRuns = proteinGroupService.getProteinGroupsForRuns(runIds);
-        System.out.println("dffffffff");
+
+        Assert.assertEquals(3, proteinGroupsForRuns.size());
     }
 
 }

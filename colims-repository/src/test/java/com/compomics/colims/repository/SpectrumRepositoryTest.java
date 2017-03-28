@@ -23,7 +23,7 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath:colims-repository-context.xml", "classpath:colims-repository-test-context.xml"})
 @Transactional
 @Rollback
-public class SpectrumRepositoryTest extends TestCase {
+public class SpectrumRepositoryTest {
 
     private AnalyticalRun analyticalRun;
 
@@ -33,7 +33,6 @@ public class SpectrumRepositoryTest extends TestCase {
     SpectrumRepository spectrumRepository;
 
     @Before
-    @Override
     public void setUp() throws Exception {
         this.analyticalRun = analyticalRunRepository.findById(1L);
     }
@@ -42,21 +41,21 @@ public class SpectrumRepositoryTest extends TestCase {
     public void testFiltering() throws Exception {
         List spectrumList = spectrumRepository.getPagedSpectra(analyticalRun, 0, 10, "spectrum.id", "asc", "LENNART");
 
-        assertTrue(spectrumList.size() < analyticalRun.getSpectrums().size());
+        Assert.assertTrue(spectrumList.size() < analyticalRun.getSpectrums().size());
     }
 
     @Test
     public void testSorting() {
         List<Spectrum> spectrumList = spectrumRepository.getPagedSpectra(analyticalRun, 0, 10, "retention_time", "desc", "");
 
-        assertTrue(spectrumList.get(1).getRetentionTime() <= analyticalRun.getSpectrums().get(0).getRetentionTime());
+        Assert.assertTrue(spectrumList.get(1).getRetentionTime() <= analyticalRun.getSpectrums().get(0).getRetentionTime());
     }
 
     @Test
     public void testGetSpectraCountForRun() throws Exception {
         int count = spectrumRepository.getSpectraCountForRun(analyticalRun, "spectrum.id", "");
 
-        assertTrue(count > 0);
+        Assert.assertTrue(count > 0);
     }
 
     @Test

@@ -1,3 +1,5 @@
+# noinspection SqlNoDataSourceInspectionForFile
+
 -- insert test institution
 INSERT INTO institution (id, creation_date, modification_date, user_name, abbreviation, city, country, name, number, postal_code, street, email) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','CFO','Paris','France','Centre for Proteomics','8', '8520', 'Rue De Masspec', 'proteomics@proteomics.org');
 
@@ -90,6 +92,7 @@ INSERT INTO search_modification (id, name, accession, utilities_name, average_ma
 
 -- insert a test analytical run
 INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1);
+INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (2, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1);
 
 -- insert a test spectrum
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000001', 1, 'CID', 1788, 115.7, 52, 45, 3887, 'Test Spectrum 1', 1);
@@ -97,6 +100,7 @@ INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_r
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (3, 'MS:00000003', 2, 'CID', 149494, 1494.5, 7435, 447545, 3445, 'Test Spectrum 3', 1);
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (4, 'MS:00000004', 2, 'CID', 149423, 894.5, 7535, 447845, 34445, 'Test Spectrum 4', 1);
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (5, 'MS:00000005', 3, 'CID', 149423, 894.5, 7535, 447845, 34445, 'Test Spectrum 5', 1);
+INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (6, 'MS:00000005', 3, 'CID', 149423, 894.5, 7535, 447845, 34445, 'Test Spectrum 5', 2);
 
 -- insert a spectrum file
 INSERT INTO spectrum_file (id, content, l_spectrum_id) VALUES (1, '1f8b08000000000000005d55c96e1b47103d67bea2a16b8246ed8b011e6c8b710424b461e907148107038aed28cef6f7793d9413201792989adade527c757c73731a376f4fb7dbddcddd8fc7c3afc7bfee1fbe7cf8e34c5cdcd3bbf2f221e3fb0f8fe71757ff7be1e9fecfabefc6e97e3db9b97e71f5f0e9e397a74f8f8fe7a7bbbf3f9f0f34fe7b70fafd979fcf4f071ebf3ddc7f3caca257dbbbe3bb9f5edede1e98da26598b345b557d636412398d427c7b7f7773ba3dbe7e7bbac69bee36b538b6d73fbc7cffe678906f37669a945cdd3634d4272949aa69fac6d293495c9b8750d734e610f4d3da587392704af948a129ce1656b687f0a67899e8f0ac299d11659e1b5b4e6629ad1c6d36232b57b9d5cbd1dad9a57a78a36f2999996a6c1c3c55b5bb03219fe6a8566c862cec994689072350bc859d2aab79e374f46a15cd21e232c39bb3a356b3622c9665582c43a69b52530929423159bc2d46a0b8a85927e573c4c22b02491433c4004463e90de04cb4a54e196531b135de2675d943c0b0d56b64b300dff234e1429af0eaa51d89318021666e5245d64217b595d00b70a6177306be3641fd485b50a3a0a1387622de435885553a9c071b310055c3161dbd49232605886bb4dac4afcbc6bce96a5052a88ae969b10c8101fedcb47502b434b00c71d12c2feddad561b4b314e53af0ed53d2381a14f466c0db62df06dd6436da410605405c740aa0835c8603cda920497d17818b0171251519cc0bc85208ab1d536229080ebea915434d102966d83336fc9a028599f7ca4303a754b1350a5003bf096d6314945421f7883dad14428554dd06f4875501cf45ef1bb8829a00e01a056d67100c66fb76a53cad0170c590c06e93f682b01be69d4e9aa2a080d9e1040b68fa39a8081aa8cea1f02848f837cf1cce1409453ba42c88002c0c115b6563cc08f03ca01b748374a19b8d31c184e5333162f46c4520800d3c48f0644385bc8f0f24bd4a730db262b84ebe8a600cf6652e9868491d3125c005110b2cef3d2328e0346518806a9d0728aa00176a2c7b5e88db43801f96c58851309b816d4cbfa7c52460d11833f60bd01748560c0273c32231c0061069a79def3d86bbe6a000799012547431ef7aee26a240dfc363d1665f4398d0e0c41810184fb04818429e436016108d5820f67e4174c7112ccc0b3cb88168e497c3b6c067f03c21f2843970f3004e7c4d83797020cc72d90d0b4182386ed910fa763c5d5ffe1ab67f00a9cb27f227060000', 1);
@@ -138,13 +142,14 @@ INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (3, 2, 0.43, 0.433, 'SACGPRPGRCCI', 148.6, 3);
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (6, 3, 0.432, 0.4333, 'HEEKEQIKCLNSRFAAFIDKVRFLEQQ', 348.6, 5);
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (4, 2, 0.4, 0.44, 'IVGLSIYTVSSEVADF', 1789.2, 2);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (7, 2, 0.4, 0.44, 'IVGLSIYTVSSEVADF', 1789.2, 6);
 
 -- insert a test peptide has modification
 INSERT INTO peptide_has_modification (id,  delta_score,  location, prob_score, l_modification_id,  l_peptide_id) VALUES (1, 0.5, 1, 1, 1, 1);
 INSERT INTO peptide_has_modification (id,  delta_score,  location, prob_score, l_modification_id,  l_peptide_id) VALUES (2, 0.5, 1, 1, 1, 5);
 
 -- insert test protein groups
-INSERT INTO protein_group (id, protein_prob, protein_post_error_prob) VALUES (1, 0.12, 0.25), (2, 0.13, 0.36), (3, 0.14, 0.47);
+INSERT INTO protein_group (id, protein_prob, protein_post_error_prob) VALUES (1, 0.12, 0.25), (2, 0.13, 0.36), (3, 0.14, 0.47), (4, 0.14, 0.47);
 
 -- insert test protein group has proteins
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (1, 1, 1, 'O43414', TRUE);
@@ -152,6 +157,7 @@ INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, pro
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (3, 3, 2, 'Q3ZAW8', FALSE);
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (4, 4, 2, 'Q8VED5', FALSE);
 INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (5, 5, 3, 'P28566', TRUE);
+INSERT INTO protein_group_has_protein (id, l_protein_id, l_protein_group_id, protein_accession, main_group_protein) VALUES (6, 5, 4, 'P28566', TRUE);
 
 -- insert test peptide has protein groups
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (1, 0.1, 0.9, 1, 1);
@@ -160,3 +166,4 @@ INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_pr
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (3, 0.2, 0.22, 3, 2);
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (4, 0.3, 0.33, 4, 3);
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (6, 0.6, 0.66, 6, 2);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (7, 0.6, 0.66, 7, 4);

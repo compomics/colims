@@ -386,12 +386,8 @@ public class MaxQuantProteinGroupsParser {
             }
         }
         // if given header has numeric value per run and protein group, store.
-        optionalHeaders.stream().map(String::toLowerCase).filter(header -> {
-            return values.get(header + " " + experimentName) != null && NumberUtils.isNumber(values.get(header + " " + experimentName));
-        })
-                .forEach(optionalHeader -> {
-                    createProteinGroupQuantLabeled(proteinGroup, analyticalRun, optionalHeader, values.get(optionalHeader + " " + experimentName));
-                });
+        optionalHeaders.stream().map(String::toLowerCase).filter(header -> values.get(header + " " + experimentName) != null && NumberUtils.isNumber(values.get(header + " " + experimentName)))
+                .forEach(optionalHeader -> createProteinGroupQuantLabeled(proteinGroup, analyticalRun, optionalHeader, values.get(optionalHeader + " " + experimentName)));
 
     }
 }

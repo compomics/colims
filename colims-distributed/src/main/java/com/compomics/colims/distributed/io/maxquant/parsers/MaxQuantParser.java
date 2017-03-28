@@ -91,9 +91,7 @@ public class MaxQuantParser {
         //get the FASTA db entities from the database
         maxQuantImport.getFastaDbIds().forEach((FastaDbType fastaDbType, List<Long> fastaDbIds) -> {
             List<FastaDb> fastaDbList = new ArrayList<>();
-            fastaDbIds.forEach(fastaDbId -> {
-                fastaDbList.add(fastaDbService.findById(fastaDbId));
-            });
+            fastaDbIds.forEach(fastaDbId -> fastaDbList.add(fastaDbService.findById(fastaDbId)));
             fastaDbs.put(fastaDbType, fastaDbList);
         });
 
@@ -205,9 +203,7 @@ public class MaxQuantParser {
             maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), reagents);
         }
         //link the quantification settings to each analytical run
-        analyticalRuns.values().forEach(analyticalRun -> {
-            analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun));
-        });
+        analyticalRuns.values().forEach(analyticalRun -> analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun)));
 
         if (getSpectrumToPsms().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || maxQuantProteinGroupsParser.getProteinGroups().isEmpty()) {
             throw new UnparseableException("One of the parsed files could not be read properly.");
@@ -252,12 +248,6 @@ public class MaxQuantParser {
         //get the msms.txt IDs associated with the given spectrum
         Set<Integer> msmsIds = maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToPsms().get(aplKey);
         for (Integer msmsId : msmsIds) {
-            if (msmsId == 1668) {
-                System.out.println("dddddddddddd");
-            }
-            if (msmsId == 1669) {
-                System.out.println("dddddddddddd");
-            }
             //get the evidence IDs associated with the msms ID
             for (Integer evidenceId : maxQuantEvidenceParser.getSpectrumToPeptides().get(msmsId)) {
                 setPeptideRelations(spectrum, evidenceId);
@@ -302,32 +292,6 @@ public class MaxQuantParser {
         } else {
             throw new IllegalStateException("No peptide without associated spectrum found for " + evidenceId);
         }
-    }
-
-    /**
-     * Copy the given peptide.
-     *
-     * @param peptide the {@link Peptide} instance
-     * @return the cloned peptide
-     */
-    private Peptide copyPeptide(Peptide peptide) {
-        Peptide copiedPeptide = new Peptide();
-
-//        copiedPeptide.setSequence(peptide.getSequence());
-//        copiedPeptide.setTheoreticalMass(peptide.getTheoreticalMass());
-//        copiedPeptide.setCharge(peptide.getCharge());
-//        copiedPeptide.setPsmProbability(peptide.getPsmProbability());
-//        copiedPeptide.setPsmPostErrorProbability(peptide.getPsmPostErrorProbability());
-//        peptide.getPeptideHasModifications().forEach(peptideHasModification -> {
-//            PeptideHasModification copiedPeptideHasModification = new PeptideHasModification();
-//            copiedPeptideHasModification.setLocation(peptideHasModification.getLocation());
-//            if(peptideHasModification.getProbabilityScore()){
-//
-//            }
-//            peptide.getPeptideHasModifications()
-//        });
-
-        return copiedPeptide;
     }
 
     /**

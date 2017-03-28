@@ -494,18 +494,18 @@ public class MzTabExporter {
         List<String> accessions = new ArrayList<>();
         //parse fasta files
         parseFastaFiles();
-        for (int i = 0; i < proteinList.size(); i++) {
-            if (!accessions.contains(proteinList.get(i).getMainAccession())) {
+        for (ProteinGroupDTO aProteinList : proteinList) {
+            if (!accessions.contains(aProteinList.getMainAccession())) {
                 StringBuilder proteins = new StringBuilder();
                 // set prefix and accession
-                proteins.append(PROTEINS_PREFIX).append(COLUMN_DELIMITER).append(proteinList.get(i).getMainAccession()).append(COLUMN_DELIMITER);
+                proteins.append(PROTEINS_PREFIX).append(COLUMN_DELIMITER).append(aProteinList.getMainAccession()).append(COLUMN_DELIMITER);
 
                 // we do not know which fasta file protein sequence comes from.
-                FastaDb fastaFile = findFastaDb(proteinList.get(i).getMainAccession());
+                FastaDb fastaFile = findFastaDb(aProteinList.getMainAccession());
 
                 //(key: information type; value: protein sequence and functional information)
                 // no need to contaminant prefix because accession converter handles the prefix.
-                Map<String, String> uniProtMap = uniprotProteinUtils.getFastaDbUniprotInformation(proteinList.get(i).getMainAccession(), fastaFile);
+                Map<String, String> uniProtMap = uniprotProteinUtils.getFastaDbUniprotInformation(aProteinList.getMainAccession(), fastaFile);
 
                 // if uniprot map has values
                 if (!uniProtMap.isEmpty()) {
@@ -521,11 +521,11 @@ public class MzTabExporter {
                 // set search engine
                 proteins.append(getSearchEngine()).append(COLUMN_DELIMITER);
 
-                // set best search engine score for protein. 
-                proteins.append(proteinList.get(i).getProteinPostErrorProbability()).append(COLUMN_DELIMITER);
+                // set best search engine score for protein.
+                proteins.append(aProteinList.getProteinPostErrorProbability()).append(COLUMN_DELIMITER);
 
                 // set ambiguity members
-                proteins.append(getAmbiguityMembers(proteinList.get(i).getId())).append(COLUMN_DELIMITER);
+                proteins.append(getAmbiguityMembers(aProteinList.getId())).append(COLUMN_DELIMITER);
 
                 // set modification (null, beacuse protein level modification is not reported)
                 proteins.append("null").append(COLUMN_DELIMITER);
@@ -533,10 +533,10 @@ public class MzTabExporter {
                 // set protein coverage
                 if (type == 2 || type == 4) {
                     Set<String> peptideSequences = new HashSet<>();
-                    for (PeptideHasProteinGroup peptideHasProteinGroup : proteinGroupService.findById(proteinList.get(i).getId()).getPeptideHasProteinGroups()) {
+                    for (PeptideHasProteinGroup peptideHasProteinGroup : proteinGroupService.findById(aProteinList.getId()).getPeptideHasProteinGroups()) {
                         peptideSequences.add(peptideHasProteinGroup.getPeptide().getSequence());
                     }
-                    proteins.append(SequenceUtils.calculateProteinCoverage(proteinList.get(i).getMainSequence(), peptideSequences)).append(COLUMN_DELIMITER);
+                    proteins.append(SequenceUtils.calculateProteinCoverage(aProteinList.getMainSequence(), peptideSequences)).append(COLUMN_DELIMITER);
 
                 }
 
@@ -548,7 +548,7 @@ public class MzTabExporter {
                         double abundanceMean;
                         double stdDev;
                         for (int j = 0; j < studyVariablesAssaysRefs.getValue().length; j++) {
-                            abundanceArray[j] = getProteinAbundanceForAssay(proteinList.get(i), String.format(ASSAY, studyVariablesAssaysRefs.getValue()[j]));
+                            abundanceArray[j] = getProteinAbundanceForAssay(aProteinList, String.format(ASSAY, studyVariablesAssaysRefs.getValue()[j]));
                             abundanceSum += abundanceArray[j];
                         }
                         if (studyVariablesAssaysRefs.getValue().length != 0) {
@@ -586,9 +586,9 @@ public class MzTabExporter {
                     for (int j = 0; j < mzTabExport.getRuns().size(); j++) {
                         List<Long> analyticalRunIdList = new ArrayList<>(1);
                         analyticalRunIdList.add(mzTabExport.getRuns().get(j).getId());
-                        proteins.append(peptideService.getPeptideDTOs(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
-                        proteins.append(peptideService.getDistinctPeptideSequence(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
-                        proteins.append(peptideService.getUniquePeptides(proteinList.get(i).getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
+                        proteins.append(peptideService.getPeptideDTOs(aProteinList.getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
+                        proteins.append(peptideService.getDistinctPeptideSequence(aProteinList.getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
+                        proteins.append(peptideService.getUniquePeptides(aProteinList.getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
                     }
                 }
 
@@ -596,13 +596,13 @@ public class MzTabExporter {
                 if (type == 1 || type == 2) {
                     for (int r = 0; r < mzTabExport.getRuns().size(); r++) {
                         for (int j = 0; j < mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(r)).length; j++) {
-                            proteins.append(getProteinAbundanceForAssay(proteinList.get(i), String.format(ASSAY, mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(r))[j]))).append(COLUMN_DELIMITER);
+                            proteins.append(getProteinAbundanceForAssay(aProteinList, String.format(ASSAY, mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(r))[j]))).append(COLUMN_DELIMITER);
                         }
                     }
                 }
 
                 pw.println(proteins);
-                accessions.add(proteinList.get(i).getMainAccession());
+                accessions.add(aProteinList.getMainAccession());
             }
         }
     }
@@ -627,9 +627,7 @@ public class MzTabExporter {
      */
     private void addPSMData(PrintWriter pw) throws IOException {
         List<Long> analyticalRunIds = new ArrayList<>();
-        mzTabExport.getRuns().forEach(analyticalRun -> {
-            analyticalRunIds.add(analyticalRun.getId());
-        });
+        mzTabExport.getRuns().forEach(analyticalRun -> analyticalRunIds.add(analyticalRun.getId()));
         Map<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroups = getPeptideHasProteinGroupForAnalyticalRuns(analyticalRunIds);
         for (Map.Entry<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroup : peptideHasProteinGroups.entrySet()) {
             StringBuilder psms = new StringBuilder();
@@ -781,9 +779,8 @@ public class MzTabExporter {
      * @return ontology list string
      */
     private String createOntology(String ontology, String accession, String name) {
-        String ontologyBuilder = OPEN_BRACKET + ontology + COMMA_SEPARATOR + accession + COMMA_SEPARATOR
+        return OPEN_BRACKET + ontology + COMMA_SEPARATOR + accession + COMMA_SEPARATOR
                 + name + COMMA_SEPARATOR + CLOSE_BRACKET;
-        return ontologyBuilder;
     }
 
     /**
@@ -836,9 +833,7 @@ public class MzTabExporter {
         List<ProteinGroupHasProtein> proteinGroupHasProteins = proteinGroupService.getAmbiguityMembers(proteinGroupId);
 
         StringBuilder ambiguityMembers = new StringBuilder("");
-        proteinGroupHasProteins.stream().forEach((proteinGroupHasProtein) -> {
-            ambiguityMembers.append(proteinGroupHasProtein.getProteinAccession()).append(",");
-        });
+        proteinGroupHasProteins.stream().forEach((proteinGroupHasProtein) -> ambiguityMembers.append(proteinGroupHasProtein.getProteinAccession()).append(","));
         if (ambiguityMembers.toString().equals("")) {
             return null;
         } else {
@@ -913,9 +908,7 @@ public class MzTabExporter {
      */
     private boolean isPeptideUnique(Map<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroups, Peptide peptide) {
         List<Peptide> peptides = new ArrayList<>();
-        peptideHasProteinGroups.keySet().stream().filter(p -> Objects.equals(p.getPeptide().getId(), peptide.getId())).forEach(peptideHasProteinGroup -> {
-            peptides.add(peptideHasProteinGroup.getPeptide());
-        });
+        peptideHasProteinGroups.keySet().stream().filter(p -> Objects.equals(p.getPeptide().getId(), peptide.getId())).forEach(peptideHasProteinGroup -> peptides.add(peptideHasProteinGroup.getPeptide()));
         return peptides.size() == 1;
     }
 

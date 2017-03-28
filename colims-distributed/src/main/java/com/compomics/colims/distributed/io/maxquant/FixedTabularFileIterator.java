@@ -96,9 +96,7 @@ public class FixedTabularFileIterator<T extends Enum<T>> implements Iterable<Map
     public EnumMap<T, String> next() {
         EnumMap<T, String> lineValues = new EnumMap<>(maxQuantHeaders.getEnumType());
 
-        headerIndexes.entrySet().stream().forEach((entry) -> {
-            lineValues.put(entry.getKey(), nextLine[entry.getValue()]);
-        });
+        headerIndexes.entrySet().stream().forEach((entry) -> lineValues.put(entry.getKey(), nextLine[entry.getValue()]));
 
         //advance to the next line for the next invocation
         advanceLine();

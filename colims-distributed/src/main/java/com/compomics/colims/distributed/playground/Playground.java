@@ -1,12 +1,10 @@
 
 package com.compomics.colims.distributed.playground;
 
-import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.core.service.UserService;
-import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSpectraParser;
 import com.compomics.colims.model.*;
@@ -15,7 +13,7 @@ import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import java.io.File;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;

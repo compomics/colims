@@ -1,10 +1,7 @@
 
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.model.FastaDb;
-import com.compomics.colims.model.SearchAndValidationSettings;
 import com.compomics.colims.model.SearchEngine;
-import com.compomics.colims.model.SearchSettingsHasFastaDb;
 import com.compomics.colims.model.enums.SearchEngineType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,8 +11,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 /**

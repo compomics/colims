@@ -551,11 +551,11 @@ public class ProjectManagementController implements Controllable {
             }
         } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.RUNS_ADDED)) {
             Optional<Sample> foundSample = samples.stream().filter(sample -> sample.getId().equals(sampleChangeEvent.getSampleId())).findFirst();
-            if (foundSample.isPresent()) {
+            foundSample.ifPresent(sample -> {
                 //update the runs
-                foundSample.get().setAnalyticalRuns(sampleChangeEvent.getAnalyticalRuns());
+                sample.setAnalyticalRuns(sampleChangeEvent.getAnalyticalRuns());
                 samplesSelectionModel.clearSelection();
-            }
+            });
         }
     }
 
@@ -584,7 +584,7 @@ public class ProjectManagementController implements Controllable {
      * is shown in case the queue cannot be reached or in case of an IOException
      * thrown by the sendDbTask method.
      *
-     * @param entity the database entity to delete
+     * @param entity        the database entity to delete
      * @param dbEntityClass the database entity class
      * @return true if the delete task is confirmed.
      */

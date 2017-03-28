@@ -172,7 +172,7 @@ public class FastaDbSaveUpdateController implements Controllable {
 
         Path fastasDirectory = Paths.get(fastasPath);
         if (!Files.exists(fastasDirectory)) {
-            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasPath.toString() + " doesn't exist.");
+            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasPath + " doesn't exist.");
         }
 
         //init FASTA file selection
@@ -295,13 +295,9 @@ public class FastaDbSaveUpdateController implements Controllable {
             headerParseRuleAdditionDialog.dispose();
         });
 
-        headerParseRuleAdditionDialog.getCloseButton().addActionListener(e -> {
-            headerParseRuleAdditionDialog.dispose();
-        });
+        headerParseRuleAdditionDialog.getCloseButton().addActionListener(e -> headerParseRuleAdditionDialog.dispose());
 
-        headerParseRuleTestDialog.getCloseButton().addActionListener(e -> {
-            headerParseRuleTestDialog.dispose();
-        });
+        headerParseRuleTestDialog.getCloseButton().addActionListener(e -> headerParseRuleTestDialog.dispose());
     }
 
     @Override
@@ -472,7 +468,7 @@ public class FastaDbSaveUpdateController implements Controllable {
     private void populateDatabaseComboBox(TreeSet<String> dbNames) {
         databaseNamesBindingList.add(DATABASE_NAME_NOT_PRESENT);
 
-        dbNames.forEach(databaseNames::add);
+        databaseNames.addAll(dbNames);
     }
 }
 

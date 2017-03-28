@@ -188,13 +188,9 @@ public class MaxQuantDataImportController implements Controllable {
             }
         });
 
-        maxQuantDataImportPanel.getContaminantsCheckBox().addActionListener(e -> {
-            includeContaminants = true;
-        });
+        maxQuantDataImportPanel.getContaminantsCheckBox().addActionListener(e -> includeContaminants = true);
 
-        maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().addActionListener(e -> {
-            includeUnidentifiedSpectra = true;
-        });
+        maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().addActionListener(e -> includeUnidentifiedSpectra = true);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.compomics.colims.core.io;
 
 import com.compomics.colims.model.enums.FastaDbType;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.List;

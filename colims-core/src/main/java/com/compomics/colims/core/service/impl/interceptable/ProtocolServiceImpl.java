@@ -41,9 +41,7 @@ public class ProtocolServiceImpl implements ProtocolService {
         List<Protocol> protocols = protocolRepository.findAllOrderedByName();
 
         //fetch other CV params
-        protocols.stream().forEach((protocol) -> {
-            protocol.getOtherCvParams().size();
-        });
+        protocols.stream().forEach((protocol) -> protocol.getOtherCvParams().size());
 
         return protocols;
     }
