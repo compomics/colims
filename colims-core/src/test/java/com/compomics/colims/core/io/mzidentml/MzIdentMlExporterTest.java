@@ -36,7 +36,6 @@ public class MzIdentMlExporterTest {
     @Autowired
     private UserService userService;
 
-
     /**
      * Test the MZIdentML export of an analytical run.
      *

@@ -133,7 +133,6 @@ public class Material extends AuditableDatabaseEntity {
         if (tissue != null ? !tissue.equals(material.tissue) : material.tissue != null) return false;
         if (cellType != null ? !cellType.equals(material.cellType) : material.cellType != null) return false;
         return !(compartment != null ? !compartment.equals(material.compartment) : material.compartment != null);
-
     }
 
     @Override

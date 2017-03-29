@@ -38,12 +38,12 @@ public class ColimsSpectrumMapper {
      * Map the utilities spectrum onto the colims spectrum.
      *
      * @param sourceSpectrum the colims spectrum
-     * @param targetSpectrum the utilities MSnSpectrum
-     * @throws MappingException
+     * @return the mapped utilities MSnSpectrum
+     * @throws MappingException in case of a mapping related error
      */
-    public void map(final Spectrum sourceSpectrum, final MSnSpectrum targetSpectrum) throws MappingException {
-        if (sourceSpectrum == null || targetSpectrum == null) {
-            throw new IllegalArgumentException("The source and/or target of the mapping are null");
+    public MSnSpectrum map(final Spectrum sourceSpectrum) throws MappingException {
+        if (sourceSpectrum == null) {
+            throw new IllegalArgumentException("The source of the mapping is null");
         }
 
         LOGGER.debug("Start mapping MSnSpectrum with title" + sourceSpectrum.getTitle());
@@ -56,11 +56,14 @@ public class ColimsSpectrumMapper {
             chargeList.add(new Charge(1, sourceSpectrum.getCharge()));
         }
         Precursor precursor = new Precursor(retentionTime, mzRatio, sourceSpectrum.getIntensity(), chargeList);
-        targetSpectrum.setPrecursor(precursor);
+
+        //create the MSn spectrum with the source spectrum accession as target spectrum file name
+        MSnSpectrum targetSpectrum = new MSnSpectrum(2, precursor, sourceSpectrum.getTitle(), sourceSpectrum.getAccession());
+
         //Add other parameters
         targetSpectrum.setScanNumber(sourceSpectrum.getScanNumber().toString());
         targetSpectrum.setScanStartTime(sourceSpectrum.getScanTime());
-        targetSpectrum.setSpectrumTitle(sourceSpectrum.getTitle());
+
         //Add peaks
         for (SpectrumFile aFile : sourceSpectrum.getSpectrumFiles()) {
             try {
@@ -71,5 +74,7 @@ public class ColimsSpectrumMapper {
                 throw new MappingException(ex);
             }
         }
+
+        return targetSpectrum;
     }
 }

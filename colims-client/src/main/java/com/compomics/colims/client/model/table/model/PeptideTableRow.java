@@ -33,7 +33,7 @@ public class PeptideTableRow {
     /**
      * Constructor.
      *
-     * @param peptideDTO the PeptideDTO instance
+     * @param peptideDTO      the PeptideDTO instance
      * @param proteinSequence the main group protein sequence
      */
     public PeptideTableRow(PeptideDTO peptideDTO, String proteinSequence) {
@@ -84,13 +84,17 @@ public class PeptideTableRow {
      *
      * @return the peptide confidence
      */
-    public double getPeptideConfidence() {
-        double confidence = 100.0 * (1 - peptideDTOs.get(0).getPeptidePostErrorProbability());
-        if (confidence <= 0) {
-            confidence = 0;
-        }
+    public Double getPeptideConfidence() {
+        if (peptideDTOs.get(0).getPeptidePostErrorProbability() != null) {
+            double confidence = 100.0 * (1 - peptideDTOs.get(0).getPeptidePostErrorProbability());
+            if (confidence <= 0) {
+                confidence = 0;
+            }
 
-        return confidence;
+            return confidence;
+        } else {
+            return null;
+        }
     }
 
     /**

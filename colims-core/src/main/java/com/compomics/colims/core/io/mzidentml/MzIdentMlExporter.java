@@ -13,6 +13,7 @@ import com.compomics.colims.core.util.SequenceUtils;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.SearchModification;
+import com.compomics.colims.model.cv.*;
 import com.compomics.colims.model.enums.*;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
@@ -30,8 +31,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.jmzidml.model.MzIdentMLObject;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
+import uk.ac.ebi.jmzidml.model.mzidml.CvParam;
 import uk.ac.ebi.jmzidml.model.mzidml.Modification;
 import uk.ac.ebi.jmzidml.model.mzidml.Role;
+import uk.ac.ebi.jmzidml.model.mzidml.params.AdditionalSearchParamsCvParam;
+import uk.ac.ebi.jmzidml.model.mzidml.params.AdditionalSearchParamsUserParam;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLMarshaller;
 
 import javax.annotation.PostConstruct;
@@ -41,6 +45,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -127,6 +132,7 @@ public class MzIdentMlExporter {
     private final ProteinGroupService proteinGroupService;
     private final PeptideService peptideService;
     private final SpectrumService spectrumService;
+    private final AnalyticalRunService analyticalRunService;
 
     @Autowired
     public MzIdentMlExporter(OlsService olsService, SearchAndValidationSettingsService searchAndValidationSettingsService,
@@ -134,6 +140,7 @@ public class MzIdentMlExporter {
                              ProteinGroupService proteinGroupService,
                              PeptideService peptideService,
                              SpectrumService spectrumService,
+                             AnalyticalRunService analyticalRunService,
                              OntologyMapper ontologyMapper) {
         this.olsService = olsService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
@@ -141,6 +148,7 @@ public class MzIdentMlExporter {
         this.proteinGroupService = proteinGroupService;
         this.peptideService = peptideService;
         this.spectrumService = spectrumService;
+        this.analyticalRunService = analyticalRunService;
         //get the modification mappings from the OntologyMapper
         modificationMappings = ontologyMapper.getMaxQuantMapping().getModifications();
     }
@@ -692,6 +700,37 @@ public class MzIdentMlExporter {
         }
         proteinDetectionProtocol.getThreshold().getCvParam().add(proteinThreshold);
         collection.setProteinDetectionProtocol(proteinDetectionProtocol);
+
+        //add additional search parameters for the instrument('s) type and name
+        ParamList additionalSearchParams = new ParamList();
+        spectrumIdentificationProtocol.setAdditionalSearchParams(additionalSearchParams);
+        //fetch the instrument(s)
+        mzIdentMlExport.getAnalyticalRuns().forEach(analyticalRun -> analyticalRunService.fetchInstrument(analyticalRun));
+        //filter out duplicate IDs
+        Map<Long, Instrument> instruments = mzIdentMlExport.getAnalyticalRuns()
+                .stream()
+                .map(analyticalRun -> analyticalRun.getInstrument())
+                .collect(Collectors.toMap(Instrument::getId, Function.identity(), (instrument1, instrument2) -> instrument1));
+        int instrumentIndex = 1;
+        for (Instrument instrument : instruments.values()) {
+            AdditionalSearchParamsUserParam instrumentNameUserParam = new AdditionalSearchParamsUserParam();
+            instrumentNameUserParam.setName("Instrument " + instrumentIndex + " name");
+            instrumentNameUserParam.setValue(instrument.getName());
+
+            additionalSearchParams.getUserParam().add(instrumentNameUserParam);
+
+            instrumentIndex++;
+
+            //set the instrument type as a an additional search CV param
+            InstrumentCvParam instrumentType = instrument.getType();
+            AdditionalSearchParamsCvParam instrumentTypeCvParam = new AdditionalSearchParamsCvParam();
+            instrumentTypeCvParam.setAccession(instrumentType.getAccession());
+            instrumentTypeCvParam.setName(instrumentType.getName());
+            updateCvList(instrumentType.getLabel());
+            instrumentTypeCvParam.setCv(cvs.get(instrumentType.getLabel()));
+
+            additionalSearchParams.getCvParam().add(instrumentTypeCvParam);
+        }
 
         return collection;
     }

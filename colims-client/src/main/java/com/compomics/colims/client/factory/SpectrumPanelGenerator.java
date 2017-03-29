@@ -136,9 +136,8 @@ public class SpectrumPanelGenerator {
         //fetch the spectrum files associated with this spectrum
         spectrumService.fetchSpectrumFiles(spectrum);
 
-        MSnSpectrum msnSpectrum = new MSnSpectrum();
         //map the Colims Spectrum instance onto the Utilities MSnSpectrum instance
-        colimsSpectrumMapper.map(spectrum, msnSpectrum);
+        MSnSpectrum msnSpectrum = colimsSpectrumMapper.map(spectrum);
 
         //construct the spectrum panel
         Collection<Peak> peaks = msnSpectrum.getPeakList();
@@ -174,7 +173,7 @@ public class SpectrumPanelGenerator {
             PeptideSpectrumAnnotator peptideSpectrumAnnotator = new PeptideSpectrumAnnotator();
 
             SpecificAnnotationSettings specificAnnotationSettings = annotationSettings.getSpecificAnnotationPreferences(
-                    msnSpectrum.getSpectrumKey(),
+                    msnSpectrum.getSpectrumTitle(),
                     peptideAssumption,
                     new SequenceMatchingPreferences(),
                     new SequenceMatchingPreferences()

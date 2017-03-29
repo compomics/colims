@@ -140,9 +140,8 @@ public class Instrument extends AuditableDatabaseEntity {
         if (!name.equals(that.name)) return false;
         if (type != null ? !type.equals(that.type) : that.type != null) return false;
         if (source != null ? !source.equals(that.source) : that.source != null) return false;
-        if (detector != null ? !detector.equals(that.detector) : that.detector != null) return false;
+        if (detector != null ? detector.equals(that.detector) : that.detector == null) return false;
         return !(analyzers != null ? !analyzers.equals(that.analyzers) : that.analyzers != null);
-
     }
 
     @Override
@@ -151,7 +150,6 @@ public class Instrument extends AuditableDatabaseEntity {
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (source != null ? source.hashCode() : 0);
         result = 31 * result + (detector != null ? detector.hashCode() : 0);
-        result = 31 * result + (analyzers != null ? analyzers.hashCode() : 0);
         return result;
     }
 
