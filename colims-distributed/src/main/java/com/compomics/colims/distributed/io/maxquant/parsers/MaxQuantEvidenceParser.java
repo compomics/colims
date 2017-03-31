@@ -185,7 +185,9 @@ public class MaxQuantEvidenceParser {
         peptide.setCharge(Integer.parseInt(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.CHARGE))));
         peptide.setSequence(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE)));
         peptide.setTheoreticalMass(Double.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS))));
-        peptide.setMassError(Double.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS_ERROR))));
+        if (!evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS_ERROR)).equalsIgnoreCase(NAN)) {
+            peptide.setMassError(Double.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS_ERROR))));
+        }
         peptide.getPeptideHasModifications().addAll(createModifications(peptide, evidenceEntry));
 
         //add to the peptideToProteinGroups map

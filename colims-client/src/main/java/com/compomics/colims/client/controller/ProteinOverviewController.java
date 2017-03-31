@@ -32,6 +32,7 @@ import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.util.CompareUtils;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.util.gui.TableProperties;
@@ -164,7 +165,7 @@ public class ProteinOverviewController implements Controllable {
                 proteinOverviewPanel.getPeptideTable(), sortedPeptides, TableComparatorChooser.SINGLE_COLUMN);
 
         //init PSM table
-        SortedList<Peptide> sortedPsms = new SortedList<>(psms, Comparator.comparing(Peptide::getPsmPostErrorProbability));
+        SortedList<Peptide> sortedPsms = new SortedList<>(psms, Comparator.comparing(Peptide::getPsmPostErrorProbability, Comparator.nullsLast(Comparator.naturalOrder())));
 
         psmTableModel = GlazedListsSwing.eventTableModel(sortedPsms, psmTableFormat);
         proteinOverviewPanel.getPsmTable().setModel(psmTableModel);
@@ -251,8 +252,8 @@ public class ProteinOverviewController implements Controllable {
                 //@TODO think about how to handle runs with different search settings
                 //load search settings for the first run
                 spectrumPanelGenerator.loadSettingsForRun(selectedAnalyticalRuns.get(0));
-                //set search parameters in PSM table formatter
-                psmTableFormat.setSearchParameters(selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters());
+                //set search type in PSM table formatter
+                psmTableFormat.setSearchEngineType(selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType());
 
                 setPsmTableCellRenderers();
 
@@ -310,6 +311,9 @@ public class ProteinOverviewController implements Controllable {
                     PeptideTableRow selectedPeptideTableRow = peptideSelectionModel.getSelected().get(0);
                     List<Peptide> selectedPsms = selectedPeptideTableRow.getPeptides();
 
+                    if(selectedPsms == null || psms == null){
+                        System.out.println("=-----------");
+                    }
                     GlazedLists.replaceAll(psms, selectedPsms, false);
                 }
             }
@@ -643,9 +647,9 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename File to be saved as [filename].tsv
+     * @param filename   File to be saved as [filename].tsv
      * @param tableModel A table model to retrieve data from
-     * @param <T> Class extending TableModel
+     * @param <T>        Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel) {
         exportTable(filename, tableModel, new HashMap<>());
@@ -654,10 +658,10 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename File to be saved as [filename].tsv
-     * @param tableModel A table model to retrieve data from
+     * @param filename      File to be saved as [filename].tsv
+     * @param tableModel    A table model to retrieve data from
      * @param columnFilters Patterns to match and filter values
-     * @param <T> Class extending TableModel
+     * @param <T>           Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel, Map<Integer, Pattern> columnFilters) {
         try (FileWriter fileWriter = new FileWriter(filename + ".tsv")) {
