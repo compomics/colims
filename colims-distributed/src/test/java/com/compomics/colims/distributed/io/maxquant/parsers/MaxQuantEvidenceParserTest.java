@@ -56,6 +56,11 @@ public class MaxQuantEvidenceParserTest {
         //check a peptide with a terminal modification
         List<Peptide> peptides = maxQuantEvidenceParser.getPeptides().get(737);
         Peptide peptide = peptides.get(0);
+        Assert.assertNull(peptide.getPsmProbability());
+        Assert.assertNull(peptide.getPsmPostErrorProbability());
+        Assert.assertEquals(2, peptide.getCharge().intValue());
+        Assert.assertEquals(1029.52771, peptide.getTheoreticalMass(), 0.001);
+        Assert.assertEquals(-1.3998, peptide.getMassError(), 0.001);
         Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
         PeptideHasModification peptideHasModification = peptide.getPeptideHasModifications().get(0);
         Assert.assertEquals(0, peptideHasModification.getLocation().intValue());
@@ -82,6 +87,8 @@ public class MaxQuantEvidenceParserTest {
         //check a peptide with 2 modifications
         peptides = maxQuantEvidenceParser.getPeptides().get(6239);
         peptide = peptides.get(0);
+        Assert.assertEquals(43.066, peptide.getPsmProbability(), 0.001);
+        Assert.assertEquals(0.018231, peptide.getPsmPostErrorProbability(), 0.001);
         Assert.assertEquals(2, peptide.getPeptideHasModifications().size());
         peptideHasModification = peptide.getPeptideHasModifications().get(0);
         Assert.assertEquals(5, peptideHasModification.getLocation().intValue());

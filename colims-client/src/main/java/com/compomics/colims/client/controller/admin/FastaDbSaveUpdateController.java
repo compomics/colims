@@ -52,7 +52,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static com.compomics.colims.client.controller.admin.FastaDbManagementController.DATABASE_NAME_NOT_PRESENT;
-import static com.compomics.colims.client.controller.admin.FastaDbManagementController.UNKNOWN;
+import static com.compomics.colims.client.controller.admin.FastaDbManagementController.NONE;
 
 /**
  * @author demet
@@ -383,7 +383,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbToEdit.setFileName(fastaDbSaveUpdatePanel.getFileNameTextField().getText());
         fastaDbToEdit.setFilePath(fastaDbSaveUpdatePanel.getFilePathTextField().getText());
 
-        if (fastaDbSaveUpdatePanel.getVersionTextField().getText().isEmpty() || fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(UNKNOWN)) {
+        if (fastaDbSaveUpdatePanel.getVersionTextField().getText().isEmpty() || fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(NONE)) {
             fastaDbToEdit.setVersion(null);
         } else {
             fastaDbToEdit.setVersion(fastaDbSaveUpdatePanel.getVersionTextField().getText());

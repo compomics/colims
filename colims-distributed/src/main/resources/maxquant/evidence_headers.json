@@ -70,5 +70,11 @@
     "values": [
       "id"
     ]
+  },
+  "MASS_ERROR": {
+    "mandatory": true,
+    "values": [
+      "Mass Error [ppm]"
+    ]
   }
 }

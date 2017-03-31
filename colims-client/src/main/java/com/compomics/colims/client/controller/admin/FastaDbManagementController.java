@@ -52,7 +52,7 @@ public class FastaDbManagementController implements Controllable {
     /**
      * The value shown in the user interface if a {@link FastaDb} property is empty.
      */
-    public static final String UNKNOWN = "unknown";
+    public static final String NONE = "none";
     /**
      * The default taxonomy value for the taxonomy combo box.
      */
@@ -150,7 +150,7 @@ public class FastaDbManagementController implements Controllable {
                     }
                     fastaDbManagementDialog.getHeaderParseRuleTextField().setText(fastaDb.getHeaderParseRule());
                     if (fastaDb.getVersion() == null) {
-                        fastaDb.setVersion(UNKNOWN);
+                        fastaDb.setVersion(NONE);
                     }
                     fastaDbManagementDialog.getVersionTextField().setText(fastaDb.getVersion());
 
