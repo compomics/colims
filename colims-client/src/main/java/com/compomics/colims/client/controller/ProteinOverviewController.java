@@ -28,10 +28,7 @@ import com.compomics.colims.client.view.SpectrumDialog;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.util.CompareUtils;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
@@ -311,7 +308,7 @@ public class ProteinOverviewController implements Controllable {
                     PeptideTableRow selectedPeptideTableRow = peptideSelectionModel.getSelected().get(0);
                     List<Peptide> selectedPsms = selectedPeptideTableRow.getPeptides();
 
-                    if(selectedPsms == null || psms == null){
+                    if (selectedPsms == null || psms == null) {
                         System.out.println("=-----------");
                     }
                     GlazedLists.replaceAll(psms, selectedPsms, false);
@@ -634,13 +631,17 @@ public class ProteinOverviewController implements Controllable {
      */
     private void showPsmPopDialog(Peptide peptide) {
         try {
-            SpectrumDialog spectrumDialog = spectrumPanelGenerator.generateSpectrumDialog(mainController.getMainFrame(), peptide);
+            if (!peptide.getSpectrum().getAccession().equals(Spectrum.MBR_SPECTRUM_ACCESSION)) {
+                SpectrumDialog spectrumDialog = spectrumPanelGenerator.generateSpectrumDialog(mainController.getMainFrame(), peptide);
 
-            GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), spectrumDialog);
-            spectrumDialog.setVisible(true);
+                GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), spectrumDialog);
+                spectrumDialog.setVisible(true);
+            } else {
+                eventBus.post(new MessageEvent("Spectrum dialog", "The selected PSM is a matching-between-runs identification.", JOptionPane.WARNING_MESSAGE));
+            }
         } catch (MappingException | InterruptedException | SQLException | IOException | ClassNotFoundException e) {
             LOGGER.error(e, e.getCause());
-            eventBus.post(new MessageEvent("Spectrum dialog problem", "The spectrum cannot be shown", JOptionPane.ERROR_MESSAGE));
+            eventBus.post(new MessageEvent("Spectrum dialog problem", "The spectrum cannot be shown", JOptionPane.INFORMATION_MESSAGE));
         }
     }
 

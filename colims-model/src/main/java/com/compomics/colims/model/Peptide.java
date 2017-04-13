@@ -60,6 +60,18 @@ public class Peptide extends DatabaseEntity {
     @Column(name = "mass_error", nullable = true)
     private Double massError;
     /**
+     * The matched fragment ions separated by semi-colon.
+     */
+    @Basic(optional = true)
+    @Column(name = "fragment_ions", nullable = true, length = 500)
+    private String fragmentIons;
+    /**
+     * The matched fragment ion masses separated by semi-colon.
+     */
+    @Basic(optional = true)
+    @Column(name = "fragment_masses", nullable = true, length = 1000)
+    private String fragmentMasses;
+    /**
      * The spectrum identified by this peptide.
      */
     @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
@@ -138,6 +150,22 @@ public class Peptide extends DatabaseEntity {
 
     public void setMassError(Double massError) {
         this.massError = massError;
+    }
+
+    public String getFragmentIons() {
+        return fragmentIons;
+    }
+
+    public void setFragmentIons(String fragmentIons) {
+        this.fragmentIons = fragmentIons;
+    }
+
+    public String getFragmentMasses() {
+        return fragmentMasses;
+    }
+
+    public void setFragmentMasses(String fragmentMasses) {
+        this.fragmentMasses = fragmentMasses;
     }
 
     public List<PeptideHasModification> getPeptideHasModifications() {

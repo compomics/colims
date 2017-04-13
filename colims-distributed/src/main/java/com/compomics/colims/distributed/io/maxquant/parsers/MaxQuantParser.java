@@ -152,14 +152,14 @@ public class MaxQuantParser {
             Set<String> aplKeys = maxQuantSpectraParser.getMaxQuantSpectra().getRunToSpectrums().get(runName);
             aplKeys.forEach(aplKey -> {
                 //get the spectrum by it's key
-                Spectrum spectrum = maxQuantSpectraParser.getMaxQuantSpectra().getSpectra().get(aplKey);
+                AnnotatedSpectrum annotatedSpectrum = maxQuantSpectraParser.getMaxQuantSpectra().getSpectra().get(aplKey);
 
                 //set the entity relations between run and spectrum
-                run.getSpectrums().add(spectrum);
-                spectrum.setAnalyticalRun(run);
+                run.getSpectrums().add(annotatedSpectrum.getSpectrum());
+                annotatedSpectrum.getSpectrum().setAnalyticalRun(run);
 
                 //set the child entity relations for the spectrum
-                setSpectrumRelations(aplKey, spectrum);
+                setSpectrumRelations(aplKey, annotatedSpectrum);
             });
         });
 
@@ -178,7 +178,7 @@ public class MaxQuantParser {
                 spectrum.setAnalyticalRun(run);
 
                 //set the child relations for the spectrum
-                setPeptideRelations(spectrum, evidenceId);
+                setPeptideRelations(spectrum, null, null, evidenceId);
             });
 
         });
@@ -241,16 +241,16 @@ public class MaxQuantParser {
     /**
      * Create the necessary relationships for the children of a spectrum.
      *
-     * @param aplKey   the apl spectrum key
-     * @param spectrum the {@link Spectrum} instance
+     * @param aplKey            the apl annotatedSpectrum key
+     * @param annotatedSpectrum the {@link AnnotatedSpectrum} instance
      */
-    private void setSpectrumRelations(String aplKey, Spectrum spectrum) {
-        //get the msms.txt IDs associated with the given spectrum
+    private void setSpectrumRelations(String aplKey, AnnotatedSpectrum annotatedSpectrum) {
+        //get the msms.txt IDs associated with the given annotatedSpectrum
         Set<Integer> msmsIds = maxQuantSpectraParser.getMaxQuantSpectra().getSpectrumToPsms().get(aplKey);
         for (Integer msmsId : msmsIds) {
             //get the evidence IDs associated with the msms ID
             for (Integer evidenceId : maxQuantEvidenceParser.getSpectrumToPeptides().get(msmsId)) {
-                setPeptideRelations(spectrum, evidenceId);
+                setPeptideRelations(annotatedSpectrum.getSpectrum(), annotatedSpectrum.getIonMatches(), annotatedSpectrum.getFragmentMasses(), evidenceId);
             }
         }
     }
@@ -258,10 +258,12 @@ public class MaxQuantParser {
     /**
      * Create the necessary relationships for the children of a peptide.
      *
-     * @param spectrum   the associated {@link Spectrum} instance
-     * @param evidenceId the peptide evidence ID
+     * @param spectrum       the associated {@link Spectrum} instance
+     * @param matchedIons    the matched fragment ions
+     * @param fragmentMasses the matched fragment masses
+     * @param evidenceId     the peptide evidence ID
      */
-    private void setPeptideRelations(Spectrum spectrum, Integer evidenceId) {
+    private void setPeptideRelations(Spectrum spectrum, String matchedIons, String fragmentMasses, Integer evidenceId) {
         //get the associated peptides by their evidence ID
         List<Peptide> peptides = maxQuantEvidenceParser.getPeptides().get(evidenceId);
 
@@ -285,6 +287,12 @@ public class MaxQuantParser {
                 //set peptideHasProteinGroups in peptide
                 peptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
             });
+
+            //set matched fragment ions and masses
+            if (matchedIons != null && fragmentMasses != null) {
+                peptide.setFragmentIons(matchedIons);
+                peptide.setFragmentMasses(fragmentMasses);
+            }
 
             //set entity relations between Spectrum and Peptide
             spectrum.getPeptides().add(peptide);

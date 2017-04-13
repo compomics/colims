@@ -51,14 +51,16 @@ public class MaxQuantAplParserTest {
         Spectrum spectrum1 = new Spectrum();
         spectrum1.setAccession("acc_1");
         spectrum1.setRetentionTime(123.45);
-        maxQuantSpectra.getSpectra().put(spectrumKey1, spectrum1);
+        AnnotatedSpectrum annotatedSpectrum1 = new AnnotatedSpectrum(spectrum1, "y2;y3", "1234.334424242;3445.556664");
+        maxQuantSpectra.getSpectra().put(spectrumKey1, annotatedSpectrum1);
 
         //create another dummy spectrum one
         String spectrumKey2 = "RawFile: 20130607_FI_Ubiquitin_7 Index: 3175";
         Spectrum spectrum2 = new Spectrum();
         spectrum2.setAccession("acc_2");
         spectrum2.setRetentionTime(123.46);
-        maxQuantSpectra.getSpectra().put(spectrumKey2, spectrum2);
+        AnnotatedSpectrum annotatedSpectrum2 = new AnnotatedSpectrum(spectrum2, "y2;y3", "1234.334424242;3445.556664");
+        maxQuantSpectra.getSpectra().put(spectrumKey2, annotatedSpectrum2);
 
         maxQuantAplParser.parseAplFile(testAplFile, maxQuantSpectra, false);
         //check the sizes
@@ -68,10 +70,10 @@ public class MaxQuantAplParserTest {
         Assert.assertTrue(maxQuantSpectra.getUnidentifiedSpectra().isEmpty());
 
         //do some additional testing
-        byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getSpectra().get(spectrumKey1).getSpectrumFiles().get(0).getContent());
+        byte[] unzippedBytes = IOUtils.unzip(maxQuantSpectra.getSpectra().get(spectrumKey1).getSpectrum().getSpectrumFiles().get(0).getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
-                InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
-                BufferedReader br = new BufferedReader(isr)) {
+             InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
+             BufferedReader br = new BufferedReader(isr)) {
             String line;
             Map<String, String> headers = new HashMap<>();
             //go to the next line
@@ -104,7 +106,8 @@ public class MaxQuantAplParserTest {
         Spectrum spectrum = new Spectrum();
         spectrum.setAccession("acc_1");
         spectrum.setRetentionTime(123.45);
-        maxQuantSpectra.getSpectra().put(spectrumKey, spectrum);
+        AnnotatedSpectrum annotatedSpectrum = new AnnotatedSpectrum(spectrum, "y2;y3", "1234.334424242;3445.556664");
+        maxQuantSpectra.getSpectra().put(spectrumKey, annotatedSpectrum);
         maxQuantSpectra.getOmittedSpectrumKeys().add("RawFile: 20130607_FI_Ubiquitin_7 Index: 1966");
         maxQuantSpectra.getOmittedSpectrumKeys().add("RawFile: 20130607_FI_Ubiquitin_9 Index: 3841");
 
@@ -129,8 +132,8 @@ public class MaxQuantAplParserTest {
                 .get(0)
                 .getContent());
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
-                InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
-                BufferedReader br = new BufferedReader(isr)) {
+             InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
+             BufferedReader br = new BufferedReader(isr)) {
             String line;
             Map<String, String> headers = new HashMap<>();
             //go to the next line

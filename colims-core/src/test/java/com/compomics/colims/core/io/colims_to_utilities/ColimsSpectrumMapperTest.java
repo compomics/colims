@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Kenneth Verheggen
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,6 +35,7 @@ public class ColimsSpectrumMapperTest {
 
     /**
      * Test of map method, of class ColimsSpectrumMapper.
+     *
      * @throws java.lang.Exception in case of an exception
      */
     @Test

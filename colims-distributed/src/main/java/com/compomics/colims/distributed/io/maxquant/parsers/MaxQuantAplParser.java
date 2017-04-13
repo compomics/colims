@@ -77,7 +77,7 @@ public class MaxQuantAplParser {
                     Spectrum spectrum = null;
                     //check if the spectrum was identified and therefore can be found in the spectra map
                     if (maxQuantSpectra.getSpectra().containsKey(header)) {
-                        spectrum = maxQuantSpectra.getSpectra().get(header);
+                        spectrum = maxQuantSpectra.getSpectra().get(header).getSpectrum();
                     } else if (spectrum == null && includeUnidentifiedSpectra && !maxQuantSpectra.getOmittedSpectrumKeys().contains(header)) {
                         //make new Spectrum instance and add it to the unidentified ones
                         spectrum = new Spectrum();

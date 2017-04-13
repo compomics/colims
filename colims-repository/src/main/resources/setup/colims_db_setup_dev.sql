@@ -181,6 +181,8 @@ create table colims.modification (
 create table colims.peptide (
     id bigint not null auto_increment,
     charge integer,
+    fragment_ions varchar(500),
+    fragment_masses varchar(1000),
     mass_error double precision,
     psm_post_error_prob double precision,
     psm_prob double precision,

@@ -65,9 +65,9 @@ public class ColimsSpectrumMapper {
         targetSpectrum.setScanStartTime(sourceSpectrum.getScanTime());
 
         //Add peaks
-        for (SpectrumFile aFile : sourceSpectrum.getSpectrumFiles()) {
+        for (SpectrumFile spectrumFile : sourceSpectrum.getSpectrumFiles()) {
             try {
-                Map<Double, Double> mzAndIntensities = spectrumService.getSpectrumPeaks(aFile);
+                Map<Double, Double> mzAndIntensities = spectrumService.getSpectrumPeaks(spectrumFile);
                 mzAndIntensities.entrySet().stream().map((entry) -> new Peak(entry.getKey(), entry.getValue())).forEach(targetSpectrum::addPeak);
             } catch (IOException ex) {
                 LOGGER.error(ex);

@@ -17,5 +17,6 @@ public enum MsmsHeader {
     PRECURSOR_INTENSITY,
     CHARGE,
     M_Z,
-    RETENTION_TIME
+    RETENTION_TIME,
+    ION_MATCHES
 }

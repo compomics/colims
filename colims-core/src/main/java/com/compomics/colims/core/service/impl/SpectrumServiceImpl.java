@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Niels Hulstaert
@@ -64,6 +65,47 @@ public class SpectrumServiceImpl implements SpectrumService {
         byte[] unzippedBytes = IOUtils.unzip(spectrumFile.getContent());
 
         Map<Double, Double> spectrumPeaks = new HashMap<>();
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
+             InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
+             BufferedReader br = new BufferedReader(isr)) {
+            boolean inSpectrum = false;
+            String line;
+            while ((line = br.readLine()) != null) {
+                //Delete leading/trailing spaces.
+                line = line.trim();
+                if (line.startsWith(IONS_START)) {
+                    inSpectrum = true;
+                } else if (line.startsWith(IONS_END)) {
+                    break;
+                } else if (inSpectrum && (!line.contains("="))) {
+                    // We're inside the spectrum, with no '=' in the line, so it should be
+                    // a peak line.
+                    // A peak line should be either of the following two:
+                    // 234.56 789
+                    // 234.56 789   1+
+                    String[] splits = line.split("[ \t]");
+                    if (splits.length == 2 || splits.length == 3) {
+                        Double mass = Double.parseDouble(splits[0]);
+                        Double intensity = Double.parseDouble(splits[1]);
+                        spectrumPeaks.put(mass, intensity);
+                    } else {
+                        LOGGER.error("Unrecognized line while parsing peaks from spectrum " + spectrumFile.getSpectrum().getAccession() + " in MGF format.");
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            LOGGER.error(ex);
+            throw ex;
+        }
+
+        return spectrumPeaks;
+    }
+
+    @Override
+    public Map<Double, Double> getSortedSpectrumPeaks(SpectrumFile spectrumFile) throws IOException {
+        byte[] unzippedBytes = IOUtils.unzip(spectrumFile.getContent());
+
+        TreeMap<Double, Double> spectrumPeaks = new TreeMap<>();
         try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
              InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
              BufferedReader br = new BufferedReader(isr)) {

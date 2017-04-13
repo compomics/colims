@@ -94,9 +94,6 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
                 switch (searchEngineType) {
                     case PEPTIDESHAKER:
                         IonMatch ionMatch = new IonMatch(new Peak(spectrum.getMzRatio(), 0, 0), new PrecursorIon(peptide.getTheoreticalMass()), charge);
-                        //@todo always show the mass error in ppm?
-                        //@todo show positive values for sorting purposes
-                        //boolean isPpm = searchParameters.getPrecMassToleranceUnit() == MassAccuracyType.PPM;
                         massError = Math.abs(ionMatch.getError(true));
                         break;
                     case MAXQUANT:
