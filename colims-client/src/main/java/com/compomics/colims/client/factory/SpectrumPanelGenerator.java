@@ -9,6 +9,7 @@ import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.identification_parameters.SearchParameters;
@@ -52,19 +53,29 @@ public class SpectrumPanelGenerator {
      */
     private static final Logger LOGGER = Logger.getLogger(SpectrumPanelGenerator.class);
 
-    private final SpectrumService spectrumService;
-    private final ColimsSpectrumMapper colimsSpectrumMapper;
-    private final ColimsPeptideMapper colimsPeptideMapper;
-    private final ColimsSearchParametersMapper colimsSearchParametersMapper;
-
     /**
      * The ID of the current analytical run.
      */
     private Long analyticalRunId = Long.MIN_VALUE;
+    /**
+     * The current search engine type.
+     */
+    private SearchEngineType searchEngineType;
+    /**
+     * The Utilities search parameters mapped from the Colims search parameters.
+     */
     private SearchParameters utilitiesSearchParameters;
+    /**
+     * The Utilities annotation settings mapped from the Colims search parameters.
+     */
     private AnnotationSettings annotationSettings;
     private final UtilitiesUserPreferences utilitiesUserPreferences = new UtilitiesUserPreferences();
     private final PTMFactory ptmFactory = PTMFactory.getInstance();
+
+    private final SpectrumService spectrumService;
+    private final ColimsSpectrumMapper colimsSpectrumMapper;
+    private final ColimsPeptideMapper colimsPeptideMapper;
+    private final ColimsSearchParametersMapper colimsSearchParametersMapper;
 
     @Autowired
     public SpectrumPanelGenerator(SpectrumService spectrumService,
@@ -89,6 +100,7 @@ public class SpectrumPanelGenerator {
         if (!analyticalRunId.equals(analyticalRun.getId())) {
             analyticalRunId = analyticalRun.getId();
 
+            searchEngineType = analyticalRun.getSearchAndValidationSettings().getSearchEngine().getSearchEngineType();
             com.compomics.colims.model.SearchParameters colimsSearchParameters = analyticalRun.getSearchAndValidationSettings().getSearchParameters();
             utilitiesSearchParameters = colimsSearchParametersMapper.mapForSpectrumPanel(colimsSearchParameters);
 
@@ -181,12 +193,23 @@ public class SpectrumPanelGenerator {
                     new SequenceMatchingPreferences()
             );
 
-            ArrayList<IonMatch> annotations = peptideSpectrumAnnotator.getSpectrumAnnotation(
-                    annotationSettings,
-                    specificAnnotationSettings,
-                    msnSpectrum,
-                    peptideAssumption.getPeptide()
-            );
+            //get the fragment ion annotations
+            //for MaxQuant, get them from the database
+            //for PeptideShaker, calculate them on the fly
+            ArrayList<IonMatch> annotations = new ArrayList<>();
+            switch (searchEngineType) {
+                case MAXQUANT:
+                    annotations = colimsPeptideMapper.mapFragmentAnnotations(peptide);
+                    break;
+                case PEPTIDESHAKER:
+                    annotations = peptideSpectrumAnnotator.getSpectrumAnnotation(
+                            annotationSettings,
+                            specificAnnotationSettings,
+                            msnSpectrum,
+                            peptideAssumption.getPeptide()
+                    );
+                    break;
+            }
 
             spectrumPanel.addAutomaticDeNovoSequencing(
                     peptideAssumption.getPeptide(),

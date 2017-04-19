@@ -1,12 +1,10 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.PeptideService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProteinGroup;
+import com.compomics.colims.model.*;
 import com.compomics.colims.repository.ModificationRepository;
 import com.compomics.colims.repository.PeptideRepository;
+import com.compomics.colims.repository.SpectrumRepository;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
@@ -31,11 +29,13 @@ public class PeptideServiceImpl implements PeptideService {
 
     private final PeptideRepository peptideRepository;
     private final ModificationRepository modificationRepository;
+    private final SpectrumRepository spectrumRepository;
 
     @Autowired
-    public PeptideServiceImpl(PeptideRepository peptideRepository, ModificationRepository modificationRepository) {
+    public PeptideServiceImpl(PeptideRepository peptideRepository, ModificationRepository modificationRepository, SpectrumRepository spectrumRepository) {
         this.peptideRepository = peptideRepository;
         this.modificationRepository = modificationRepository;
+        this.spectrumRepository = spectrumRepository;
     }
 
     @Override
@@ -85,11 +85,6 @@ public class PeptideServiceImpl implements PeptideService {
     @Override
     public List<PeptideDTO> getPeptideDTOs(Long proteinGroupId, List<Long> analyticalRunIds) {
         return peptideRepository.getPeptideDTOsByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
-    }
-
-    @Override
-    public List<Peptide> getPeptides(Long proteinGroupId, List<Long> analyticalRunIds) {
-        return peptideRepository.getPeptidesByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
     }
 
     @Override

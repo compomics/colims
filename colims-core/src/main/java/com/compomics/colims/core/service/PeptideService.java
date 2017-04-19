@@ -31,16 +31,6 @@ public interface PeptideService extends GenericService<Peptide, Long> {
      * @return the list of PeptideDTO objects
      */
     List<PeptideDTO> getPeptideDTOs(Long proteinGroupId, List<Long> analyticalRunIds);
-
-    /**
-     * Fetch the {@link Peptide} instances associated with the given
-     * protein group and runs.
-     *
-     * @param proteinGroupId the protein group ID
-     * @param analyticalRunIds the list of analytical run IDs
-     * @return the list of Peptide objects
-     */
-    List<Peptide> getPeptides(Long proteinGroupId, List<Long> analyticalRunIds);
     
     /**
      * Fetch the distinct Peptide sequence instances associated with the given protein group and analyticalRun.

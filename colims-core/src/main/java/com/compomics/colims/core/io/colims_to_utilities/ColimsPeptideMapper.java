@@ -4,29 +4,32 @@ import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Peptide;
 import com.compomics.util.experiment.biology.Ion;
+import com.compomics.util.experiment.biology.NeutralLoss;
+import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
 import com.compomics.util.experiment.identification.matches.IonMatch;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
 import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
 import com.compomics.util.experiment.massspectrometry.Charge;
+import com.compomics.util.experiment.massspectrometry.Peak;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * This class maps the Colims Peptide instance onto a Utilities PeptideMatch instance.
  *
  * @author Niels Hulstaert
  */
-@Component("colimspeptideMapper")
+@Component("colimsPeptideMapper")
 public class ColimsPeptideMapper {
 
     private static final String FRAGMENTS_DELIMITER = ";";
     private static final String NEUTRAL_LOSSES_PREFIX = "-";
     private static final String CHARGE_PREFIX = "(";
-    private static final String CHARGE_SUFFIX = "+)";
 
     private final PeptideService peptideService;
     private final SpectrumService spectrumService;
@@ -58,8 +61,9 @@ public class ColimsPeptideMapper {
      *
      * @param peptide the Colims peptide
      * @return the list of {@link IonMatch} instances
+     * @throws IOException in case of a spectrum read related problem
      */
-    public ArrayList<IonMatch> mapFragmentAnnotations(Peptide peptide) {
+    public ArrayList<IonMatch> mapFragmentAnnotations(Peptide peptide) throws IOException {
         ArrayList<IonMatch> ionMatches = new ArrayList<>();
 
         if (peptide.getFragmentIons() != null && peptide.getFragmentMasses() != null) {
@@ -69,6 +73,8 @@ public class ColimsPeptideMapper {
                 String fragmentIon = fragmentIons[i];
                 String fragmentMass = fragmentMasses[i];
                 IonMatch ionMatch = mapFragmentIon(fragmentIon, fragmentMass, peptide);
+
+                ionMatches.add(ionMatch);
             }
         }
 
@@ -96,34 +102,73 @@ public class ColimsPeptideMapper {
     /**
      * Map the fragment ion data onto an {@link IonMatch} instance.
      *
-     * @param fragmentIonString the fragment ion String
-     * @param fragmentMass      the fragment mass String
-     * @param peptide           the {@link Peptide} instance
+     * @param fragmentIonString  the fragment ion String
+     * @param fragmentMassString the fragment mass String
+     * @param peptide            the {@link Peptide} instance
      * @return the {@link IonMatch} instance
      * @throws IOException in case of an spectrum file read related error
      */
-    private IonMatch mapFragmentIon(String fragmentIonString, String fragmentMass, Peptide peptide) throws IOException {
-        //look for the fragment mass peak in the spectrum
-        Map<Double, Double> sortedSpectrumPeaks = spectrumService.getSortedSpectrumPeaks(peptide.getSpectrum().getSpectrumFiles().get(0));
+    private IonMatch mapFragmentIon(String fragmentIonString, String fragmentMassString, Peptide peptide) throws IOException {
+        //fetch the spectrum files
+        spectrumService.fetchSpectrumFiles(peptide.getSpectrum());
 
+        //look for the fragment mass peak in the spectrum
+        TreeMap<Double, Double> sortedSpectrumPeaks = spectrumService.getSortedSpectrumPeaks(peptide.getSpectrum().getSpectrumFiles().get(0));
+        Double fragmentMass = Double.valueOf(fragmentMassString);
+        Peak closestPeak = findClosestPeak(sortedSpectrumPeaks, fragmentMass);
 
         String fragmentIon = fragmentIonString;
-        String neutralLoss = null;
+        String neutralLossString = null;
         String charge = "1";
         int neutralLossesStartIndex = fragmentIonString.indexOf(NEUTRAL_LOSSES_PREFIX);
         int chargeStartIndex = fragmentIonString.indexOf(CHARGE_PREFIX);
         if (neutralLossesStartIndex > -1) {
             if (chargeStartIndex > -1) {
-                neutralLoss = fragmentIonString.substring(neutralLossesStartIndex + 1, chargeStartIndex);
+                neutralLossString = fragmentIonString.substring(neutralLossesStartIndex + 1, chargeStartIndex);
             } else {
-                neutralLoss = fragmentIon.substring(neutralLossesStartIndex + 1, fragmentIonString.length());
+                neutralLossString = fragmentIon.substring(neutralLossesStartIndex + 1, fragmentIonString.length());
             }
+            fragmentIon = fragmentIonString.substring(0, neutralLossesStartIndex);
         }
-        if (chargeStartIndex > -1) {
+        else if(chargeStartIndex > -1){
             charge = fragmentIonString.substring(chargeStartIndex + 1, fragmentIonString.length() - 2);
+            fragmentIon = fragmentIonString.substring(0, chargeStartIndex);
+        }
+        //get the utilities ion type
+        Integer ionType = PeptideFragmentIon.getIonType(fragmentIon.substring(0, 1));
+        //get the ion fragment number
+        Integer ionNumber = Integer.valueOf(fragmentIon.substring(1, fragmentIon.length()));
+        //get the utilities neutral loss
+        ArrayList<NeutralLoss> neutralLosses = new ArrayList<>();
+        if (neutralLossString != null) {
+            NeutralLoss neutralLoss = NeutralLoss.getNeutralLoss(neutralLossString);
+            neutralLosses.add(neutralLoss);
         }
 
+        PeptideFragmentIon peptideFragmentIon = new PeptideFragmentIon(ionType, ionNumber, fragmentMass, neutralLosses);
 
-        return null;
+        return new IonMatch(closestPeak, peptideFragmentIon, Integer.valueOf(charge));
+    }
+
+    /**
+     * Find the closest peak to the given fragment ion mass.
+     *
+     * @param peakMap      the sorted peak map
+     * @param fragmentMass the fragment ion mass
+     * @return the {@link Peak} instance
+     */
+    private Peak findClosestPeak(TreeMap<Double, Double> peakMap, Double fragmentMass) {
+        Map.Entry<Double, Double> low = peakMap.floorEntry(fragmentMass);
+        Map.Entry<Double, Double> high = peakMap.ceilingEntry(fragmentMass);
+        Map.Entry<Double, Double> peakEntry = null;
+        if (low != null && high != null) {
+            peakEntry = Math.abs(fragmentMass - low.getKey()) < Math.abs(fragmentMass - high.getKey())
+                    ? low
+                    : high;
+        } else if (low != null || high != null) {
+            peakEntry = low != null ? low : high;
+        }
+
+        return new Peak(peakEntry.getKey(), peakEntry.getValue());
     }
 }

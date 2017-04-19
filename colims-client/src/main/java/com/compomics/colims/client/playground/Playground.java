@@ -60,7 +60,5 @@ public class Playground {
         PersistDbTask persistDbTask1 = objectMapper.readValue(s, PersistDbTask.class);
 
         System.out.println(s);
-        System.out.println("jjjjjjjjj");
-
     }
 }

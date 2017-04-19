@@ -1,5 +1,7 @@
 package com.compomics.colims.core.io.mzidentml;
 
+import com.compomics.colims.core.io.colims_to_utilities.ColimsPeptideMapper;
+import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.io.fasta.FastaDbParser;
 import com.compomics.colims.core.ontology.ModificationOntologyTerm;
 import com.compomics.colims.core.ontology.OntologyMapper;
@@ -19,6 +21,13 @@ import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
+import com.compomics.util.experiment.identification.matches.IonMatch;
+import com.compomics.util.experiment.identification.spectrum_annotation.AnnotationSettings;
+import com.compomics.util.experiment.identification.spectrum_annotation.SpecificAnnotationSettings;
+import com.compomics.util.experiment.identification.spectrum_annotation.spectrum_annotators.PeptideSpectrumAnnotator;
+import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
+import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
+import com.compomics.util.preferences.SequenceMatchingPreferences;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -133,6 +142,8 @@ public class MzIdentMlExporter {
     private final PeptideService peptideService;
     private final SpectrumService spectrumService;
     private final AnalyticalRunService analyticalRunService;
+    private final ColimsPeptideMapper colimsPeptideMapper;
+    private final ColimsSpectrumMapper colimsSpectrumMapper;
 
     @Autowired
     public MzIdentMlExporter(OlsService olsService, SearchAndValidationSettingsService searchAndValidationSettingsService,
@@ -141,6 +152,8 @@ public class MzIdentMlExporter {
                              PeptideService peptideService,
                              SpectrumService spectrumService,
                              AnalyticalRunService analyticalRunService,
+                             ColimsPeptideMapper colimsPeptideMapper,
+                             ColimsSpectrumMapper colimsSpectrumMapper,
                              OntologyMapper ontologyMapper) {
         this.olsService = olsService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
@@ -149,6 +162,8 @@ public class MzIdentMlExporter {
         this.peptideService = peptideService;
         this.spectrumService = spectrumService;
         this.analyticalRunService = analyticalRunService;
+        this.colimsPeptideMapper = colimsPeptideMapper;
+        this.colimsSpectrumMapper = colimsSpectrumMapper;
         //get the modification mappings from the OntologyMapper
         modificationMappings = ontologyMapper.getMaxQuantMapping().getModifications();
     }
@@ -1262,7 +1277,8 @@ public class MzIdentMlExporter {
         spectrumIdentificationItem.setPassThreshold(true);
         spectrumIdentificationItem.setRank(1);
 
-        //add the scores
+        //add the scores and get the fragement ion annotations
+        ArrayList<IonMatch> annotations = new ArrayList<>();
         switch (searchEngine.getSearchEngineType()) {
             case PEPTIDESHAKER:
                 if (peptide.getPsmProbability() != null) {
@@ -1279,6 +1295,30 @@ public class MzIdentMlExporter {
                     psmConfidence.setValue(Double.toString(confidence));
                     spectrumIdentificationItem.getCvParam().add(psmConfidence);
                 }
+
+                AnnotationSettings annotationSettings;
+
+                PeptideSpectrumAnnotator peptideSpectrumAnnotator = new PeptideSpectrumAnnotator();
+
+                //map the Colims Peptide instance onto the PeptideAssumption
+                PeptideAssumption peptideAssumption = colimsPeptideMapper.map(peptide);
+
+                //map the Colims Spectrum instance onto the Utilities MSnSpectrum instance
+                MSnSpectrum msnSpectrum = colimsSpectrumMapper.map(spectrum);
+
+                SpecificAnnotationSettings specificAnnotationSettings = annotationSettings.getSpecificAnnotationPreferences(
+                        msnSpectrum.getSpectrumTitle(),
+                        peptideAssumption,
+                        new SequenceMatchingPreferences(),
+                        new SequenceMatchingPreferences()
+                );
+
+                annotations = peptideSpectrumAnnotator.getSpectrumAnnotation(
+                        annotationSettings,
+                        specificAnnotationSettings,
+                        msnSpectrum,
+                        peptideAssumption.getPeptide()
+                );
                 break;
             case MAXQUANT:
                 if (peptide.getPsmProbability() != null) {
@@ -1291,6 +1331,7 @@ public class MzIdentMlExporter {
                     psmPep.setValue(Double.toString(peptide.getPsmPostErrorProbability()));
                     spectrumIdentificationItem.getCvParam().add(psmPep);
                 }
+                annotations = colimsPeptideMapper.mapFragmentAnnotations(peptide);
                 break;
             default:
                 throw new IllegalStateException("Should not get here");
