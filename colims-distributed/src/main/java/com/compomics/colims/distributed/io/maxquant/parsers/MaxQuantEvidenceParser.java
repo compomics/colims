@@ -123,18 +123,18 @@ public class MaxQuantEvidenceParser {
 
             //check for spectrumToPeptides coming from omitted protein groups
             //if one of the protein groups is not in the omitted list, include the peptide
-            Set<Integer> nonOmittedProteinIds = Arrays.stream(proteinGroupIds)
+            Set<Integer> includedProteinIds = Arrays.stream(proteinGroupIds)
                     .map(Integer::valueOf)
                     .filter(proteinGroupsId -> !omittedProteinGroupIds.contains(proteinGroupsId))
                     .collect(Collectors.toSet());
 
-            if (!nonOmittedProteinIds.isEmpty()) {
+            if (!includedProteinIds.isEmpty()) {
                 String[] msmsIds = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MS_MS_IDS)).split(MS_MS_IDS_DELIMITER);
                 for (String msmsIdString : msmsIds) {
                     //get the evidence ID
                     Integer evidenceId = Integer.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.ID)));
                     //create the peptide
-                    createPeptide(evidenceId, evidenceEntry, nonOmittedProteinIds);
+                    createPeptide(evidenceId, evidenceEntry, includedProteinIds);
                     //check if the peptide has a spectrum (PSM)
                     if (!msmsIdString.isEmpty()) {
                         Integer msmsId = Integer.parseInt(msmsIdString);

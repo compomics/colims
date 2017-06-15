@@ -290,11 +290,11 @@ public class ProjectManagementController implements Controllable {
                     experiments.remove(experimentToDelete);
                     experimentsSelectionModel.clearSelection();
 
-                    eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, experimentToDelete.getId()));
-
                     //remove experiment from the selected project and update the table
                     getSelectedProject().getExperiments().remove(experimentToDelete);
                     projectManagementPanel.getProjectsTable().updateUI();
+
+                    eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, experimentToDelete.getId()));
                 }
             } else {
                 eventBus.post(new MessageEvent("Experiment selection", "Please select an experiment to delete.", JOptionPane.INFORMATION_MESSAGE));
@@ -328,11 +328,11 @@ public class ProjectManagementController implements Controllable {
                     samples.remove(sampleToDelete);
                     samplesSelectionModel.clearSelection();
 
-                    eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete.getId()));
-
                     //remove sample from the selected experiment and update the table
                     getSelectedExperiment().getSamples().remove(sampleToDelete);
                     projectManagementPanel.getExperimentsTable().updateUI();
+
+                    eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete.getId()));
                 }
             } else {
                 eventBus.post(new MessageEvent("Sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));

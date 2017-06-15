@@ -41,12 +41,6 @@ public class ColimsSpectrumMapperTest {
     @Test
     public void testMap() throws Exception {
         Spectrum spectrum = new Spectrum();
-        File inputSpectra = new ClassPathResource("data/input_spectra_Z.mgf.gz").getFile();
-        byte[] data = Files.readAllBytes(inputSpectra.toPath());
-        SpectrumFile spectrumFile = new SpectrumFile();
-        spectrumFile.setContent(data);
-        List<SpectrumFile> spectrumFileList = new ArrayList<>();
-        spectrumFileList.add(spectrumFile);
 
         spectrum.setAccession("fake spectrum 1");
         spectrum.setFragmentationType(FragmentationType.CID);
@@ -54,10 +48,15 @@ public class ColimsSpectrumMapperTest {
         spectrum.setRetentionTime(2123.1);
         spectrum.setMzRatio(123.12);
         spectrum.setCharge(3);
-        spectrum.setSpectrumFiles(spectrumFileList);
         spectrum.setScanNumber(12L);
         spectrum.setScanTime(11231.1);
-        spectrum.setPeptides(new ArrayList<>());
+
+        File inputSpectra = new ClassPathResource("data/input_spectra_Z.mgf.gz").getFile();
+        byte[] data = Files.readAllBytes(inputSpectra.toPath());
+        SpectrumFile spectrumFile = new SpectrumFile();
+        spectrumFile.setContent(data);
+        spectrumFile.setSpectrum(spectrum);
+        spectrum.getSpectrumFiles().add(spectrumFile);
 
         MSnSpectrum targetSpectrum = colimsSpectrumMapper.map(spectrum);
         Assert.assertEquals(677, targetSpectrum.getPeakList().size());

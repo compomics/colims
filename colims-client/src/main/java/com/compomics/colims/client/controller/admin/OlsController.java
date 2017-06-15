@@ -27,6 +27,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -270,8 +272,7 @@ public class OlsController implements Controllable {
 
                 clear();
                 olsDialog.dispose();
-            }
-            else {
+            } else {
                 eventBus.post(new MessageEvent("Term selection", "Please select an ontology term.", JOptionPane.INFORMATION_MESSAGE));
             }
         });
@@ -283,6 +284,18 @@ public class OlsController implements Controllable {
             ontologyTerm.setIri(DEREFERENCE_IRI);
 
             olsDialog.dispose();
+        });
+
+        olsDialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                clear();
+
+                //dereference callback instance
+                ontologyTerm.setIri(DEREFERENCE_IRI);
+
+                olsDialog.dispose();
+            }
         });
 
     }

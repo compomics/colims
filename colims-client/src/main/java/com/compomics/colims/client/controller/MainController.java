@@ -439,8 +439,8 @@ public class MainController implements Controllable, ActionListener {
     /**
      * Shows a message dialog.
      *
-     * @param title the dialog title
-     * @param message the dialog message
+     * @param title       the dialog title
+     * @param message     the dialog message
      * @param messageType the dialog message type
      */
     private void showMessageDialog(final String title, final String message, final int messageType) {
