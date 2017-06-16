@@ -29,7 +29,6 @@ import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.*;
-import com.compomics.colims.model.util.CompareUtils;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.util.gui.TableProperties;
@@ -213,6 +212,9 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MZRATIO).setPreferredWidth(100);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MZRATIO).setMaxWidth(100);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MZRATIO).setMinWidth(100);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR).setPreferredWidth(160);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR).setMaxWidth(200);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR).setMinWidth(120);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE).setPreferredWidth(200);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PSM_CONFIDENCE).setPreferredWidth(100);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PSM_CONFIDENCE).setMaxWidth(100);
@@ -251,8 +253,6 @@ public class ProteinOverviewController implements Controllable {
                 spectrumPanelGenerator.loadSettingsForRun(selectedAnalyticalRuns.get(0));
                 //set search type in PSM table formatter
                 psmTableFormat.setSearchEngineType(selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType());
-
-                setPsmTableCellRenderers();
 
                 proteinGroupTableModel.reset(getSelectedAnalyticalRunIds());
                 updateProteinGroupTable();
@@ -308,9 +308,8 @@ public class ProteinOverviewController implements Controllable {
                     PeptideTableRow selectedPeptideTableRow = peptideSelectionModel.getSelected().get(0);
                     List<Peptide> selectedPsms = selectedPeptideTableRow.getPeptides();
 
-                    if (selectedPsms == null || psms == null) {
-                        System.out.println("=-----------");
-                    }
+                    setPsmTableCellRenderers();
+
                     GlazedLists.replaceAll(psms, selectedPsms, false);
                 }
             }
@@ -648,9 +647,9 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename   File to be saved as [filename].tsv
+     * @param filename File to be saved as [filename].tsv
      * @param tableModel A table model to retrieve data from
-     * @param <T>        Class extending TableModel
+     * @param <T> Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel) {
         exportTable(filename, tableModel, new HashMap<>());
@@ -659,10 +658,10 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename      File to be saved as [filename].tsv
-     * @param tableModel    A table model to retrieve data from
+     * @param filename File to be saved as [filename].tsv
+     * @param tableModel A table model to retrieve data from
      * @param columnFilters Patterns to match and filter values
-     * @param <T>           Class extending TableModel
+     * @param <T> Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel, Map<Integer, Pattern> columnFilters) {
         try (FileWriter fileWriter = new FileWriter(filename + ".tsv")) {
@@ -796,21 +795,21 @@ public class ProteinOverviewController implements Controllable {
      * Set SparkLines for the PSM table.
      */
     private void setPsmTableCellRenderers() {
-        proteinOverviewPanel.getPsmTable()
-                .getColumnModel()
-                .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR)
-                .setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                        selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
-                        selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
-                        utilitiesUserPreferences.getSparklineColor(),
-                        utilitiesUserPreferences.getSparklineColor())
-                );
-
-        ((JSparklinesBarChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
-                .getColumnModel()
-                .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR)
-                .getCellRenderer())
-                .showNumberAndChart(true, TableProperties.getLabelWidth());
+//        proteinOverviewPanel.getPsmTable()
+//                .getColumnModel()
+//                .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR)
+//                .setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL,
+//                        0.0,
+//                        selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
+//                        utilitiesUserPreferences.getSparklineColor(),
+//                        utilitiesUserPreferences.getSparklineColor())
+//                );
+//
+//        ((JSparklinesBarChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
+//                .getColumnModel()
+//                .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR)
+//                .getCellRenderer())
+//                .showNumberAndChart(true, TableProperties.getLabelWidth());
 
         proteinOverviewPanel.getPsmTable()
                 .getColumnModel()
