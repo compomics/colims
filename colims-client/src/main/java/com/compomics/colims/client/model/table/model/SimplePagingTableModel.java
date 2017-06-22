@@ -76,15 +76,6 @@ public abstract class SimplePagingTableModel extends DefaultEventTableModel {
     }
 
     /**
-     * Get the index of the first row of the current page, zero-based.
-     *
-     * @return the index of the first row on the current page
-     */
-    public int getPageFirstRow() {
-        return page * pageSize;
-    }
-
-    /**
      * Get the index of the first row of the previous page, zero-based.
      *
      * @return the index of the first row on the previous page
@@ -118,24 +109,6 @@ public abstract class SimplePagingTableModel extends DefaultEventTableModel {
      */
     public int getLastPageFirstRow() {
         return lastPage * pageSize;
-    }
-
-    /**
-     * Get the number of rows displayed per page.
-     *
-     * @return the number of rows displayed per page
-     */
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    /**
-     * Set the number of rows displayed per page.
-     *
-     * @param pageSize the page length
-     */
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
     }
 
     /**

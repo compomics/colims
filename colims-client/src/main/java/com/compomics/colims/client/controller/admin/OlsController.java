@@ -167,11 +167,13 @@ public class OlsController implements Controllable {
                     olsSearchResultTableModel.init(searchResultMetadata.getNumberOfResultPages());
                     //get the search results for the first page
                     doPagedSearch(0, 0);
-
+                   
                     olsDialog.getFirstResultPageButton().setEnabled(false);
                     olsDialog.getPreviousResultPageButton().setEnabled(false);
-                    olsDialog.getNextResultPageButton().setEnabled(true);
-                    olsDialog.getLastResultPageButton().setEnabled(true);
+                    if (olsSearchResultTableModel.getLastPage() != 0) {
+                        olsDialog.getNextResultPageButton().setEnabled(true);
+                        olsDialog.getLastResultPageButton().setEnabled(true);
+                    }
                 } catch (HttpClientErrorException ex) {
                     LOGGER.error(ex.getMessage(), ex);
                     eventBus.post(new OlsErrorMessageEvent(OlsErrorMessageEvent.OlsError.CONNECTION_ERROR));
