@@ -120,8 +120,8 @@ public class OlsController implements Controllable {
         }
 
         //init the search fields settings
-        olsDialog.getDefaultFieldsRadioButton().setSelected(true);
-        enableSearchFieldCheckBoxes(false);
+        olsDialog.getCustomFieldsRadioButton().setSelected(true);
+        setDefaultSearchFieldCheckBoxes();
 
         //set column widths
         olsDialog.getSearchResultTable().getColumnModel().getColumn(OntologySearchResultTableModel.ONTOLOGY_PREFIX).setPreferredWidth(100);
@@ -167,7 +167,7 @@ public class OlsController implements Controllable {
                     olsSearchResultTableModel.init(searchResultMetadata.getNumberOfResultPages());
                     //get the search results for the first page
                     doPagedSearch(0, 0);
-                   
+
                     olsDialog.getFirstResultPageButton().setEnabled(false);
                     olsDialog.getPreviousResultPageButton().setEnabled(false);
                     if (olsSearchResultTableModel.getLastPage() != 0) {
@@ -213,8 +213,8 @@ public class OlsController implements Controllable {
             }
         });
 
-        olsDialog.getDefaultFieldsRadioButton().addActionListener(e -> {
-            if (olsDialog.getDefaultFieldsRadioButton().isSelected()) {
+        olsDialog.getAllFieldsRadioButton().addActionListener(e -> {
+            if (olsDialog.getAllFieldsRadioButton().isSelected()) {
                 enableSearchFieldCheckBoxes(false);
             }
         });
@@ -312,8 +312,8 @@ public class OlsController implements Controllable {
     /**
      * Show the OLS dialog with an OntologyTerm passed as callback.
      *
-     * @param ontologyTerm the OntologyTerm callback instance. If the user has cancelled the OLS dialog, null is
-     *                     assigned to this instance.
+     * @param ontologyTerm the OntologyTerm callback instance. If the user has
+     * cancelled the OLS dialog, null is assigned to this instance.
      */
     public void showView(OntologyTerm ontologyTerm) {
         this.showView(ontologyTerm, new ArrayList<>());
@@ -323,10 +323,10 @@ public class OlsController implements Controllable {
      * Show the OLS dialog with an OntologyTerm instance passed as callback and
      * a list of preselected ontology namespaces.
      *
-     * @param ontologyTerm                      the OntologyTerm callback instance. If the user has cancelled the OLS
-     *                                          dialog, null is assigned to this instance.
-     * @param viewPreselectedOntologyNamespaces the namespaces of the preselected view ontologies that will be
-     *                                          preselected
+     * @param ontologyTerm the OntologyTerm callback instance. If the user has
+     * cancelled the OLS dialog, null is assigned to this instance.
+     * @param viewPreselectedOntologyNamespaces the namespaces of the
+     * preselected view ontologies that will be preselected
      */
     public void showView(OntologyTerm ontologyTerm, List<String> viewPreselectedOntologyNamespaces) {
         //keep a callback reference for the result of the search
@@ -389,10 +389,11 @@ public class OlsController implements Controllable {
         resetTermDetailFields();
 
         //reset the search fields settings if necessary
-        if (olsDialog.getCustomFieldsRadioButton().isSelected()) {
-            olsDialog.getDefaultFieldsRadioButton().setSelected(true);
-            enableSearchFieldCheckBoxes(false);
+        if (olsDialog.getAllFieldsRadioButton().isSelected()) {
+            olsDialog.getCustomFieldsRadioButton().setSelected(true);
+            setDefaultSearchFieldCheckBoxes();
         }
+        
     }
 
     /**
@@ -406,6 +407,18 @@ public class OlsController implements Controllable {
         olsDialog.getDescriptionCheckBox().setEnabled(enable);
         olsDialog.getIdentifierCheckBox().setEnabled(enable);
         olsDialog.getAnnotationPropertiesCheckBox().setEnabled(enable);
+    }
+
+    /**
+     * Set the default the search field checkboxes.
+     *
+     */
+    private void setDefaultSearchFieldCheckBoxes() {
+        olsDialog.getLabelCheckBox().setSelected(true);
+        olsDialog.getSynonymCheckBox().setSelected(true);
+        olsDialog.getDescriptionCheckBox().setSelected(false);
+        olsDialog.getIdentifierCheckBox().setSelected(false);
+        olsDialog.getAnnotationPropertiesCheckBox().setSelected(false);
     }
 
     /**
@@ -486,7 +499,7 @@ public class OlsController implements Controllable {
      * Do a paged search request to the Ontology Lookup Service. Convenience
      * method to avoid duplicate error catching.
      *
-     * @param startIndex   the result start index
+     * @param startIndex the result start index
      * @param newPageIndex the index of the new page
      */
     private void doPagedSearch(int startIndex, int newPageIndex) {

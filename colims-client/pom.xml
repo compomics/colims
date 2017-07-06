@@ -289,20 +289,11 @@
             <artifactId>glazedlists_java15</artifactId>
             <version>1.9.1</version>
         </dependency>
-
+                
         <dependency>
-            <groupId>no.uib</groupId>
-            <artifactId>ols-dialog</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.jgoodies</groupId>
-                    <artifactId>looks</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swing-layout</artifactId>
+            <version>1.0.3</version>
         </dependency>
 
         <dependency>

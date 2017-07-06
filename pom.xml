@@ -486,12 +486,6 @@
             </dependency>
 
             <dependency>
-                <groupId>no.uib</groupId>
-                <artifactId>ols-dialog</artifactId>
-                <version>3.4.2</version>
-            </dependency>
-
-            <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.9</version>

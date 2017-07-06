@@ -88,8 +88,8 @@ public class OlsDialog extends javax.swing.JDialog {
         return customFieldsRadioButton;
     }
 
-    public JRadioButton getDefaultFieldsRadioButton() {
-        return defaultFieldsRadioButton;
+    public JRadioButton getAllFieldsRadioButton() {
+        return allFieldsRadioButton;
     }
 
     public JTable getSearchResultTable() {
@@ -195,7 +195,7 @@ public class OlsDialog extends javax.swing.JDialog {
         identifierCheckBox = new javax.swing.JCheckBox();
         annotationPropertiesCheckBox = new javax.swing.JCheckBox();
         searchFieldsLabel = new javax.swing.JLabel();
-        defaultFieldsRadioButton = new javax.swing.JRadioButton();
+        allFieldsRadioButton = new javax.swing.JRadioButton();
         customFieldsRadioButton = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -482,9 +482,9 @@ public class OlsDialog extends javax.swing.JDialog {
 
         searchFieldsLabel.setText("Search for terms using;");
 
-        searchFieldsSelectionButtonGroup.add(defaultFieldsRadioButton);
-        defaultFieldsRadioButton.setText("default fields");
-        defaultFieldsRadioButton.setToolTipText("the default search fields are labels, synonyms, descriptions, identifiers and annotation properties");
+        searchFieldsSelectionButtonGroup.add(allFieldsRadioButton);
+        allFieldsRadioButton.setText("all fields");
+        allFieldsRadioButton.setToolTipText("all search fields are labels, synonyms, descriptions, identifiers and annotation properties");
 
         searchFieldsSelectionButtonGroup.add(customFieldsRadioButton);
         customFieldsRadioButton.setText("custom fields");
@@ -504,7 +504,7 @@ public class OlsDialog extends javax.swing.JDialog {
                     .addGroup(searchFieldsPanelLayout.createSequentialGroup()
                         .addComponent(searchFieldsLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(defaultFieldsRadioButton)
+                        .addComponent(allFieldsRadioButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(customFieldsRadioButton)))
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -514,7 +514,7 @@ public class OlsDialog extends javax.swing.JDialog {
             .addGroup(searchFieldsPanelLayout.createSequentialGroup()
                 .addGroup(searchFieldsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchFieldsLabel)
-                    .addComponent(defaultFieldsRadioButton)
+                    .addComponent(allFieldsRadioButton)
                     .addComponent(customFieldsRadioButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(labelCheckBox)
@@ -577,11 +577,11 @@ public class OlsDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton allFieldsRadioButton;
     private javax.swing.JRadioButton allOntologiesRadioButton;
     private javax.swing.JCheckBox annotationPropertiesCheckBox;
     private javax.swing.JButton closeButton;
     private javax.swing.JRadioButton customFieldsRadioButton;
-    private javax.swing.JRadioButton defaultFieldsRadioButton;
     private javax.swing.JCheckBox descriptionCheckBox;
     private javax.swing.JButton firstResultPageButton;
     private javax.swing.JButton getAllOntologiesButton;
