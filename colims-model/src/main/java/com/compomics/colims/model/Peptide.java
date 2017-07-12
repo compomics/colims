@@ -63,13 +63,13 @@ public class Peptide extends DatabaseEntity {
      * The matched fragment ions separated by semi-colon.
      */
     @Basic(optional = true)
-    @Column(name = "fragment_ions", nullable = true, length = 500)
+    @Column(name = "fragment_ions", nullable = true, length = 750)
     private String fragmentIons;
     /**
      * The matched fragment ion masses separated by semi-colon.
      */
     @Basic(optional = true)
-    @Column(name = "fragment_masses", nullable = true, length = 1000)
+    @Column(name = "fragment_masses", nullable = true, length = 1500)
     private String fragmentMasses;
     /**
      * The spectrum identified by this peptide.
