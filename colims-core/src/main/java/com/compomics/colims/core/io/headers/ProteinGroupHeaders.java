@@ -54,9 +54,7 @@ public class ProteinGroupHeaders {
         readFileHeaders(proteinGroupsFile.toFile());
         ProteinGroupIntensityHeadersEnum.getHeaderValues().entrySet().stream().
                 filter((header) -> (headersInProteinGroupFile.stream().
-                        anyMatch(s -> s.startsWith(header.getKey())))).forEach((header) -> {
-            proteinGroupHeaders.add(header.getValue());
-        });
+                        anyMatch(s -> s.startsWith(header.getKey())))).forEach((header) -> proteinGroupHeaders.add(header.getValue()));
     }
     
     /**
@@ -77,7 +75,7 @@ public class ProteinGroupHeaders {
             throw new IOException("Input file " + tsvFile.getPath() + " is empty.");
         } else {
             String[] headers = firstLine.toLowerCase(Locale.US).split("" + DELIMITER);
-            Arrays.stream(headers).forEach(e -> headersInProteinGroupFile.add(e));
+            headersInProteinGroupFile.addAll(Arrays.asList(headers));
         }
     }
 

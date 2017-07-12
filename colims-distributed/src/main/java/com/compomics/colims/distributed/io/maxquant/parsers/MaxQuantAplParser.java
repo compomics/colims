@@ -48,12 +48,12 @@ public class MaxQuantAplParser {
     private static final String HEADER_INDEX = " Index: ";
 
     /**
-     * Parse the give MaqQuant .apl spectrum file and update the spectra map.
+     * Parse the give MaqQuant .apl spectrum file and update the given {@link MaxQuantSpectra} instance.
      *
-     * @param aplFilePath the MaqQuant .apl spectrum file path
-     * @param maxQuantSpectra the spectra map
+     * @param aplFilePath                the MaqQuant .apl spectrum file path
+     * @param maxQuantSpectra            the {@link MaxQuantSpectra} instance
      * @param includeUnidentifiedSpectra whether or not to include unidentified
-     * spectra
+     *                                   spectra
      */
     public void parseAplFile(Path aplFilePath, MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
         try (BufferedReader bufferedReader = Files.newBufferedReader(aplFilePath)) {
@@ -77,7 +77,7 @@ public class MaxQuantAplParser {
                     Spectrum spectrum = null;
                     //check if the spectrum was identified and therefore can be found in the spectra map
                     if (maxQuantSpectra.getSpectra().containsKey(header)) {
-                        spectrum = maxQuantSpectra.getSpectra().get(header);
+                        spectrum = maxQuantSpectra.getSpectra().get(header).getSpectrum();
                     } else if (spectrum == null && includeUnidentifiedSpectra && !maxQuantSpectra.getOmittedSpectrumKeys().contains(header)) {
                         //make new Spectrum instance and add it to the unidentified ones
                         spectrum = new Spectrum();
@@ -103,10 +103,10 @@ public class MaxQuantAplParser {
                         spectrum.setTitle(completeHeader);
 
                         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName(ENCODING).newEncoder());
-                                BufferedWriter bw = new BufferedWriter(osw);
-                                ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
-                                GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
+                             OutputStreamWriter osw = new OutputStreamWriter(baos, Charset.forName(ENCODING).newEncoder());
+                             BufferedWriter bw = new BufferedWriter(osw);
+                             ByteArrayOutputStream zbaos = new ByteArrayOutputStream();
+                             GZIPOutputStream gzipos = new GZIPOutputStream(zbaos)) {
 
                             //write the spectrum in MGF format
                             bw.write(MGF_SPECTRUM_START);
@@ -127,6 +127,8 @@ public class MaxQuantAplParser {
                             }
                             bw.newLine();
                             bw.write(MGF_SPECTRUM_END);
+                            bw.newLine();
+                            bw.newLine();
                             bw.flush();
 
                             //get the bytes from the stream

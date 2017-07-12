@@ -609,7 +609,7 @@
                                   <Group type="102" attributes="0">
                                       <Component id="searchFieldsLabel" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="defaultFieldsRadioButton" min="-2" max="-2" attributes="0"/>
+                                      <Component id="allFieldsRadioButton" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="customFieldsRadioButton" min="-2" max="-2" attributes="0"/>
                                   </Group>
@@ -623,7 +623,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="searchFieldsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="defaultFieldsRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="allFieldsRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="customFieldsRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -671,13 +671,13 @@
                         <Property name="text" type="java.lang.String" value="Search for terms using;"/>
                       </Properties>
                     </Component>
-                    <Component class="javax.swing.JRadioButton" name="defaultFieldsRadioButton">
+                    <Component class="javax.swing.JRadioButton" name="allFieldsRadioButton">
                       <Properties>
                         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                           <ComponentRef name="searchFieldsSelectionButtonGroup"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="default fields"/>
-                        <Property name="toolTipText" type="java.lang.String" value="the default search fields are labels, synonyms, descriptions, identifiers and annotation properties"/>
+                        <Property name="text" type="java.lang.String" value="all fields"/>
+                        <Property name="toolTipText" type="java.lang.String" value="all search fields are labels, synonyms, descriptions, identifiers and annotation properties"/>
                       </Properties>
                     </Component>
                     <Component class="javax.swing.JRadioButton" name="customFieldsRadioButton">

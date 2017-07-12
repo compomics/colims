@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Niels Hulstaert
@@ -64,7 +65,31 @@ public class SpectrumServiceImpl implements SpectrumService {
         byte[] unzippedBytes = IOUtils.unzip(spectrumFile.getContent());
 
         Map<Double, Double> spectrumPeaks = new HashMap<>();
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(unzippedBytes);
+        populatePeakMap(unzippedBytes, spectrumFile.getSpectrum().getAccession(), spectrumPeaks);
+
+        return spectrumPeaks;
+    }
+
+    @Override
+    public TreeMap<Double, Double> getSortedSpectrumPeaks(SpectrumFile spectrumFile) throws IOException {
+        byte[] unzippedBytes = IOUtils.unzip(spectrumFile.getContent());
+
+        TreeMap<Double, Double> spectrumPeaks = new TreeMap<>();
+        populatePeakMap(unzippedBytes, spectrumFile.getSpectrum().getAccession(), spectrumPeaks);
+
+        return spectrumPeaks;
+    }
+
+    /**
+     * Populate the given map with the spectrum peaks.
+     *
+     * @param bytes the unzipped MGF byte array
+     * @param accession the spectrum accession for logging purposes
+     * @param peakMap the map of spectrum peaks
+     * @throws IOException in case of a spectrum file read problem
+     */
+    private void populatePeakMap(byte[] bytes, String accession, Map<Double, Double> peakMap) throws IOException {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
              InputStreamReader isr = new InputStreamReader(bais, Charset.forName("UTF-8").newDecoder());
              BufferedReader br = new BufferedReader(isr)) {
             boolean inSpectrum = false;
@@ -86,18 +111,13 @@ public class SpectrumServiceImpl implements SpectrumService {
                     if (splits.length == 2 || splits.length == 3) {
                         Double mass = Double.parseDouble(splits[0]);
                         Double intensity = Double.parseDouble(splits[1]);
-                        spectrumPeaks.put(mass, intensity);
+                        peakMap.put(mass, intensity);
                     } else {
-                        LOGGER.error("Unrecognized line while parsing peaks from spectrum " + spectrumFile.getSpectrum().getAccession() + " in MGF format.");
+                        LOGGER.error("Unrecognized line while parsing peaks from spectrum " + accession + " in MGF format.");
                     }
                 }
             }
-        } catch (IOException ex) {
-            LOGGER.error(ex);
-            throw ex;
         }
-
-        return spectrumPeaks;
     }
 
     @Override

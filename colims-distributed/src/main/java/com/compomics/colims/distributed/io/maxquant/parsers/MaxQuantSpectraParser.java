@@ -52,7 +52,7 @@ public class MaxQuantSpectraParser {
      * Constructor.
      *
      * @throws IOException in case of an Input/Output related problem while
-     * parsing the headers.
+     *                     parsing the headers.
      */
     @Autowired
     public MaxQuantSpectraParser(MaxQuantAndromedaParser maxQuantAndromedaParser) throws IOException {
@@ -81,10 +81,10 @@ public class MaxQuantSpectraParser {
      * This method parses the msms.txt and .apl spectrum files and returns the
      * result in a map.
      *
-     * @param maxQuantDirectory the MaxQuant parent directory
+     * @param maxQuantDirectory          the MaxQuant parent directory
      * @param includeUnidentifiedSpectra whether or not to include the
-     * unidentified spectra
-     * @param omittedProteinGroupIds removed protein group IDs
+     *                                   unidentified spectra
+     * @param omittedProteinGroupIds     removed protein group IDs
      * @throws IOException in case of an Input/Output related problem
      */
     public void parse(Path maxQuantDirectory, boolean includeUnidentifiedSpectra, Set<Integer> omittedProteinGroupIds) throws IOException {
@@ -110,13 +110,13 @@ public class MaxQuantSpectraParser {
     /**
      * Parse the msms.txt file.
      *
-     * @param msmsFile the MaxQuant msms.txt file path
+     * @param msmsFile               the MaxQuant msms.txt file path
      * @param omittedProteinGroupIds the set of omitted protein group IDs
      */
     private void parse(Path msmsFile, MaxQuantSpectra maxQuantSpectra, Set<Integer> omittedProteinGroupIds) throws IOException {
         FixedTabularFileIterator<MsmsHeader> valuesIterator = new FixedTabularFileIterator(msmsFile, msmsHeaders);
 
-        Spectrum spectrum;
+        AnnotatedSpectrum spectrum;
         EnumMap<MsmsHeader, String> msmsEntry;
         while (valuesIterator.hasNext()) {
             msmsEntry = valuesIterator.next();
@@ -141,9 +141,9 @@ public class MaxQuantSpectraParser {
                     } else {
                         maxQuantSpectra.getRunToSpectrums().get(rawFileName).add(aplKey);
                     }
-                    //add the Spectrum instance to the aplKeyToSpectrums with the aplKey as a key
+                    //add the Spectrum instance to the spectra with the aplKey as a key
                     maxQuantSpectra.getSpectra().put(aplKey, spectrum);
-                    //add the msms.txt ID to the aplKeyToMsmsIds map with the aplKey as a key
+                    //add the msms.txt ID to the spectrumToPsms map with the aplKey as a key
                     Set<Integer> msmsIds = new HashSet<>();
                     msmsIds.add(Integer.parseInt(msmsEntry.get(MsmsHeader.ID)));
                     Set<Integer> put = maxQuantSpectra.getSpectrumToPsms().put(aplKey, msmsIds);
@@ -164,12 +164,12 @@ public class MaxQuantSpectraParser {
      * Map the spectrum values from a parsed msms.txt row entry onto a Colims
      * {@link Spectrum}.
      *
-     * @param aplKey the apl key to use as spectrum accession
+     * @param aplKey         the apl key to use as spectrum accession
      * @param spectrumValues the map of spectrum values (key: {@link MsmsHeader}
-     * instance; value: column value)
+     *                       instance; value: column value)
      * @return the mapped Spectrum instance
      */
-    private Spectrum mapMsmsSpectrum(String aplKey, Map<MsmsHeader, String> spectrumValues) {
+    private AnnotatedSpectrum mapMsmsSpectrum(String aplKey, Map<MsmsHeader, String> spectrumValues) {
         //create Colims Spectrum instance and map the fields
         Spectrum spectrum = new com.compomics.colims.model.Spectrum();
         spectrum.setAccession(aplKey);
@@ -186,7 +186,11 @@ public class MaxQuantSpectraParser {
         //use the scan event number for the scan time field
         spectrum.setScanTime(Double.valueOf(spectrumValues.get(MsmsHeader.SCAN_EVENT_NUMBER)));
 
-        return spectrum;
+        //get the fragment ions and masses
+        String ionMatches = spectrumValues.get(MsmsHeader.ION_MATCHES);
+        String masses = spectrumValues.get(MsmsHeader.MASSES);
+
+        return new AnnotatedSpectrum(spectrum, ionMatches, masses);
     }
 
 }

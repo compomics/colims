@@ -13,9 +13,9 @@ public class MaxQuantSpectra {
 
     /**
      * This map links spectrum apl file keys with their associated {@link Spectrum} instance.
-     * The spectra map (key: the apl file key (RAW file name + scan index); value: Spectrum).
+     * The spectra map (key: the apl file key (RAW file name + scan index); value: the {@link AnnotatedSpectrum} instance).
      */
-    private final Map<String, Spectrum> spectra = new HashMap<>();
+    private final Map<String, AnnotatedSpectrum> spectra = new HashMap<>();
     /**
      * This map links spectra apl keys with the msms.txt IDs.
      * The spectrumToPsms map (key: apl key; value: set of msms IDs)
@@ -46,7 +46,7 @@ public class MaxQuantSpectra {
      *
      * @return the identified spectra
      */
-    public Map<String, Spectrum> getSpectra() {
+    public Map<String, AnnotatedSpectrum> getSpectra() {
         return spectra;
     }
 

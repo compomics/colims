@@ -62,7 +62,8 @@ public class SearchModificationMapperTest {
         SearchModification searchModification = searchModificationMapper.mapByOntologyTerm(
                 "UNIMOD",
                 "UNIMOD:1580",
-                "dHex(1)HexNAc(3)"
+                "dHex(1)HexNAc(3)",
+                null
         );
 
         Assert.assertNotNull(searchModification);
@@ -81,7 +82,8 @@ public class SearchModificationMapperTest {
         SearchModification searchModification = searchModificationMapper.mapByOntologyTerm(
                 "MOD",
                 "MOD:00090",
-                "L-alanine amide"
+                "L-alanine amide",
+                null
         );
 
         Assert.assertNotNull(searchModification);
@@ -100,7 +102,8 @@ public class SearchModificationMapperTest {
         SearchModification searchModification = searchModificationMapper.mapByOntologyTerm(
                 "MOD",
                 "MOD:00696",
-                "Phosphorylation of S"
+                "Phosphorylation of S",
+                null
         );
 
         Assert.assertNotNull(searchModification);

@@ -387,9 +387,10 @@ public class MzTabExportController implements Controllable {
             });
         });
         setAnalyticalRunsAssays();
-
-        setQuantificationReagentsAndLabels();
-
+        if(mzTabExport.getSamples().get(0).getAnalyticalRuns().get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType().equals(SearchEngineType.MAXQUANT)){
+            setQuantificationReagentsAndLabels();
+        }
+       
         //reset second panel text field
         mzTabExportDialog.getStudyVariableTextField().setText("");
 
@@ -480,6 +481,10 @@ public class MzTabExportController implements Controllable {
     private List<String> validateFirstPanel() {
         List<String> validationMessages = new ArrayList<>();
 
+        if(getSelectedMzTabType().equals(MzTabType.QUANTIFICATION) && mzTabExport.getRuns().get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType().equals(SearchEngineType.PEPTIDESHAKER)){
+            validationMessages.add("PeptideShaker experiments mztab export cannot be quatification type");
+        }
+        
         if (mzTabExportDialog.getDescriptionTextArea().getText().isEmpty()) {
             validationMessages.add("Please provide a description.");
         }
@@ -502,7 +507,7 @@ public class MzTabExportController implements Controllable {
                 if (!firstQuantificationMethodCvParam.equals(runs.get(i).getQuantificationSettings().getQuantificationMethod())) {
                     validationMessages.add("All runs should have the same quantification method");
                 }
-                if (quantificationMethodService.fetchQuantificationMethodHasReagents(runs.get(i).getQuantificationSettings().getQuantificationMethod()).size() != mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length) {
+                if (!quantificationMethodService.fetchQuantificationMethodHasReagents(runs.get(i).getQuantificationSettings().getQuantificationMethod()).isEmpty() && quantificationMethodService.fetchQuantificationMethodHasReagents(runs.get(i).getQuantificationSettings().getQuantificationMethod()).size() != mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length) {
                     validationMessages.add("Assay number should be the same with quantification reagent of the run " + runs.get(i).getName());
                 }
             }
@@ -711,28 +716,37 @@ public class MzTabExportController implements Controllable {
             //the analytical runs are on node level 2
             if (node.getLevel() == 2) {
                 AnalyticalRun analyticalRun = (AnalyticalRun) node.getUserObject();
-                List<QuantificationMethodHasReagent> quantificationMethodHasReagents = quantificationMethodService.fetchQuantificationMethodHasReagents(getQuantificationSettings(analyticalRun).getQuantificationMethod());
-                int[] assayArray = new int[quantificationMethodHasReagents.size()];
-                // label free experiments
-                if (quantificationMethodHasReagents.isEmpty()) {
+                if(getQuantificationSettings(analyticalRun) != null){
+                    List<QuantificationMethodHasReagent> quantificationMethodHasReagents = quantificationMethodService.fetchQuantificationMethodHasReagents(getQuantificationSettings(analyticalRun).getQuantificationMethod());
+                    int[] assayArray = new int[quantificationMethodHasReagents.size()];
+                    // label free experiments
+                    if (quantificationMethodHasReagents.isEmpty()) {
+                        assayNumber++;
+                        assayArray = new int[1];
+                        assayArray[0] = assayNumber;
+                        //add to tree and expand node
+                        DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(ASSAY + assayNumber);
+                        analyticalRunTreeModel.insertNodeInto(assayTreeNode, node, analyticalRunTreeModel.getChildCount(node));
+                        mzTabExportDialog.getAssayWithRunsTree().expandPath(new TreePath(node.getPath()));
+                    }
+                    // labeled experiments
+                    for (int counter = 0; counter < quantificationMethodHasReagents.size(); counter++) {
+                        assayNumber++;
+                        assayArray[counter] = assayNumber;
+                        //add to tree and expand node
+                        DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(ASSAY + assayNumber);
+                        analyticalRunTreeModel.insertNodeInto(assayTreeNode, node, analyticalRunTreeModel.getChildCount(node));
+                        mzTabExportDialog.getAssayWithRunsTree().expandPath(new TreePath(node.getPath()));
+                    }
+                    mzTabExport.getAnalyticalRunsAssaysRefs().put(analyticalRun, assayArray);
+                }else{
                     assayNumber++;
                     //add to tree and expand node
                     DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(ASSAY + assayNumber);
                     analyticalRunTreeModel.insertNodeInto(assayTreeNode, node, analyticalRunTreeModel.getChildCount(node));
-                    // analyticalRun.add(assayTreeNode);
                     mzTabExportDialog.getAssayWithRunsTree().expandPath(new TreePath(node.getPath()));
-                }
-                // labeled experiments
-                for (int counter = 0; counter < quantificationMethodHasReagents.size(); counter++) {
-                    assayNumber++;
-                    assayArray[counter] = assayNumber;
-                    //add to tree and expand node
-                    DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(ASSAY + assayNumber);
-                    analyticalRunTreeModel.insertNodeInto(assayTreeNode, node, analyticalRunTreeModel.getChildCount(node));
-                    mzTabExportDialog.getAssayWithRunsTree().expandPath(new TreePath(node.getPath()));
-                }
-                mzTabExport.getAnalyticalRunsAssaysRefs().put(analyticalRun, assayArray);
-
+                    
+                }              
                 mzTabExport.getRuns().add(analyticalRun);
             }
         }

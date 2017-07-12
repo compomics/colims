@@ -33,9 +33,7 @@ public class PropertiesUtil {
             throw new FileNotFoundException("Properties file was not found.");
         }
 
-        PropertiesConfiguration config = new PropertiesConfiguration(resource.getFile());
-
-        return config;
+        return new PropertiesConfiguration(resource.getFile());
     }
 
     /**

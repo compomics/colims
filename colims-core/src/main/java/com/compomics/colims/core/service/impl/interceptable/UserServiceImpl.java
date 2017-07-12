@@ -71,9 +71,7 @@ public class UserServiceImpl implements UserService {
             merge.getGroups().size();
             merge.getGroups().stream().forEach(group -> {
                 group.getRoles().size();
-                group.getRoles().stream().forEach((role) -> {
-                    role.getPermissions().size();
-                });
+                group.getRoles().stream().forEach((role) -> role.getPermissions().size());
             });
             user.setGroups(merge.getGroups());
         }
@@ -98,9 +96,7 @@ public class UserServiceImpl implements UserService {
     public void remove(User entity) {
         User merge = userRepository.merge(entity);
         //remove entity relations
-        merge.getProjects().stream().forEach((project) -> {
-            project.getUsers().remove(merge);
-        });
+        merge.getProjects().stream().forEach((project) -> project.getUsers().remove(merge));
 
         userRepository.remove(merge);
     }

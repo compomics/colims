@@ -28,10 +28,7 @@ import com.compomics.colims.client.view.SpectrumDialog;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.Project;
-import com.compomics.colims.model.Sample;
+import com.compomics.colims.model.*;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.util.gui.TableProperties;
@@ -164,7 +161,7 @@ public class ProteinOverviewController implements Controllable {
                 proteinOverviewPanel.getPeptideTable(), sortedPeptides, TableComparatorChooser.SINGLE_COLUMN);
 
         //init PSM table
-        SortedList<Peptide> sortedPsms = new SortedList<>(psms, Comparator.comparing(Peptide::getPsmPostErrorProbability));
+        SortedList<Peptide> sortedPsms = new SortedList<>(psms, Comparator.comparing(Peptide::getPsmPostErrorProbability, Comparator.nullsLast(Comparator.naturalOrder())));
 
         psmTableModel = GlazedListsSwing.eventTableModel(sortedPsms, psmTableFormat);
         proteinOverviewPanel.getPsmTable().setModel(psmTableModel);
@@ -215,6 +212,9 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MZRATIO).setPreferredWidth(100);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MZRATIO).setMaxWidth(100);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MZRATIO).setMinWidth(100);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR).setPreferredWidth(160);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR).setMaxWidth(200);
+        proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR).setMinWidth(120);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PRECURSOR_CHARGE).setPreferredWidth(200);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PSM_CONFIDENCE).setPreferredWidth(100);
         proteinOverviewPanel.getPsmTable().getColumnModel().getColumn(ProteinPanelPsmTableFormat.PSM_CONFIDENCE).setMaxWidth(100);
@@ -251,10 +251,8 @@ public class ProteinOverviewController implements Controllable {
                 //@TODO think about how to handle runs with different search settings
                 //load search settings for the first run
                 spectrumPanelGenerator.loadSettingsForRun(selectedAnalyticalRuns.get(0));
-                //set search parameters in PSM table formatter
-                psmTableFormat.setSearchParameters(selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters());
-
-                setPsmTableCellRenderers();
+                //set search type in PSM table formatter
+                psmTableFormat.setSearchEngineType(selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType());
 
                 proteinGroupTableModel.reset(getSelectedAnalyticalRunIds());
                 updateProteinGroupTable();
@@ -309,6 +307,8 @@ public class ProteinOverviewController implements Controllable {
                 } else {
                     PeptideTableRow selectedPeptideTableRow = peptideSelectionModel.getSelected().get(0);
                     List<Peptide> selectedPsms = selectedPeptideTableRow.getPeptides();
+
+                    setPsmTableCellRenderers();
 
                     GlazedLists.replaceAll(psms, selectedPsms, false);
                 }
@@ -630,13 +630,17 @@ public class ProteinOverviewController implements Controllable {
      */
     private void showPsmPopDialog(Peptide peptide) {
         try {
-            SpectrumDialog spectrumDialog = spectrumPanelGenerator.generateSpectrumDialog(mainController.getMainFrame(), peptide);
+            if (!peptide.getSpectrum().getAccession().equals(Spectrum.MBR_SPECTRUM_ACCESSION)) {
+                SpectrumDialog spectrumDialog = spectrumPanelGenerator.generateSpectrumDialog(mainController.getMainFrame(), peptide);
 
-            GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), spectrumDialog);
-            spectrumDialog.setVisible(true);
+                GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), spectrumDialog);
+                spectrumDialog.setVisible(true);
+            } else {
+                eventBus.post(new MessageEvent("Spectrum dialog", "The selected PSM is a matching-between-runs identification.", JOptionPane.WARNING_MESSAGE));
+            }
         } catch (MappingException | InterruptedException | SQLException | IOException | ClassNotFoundException e) {
             LOGGER.error(e, e.getCause());
-            eventBus.post(new MessageEvent("Spectrum dialog problem", "The spectrum cannot be shown", JOptionPane.ERROR_MESSAGE));
+            eventBus.post(new MessageEvent("Spectrum dialog problem", "The spectrum cannot be shown", JOptionPane.INFORMATION_MESSAGE));
         }
     }
 
@@ -791,21 +795,21 @@ public class ProteinOverviewController implements Controllable {
      * Set SparkLines for the PSM table.
      */
     private void setPsmTableCellRenderers() {
-        proteinOverviewPanel.getPsmTable()
-                .getColumnModel()
-                .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR)
-                .setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL,
-                        selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
-                        selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
-                        utilitiesUserPreferences.getSparklineColor(),
-                        utilitiesUserPreferences.getSparklineColor())
-                );
-
-        ((JSparklinesBarChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
-                .getColumnModel()
-                .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR)
-                .getCellRenderer())
-                .showNumberAndChart(true, TableProperties.getLabelWidth());
+//        proteinOverviewPanel.getPsmTable()
+//                .getColumnModel()
+//                .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR)
+//                .setCellRenderer(new JSparklinesBarChartTableCellRenderer(PlotOrientation.HORIZONTAL,
+//                        0.0,
+//                        selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchParameters().getPrecMassTolerance(),
+//                        utilitiesUserPreferences.getSparklineColor(),
+//                        utilitiesUserPreferences.getSparklineColor())
+//                );
+//
+//        ((JSparklinesBarChartTableCellRenderer) proteinOverviewPanel.getPsmTable()
+//                .getColumnModel()
+//                .getColumn(ProteinPanelPsmTableFormat.PRECURSOR_MASS_ERROR)
+//                .getCellRenderer())
+//                .showNumberAndChart(true, TableProperties.getLabelWidth());
 
         proteinOverviewPanel.getPsmTable()
                 .getColumnModel()

@@ -9,22 +9,27 @@ import com.compomics.colims.core.service.QuantificationMethodService;
 import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.colims.model.QuantificationMethodHasReagent;
 import com.compomics.colims.repository.QuantificationMethodRepository;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author demet
  */
 @Service("quantificationMethodService")
 @Transactional
-public class QuantificationMethodServiceImpl implements QuantificationMethodService{
+public class QuantificationMethodServiceImpl implements QuantificationMethodService {
+
+    private final QuantificationMethodRepository quantificationMethodRepository;
 
     @Autowired
-    QuantificationMethodRepository quantificationMethodRepository;
-    
+    public QuantificationMethodServiceImpl(QuantificationMethodRepository quantificationMethodRepository) {
+        this.quantificationMethodRepository = quantificationMethodRepository;
+    }
+
     @Override
     public List<QuantificationMethodHasReagent> fetchQuantificationMethodHasReagents(QuantificationMethod quantificationMethod) {
         return quantificationMethodRepository.fetchQuantificationMethodHasReagents(quantificationMethod.getId());
@@ -59,5 +64,5 @@ public class QuantificationMethodServiceImpl implements QuantificationMethodServ
     public void remove(QuantificationMethod entity) {
         quantificationMethodRepository.remove(entity);
     }
-    
+
 }

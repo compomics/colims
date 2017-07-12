@@ -52,7 +52,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static com.compomics.colims.client.controller.admin.FastaDbManagementController.DATABASE_NAME_NOT_PRESENT;
-import static com.compomics.colims.client.controller.admin.FastaDbManagementController.UNKNOWN;
+import static com.compomics.colims.client.controller.admin.FastaDbManagementController.NONE;
 
 /**
  * @author demet
@@ -172,7 +172,7 @@ public class FastaDbSaveUpdateController implements Controllable {
 
         Path fastasDirectory = Paths.get(fastasPath);
         if (!Files.exists(fastasDirectory)) {
-            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasPath.toString() + " doesn't exist.");
+            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasPath + " doesn't exist.");
         }
 
         //init FASTA file selection
@@ -295,13 +295,9 @@ public class FastaDbSaveUpdateController implements Controllable {
             headerParseRuleAdditionDialog.dispose();
         });
 
-        headerParseRuleAdditionDialog.getCloseButton().addActionListener(e -> {
-            headerParseRuleAdditionDialog.dispose();
-        });
+        headerParseRuleAdditionDialog.getCloseButton().addActionListener(e -> headerParseRuleAdditionDialog.dispose());
 
-        headerParseRuleTestDialog.getCloseButton().addActionListener(e -> {
-            headerParseRuleTestDialog.dispose();
-        });
+        headerParseRuleTestDialog.getCloseButton().addActionListener(e -> headerParseRuleTestDialog.dispose());
     }
 
     @Override
@@ -332,7 +328,11 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbSaveUpdatePanel.getNameTextField().setText(fastaDbToEdit.getName());
         fastaDbSaveUpdatePanel.getFileNameTextField().setText(fastaDbToEdit.getFileName());
         fastaDbSaveUpdatePanel.getFilePathTextField().setText(fastaDbToEdit.getFilePath());
-        fastaDbSaveUpdatePanel.getVersionTextField().setText(fastaDbToEdit.getVersion());
+        if (fastaDb.getVersion() != null) {
+            fastaDbSaveUpdatePanel.getVersionTextField().setText(fastaDbToEdit.getVersion());
+        } else {
+            fastaDbSaveUpdatePanel.getVersionTextField().setText("");
+        }
 
         boolean enableHeaderParseRules = analyticalRunsAdditionController.getSelectedStorageType().equals(PersistType.MAX_QUANT);
         if (enableHeaderParseRules) {
@@ -383,7 +383,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         fastaDbToEdit.setFileName(fastaDbSaveUpdatePanel.getFileNameTextField().getText());
         fastaDbToEdit.setFilePath(fastaDbSaveUpdatePanel.getFilePathTextField().getText());
 
-        if (fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(UNKNOWN)) {
+        if (fastaDbSaveUpdatePanel.getVersionTextField().getText().isEmpty() || fastaDbSaveUpdatePanel.getVersionTextField().getText().equals(NONE)) {
             fastaDbToEdit.setVersion(null);
         } else {
             fastaDbToEdit.setVersion(fastaDbSaveUpdatePanel.getVersionTextField().getText());
@@ -468,7 +468,7 @@ public class FastaDbSaveUpdateController implements Controllable {
     private void populateDatabaseComboBox(TreeSet<String> dbNames) {
         databaseNamesBindingList.add(DATABASE_NAME_NOT_PRESENT);
 
-        dbNames.forEach(databaseNames::add);
+        databaseNames.addAll(dbNames);
     }
 }
 
@@ -494,7 +494,13 @@ class HeaderParseRule {
      * @param parseRule the parse rule
      */
     public HeaderParseRule(String parseRule) {
-        this.parseRule = parseRule;
+        if(parseRule != null) {
+            this.parseRule = parseRule;
+        }
+        else {
+            this.parseRule = NONE_RULE.parseRule;
+            this.explanation = NONE_RULE.explanation;
+        }
     }
 
     /**

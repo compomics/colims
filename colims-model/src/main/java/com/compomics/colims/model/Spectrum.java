@@ -19,6 +19,11 @@ public class Spectrum extends DatabaseEntity {
     private static final long serialVersionUID = -6581466869218920103L;
 
     /**
+     * The default accession for a matching-between-runs dummy spectrum.
+     */
+    public static final String MBR_SPECTRUM_ACCESSION = "MBR";
+
+    /**
      * The spectrum accession.
      */
     @Basic(optional = false)

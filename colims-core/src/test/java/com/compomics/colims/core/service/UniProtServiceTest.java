@@ -33,7 +33,7 @@ public class UniProtServiceTest {
         String accession = "P05787";
         
         Map<String, String> uniProt = uniProtService.getUniProtByAccession(accession);
-        assertThat(uniProt.get("description"), is("Serine/threonine-protein kinase B-raf"));
+        assertThat(uniProt.get("description"), is("Keratin, type II cytoskeletal 8"));
         assertThat(uniProt.get("species"), is("Homo sapiens"));
         assertThat(uniProt.get("taxid"), is("9606"));
     }

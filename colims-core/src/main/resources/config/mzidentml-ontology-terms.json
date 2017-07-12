@@ -370,6 +370,18 @@
       "name": "theoretical mass"
     }
   },
+  "Spectrum": {
+    "Spectrum title": {
+      "cvRef": "MS",
+      "accession": "MS:1000796",
+      "name": "spectrum title"
+    },
+    "Retention time": {
+      "cvRef": "MS",
+      "accession": "MS:1000894",
+      "name": "retention time"
+    }
+  },
   "Protein": {
     "Group representative": {
       "cvRef": "MS",
@@ -385,6 +397,50 @@
       "cvRef": "MS",
       "accession": "MS:1001093",
       "name": "sequence coverage"
+    }
+  },
+  "Ion": {
+    "Neutral loss": {
+      "cvRef": "MS",
+      "accession": "MS:1000336",
+      "name": "neutral loss"
+    },
+    "y": {
+      "cvRef": "MS",
+      "accession": "MS:1001220",
+      "name": "frag: y ion"
+    },
+    "b": {
+      "cvRef": "MS",
+      "accession": "MS:1001224",
+      "name": "frag: b ion"
+    },
+    "a": {
+      "cvRef": "MS",
+      "accession": "MS:1001229",
+      "name": "frag: a ion"
+    },
+    "x": {
+      "cvRef": "MS",
+      "accession": "MS:1001228",
+      "name": "frag: x ion"
+    }
+  },
+  "Measure": {
+    "MZ": {
+      "cvRef": "MS",
+      "accession": "MS:1001225",
+      "name": "product ion m/z"
+    },
+    "Intensity": {
+      "cvRef": "MS",
+      "accession": "MS:1001226",
+      "name": "product ion intensity"
+    },
+    "MZ_error": {
+      "cvRef": "MS",
+      "accession": "MS:1001227",
+      "name": "product ion m/z error"
     }
   }
 }

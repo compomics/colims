@@ -97,12 +97,18 @@ public class SequenceUtils {
         if (startPosition != 1) {
             //correct for zero based index
             surroundingAAs[0] = proteinSequence.charAt(startPosition - 2);
+        }else{
+            // if peptide is N-terminal returns "-"
+            surroundingAAs[0] = '-';
         }
 
         //get the AA after the peptide
         if (startPosition + peptideSequence.length() - 1 != proteinSequence.length()) {
             //correct for zero based index
             surroundingAAs[1] = proteinSequence.charAt(startPosition + peptideSequence.length() - 1);
+        }else{
+            // if peptide is C-terminal returns "-"
+            surroundingAAs[1] = '-';
         }
 
         return surroundingAAs;

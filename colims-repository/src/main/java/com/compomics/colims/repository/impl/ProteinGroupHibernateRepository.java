@@ -152,32 +152,10 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
 
     @Override
     public List<ProteinGroup> getProteinGroupsForRuns(List<Long> analyticalRunIds) {
-//        Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
-//
-//        //joins
-//        criteria.createAlias("peptide.spectrum", "spectrum");
-//        criteria.createAlias("peptideHasProteinGroup.peptide", "peptide");
-//        criteria.createAlias("proteinGroup.peptideHasProteinGroups", "peptideHasProteinGroup");
-//        criteria.createAlias("proteinGroup.proteinGroupHasProteins", "proteinGroupHasProtein");
-//        criteria.createAlias("proteinGroupHasProtein.protein", "protein");
-//
-//        //restrictions
-//        criteria.add(Restrictions.in("spectrum.analyticalRun.id", analyticalRunIds));
-//
-//        //projections
-//        ProjectionList projectionList = Projections.projectionList();
-//        projectionList.add(Projections.groupProperty("id").as("id"));
-//        criteria.setProjection(projectionList);
-//
-//        //transform results into ProteinGroup instances
-//        criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroup.class));
-
         Query query = getCurrentSession().getNamedQuery("ProteinGroup.getProteinGroupsByRunIds");
         query.setParameterList("analyticalRunIds", analyticalRunIds);
 
-        List list = query.list();
-
-        return list;
+        return query.list();
     }
 
     @Override

@@ -42,10 +42,10 @@ public class MaxQuantEvidenceParser {
     static final String C_TERMINAL_MODIFICATION = "Protein C-term";
 
     /**
-     * The parsed peptides map (key: evidence ID; value: the {@link Peptide}
-     * object).
+     * The parsed peptides map (key: evidence ID; value: the associated {@link Peptide}
+     * objects).
      */
-    private final Map<Integer, Peptide> peptides = new HashMap<>();
+    private final Map<Integer, List<Peptide>> peptides = new HashMap<>();
     /**
      * This map holds the links between spectrum and associated peptides (key:
      * msms ID; value: set of evidence IDs).
@@ -89,7 +89,7 @@ public class MaxQuantEvidenceParser {
         evidenceHeaders = new EvidenceHeaders();
     }
 
-    public Map<Integer, Peptide> getPeptides() {
+    public Map<Integer, List<Peptide>> getPeptides() {
         return peptides;
     }
 
@@ -123,18 +123,18 @@ public class MaxQuantEvidenceParser {
 
             //check for spectrumToPeptides coming from omitted protein groups
             //if one of the protein groups is not in the omitted list, include the peptide
-            Set<Integer> nonOmittedProteinIds = Arrays.stream(proteinGroupIds)
+            Set<Integer> includedProteinIds = Arrays.stream(proteinGroupIds)
                     .map(Integer::valueOf)
                     .filter(proteinGroupsId -> !omittedProteinGroupIds.contains(proteinGroupsId))
                     .collect(Collectors.toSet());
 
-            if (!nonOmittedProteinIds.isEmpty()) {
+            if (!includedProteinIds.isEmpty()) {
                 String[] msmsIds = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MS_MS_IDS)).split(MS_MS_IDS_DELIMITER);
                 for (String msmsIdString : msmsIds) {
                     //get the evidence ID
                     Integer evidenceId = Integer.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.ID)));
                     //create the peptide
-                    createPeptide(evidenceId, evidenceEntry, nonOmittedProteinIds);
+                    createPeptide(evidenceId, evidenceEntry, includedProteinIds);
                     //check if the peptide has a spectrum (PSM)
                     if (!msmsIdString.isEmpty()) {
                         Integer msmsId = Integer.parseInt(msmsIdString);
@@ -185,11 +185,21 @@ public class MaxQuantEvidenceParser {
         peptide.setCharge(Integer.parseInt(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.CHARGE))));
         peptide.setSequence(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE)));
         peptide.setTheoreticalMass(Double.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS))));
+        if (!evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS_ERROR)).equalsIgnoreCase(NAN)) {
+            peptide.setMassError(Double.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS_ERROR))));
+        }
         peptide.getPeptideHasModifications().addAll(createModifications(peptide, evidenceEntry));
 
         //add to the peptideToProteinGroups map
         peptideToProteinGroups.put(evidenceId, nonOmittedProteinGroupsIds);
-        peptides.put(evidenceId, peptide);
+        //add to the peptides map
+        if (peptides.containsKey(evidenceId)) {
+            peptides.get(evidenceId).add(peptide);
+        } else {
+            List<Peptide> associatedPeptides = new ArrayList<>();
+            associatedPeptides.add(peptide);
+            peptides.put(evidenceId, associatedPeptides);
+        }
     }
 
     /**
@@ -217,7 +227,7 @@ public class MaxQuantEvidenceParser {
             return peptideHasModifications;
         } else {
             for (String modificationString : modificationsEntry.split(MODIFICATION_DELIMITER)) {
-                EvidenceModification evidenceModification = new EvidenceModification(modificationString);
+                EvidenceModification evidenceModification = new EvidenceModification(modificationString.replaceAll("\"", ""));
                 Modification modification;
                 //look for the modification by it's name in the modification ontology terms
                 if (modificationMappings.containsKey(evidenceModification.getFullModificationName())) {
@@ -252,7 +262,7 @@ public class MaxQuantEvidenceParser {
                     //Array to store the parsed scores and the affected amino acid location.
                     //(Element 0: the probability score; element 1: the delta score; element 2: the affected amino acid location starting from 1)
                     List<Object[]> scoresAndLocations = new ArrayList<>();
-                    if (!probabilitiesString.isEmpty() && !deltasString.isEmpty()) {
+                    if (probabilitiesString != null && deltasString != null && !probabilitiesString.isEmpty() && !deltasString.isEmpty()) {
                         //first, parse the modification probability scores and delta scores between brackets
                         Matcher probabilities = MODIFICATION_PATTERN.matcher(probabilitiesString);
                         Matcher deltas = MODIFICATION_PATTERN.matcher(deltasString);

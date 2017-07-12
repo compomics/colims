@@ -4,6 +4,7 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,13 @@ public class MzIdentMlExporterTest {
     @Autowired
     private UserService userService;
 
-
     /**
      * Test the MZIdentML export of an analytical run.
      *
      * @throws IOException error thrown in case of a I/O related problem
      */
     @Test
+    @Ignore
     public void testExport() throws IOException {
         //get the run from the in memory database
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();

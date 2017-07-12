@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.ontology.ModificationOntologyTerm;
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.OntologyTerm;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
@@ -229,12 +230,10 @@ public class MaxQuantSearchSettingsParser {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         //set the FASTA databases entity associations
-        fastaDbs.forEach((k, v) -> {
-            v.forEach(fastaDb -> {
-                SearchSettingsHasFastaDb searchSettingsHasFastaDb = new SearchSettingsHasFastaDb(k, searchAndValidationSettings, fastaDb);
-                searchAndValidationSettings.getSearchSettingsHasFastaDbs().add(searchSettingsHasFastaDb);
-            });
-        });
+        fastaDbs.forEach((k, v) -> v.forEach(fastaDb -> {
+            SearchSettingsHasFastaDb searchSettingsHasFastaDb = new SearchSettingsHasFastaDb(k, searchAndValidationSettings, fastaDb);
+            searchAndValidationSettings.getSearchSettingsHasFastaDbs().add(searchSettingsHasFastaDb);
+        }));
 
         //map the search parameters onto a Colims {@link SearchParameters} instance.
         SearchParameters searchParameters = new SearchParameters();
@@ -329,7 +328,6 @@ public class MaxQuantSearchSettingsParser {
             String[] modifications = fixedModifications.split(PARAMETER_DELIMITER);
             for (String modification : modifications) {
                 SearchParametersHasModification searchParametersHasModification = createSearchParametersHasModification(searchParameters, modification, ModificationType.FIXED);
-
                 searchParametersHasModifications.add(searchParametersHasModification);
             }
         }
@@ -358,11 +356,12 @@ public class MaxQuantSearchSettingsParser {
         SearchModification searchModification;
         //look for the modification in the mapping file
         if (modificationMappings.containsKey(modificationName)) {
-            OntologyTerm modificationTerm = modificationMappings.get(modificationName);
+            ModificationOntologyTerm modificationTerm = (ModificationOntologyTerm) modificationMappings.get(modificationName);
             searchModification = searchModificationMapper.mapByOntologyTerm(
                     modificationTerm.getOntologyPrefix(),
                     modificationTerm.getOboId(),
-                    modificationTerm.getLabel());
+                    modificationTerm.getLabel(),
+                    modificationTerm.getUtilitiesName());
         } else {
             searchModification = searchModificationMapper.mapByName(modificationName.split(MODIFICATION_NAME_ONLY)[0]);
         }
@@ -446,19 +445,19 @@ public class MaxQuantSearchSettingsParser {
             //iterate over the mandatory headers
             mqParHeaders.getMandatoryHeaders().forEach((mqParHeader) -> {
                 Optional<String> foundHeader = mqParHeader.getValues().stream().filter(value -> parameterGroupElement.getChild(value) != null).findFirst();
-                if (foundHeader.isPresent()) {
-                    mqParHeader.setParsedValue(mqParHeader.getValues().indexOf(foundHeader.get()));
+                foundHeader.ifPresent(s -> {
+                    mqParHeader.setParsedValue(mqParHeader.getValues().indexOf(s));
                     //if the Element has children (enzymes, fixed/variable modifications), concatenate them.
-                    Element param = parameterGroupElement.getChild(foundHeader.get());
+                    Element param = parameterGroupElement.getChild(s);
                     if (param.getChildren().isEmpty()) {
                         mqParParameters.put(MqParHeader.valueOf(mqParHeader.getName()), param.getValue());
                     } else {
                         //join the enzymes
-                        String concatenation = getChildByName(parameterGroupElement, foundHeader.get()).getChildren().stream().map(enzyme
+                        String concatenation = getChildByName(parameterGroupElement, s).getChildren().stream().map(enzyme
                                 -> enzyme.getContent().get(0).getValue()).collect(Collectors.joining(PARAMETER_DELIMITER));
                         mqParParameters.put(MqParHeader.valueOf(mqParHeader.getName()), concatenation);
                     }
-                }
+                });
             });
 
             spectrumParamsWithGroup.put(counter, mqParParameters);
@@ -491,13 +490,13 @@ public class MaxQuantSearchSettingsParser {
 
         // match all maps and put them in mqParParamsWithRawFile map
         // also put raw file name and experiment name in analyticalRuns
-        rawFilePath.entrySet().forEach(entry -> {
+        rawFilePath.forEach((key, value) -> {
             // find group number of each file name and using group number find the enumMap of spectrum parameters. Then put them in the map.
-            mqParParamsWithRawFile.put(entry.getValue(), spectrumParamsWithGroup.get(rawFileGroup.get(entry.getKey())));
+            mqParParamsWithRawFile.put(value, spectrumParamsWithGroup.get(rawFileGroup.get(key)));
             // fill analyticalRuns
             AnalyticalRun analyticalRun = new AnalyticalRun();
-            analyticalRun.setName(entry.getValue());
-            analyticalRuns.put(analyticalRun, maxQuantExperiments.get(entry.getKey()));
+            analyticalRun.setName(value);
+            analyticalRuns.put(analyticalRun, maxQuantExperiments.get(key));
         });
     }
 
@@ -505,11 +504,9 @@ public class MaxQuantSearchSettingsParser {
      * Match analytical run and related search and validation settings
      */
     private void matchAnalyticalRunSearchSettings(){
-        analyticalRuns.keySet().forEach((run) -> {   
-            run.setSearchAndValidationSettings(runSettings.get(run.getName()));
-        });
+        analyticalRuns.keySet().forEach((run) -> run.setSearchAndValidationSettings(runSettings.get(run.getName())));
     }
-    
+
     /**
      * Find child element by name, case insensitive. Returns null if nothing was
      * found.

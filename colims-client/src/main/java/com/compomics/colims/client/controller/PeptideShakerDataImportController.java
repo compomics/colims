@@ -167,6 +167,10 @@ public class PeptideShakerDataImportController implements Controllable {
         peptideShakerDataImportPanel.getCpsTextField().setText("");
         peptideShakerDataImportPanel.getFastaDbTextField().setText("");
         mgfFileListModel.clear();
+        //reset the file chooser directories
+        Path experimentsDirectory = Paths.get(experimentsPath);
+        peptideShakerDataImportPanel.getCpsFileChooser().setCurrentDirectory(experimentsDirectory.toFile());
+        peptideShakerDataImportPanel.getMgfFileChooser().setCurrentDirectory(experimentsDirectory.toFile());
     }
 
     public void showEditView(PeptideShakerImport peptideShakerImport) {

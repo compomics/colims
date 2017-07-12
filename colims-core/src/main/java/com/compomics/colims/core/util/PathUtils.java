@@ -34,9 +34,7 @@ public final class PathUtils {
             throw new IllegalArgumentException("The given path " + path.toString() + " doesn't have a root.");
         }
 
-        Iterator<Path> pathIterator = path.iterator();
-        while (pathIterator.hasNext()) {
-            Path nextElement = pathIterator.next();
+        for (Path nextElement : path) {
             parentPath = parentPath.resolve(nextElement);
             if (nextElement.toString().equals(pathComponent)) {
                 //relativize the 2 paths

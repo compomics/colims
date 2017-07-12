@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -46,14 +47,20 @@ public class MaxQuantEvidenceParserTest {
         Assert.assertEquals(9, maxQuantEvidenceParser.getRunToMbrPeptides().size());
 
         //check the size of the spectrumToPeptides map
-        Assert.assertEquals(13, maxQuantEvidenceParser.getSpectrumToPeptides().size());
+        Assert.assertEquals(14, maxQuantEvidenceParser.getSpectrumToPeptides().size());
 
         //check the size of the peptideToProteins map
         Assert.assertEquals(22, maxQuantEvidenceParser.getPeptideToProteinGroups().size());
 
         //check the parsed modifications
         //check a peptide with a terminal modification
-        Peptide peptide = maxQuantEvidenceParser.getPeptides().get(737);
+        List<Peptide> peptides = maxQuantEvidenceParser.getPeptides().get(737);
+        Peptide peptide = peptides.get(0);
+        Assert.assertNull(peptide.getPsmProbability());
+        Assert.assertNull(peptide.getPsmPostErrorProbability());
+        Assert.assertEquals(2, peptide.getCharge().intValue());
+        Assert.assertEquals(1029.52771, peptide.getTheoreticalMass(), 0.001);
+        Assert.assertEquals(-1.3998, peptide.getMassError(), 0.001);
         Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
         PeptideHasModification peptideHasModification = peptide.getPeptideHasModifications().get(0);
         Assert.assertEquals(0, peptideHasModification.getLocation().intValue());
@@ -64,7 +71,10 @@ public class MaxQuantEvidenceParserTest {
         Assert.assertEquals("UNIMOD:1", modification.getAccession());
 
         //check a peptide with a non-terminal modification
-        peptide = maxQuantEvidenceParser.getPeptides().get(1154);
+        peptides = maxQuantEvidenceParser.getPeptides().get(1154);
+        //check if the this evidence ID has two associated peptides
+        Assert.assertEquals(2, peptides.size());
+        peptide = peptides.get(0);
         Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
         peptideHasModification = peptide.getPeptideHasModifications().get(0);
         Assert.assertEquals(7, peptideHasModification.getLocation().intValue());
@@ -75,7 +85,10 @@ public class MaxQuantEvidenceParserTest {
         Assert.assertEquals("UNIMOD:35", modification.getAccession());
 
         //check a peptide with 2 modifications
-        peptide = maxQuantEvidenceParser.getPeptides().get(6239);
+        peptides = maxQuantEvidenceParser.getPeptides().get(6239);
+        peptide = peptides.get(0);
+        Assert.assertEquals(43.066, peptide.getPsmProbability(), 0.001);
+        Assert.assertEquals(0.018231, peptide.getPsmPostErrorProbability(), 0.001);
         Assert.assertEquals(2, peptide.getPeptideHasModifications().size());
         peptideHasModification = peptide.getPeptideHasModifications().get(0);
         Assert.assertEquals(5, peptideHasModification.getLocation().intValue());
@@ -93,7 +106,8 @@ public class MaxQuantEvidenceParserTest {
         Assert.assertEquals("UNIMOD:21", modification.getAccession());
 
         //check a MBR peptide, modification scores should be empty
-        peptide = maxQuantEvidenceParser.getPeptides().get(2619);
+        peptides = maxQuantEvidenceParser.getPeptides().get(2619);
+        peptide = peptides.get(0);
         Assert.assertEquals(1, peptide.getPeptideHasModifications().size());
         peptideHasModification = peptide.getPeptideHasModifications().get(0);
         Assert.assertEquals(3, peptideHasModification.getLocation().intValue());

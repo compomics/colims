@@ -51,9 +51,7 @@ public class FastaDbHibernateRepository extends GenericHibernateRepository<Fasta
         
         List<SearchSettingsHasFastaDb> searchSettingsHasFastaDbs = criteria.list();
         
-        searchSettingsHasFastaDbs.forEach(searchSettingsHasFastaDb -> {
-            fastaDbs.put(searchSettingsHasFastaDb.getFastaDb(), searchSettingsHasFastaDb.getFastaDbType());
-        });
+        searchSettingsHasFastaDbs.forEach(searchSettingsHasFastaDb -> fastaDbs.put(searchSettingsHasFastaDb.getFastaDb(), searchSettingsHasFastaDb.getFastaDbType()));
         
         return fastaDbs;
     }

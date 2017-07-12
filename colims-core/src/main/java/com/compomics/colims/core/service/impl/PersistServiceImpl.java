@@ -68,8 +68,6 @@ public class PersistServiceImpl implements PersistService {
         mappedData.getProteinGroups().stream().forEach(proteinGroupRepository::saveOrUpdate);
         
         // cascade save or update spectrum 
-        mappedData.getAnalyticalRuns().stream().forEach(analyticalRun -> {
-            analyticalRun.getSpectrums().stream().forEach(spectrumRepository::saveOrUpdate);
-        }); 
+        mappedData.getAnalyticalRuns().stream().forEach(analyticalRun -> analyticalRun.getSpectrums().stream().forEach(spectrumRepository::saveOrUpdate));
     }
 }

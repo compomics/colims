@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.fasta;
 
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.enums.SearchEngineType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,18 +55,20 @@ public class FastaDbParserTest {
         Map<String, String> parsedFastas = fastaDbParser.parse(fastaDbs);
 
         Assert.assertFalse(parsedFastas.containsKey(null));
-        Assert.assertEquals(20379, parsedFastas.size());
+        Assert.assertEquals(20381, parsedFastas.size());
         //look for the first protein
-        Assert.assertTrue(parsedFastas.containsKey("P24844"));
-        System.out.println(parsedFastas.get("P24844"));
+        Assert.assertTrue(parsedFastas.containsKey("P13746"));
         //look for a protein
         Assert.assertTrue(parsedFastas.containsKey("O00571"));
-        //look for the last protein
-        Assert.assertTrue(parsedFastas.containsKey("E9PAV3"));
+        //look for the last protein and check if the last line of the file was parsed correctly
+        Assert.assertTrue(parsedFastas.containsKey("Q2KJ03"));
+        Assert.assertEquals("MEEKTTQSVEGLKQYCLVPEREMKHIERHIHQTGKAGEFKNKPFRQVLQPPNETKLP" +
+                "KIMPEGHGIQNAQRRKQVNEREQMQTKDHQERMIRGRELAEQRLKERILRRSQSQLLTYEKHERVKEIK" +
+                "EFERVIAYLLFQPCSRSRIKVSILMDKSQNGEKVNTIVKPYQRKFLAMPPFLRSQIGKIRD", parsedFastas.get("Q2KJ03"));
         //look for 3 contaminants proteins
-        Assert.assertTrue(parsedFastas.containsKey("P09870"));
-        Assert.assertTrue(parsedFastas.containsKey("P05784"));
-        Assert.assertTrue(parsedFastas.containsKey("H-INV:HIT000292931"));
+        Assert.assertTrue(parsedFastas.containsKey("P00761"));
+        Assert.assertTrue(parsedFastas.containsKey("Q9TRI1"));
+        Assert.assertTrue(parsedFastas.containsKey("REFSEQ:XP_585019"));
 
         //test a duplicate accession between the 2 FASTA DB files
         Assert.assertTrue(parsedFastas.containsKey("P19013"));
@@ -87,7 +90,7 @@ public class FastaDbParserTest {
         fastaDbs.put(testFastaDb, Paths.get(testFastaDb.getFilePath()));
         fastaDbs.put(contaminantsFastaDb, Paths.get(contaminantsFastaDb.getFilePath()));
 
-        Map<FastaDb, Set<String>> parsedFastas = fastaDbParser.parseAccessions(fastaDbs);
+        Map<FastaDb, Set<String>> parsedFastas = fastaDbParser.parseAccessions(fastaDbs, SearchEngineType.MAXQUANT);
 
         Assert.assertEquals(2, parsedFastas.size());
         Assert.assertEquals(20195, parsedFastas.get(testFastaDb).size());

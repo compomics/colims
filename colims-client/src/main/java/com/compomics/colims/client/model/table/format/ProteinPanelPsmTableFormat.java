@@ -4,12 +4,10 @@ import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.client.renderer.PeptideSequenceRenderer;
 import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.Spectrum;
-import com.compomics.colims.model.enums.MassAccuracyType;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.experiment.biology.ions.PrecursorIon;
 import com.compomics.util.experiment.identification.matches.IonMatch;
-import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.Peak;
 
 import java.util.Comparator;
@@ -21,7 +19,7 @@ import java.util.Comparator;
  */
 public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> {
 
-    private static final String[] COLUMN_NAMES = {"ID", "Sequence", "Charge", "M/Z ratio", "Mass Error", "Retention Time", "Confidence"};
+    private static final String[] COLUMN_NAMES = {"ID", "Sequence", "Charge", "M/Z ratio", "Mass Error (ppm, abs)", "Retention Time", "Confidence"};
 
     public static final int SPECTRUM_ID = 0;
     public static final int SEQUENCE = 1;
@@ -32,10 +30,9 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
     public static final int PSM_CONFIDENCE = 6;
 
     /**
-     * The search parameters of the given run. They hold the mass error accuracy
-     * type.
+     * The search engine type.
      */
-    private SearchParameters searchParameters;
+    private SearchEngineType searchEngineType;
 
     @Override
     public Class getColumnClass(int column) {
@@ -59,8 +56,8 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
         }
     }
 
-    public void setSearchParameters(SearchParameters searchParameters) {
-        this.searchParameters = searchParameters;
+    public void setSearchEngineType(SearchEngineType searchEngineType) {
+        this.searchEngineType = searchEngineType;
     }
 
     @Override
@@ -93,14 +90,23 @@ public class ProteinPanelPsmTableFormat implements AdvancedTableFormat<Peptide> 
             case PRECURSOR_MZRATIO:
                 return spectrum.getMzRatio();
             case PRECURSOR_MASS_ERROR:
-                int sign = charge > 0 ? Charge.PLUS : Charge.MINUS;
-                IonMatch ionMatch = new IonMatch(new Peak(spectrum.getMzRatio(), 0, 0), new PrecursorIon(peptide.getTheoreticalMass()), charge);
-                boolean isPpm = searchParameters.getPrecMassToleranceUnit() == MassAccuracyType.PPM;
-                return Math.abs(ionMatch.getError(isPpm));
+                double massError = Double.NaN;
+                switch (searchEngineType) {
+                    case PEPTIDESHAKER:
+                        IonMatch ionMatch = new IonMatch(new Peak(spectrum.getMzRatio(), 0, 0), new PrecursorIon(peptide.getTheoreticalMass()), charge);
+                        massError = Math.abs(ionMatch.getError(true));
+                        break;
+                    case MAXQUANT:
+                        if (peptide.getMassError() != null) {
+                            massError = Math.abs(peptide.getMassError());
+                        }
+                        break;
+                }
+                return massError;
             case RETENTION_TIME:
                 return spectrum.getRetentionTime();
             case PSM_CONFIDENCE:
-                double confidence = (peptide.getPsmPostErrorProbability() != null) ? 100.0 * (1 - peptide.getPsmPostErrorProbability()) : 0.0;
+                double confidence = (peptide.getPsmPostErrorProbability() != null) ? 100.0 * (1 - peptide.getPsmPostErrorProbability()) : Double.NaN;
                 if (confidence <= 0) {
                     confidence = 0;
                 }

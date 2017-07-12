@@ -46,6 +46,12 @@
     <bean id="eventBus" class="com.google.common.eventbus.EventBus"/>
 
     <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+        <constructor-arg>
+            <bean class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+                <property name="readTimeout" value="155000" />
+                <property name="connectTimeout" value="155000" />
+            </bean>
+        </constructor-arg>
     </bean>
 
 </beans>

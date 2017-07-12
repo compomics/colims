@@ -32,7 +32,6 @@ import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.eventbus.EventBus;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -265,9 +264,8 @@ public class SampleRunsController implements Controllable {
      */
     public List<AnalyticalRun> getSelectedAnalyticalRuns() {
         EventList<AnalyticalRun> selectedAnalyticalRunEventList = analyticalRunsSelectionModel.getSelected();
-        List<AnalyticalRun> selectedAnalyticalRuns = selectedAnalyticalRunEventList.stream().collect(Collectors.toList());
 
-        return selectedAnalyticalRuns;
+        return selectedAnalyticalRunEventList.stream().collect(Collectors.toList());
     }
 
     /**

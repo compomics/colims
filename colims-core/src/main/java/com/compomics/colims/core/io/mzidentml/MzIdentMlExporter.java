@@ -1,6 +1,12 @@
 package com.compomics.colims.core.io.mzidentml;
 
+import com.compomics.colims.core.io.MappingException;
+import com.compomics.colims.core.io.colims_to_utilities.ColimsPeptideMapper;
+import com.compomics.colims.core.io.colims_to_utilities.ColimsSearchParametersMapper;
+import com.compomics.colims.core.io.colims_to_utilities.ColimsSpectrumMapper;
 import com.compomics.colims.core.io.fasta.FastaDbParser;
+import com.compomics.colims.core.ontology.ModificationOntologyTerm;
+import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.ols.Ontology;
 import com.compomics.colims.core.ontology.ols.OntologyTerm;
 import com.compomics.colims.core.service.*;
@@ -11,14 +17,20 @@ import com.compomics.colims.core.util.SequenceUtils;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.SearchModification;
-import com.compomics.colims.model.enums.FastaDbType;
-import com.compomics.colims.model.enums.MassAccuracyType;
-import com.compomics.colims.model.enums.ModificationType;
-import com.compomics.colims.model.enums.ScoreType;
+import com.compomics.colims.model.enums.*;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
+import com.compomics.util.experiment.biology.ions.*;
+import com.compomics.util.experiment.identification.matches.IonMatch;
+import com.compomics.util.experiment.identification.spectrum_annotation.AnnotationSettings;
+import com.compomics.util.experiment.identification.spectrum_annotation.SpecificAnnotationSettings;
+import com.compomics.util.experiment.identification.spectrum_annotation.spectrum_annotators.PeptideSpectrumAnnotator;
+import com.compomics.util.experiment.identification.spectrum_assumptions.PeptideAssumption;
+import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
+import com.compomics.util.preferences.SequenceMatchingPreferences;
+import com.compomics.util.pride.CvTerm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
@@ -33,6 +45,8 @@ import uk.ac.ebi.jmzidml.model.MzIdentMLObject;
 import uk.ac.ebi.jmzidml.model.mzidml.*;
 import uk.ac.ebi.jmzidml.model.mzidml.Modification;
 import uk.ac.ebi.jmzidml.model.mzidml.Role;
+import uk.ac.ebi.jmzidml.model.mzidml.params.AdditionalSearchParamsCvParam;
+import uk.ac.ebi.jmzidml.model.mzidml.params.AdditionalSearchParamsUserParam;
 import uk.ac.ebi.jmzidml.xml.io.MzIdentMLMarshaller;
 
 import javax.annotation.PostConstruct;
@@ -41,7 +55,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -73,9 +89,13 @@ public class MzIdentMlExporter {
     private static final String PROTEIN_DETECTION_ID = "PD-%d";
     private static final String PROTEIN_DETECTION_HYPOTHESIS_ID = "PDH-%d";
     private static final String PROTEIN_AMBIGUITY_GROUP_ID = "PAG-%d";
+    private static final String MGF_SPECTRUM_INDEX = "Index=%d";
     private static final String RESIDUES_ANY = ".";
     private static final String RESIDUES_UNKNOWN = "N/A";
     private static final String NO_POST_PRE_AA = "-";
+    private static final String MEASURE_REF_MZ = "Measure_MZ";
+    private static final String MEASURE_REF_INT = "Measure_Int";
+    private static final String MEASURE_REF_ERROR = "Measure_Error";
 
     @Value("${mzidentml.version}")
     private final String MZIDENTML_VERSION = "1.1.0";
@@ -115,6 +135,26 @@ public class MzIdentMlExporter {
      */
     private final Map<FastaDb, SearchDatabase> fastaDbToSearchDatabases = new HashMap<>();
     /**
+     * The MaxQuant to UNIMOD modification mappings.
+     */
+    private final Map<String, com.compomics.colims.core.ontology.OntologyTerm> modificationMappings;
+    /**
+     * The Utilities annotation settings used for the fragment ion annotations calculation.
+     */
+    private AnnotationSettings annotationSettings;
+    /**
+     * The M/Z measure.
+     */
+    private Measure mzMeasure;
+    /**
+     * The intensity measure.
+     */
+    private Measure intensityMeasure;
+    /**
+     * The M/Z error measure.
+     */
+    private Measure errorMeasure;
+    /**
      * The Ontology Lookup Service (OLS) service.
      */
     private final OlsService olsService;
@@ -123,15 +163,34 @@ public class MzIdentMlExporter {
     private final ProteinGroupService proteinGroupService;
     private final PeptideService peptideService;
     private final SpectrumService spectrumService;
+    private final AnalyticalRunService analyticalRunService;
+    private final ColimsPeptideMapper colimsPeptideMapper;
+    private final ColimsSpectrumMapper colimsSpectrumMapper;
+    private final ColimsSearchParametersMapper colimsSearchParametersMapper;
 
     @Autowired
-    public MzIdentMlExporter(OlsService olsService, SearchAndValidationSettingsService searchAndValidationSettingsService, FastaDbParser fastaDbParser, ProteinGroupService proteinGroupService, PeptideService peptideService, SpectrumService spectrumService) {
+    public MzIdentMlExporter(OlsService olsService, SearchAndValidationSettingsService searchAndValidationSettingsService,
+                             FastaDbParser fastaDbParser,
+                             ProteinGroupService proteinGroupService,
+                             PeptideService peptideService,
+                             SpectrumService spectrumService,
+                             AnalyticalRunService analyticalRunService,
+                             ColimsPeptideMapper colimsPeptideMapper,
+                             ColimsSpectrumMapper colimsSpectrumMapper,
+                             ColimsSearchParametersMapper colimsSearchParametersMapper,
+                             OntologyMapper ontologyMapper) {
         this.olsService = olsService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbParser = fastaDbParser;
         this.proteinGroupService = proteinGroupService;
         this.peptideService = peptideService;
         this.spectrumService = spectrumService;
+        this.analyticalRunService = analyticalRunService;
+        this.colimsPeptideMapper = colimsPeptideMapper;
+        this.colimsSpectrumMapper = colimsSpectrumMapper;
+        this.colimsSearchParametersMapper = colimsSearchParametersMapper;
+        //get the modification mappings from the OntologyMapper
+        modificationMappings = ontologyMapper.getMaxQuantMapping().getModifications();
     }
 
     /**
@@ -154,7 +213,15 @@ public class MzIdentMlExporter {
      */
     public void export(MzIdentMlExport mzIdentMlExport) throws IOException {
         this.mzIdentMlExport = mzIdentMlExport;
-        this.searchEngine = mzIdentMlExport.getAnalyticalRuns().get(0).getSearchAndValidationSettings().getSearchEngine();
+        AnalyticalRun analyticalRun = mzIdentMlExport.getAnalyticalRuns().get(0);
+        this.searchEngine = analyticalRun.getSearchAndValidationSettings().getSearchEngine();
+        if (searchEngine.getSearchEngineType().equals(SearchEngineType.PEPTIDESHAKER)) {
+            com.compomics.colims.model.SearchParameters colimsSearchParameters = analyticalRun.getSearchAndValidationSettings().getSearchParameters();
+            com.compomics.util.experiment.identification.identification_parameters.SearchParameters utilitiesSearchParameters = colimsSearchParametersMapper.mapForSpectrumPanel(colimsSearchParameters);
+
+            //use the search parameters to set up the annotation settings
+            annotationSettings = new AnnotationSettings(utilitiesSearchParameters);
+        }
         try (
                 BufferedWriter mzIdentMlWriter = Files.newBufferedWriter(mzIdentMlExport.getMzIdentMlPath())) {
             OutputStream mgfOutputStream = null;
@@ -380,7 +447,7 @@ public class MzIdentMlExporter {
                 fastaDbs.put(fastaDb, fullFastaPath);
             });
         });
-        proteinAccessions = fastaDbParser.parseAccessions(fastaDbs);
+        proteinAccessions = fastaDbParser.parseAccessions(fastaDbs, searchEngine.getSearchEngineType());
 
         //iterate over the different FASTA databases used for the searches and map them to SearchDatabase instances
         for (int i = 0; i < searchAndValidationSettings.getSearchSettingsHasFastaDbs().size(); i++) {
@@ -472,8 +539,21 @@ public class MzIdentMlExporter {
 
         searchDatabase.setId(String.format(SEARCH_DB_ID, id));
         searchDatabase.setLocation(fastaDb.getFilePath());
-        searchDatabase.setName(fastaDb.getName());
-        searchDatabase.setVersion(fastaDb.getVersion());
+        searchDatabase.setNumDatabaseSequences((long) proteinAccessions.get(fastaDb).size());
+
+        Param databaseNameParam = new Param();
+        UserParam databaseName = new UserParam();
+        if (fastaDb.getDatabaseName() != null) {
+            databaseName.setName(fastaDb.getDatabaseName());
+        } else {
+            databaseName.setName(fastaDb.getName());
+        }
+        databaseNameParam.setParam(databaseName);
+        searchDatabase.setDatabaseName(databaseNameParam);
+
+        if (fastaDb.getVersion() != null) {
+            searchDatabase.setVersion(fastaDb.getVersion());
+        }
         searchDatabase.setFileFormat(new FileFormat());
         searchDatabase.getFileFormat().setCvParam(getMzIdentMlElement("/FileFormat/FASTA", CvParam.class));
         searchDatabase.getCvParam().add(getMzIdentMlElement("/SearchDatabase/Type", CvParam.class));
@@ -557,8 +637,17 @@ public class MzIdentMlExporter {
                         mzSearchModification.getResidues().add(RESIDUES_ANY);
                     }
                 } else {
-                    if (true) {
-
+                    //check for residues in the MaxQuant modification mappings
+                    //by filtering on accession
+                    if (searchEngine.getSearchEngineType().equals(SearchEngineType.MAXQUANT)) {
+                        Optional<com.compomics.colims.core.ontology.OntologyTerm> foundModification = modificationMappings.values().stream().filter(ontologyTerm -> ontologyTerm.getOboId().equals(colimsSearchModification.getAccession())).findAny();
+                        if (foundModification.isPresent()) {
+                            mzSearchModification.getResidues().add(((ModificationOntologyTerm) foundModification.get()).getAffectedAminoAcids());
+                        } else {
+                            mzSearchModification.getResidues().add(RESIDUES_UNKNOWN);
+                        }
+                    } else {
+                        mzSearchModification.getResidues().add(RESIDUES_UNKNOWN);
                     }
                 }
 
@@ -660,6 +749,37 @@ public class MzIdentMlExporter {
         proteinDetectionProtocol.getThreshold().getCvParam().add(proteinThreshold);
         collection.setProteinDetectionProtocol(proteinDetectionProtocol);
 
+        //add additional search parameters for the instrument('s) type and name
+        ParamList additionalSearchParams = new ParamList();
+        spectrumIdentificationProtocol.setAdditionalSearchParams(additionalSearchParams);
+        //fetch the instrument(s)
+        mzIdentMlExport.getAnalyticalRuns().forEach(analyticalRun -> analyticalRunService.fetchInstrument(analyticalRun));
+        //filter out duplicate IDs
+        Map<Long, Instrument> instruments = mzIdentMlExport.getAnalyticalRuns()
+                .stream()
+                .map(analyticalRun -> analyticalRun.getInstrument())
+                .collect(Collectors.toMap(Instrument::getId, Function.identity(), (instrument1, instrument2) -> instrument1));
+        int instrumentIndex = 1;
+        for (Instrument instrument : instruments.values()) {
+            AdditionalSearchParamsUserParam instrumentNameUserParam = new AdditionalSearchParamsUserParam();
+            instrumentNameUserParam.setName("Instrument " + instrumentIndex + " name");
+            instrumentNameUserParam.setValue(instrument.getName());
+
+            additionalSearchParams.getUserParam().add(instrumentNameUserParam);
+
+            instrumentIndex++;
+
+            //set the instrument type as a an additional search CV param
+            InstrumentCvParam instrumentType = instrument.getType();
+            AdditionalSearchParamsCvParam instrumentTypeCvParam = new AdditionalSearchParamsCvParam();
+            instrumentTypeCvParam.setAccession(instrumentType.getAccession());
+            instrumentTypeCvParam.setName(instrumentType.getName());
+            updateCvList(instrumentType.getLabel());
+            instrumentTypeCvParam.setCv(cvs.get(instrumentType.getLabel()));
+
+            additionalSearchParams.getCvParam().add(instrumentTypeCvParam);
+        }
+
         return collection;
     }
 
@@ -685,6 +805,18 @@ public class MzIdentMlExporter {
             default:
                 break;
         }
+    }
+
+    /**
+     * Add a seconds time unit the the given {@link CvParam}.
+     *
+     * @param cvParam the CV param instance
+     * @throws IOException in case of an JSON parsing related problem
+     */
+    private void addTimeUnit(CvParam cvParam) throws IOException {
+        cvParam.setUnitName("second");
+        cvParam.setUnitAccession("UO:0000010");
+        cvParam.setUnitCv(getMzIdentMlElement("/CvList/UO", Cv.class));
     }
 
     /**
@@ -754,8 +886,14 @@ public class MzIdentMlExporter {
         mzIdentML.setAnalysisCollection(analysisCollection);
 
         //map to keep track of protein ID - DB sequence pairs
-        Map<Long, DBSequence> dbSequences = new HashMap<>();
+        Map<String, DBSequence> dbSequencess = new HashMap<>();
 
+        //keep track of the spectrum index for the MGF file writing
+        Long spectrumIndex = 0L;
+
+        //keep track of the peptide DTOs - mzIdentML peptide pairs that represent the "unique" peptides;
+        //same sequence, same modifications
+        Map<PeptideDTO, uk.ac.ebi.jmzidml.model.mzidml.Peptide> uniquePeptides = new HashMap<>();
         //get the protein groups associated with the analytical runs
         List<Long> runIds = mzIdentMlExport.getAnalyticalRuns().stream().map(AnalyticalRun::getId).collect(Collectors.toList());
         List<ProteinGroup> proteinGroups = proteinGroupService.getProteinGroupsForRuns(runIds);
@@ -774,13 +912,13 @@ public class MzIdentMlExporter {
                 Protein protein = proteinGroupHasProtein.getProtein();
 
                 DBSequence dbSequence;
-                if (!dbSequences.containsKey(protein.getId())) {
-                    dbSequence = populateDBSequence(proteinGroupHasProtein.getProteinAccession(), protein.getSequence(), protein.getId());
+                if (!dbSequencess.containsKey(proteinGroupHasProtein.getProteinAccession())) {
+                    dbSequence = populateDBSequence(proteinGroupHasProtein.getProteinAccession(), protein.getSequence(), (long) dbSequencess.size());
                     sequenceCollection.getDBSequence().add(dbSequence);
 
-                    dbSequences.put(protein.getId(), dbSequence);
+                    dbSequencess.put(proteinGroupHasProtein.getProteinAccession(), dbSequence);
                 } else {
-                    dbSequence = dbSequences.get(protein.getId());
+                    dbSequence = dbSequencess.get(proteinGroupHasProtein.getProteinAccession());
                 }
 
                 //create a protein detection hypothesis
@@ -811,13 +949,8 @@ public class MzIdentMlExporter {
 
             //get the peptide DTOs associated with this protein group
             List<PeptideDTO> peptideDTOs = peptideService.getPeptideDTOs(proteinGroup.getId(), runIds);
-            //keep track of the peptide DTOs - mzIdentML peptide pairs that represent the "unique" peptides;
-            //same sequence, same modifications
-            Map<PeptideDTO, uk.ac.ebi.jmzidml.model.mzidml.Peptide> uniquePeptides = new HashMap<>();
             List<UniqueEvidence> uniqueEvidences = new ArrayList<>();
             Set<String> peptideSequences = new HashSet<>();
-            //keep track of the spectrum-peptide associations to be able to handle chimeric spectra
-            Map<Long, Set<Long>> spectrumToPeptides = new HashMap<>();
             //iterate over the protein group peptide DTOs
             for (PeptideDTO peptideDTO : peptideDTOs) {
                 Peptide colimsPeptide = peptideDTO.getPeptide();
@@ -848,16 +981,23 @@ public class MzIdentMlExporter {
                 //get the peptide's spectrum
                 Spectrum spectrum = colimsPeptide.getSpectrum();
 
-                if (mgfOutputStream != null) {
-                    spectrumService.fetchSpectrumFiles(spectrum);
-                    //iterate over the spectrum files
-                    for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
-                        byte[] unzippedBytes = IOUtils.unzip(spectrumFile.getContent());
-                        mgfOutputStream.write(unzippedBytes);
+                SpectrumIdentificationItem spectrumIdentificationItem;
+                //check if the spectrum is a matching-between-runs one (MaxQuant only)
+                if (searchEngine.getSearchEngineType().equals(SearchEngineType.MAXQUANT) && spectrum.getAccession().equals(Spectrum.MBR_SPECTRUM_ACCESSION)) {
+                    spectrumIdentificationItem = populateMbrSpectrumIdentificationItem(colimsPeptide);
+                } else {
+                    if (mgfOutputStream != null) {
+                        spectrumService.fetchSpectrumFiles(spectrum);
+                        //iterate over the spectrum files
+                        for (SpectrumFile spectrumFile : spectrum.getSpectrumFiles()) {
+                            byte[] unzippedBytes = IOUtils.unzip(spectrumFile.getContent());
+                            mgfOutputStream.write(unzippedBytes);
+                            spectrumIndex++;
+                        }
                     }
-                }
 
-                SpectrumIdentificationItem spectrumIdentificationItem = populateSpectrumIdentificationItem(spectrum, colimsPeptide);
+                    spectrumIdentificationItem = populateSpectrumIdentificationItem(spectrum, colimsPeptide);
+                }
                 spectrumIdentificationItem.setPeptide(mzPeptide);
 
                 //calculate peptide location values
@@ -865,84 +1005,74 @@ public class MzIdentMlExporter {
                 //iterate over the proteins in the protein group
                 for (int i = 0; i < proteinGroup.getProteinGroupHasProteins().size(); i++) {
                     Protein protein = proteinGroup.getProteinGroupHasProteins().get(i).getProtein();
-                    List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(protein.getSequence(), colimsPeptide.getSequence());
-                    for (PeptidePosition peptidePosition : peptidePositions) {
-                        PeptideEvidence peptideEvidence;
-                        PeptideHypothesis peptideHypothesis;
-                        UniqueEvidence uniqueEvidence = new UniqueEvidence(protein.getId(), peptideDTO, peptidePosition);
-                        int index = uniqueEvidences.indexOf(uniqueEvidence);
-                        if (index == -1) {
-                            DBSequence dbSequence = dbSequences.get(protein.getId());
+                    try {
+                        List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(protein.getSequence(), colimsPeptide.getSequence());
 
-                            peptideEvidence = populatePeptideEvidence(dbSequence, sequenceCollection.getPeptideEvidence().size(), mzPeptide, peptidePosition);
+                        for (PeptidePosition peptidePosition : peptidePositions) {
+                            PeptideEvidence peptideEvidence;
+                            PeptideHypothesis peptideHypothesis;
+                            UniqueEvidence uniqueEvidence = new UniqueEvidence(proteinGroup.getProteinGroupHasProteins().get(i).getProteinAccession(), peptideDTO, peptidePosition);
+                            int index = uniqueEvidences.indexOf(uniqueEvidence);
+                            if (index == -1) {
+                                DBSequence dbSequence = dbSequencess.get(proteinGroup.getProteinGroupHasProteins().get(i).getProteinAccession());
 
-                            sequenceCollection.getPeptideEvidence().add(peptideEvidence);
+                                peptideEvidence = populatePeptideEvidence(dbSequence, sequenceCollection.getPeptideEvidence().size(), mzPeptide, peptidePosition);
 
-                            peptideHypothesis = new PeptideHypothesis();
-                            peptideHypothesis.setPeptideEvidence(peptideEvidence);
+                                sequenceCollection.getPeptideEvidence().add(peptideEvidence);
 
-                            proteinAmbiguityGroup.getProteinDetectionHypothesis().get(i).getPeptideHypothesis().add(peptideHypothesis);
+                                peptideHypothesis = new PeptideHypothesis();
+                                peptideHypothesis.setPeptideEvidence(peptideEvidence);
 
-                            uniqueEvidence.setPeptideEvidence(peptideEvidence);
-                            uniqueEvidence.setPeptideHypothesis(peptideHypothesis);
+                                proteinAmbiguityGroup.getProteinDetectionHypothesis().get(i).getPeptideHypothesis().add(peptideHypothesis);
 
-                            //add to the unique evidences
-                            uniqueEvidences.add(uniqueEvidence);
-                        } else {
-                            peptideEvidence = uniqueEvidences.get(index).getPeptideEvidence();
-                            peptideHypothesis = uniqueEvidences.get(index).getPeptideHypothesis();
+                                uniqueEvidence.setPeptideEvidence(peptideEvidence);
+                                uniqueEvidence.setPeptideHypothesis(peptideHypothesis);
+
+                                //add to the unique evidences
+                                uniqueEvidences.add(uniqueEvidence);
+                            } else {
+                                peptideEvidence = uniqueEvidences.get(index).getPeptideEvidence();
+                                peptideHypothesis = uniqueEvidences.get(index).getPeptideHypothesis();
+                            }
+                            //add the peptide evidence ref to the spectrum identification item
+                            PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
+                            evidenceRef.setPeptideEvidence(peptideEvidence);
+                            spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
+
+                            //add the spectrum identification item ref to the peptide hypothesis
+                            SpectrumIdentificationItemRef spectrumIdentificationItemRef = new SpectrumIdentificationItemRef();
+                            spectrumIdentificationItemRef.setSpectrumIdentificationItem(spectrumIdentificationItem);
+                            peptideHypothesis.getSpectrumIdentificationItemRef().add(spectrumIdentificationItemRef);
                         }
-                        //add the peptide evidence ref to the spectrum identification item
-                        PeptideEvidenceRef evidenceRef = new PeptideEvidenceRef();
-                        evidenceRef.setPeptideEvidence(peptideEvidence);
-                        spectrumIdentificationItem.getPeptideEvidenceRef().add(evidenceRef);
-
-                        //add the spectrum identification item ref to the peptide hypothesis
-                        SpectrumIdentificationItemRef spectrumIdentificationItemRef = new SpectrumIdentificationItemRef();
-                        spectrumIdentificationItemRef.setSpectrumIdentificationItem(spectrumIdentificationItem);
-                        peptideHypothesis.getSpectrumIdentificationItemRef().add(spectrumIdentificationItemRef);
+                    } catch (IllegalStateException ex) {
+                        LOGGER.warn(ex.getMessage(), ex);
                     }
                 }
 
                 SpectrumIdentificationResult spectrumIdentificationResult;
-                //handle chimeric spectra
                 //check whether the spectrum already has an SpectrumIdentificationResult associated with it
                 if (!spectrumIdentificationResults.containsKey(spectrum.getId())) {
-                    spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum, spectraData);
+                    spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum, spectraData, spectrumIndex);
                     spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
                     spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
 
                     //add to the map
                     spectrumIdentificationResults.put(spectrum.getId(), spectrumIdentificationResult);
-                } //otherwise it's a chimeric spectrum
-                else {
-                    spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().add(spectrumIdentificationItem);
                 }
-
-//                //get the number of peptides associated with the spectrum
-//                int peptideCount = spectrumService.getPeptideCount(spectrum.getId());
-//                if (peptideCount == 1) {
-//                    spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum, spectraData);
-//                    spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
-//                    spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
-//                } //otherwise it's a chimeric spectrum
-//                else {
-//                    //check if the spectrum identification result is already present in the map
-//                    if (!spectrumIdentificationResults.containsKey(spectrum.getId())) {
-//                        spectrumIdentificationResult = populateSpectrumIdentificationResult(spectrum, spectraData);
-//                        spectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
-//                        spectrumIdentificationList.getSpectrumIdentificationResult().add(spectrumIdentificationResult);
-//
-//                        //add to the map
-//                        spectrumIdentificationResults.put(spectrum.getId(), spectrumIdentificationResult);
-//                    } else {
-//                        spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().add(spectrumIdentificationItem);
-//                    }
-//                    //update the ID
-//                    //TODO check if not updating the ID causes problems
-//                    //int idSuffix = spectrumIdentificationResults.get(spectrum.getId()).getSpectrumIdentificationItem().size();
-//                    //spectrumIdentificationItem.setId(spectrumIdentificationItem.getId() + "-" + idSuffix);
-//                }
+                //otherwise it's a peptide linked to multiple protein groups or a chimeric spectrum
+                else {
+                    SpectrumIdentificationResult existingSpectrumIdentificationResult = spectrumIdentificationResults.get(spectrum.getId());
+                    //check if an existing spectrum identification item has the same ID
+                    Optional<SpectrumIdentificationItem> foundSpectrumIdentificationItem = existingSpectrumIdentificationResult.getSpectrumIdentificationItem()
+                            .stream()
+                            .filter(existingSpectrumIdentificationItem -> existingSpectrumIdentificationItem.getId().equals(spectrumIdentificationItem.getId()))
+                            .findAny();
+                    if (foundSpectrumIdentificationItem.isPresent()) {
+                        foundSpectrumIdentificationItem.get().getPeptideEvidenceRef().addAll(spectrumIdentificationItem.getPeptideEvidenceRef());
+                    } else {
+                        existingSpectrumIdentificationResult.getSpectrumIdentificationItem().add(spectrumIdentificationItem);
+                    }
+                }
             }
 
             //calculate the protein sequence coverage and add it to the main group protein
@@ -990,8 +1120,9 @@ public class MzIdentMlExporter {
      * Set up the spectrum identification list.
      *
      * @return the {@link SpectrumIdentificationList} instance
+     * @throws IOException in case of an JSON parsing related problem
      */
-    private SpectrumIdentificationList setupSpectrumIdentificationList() {
+    private SpectrumIdentificationList setupSpectrumIdentificationList() throws IOException {
         SpectrumIdentificationList spectrumIdentificationList = new SpectrumIdentificationList();
         spectrumIdentificationList.setId(String.format(SPECTRUM_IDENTIFICATION_LIST_ID, 1));
 
@@ -1004,7 +1135,51 @@ public class MzIdentMlExporter {
         }
         spectrumIdentificationList.setNumSequencesSearched(numberOfSequencesSearched);
 
+        //add the fragmentation table
+        FragmentationTable fragmentationTable = new FragmentationTable();
+
+        mzMeasure = new Measure();
+        mzMeasure.setId(MEASURE_REF_MZ);
+        CvParam mzCvParam = getMzIdentMlElement("/Measure/MZ", CvParam.class);
+        addUnit(mzCvParam, "m/z", "MS:1000040", "MS");
+        mzMeasure.getCvParam().add(mzCvParam);
+        fragmentationTable.getMeasure().add(mzMeasure);
+
+        intensityMeasure = new Measure();
+        intensityMeasure.setId(MEASURE_REF_INT);
+        CvParam intensityCvParam = getMzIdentMlElement("/Measure/MZ", CvParam.class);
+        addUnit(intensityCvParam, "number of detector counts", "MS:1000131", "MS");
+        intensityMeasure.getCvParam().add(intensityCvParam);
+        fragmentationTable.getMeasure().add(intensityMeasure);
+
+        errorMeasure = new Measure();
+        errorMeasure.setId(MEASURE_REF_ERROR);
+        CvParam errorCvParam = getMzIdentMlElement("/Measure/MZ_error", CvParam.class);
+        addUnit(errorCvParam, "m/z", "MS:1000040", "MS");
+        errorMeasure.getCvParam().add(errorCvParam);
+        if(searchEngine.getSearchEngineType().equals(SearchEngineType.PEPTIDESHAKER)) {
+            fragmentationTable.getMeasure().add(errorMeasure);
+        }
+
+        //add the fragmentation table to the spectrum identification list
+        spectrumIdentificationList.setFragmentationTable(fragmentationTable);
+
         return spectrumIdentificationList;
+    }
+
+    /**
+     * Add a unit the the given {@link CvParam}.
+     *
+     * @param cvParam       the CV param instance
+     * @param unitName      the unit name
+     * @param unitAccession the unit accession
+     * @param cvRef         the CV reference
+     * @throws IOException in case of an JSON parsing related problem
+     */
+    private void addUnit(CvParam cvParam, String unitName, String unitAccession, String cvRef) throws IOException {
+        cvParam.setUnitName(unitName);
+        cvParam.setUnitAccession(unitAccession);
+        cvParam.setUnitCv(getMzIdentMlElement("/CvList/" + cvRef, Cv.class));
     }
 
     /**
@@ -1089,18 +1264,38 @@ public class MzIdentMlExporter {
     /**
      * Create a spectrum identification result from a Colims spectrum.
      *
-     * @param spectrum    the Colims {@link Spectrum} instance
-     * @param spectraData the spectra data instance
+     * @param spectrum      the Colims {@link Spectrum} instance
+     * @param spectraData   the spectra data instance
+     * @param spectrumIndex the spectrum index
      * @return Spectrum identification result
+     * @throws IOException in case of an JSON parsing related problem
      */
-    private SpectrumIdentificationResult populateSpectrumIdentificationResult(Spectrum spectrum, SpectraData spectraData) {
+    private SpectrumIdentificationResult populateSpectrumIdentificationResult(Spectrum spectrum, SpectraData spectraData, Long spectrumIndex) throws IOException {
         SpectrumIdentificationResult spectrumIdentificationResult = new SpectrumIdentificationResult();
 
         spectrumIdentificationResult.setId(String.format(SPECTRUM_IDENTIFICATION_RESULT_ID, spectrum.getId()));
         spectrumIdentificationResult.setSpectraData(spectraData);
-        spectrumIdentificationResult.setSpectrumID(spectrum.getTitle());
 
-        //TODO add the spectrum title as a CV Param
+        //handle matching-between-runs spectra
+        if (!spectrum.getAccession().equals(Spectrum.MBR_SPECTRUM_ACCESSION)) {
+            spectrumIdentificationResult.setSpectrumID(String.format(MGF_SPECTRUM_INDEX, spectrumIndex));
+
+            //add the spectrum title as a CV param
+            CvParam spectrumTitle = getMzIdentMlElement("/Spectrum/Spectrum title", CvParam.class);
+            spectrumTitle.setValue(spectrum.getTitle());
+            spectrumIdentificationResult.getCvParam().add(spectrumTitle);
+        } else {
+            spectrumIdentificationResult.setSpectrumID(Spectrum.MBR_SPECTRUM_ACCESSION);
+//            spectrumIdentificationResult.setSpectrumID(String.format(MGF_SPECTRUM_INDEX, 1L));
+        }
+
+        if (spectrum.getRetentionTime() != null) {
+            CvParam retentionTime = getMzIdentMlElement("/Spectrum/Retention time", CvParam.class);
+            retentionTime.setValue(Double.toString(spectrum.getRetentionTime()));
+            addTimeUnit(retentionTime);
+            spectrumIdentificationResult.getCvParam().add(retentionTime);
+        }
+
         return spectrumIdentificationResult;
     }
 
@@ -1147,6 +1342,7 @@ public class MzIdentMlExporter {
      * @param spectrum the Colims {@link Spectrum} instance
      * @param peptide  the Colims {@link Peptide} instance
      * @return the populated {@link SpectrumIdentification} instance
+     * @throws IOException in case of an JSON parsing related problem
      */
     private SpectrumIdentificationItem populateSpectrumIdentificationItem(Spectrum spectrum, Peptide peptide) throws IOException {
         SpectrumIdentificationItem spectrumIdentificationItem = new SpectrumIdentificationItem();
@@ -1156,11 +1352,13 @@ public class MzIdentMlExporter {
             spectrumIdentificationItem.setChargeState(spectrum.getCharge());
         }
         spectrumIdentificationItem.setExperimentalMassToCharge(spectrum.getMzRatio());
+        spectrumIdentificationItem.setCalculatedMassToCharge(peptide.getTheoreticalMass() / peptide.getCharge());
         //TODO what to do with the rank and threshold
         spectrumIdentificationItem.setPassThreshold(true);
         spectrumIdentificationItem.setRank(1);
 
-        //add the scores
+        //add the scores and get the fragement ion annotations
+        ArrayList<IonMatch> annotations = new ArrayList<>();
         switch (searchEngine.getSearchEngineType()) {
             case PEPTIDESHAKER:
                 if (peptide.getPsmProbability() != null) {
@@ -1177,6 +1375,8 @@ public class MzIdentMlExporter {
                     psmConfidence.setValue(Double.toString(confidence));
                     spectrumIdentificationItem.getCvParam().add(psmConfidence);
                 }
+
+                annotations = calculateIonMatches(spectrum, peptide);
                 break;
             case MAXQUANT:
                 if (peptide.getPsmProbability() != null) {
@@ -1189,10 +1389,184 @@ public class MzIdentMlExporter {
                     psmPep.setValue(Double.toString(peptide.getPsmPostErrorProbability()));
                     spectrumIdentificationItem.getCvParam().add(psmPep);
                 }
+                annotations = colimsPeptideMapper.mapFragmentAnnotations(peptide);
                 break;
             default:
                 throw new IllegalStateException("Should not get here");
         }
+
+        //add the fragment annotations
+        if (!annotations.isEmpty()) {
+            populateFragmentation(peptide.getSequence(), spectrumIdentificationItem, annotations);
+        }
+
+        //add the theoretical mass
+        if (peptide.getTheoreticalMass() != null) {
+            CvParam theoreticalMass = getMzIdentMlElement("/PSM/Theoretical mass", CvParam.class);
+            theoreticalMass.setValue(Double.toString(peptide.getTheoreticalMass()));
+            addMassUnit(theoreticalMass, MassAccuracyType.DA);
+            spectrumIdentificationItem.getCvParam().add(theoreticalMass);
+        }
+
+        return spectrumIdentificationItem;
+    }
+
+    /**
+     * Add the given fragment ion annotations to the spectrum identification item.
+     *
+     * @param peptideSequence            the peptide sequence
+     * @param spectrumIdentificationItem the {@link SpectrumIdentificationItem} instance
+     * @param ionMatches                 the list of fragment ions
+     * @throws IOException in case of an JSON parsing related problem
+     */
+    private void populateFragmentation(String peptideSequence, SpectrumIdentificationItem spectrumIdentificationItem, List<IonMatch> ionMatches) throws IOException {
+        Fragmentation fragmentation = new Fragmentation();
+
+        //organize the fragment ions by ion type
+        Map<String, HashMap<Integer, ArrayList<IonMatch>>> allFragmentIons = new HashMap<>();
+        for (IonMatch ionMatch : ionMatches) {
+            CvTerm fragmentIonCvTerm = ionMatch.ion.getPsiMsCvTerm();
+            Integer charge = ionMatch.charge;
+
+            // only include ions with cv terms
+            if (fragmentIonCvTerm != null) {
+                String fragmentIonName = ionMatch.ion.getName();
+
+                if (!allFragmentIons.containsKey(fragmentIonName)) {
+                    allFragmentIons.put(fragmentIonName, new HashMap<>());
+                }
+                if (!allFragmentIons.get(fragmentIonName).containsKey(charge)) {
+                    allFragmentIons.get(fragmentIonName).put(charge, new ArrayList<>());
+                }
+
+                allFragmentIons.get(fragmentIonName).get(charge).add(ionMatch);
+            }
+        }
+
+        //iterate over the fragment types
+        for (Map.Entry<String, HashMap<Integer, ArrayList<IonMatch>>> fragmentEntry : allFragmentIons.entrySet()) {
+            String fragmentType = fragmentEntry.getKey();
+            CvParam fragmentTypeCvParam = getMzIdentMlElement("/Ion/" + fragmentType, CvParam.class);
+
+            //iterate over the charges
+            for (Map.Entry<Integer, ArrayList<IonMatch>> fragmentChargeEntry : fragmentEntry.getValue().entrySet()) {
+                IonType ionType = new IonType();
+                ionType.setCharge(fragmentChargeEntry.getKey());
+
+                FragmentArray mzValues = new FragmentArray();
+                mzValues.setMeasure(mzMeasure);
+                FragmentArray intensityValues = new FragmentArray();
+                intensityValues.setMeasure(intensityMeasure);
+                FragmentArray errorValues = new FragmentArray();
+                errorValues.setMeasure(errorMeasure);
+                for (IonMatch ionMatch : fragmentChargeEntry.getValue()) {
+                    mzValues.getValues().add((float) ionMatch.peak.mz);
+                    intensityValues.getValues().add((float) ionMatch.peak.intensity);
+                    if (searchEngine.getSearchEngineType().equals(SearchEngineType.PEPTIDESHAKER)) {
+                        errorValues.getValues().add((float) ionMatch.getAbsoluteError());
+                    }
+
+                    if (ionMatch.ion instanceof PeptideFragmentIon) {
+                        ionType.getIndex().add(((PeptideFragmentIon) ionMatch.ion).getNumber());
+                    } else if (ionMatch.ion instanceof ImmoniumIon) {
+                        //get the indexes of the corresponding residues
+                        char residue = ImmoniumIon.getResidue(ionMatch.ion.getSubType());
+                        char[] peptideAsArray = peptideSequence.toCharArray();
+                        for (int i = 0; i < peptideAsArray.length; i++) {
+                            if (peptideAsArray[i] == residue) {
+                                ionType.getIndex().add(i + 1);
+                            }
+                        }
+                    } else if (ionMatch.ion instanceof ReporterIon
+                            || ionMatch.ion instanceof RelatedIon // @TODO: request cv terms for related ions?
+                            || ionMatch.ion instanceof PrecursorIon) {
+                        ionType.getIndex().add(0);
+                    }
+
+                    //@todo add the neutral losses if jmzidentml supports mzIdentML 1.2.0
+//                    //add the CV term for the neutral losses
+//                    if (currentIon.getNeutralLosses() != null) {
+//                        for (NeutralLoss neutralLoss : currentIon.getNeutralLosses()) {
+//                            CvParam neutralLossElement = getMzIdentMlElement("/Ion/Neutral loss", CvParam.class);
+//                            neutralLossElement.setValue(neutralLoss.name);
+//                            ionType.setCvParam(neutralLossElement);
+//                        }
+//                    }
+                }
+
+                if (fragmentTypeCvParam != null) {
+                    ionType.setCvParam(fragmentTypeCvParam);
+                    ionType.getFragmentArray().add(mzValues);
+                    ionType.getFragmentArray().add(intensityValues);
+                    if (searchEngine.getSearchEngineType().equals(SearchEngineType.PEPTIDESHAKER)) {
+                        ionType.getFragmentArray().add(errorValues);
+                    }
+
+                    //add the ion type to the fragmentation
+                    fragmentation.getIonType().add(ionType);
+                }
+            }
+        }
+
+        //add the fragmentation to the spectrum identification item
+        if (!fragmentation.getIonType().isEmpty()) {
+            spectrumIdentificationItem.setFragmentation(fragmentation);
+        }
+    }
+
+    /**
+     * Calculate the fragment ion matches.
+     *
+     * @param spectrum the Spectrum instance
+     * @param peptide  the Peptide instance
+     * @return the list of fragment ions
+     */
+    private ArrayList<IonMatch> calculateIonMatches(Spectrum spectrum, Peptide peptide) {
+        ArrayList<IonMatch> ionMatches = new ArrayList<>();
+
+        try {
+            PeptideSpectrumAnnotator peptideSpectrumAnnotator = new PeptideSpectrumAnnotator();
+
+            //map the Colims Peptide instance onto the PeptideAssumption
+            PeptideAssumption peptideAssumption = colimsPeptideMapper.map(peptide);
+
+            //map the Colims Spectrum instance onto the Utilities MSnSpectrum instance
+            MSnSpectrum msnSpectrum = colimsSpectrumMapper.map(spectrum);
+
+            SpecificAnnotationSettings specificAnnotationSettings = annotationSettings.getSpecificAnnotationPreferences(
+                    msnSpectrum.getSpectrumTitle(),
+                    peptideAssumption,
+                    new SequenceMatchingPreferences(),
+                    new SequenceMatchingPreferences()
+            );
+
+            ionMatches = peptideSpectrumAnnotator.getSpectrumAnnotation(
+                    annotationSettings,
+                    specificAnnotationSettings,
+                    msnSpectrum,
+                    peptideAssumption.getPeptide()
+            );
+        } catch (IOException | InterruptedException | SQLException | MappingException | ClassNotFoundException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+        }
+
+        return ionMatches;
+    }
+
+    /**
+     * Create a spectrum identification item from an MaxQuant MBR dummy spectrum.
+     *
+     * @param peptide the Colims {@link Peptide} instance
+     * @return the populated {@link SpectrumIdentification} instance
+     */
+    private SpectrumIdentificationItem populateMbrSpectrumIdentificationItem(Peptide peptide) throws IOException {
+        SpectrumIdentificationItem spectrumIdentificationItem = new SpectrumIdentificationItem();
+
+        spectrumIdentificationItem.setId(String.format(SPECTRUM_IDENTIFICATION_ITEM_ID, peptide.getId()));
+
+        //TODO what to do with the rank and threshold
+        spectrumIdentificationItem.setPassThreshold(true);
+        spectrumIdentificationItem.setRank(1);
 
         //add the theoretical mass
         if (peptide.getTheoreticalMass() != null) {
@@ -1229,15 +1603,15 @@ public class MzIdentMlExporter {
     /**
      * Create an mzIdentML modification from a Colims equivalent.
      *
-     * @param peptideHasMod Peptide to modification representation
+     * @param peptideHasModification Peptide to modification representation
      * @return the populated {@link Modification} instance
      */
-    private Modification populateModification(PeptideHasModification peptideHasMod) throws IOException {
+    private Modification populateModification(PeptideHasModification peptideHasModification) throws IOException {
         Modification modification = new Modification();
 
-        modification.setMonoisotopicMassDelta(peptideHasMod.getModification().getMonoIsotopicMassShift());
-        modification.setLocation(peptideHasMod.getLocation());
-        modification.getCvParam().add(modificationToCvParam(peptideHasMod.getModification()));
+        modification.setMonoisotopicMassDelta(peptideHasModification.getModification().getMonoIsotopicMassShift());
+        modification.setLocation(peptideHasModification.getLocation());
+        modification.getCvParam().add(modificationToCvParam(peptideHasModification.getModification()));
 
         return modification;
     }
@@ -1278,6 +1652,9 @@ public class MzIdentMlExporter {
      */
     private SearchDatabase getSearchDatabaseForAccession(String proteinAccession) {
         for (Map.Entry<FastaDb, Set<String>> entry : proteinAccessions.entrySet()) {
+            if (proteinAccession.startsWith(ProteinGroupHasProtein.CONTAMINANT_PREFIX)) {
+                proteinAccession = proteinAccession.substring(ProteinGroupHasProtein.CONTAMINANT_PREFIX.length());
+            }
             if (entry.getValue().contains(proteinAccession)) {
                 return fastaDbToSearchDatabases.get(entry.getKey());
             }
@@ -1391,17 +1768,17 @@ public class MzIdentMlExporter {
 class UniqueEvidence {
 
     /**
-     * The protein ID.
+     * The protein accession.
      */
-    private Long proteinId;
+    private final String proteinAccession;
     /**
      * The {@link PeptideDTO} instance.
      */
-    private PeptideDTO peptideDTO;
+    private final PeptideDTO peptideDTO;
     /**
      * The {@link PeptidePosition} instance.
      */
-    private PeptidePosition peptidePosition;
+    private final PeptidePosition peptidePosition;
     /**
      * The {@link PeptideEvidence} instance.
      */
@@ -1414,11 +1791,12 @@ class UniqueEvidence {
     /**
      * Constructor.
      *
-     * @param peptideDTO      the {@link PeptideDTO} instance
-     * @param peptidePosition the {@link PeptidePosition} instance
+     * @param proteinAccession the protein accession
+     * @param peptideDTO       the {@link PeptideDTO} instance
+     * @param peptidePosition  the {@link PeptidePosition} instance
      */
-    public UniqueEvidence(Long proteinId, PeptideDTO peptideDTO, PeptidePosition peptidePosition) {
-        this.proteinId = proteinId;
+    public UniqueEvidence(String proteinAccession, PeptideDTO peptideDTO, PeptidePosition peptidePosition) {
+        this.proteinAccession = proteinAccession;
         this.peptideDTO = peptideDTO;
         this.peptidePosition = peptidePosition;
     }
@@ -1450,7 +1828,7 @@ class UniqueEvidence {
 
         UniqueEvidence that = (UniqueEvidence) o;
 
-        if (!Objects.equals(this.proteinId, that.proteinId)) {
+        if (!this.proteinAccession.equals(that.proteinAccession)) {
             return false;
         }
         if (!peptideDTO.equals(that.peptideDTO)) {
@@ -1459,15 +1837,12 @@ class UniqueEvidence {
         if (!Objects.equals(this.peptidePosition.getStartPosition(), that.peptidePosition.getStartPosition())) {
             return false;
         }
-        if (!Objects.equals(this.peptidePosition.getEndPosition(), that.peptidePosition.getEndPosition())) {
-            return false;
-        }
-        return this.peptidePosition.getPreAA() == that.peptidePosition.getPreAA() && this.peptidePosition.getPostAA() == that.peptidePosition.getPostAA();
+        return Objects.equals(this.peptidePosition.getEndPosition(), that.peptidePosition.getEndPosition()) && this.peptidePosition.getPreAA() == that.peptidePosition.getPreAA() && this.peptidePosition.getPostAA() == that.peptidePosition.getPostAA();
     }
 
     @Override
     public int hashCode() {
-        int result = proteinId.hashCode();
+        int result = proteinAccession.hashCode();
         result = 31 * result + peptideDTO.hashCode();
         return result;
     }

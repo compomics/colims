@@ -87,6 +87,7 @@ public class MaxQuantDataImportController implements Controllable {
 
         //init binding
         bindingGroup = new BindingGroup();
+
         additionalFastaDbBindingList = ObservableCollections.observableList(new ArrayList<>());
         JListBinding additionalFastaDbListBinding = SwingBindings.createJListBinding(AutoBinding.UpdateStrategy.READ_WRITE, additionalFastaDbBindingList, maxQuantDataImportPanel.getAdditionalFastaFileList());
         bindingGroup.addBinding(additionalFastaDbListBinding);
@@ -187,13 +188,9 @@ public class MaxQuantDataImportController implements Controllable {
             }
         });
 
-        maxQuantDataImportPanel.getContaminantsCheckBox().addActionListener(e -> {
-            includeContaminants = true;
-        });
+        maxQuantDataImportPanel.getContaminantsCheckBox().addActionListener(e -> includeContaminants = true);
 
-        maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().addActionListener(e -> {
-            includeUnidentifiedSpectra = true;
-        });
+        maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().addActionListener(e -> includeUnidentifiedSpectra = true);
     }
 
     @Override
@@ -204,7 +201,6 @@ public class MaxQuantDataImportController implements Controllable {
         includeContaminants = false;
         includeUnidentifiedSpectra = false;
         selectedProteinGroupHeaders = new ArrayList<>();
-        // to do check here! nullpointer ex
         additionalFastaDbBindingList.clear();
         //reset the input fields
         maxQuantDataImportPanel.getParameterDirectoryTextField().setText("");
@@ -214,6 +210,10 @@ public class MaxQuantDataImportController implements Controllable {
         maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
         maxQuantDataImportPanel.getContaminantsCheckBox().setSelected(false);
         maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().setSelected(false);
+        //reset the file chooser directories
+        Path experimentsDirectory = Paths.get(experimentsPath);
+        maxQuantDataImportPanel.getMqParDirectoryChooser().setCurrentDirectory(experimentsDirectory.toFile());
+        maxQuantDataImportPanel.getCombinedFolderChooser().setCurrentDirectory(experimentsDirectory.toFile());
     }
 
     public void showEditView(MaxQuantImport maxQuantImport) {

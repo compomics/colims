@@ -55,8 +55,8 @@ public class UtilitiesSpectrumMapperTest {
         ArrayList<Charge> possibleCharges = new ArrayList<>();
         possibleCharges.add(new Charge(Charge.PLUS, 2));
         Precursor precursor = new Precursor(25.3, 875.2, possibleCharges);
-        mSnSpectrum = new MSnSpectrum(2, precursor, "spectrum title", peaks, "spectrum file name");
-        mSnSpectrum.setScanNumber("1200");
+        mSnSpectrum = new MSnSpectrum(2, precursor, "spectrum title scan=8196\"", peaks, "spectrum file name");
+        mSnSpectrum.setScanNumber("");
         mSnSpectrum.setScanStartTime(300.5);
     }
 
@@ -80,7 +80,7 @@ public class UtilitiesSpectrumMapperTest {
         Assert.assertEquals(mSnSpectrum.getPrecursor().getMz(), spectrum.getMzRatio(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getIntensity(), spectrum.getIntensity(), 0.001);
         Assert.assertEquals(mSnSpectrum.getPrecursor().getRt(), spectrum.getRetentionTime(), 0.001);
-        Assert.assertEquals(mSnSpectrum.getScanNumber(), Long.toString(spectrum.getScanNumber()));
+        Assert.assertEquals("8196", Long.toString(spectrum.getScanNumber()));
         Assert.assertEquals(mSnSpectrum.getScanStartTime(), spectrum.getScanTime(), 0.001);
         Assert.assertEquals(2, spectrum.getCharge().intValue());
         Assert.assertEquals(FragmentationType.CID, spectrum.getFragmentationType());

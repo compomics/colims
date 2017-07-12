@@ -3,6 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 
+    <!-- property placeholder -->
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="config/colims-core.properties"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+
     <bean name="ontologyMapper" class="com.compomics.colims.core.ontology.OntologyMapper"/>
 
     <bean name="olsService" class="com.compomics.colims.core.service.impl.OlsServiceImpl"/>
@@ -14,14 +20,7 @@
     <bean name="accessionConverter" class="com.compomics.colims.core.util.AccessionConverter"/>
     
     <bean name="uniprotProteinUtils" class="com.compomics.colims.core.util.UniprotProteinUtils"/>
-    
-    <bean name="proteinCoverage" class="com.compomics.colims.core.util.ProteinCoverage"/>
 
     <bean name="fastaDbParser" class="com.compomics.colims.core.io.fasta.FastaDbParser"/>
 
-     <!-- property placeholder -->
-    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="config/colims-core.properties"/>
-        <property name="ignoreUnresolvablePlaceholders" value="true"/>
-    </bean>
 </beans>

@@ -8,7 +8,6 @@ import com.compomics.colims.core.ontology.OntologyMapperTest;
 import com.compomics.colims.core.permission.PermissionInterceptorTest;
 import com.compomics.colims.core.util.AccessionConventerTest;
 import com.compomics.colims.core.util.PathUtilsTest;
-import com.compomics.colims.core.util.ProteinCoverageTest;
 import com.compomics.colims.core.util.SequenceUtilsTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -26,7 +25,6 @@ import org.junit.runners.Suite;
         OntologyMapperTest.class,
         FastaDbParserTest.class,
         AccessionConventerTest.class,
-        ProteinCoverageTest.class,
         SequenceUtilsTest.class,
         PathUtilsTest.class,
 })

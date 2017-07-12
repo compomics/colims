@@ -52,7 +52,7 @@ public class FastaDbManagementController implements Controllable {
     /**
      * The value shown in the user interface if a {@link FastaDb} property is empty.
      */
-    public static final String UNKNOWN = "unknown";
+    public static final String NONE = "none";
     /**
      * The default taxonomy value for the taxonomy combo box.
      */
@@ -104,6 +104,7 @@ public class FastaDbManagementController implements Controllable {
         bindingGroup = new BindingGroup();
 
         fastaDbs.addAll(fastaDbService.findAll());
+
         sortedFastaDbs = new SortedList<>(fastaDbs, (FastaDb o1, FastaDb o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
         fastaDbListModel = GlazedListsSwing.eventListModel(sortedFastaDbs);
         fastaDbManagementDialog.getFastaDbList().setModel(fastaDbListModel);
@@ -131,8 +132,8 @@ public class FastaDbManagementController implements Controllable {
             if (!e.getValueIsAdjusting()) {
                 if (fastaDbManagementDialog.getFastaDbList().getSelectedIndex() != -1) {
                     FastaDb fastaDb = getSelectedFastaDb();
-                    //enable update button if necessary
-                    fastaDbManagementDialog.getUpdateButton().setEnabled(fastaDb.getId() != null);
+                    //enable the edit button if necessary
+                    fastaDbManagementDialog.getEditButton().setEnabled(fastaDb.getId() != null);
 
                     //set "none" taxonomy if necessary
                     TaxonomyCvParam taxonomy = getSelectedFastaDb().getTaxonomy();
@@ -145,18 +146,18 @@ public class FastaDbManagementController implements Controllable {
                     }
                     fastaDbManagementDialog.getDatabaseTextField().setText(fastaDb.getDatabaseName());
                     if (fastaDb.getHeaderParseRule() == null) {
-                        fastaDb.setHeaderParseRule(UNKNOWN);
+                        fastaDb.setHeaderParseRule(HeaderParseRule.NONE_RULE.getParseRule());
                     }
                     fastaDbManagementDialog.getHeaderParseRuleTextField().setText(fastaDb.getHeaderParseRule());
                     if (fastaDb.getVersion() == null) {
-                        fastaDb.setVersion(UNKNOWN);
+                        fastaDb.setVersion(NONE);
                     }
                     fastaDbManagementDialog.getVersionTextField().setText(fastaDb.getVersion());
 
                     //enable delete button
                     fastaDbManagementDialog.getDeleteButton().setEnabled(true);
                 } else {
-                    fastaDbManagementDialog.getUpdateButton().setEnabled(false);
+                    fastaDbManagementDialog.getEditButton().setEnabled(false);
                     clearFastaDbDetailFields();
                 }
             }
@@ -176,7 +177,7 @@ public class FastaDbManagementController implements Controllable {
             showSaveOrUpdatePanel();
         });
 
-        fastaDbManagementDialog.getUpdateButton().addActionListener(e -> {
+        fastaDbManagementDialog.getEditButton().addActionListener(e -> {
             // send the selected fastaDb to fastaDbSaveUpdateController
             fastaDbSaveUpdateController.updateView(getSelectedFastaDb());
 
@@ -255,7 +256,7 @@ public class FastaDbManagementController implements Controllable {
         //clear the selection
         fastaDbSelectionModel.clearSelection();
 
-        fastaDbManagementDialog.getUpdateButton().setSelected(false);
+        fastaDbManagementDialog.getEditButton().setSelected(false);
         clearFastaDbDetailFields();
 
         showOverviewPanel();
@@ -319,16 +320,6 @@ public class FastaDbManagementController implements Controllable {
     }
 
     /**
-     * Get the row index of the selected fastaDB in the fastaDb management
-     * panel.
-     *
-     * @return the row index
-     */
-    public int getSelectedFastaDbIndex() {
-        return fastaDbSelectionModel.getLeadSelectionIndex();
-    }
-
-    /**
      * Get fastaDb Management Dialog.
      *
      * @return fastaDbManagementDialog
@@ -385,15 +376,15 @@ public class FastaDbManagementController implements Controllable {
         //check which checkboxes are selected
         if (fastaDbManagementDialog.getPrimaryCheckBox().isSelected()) {
             fastaDbTypes.add(FastaDbType.PRIMARY);
-            fastaDbManagementDialog.getUpdateButton().setEnabled(false);
+            fastaDbManagementDialog.getEditButton().setEnabled(false);
         }
         if (fastaDbManagementDialog.getAdditionalCheckBox().isSelected()) {
             fastaDbTypes.add(FastaDbType.ADDITIONAL);
-            fastaDbManagementDialog.getUpdateButton().setEnabled(false);
+            fastaDbManagementDialog.getEditButton().setEnabled(false);
         }
         if (fastaDbManagementDialog.getContaminantsCheckBox().isSelected()) {
             fastaDbTypes.add(FastaDbType.CONTAMINANTS);
-            fastaDbManagementDialog.getUpdateButton().setEnabled(false);
+            fastaDbManagementDialog.getEditButton().setEnabled(false);
         }
 
         if (fastaDbTypes.isEmpty()) {

@@ -5,7 +5,6 @@ import com.compomics.colims.model.util.CompareUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,6 +51,27 @@ public class Peptide extends DatabaseEntity {
     @Column(name = "psm_post_error_prob", nullable = true)
     private Double psmPostErrorProbability;
     /**
+     * The mass error in ppm. This value is stored for MaxQuant identifications because it
+     * cannot be calculated from other stored fields. (Mass error of the recalibrated
+     * mass-over-charge value of the precursor ion in comparison to the predicted monoisotopic
+     * mass of the identified peptide sequence in parts per million.)
+     */
+    @Basic(optional = true)
+    @Column(name = "mass_error", nullable = true)
+    private Double massError;
+    /**
+     * The matched fragment ions separated by semi-colon.
+     */
+    @Basic(optional = true)
+    @Column(name = "fragment_ions", nullable = true, length = 750)
+    private String fragmentIons;
+    /**
+     * The matched fragment ion masses separated by semi-colon.
+     */
+    @Basic(optional = true)
+    @Column(name = "fragment_masses", nullable = true, length = 1500)
+    private String fragmentMasses;
+    /**
      * The spectrum identified by this peptide.
      */
     @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
@@ -69,7 +89,6 @@ public class Peptide extends DatabaseEntity {
      */
     @OneToMany(mappedBy = "peptide", cascade = CascadeType.ALL)
     private List<PeptideHasProteinGroup> peptideHasProteinGroups = new ArrayList<>();
-
 
     /**
      * No-arg constructor.
@@ -123,6 +142,30 @@ public class Peptide extends DatabaseEntity {
 
     public void setPsmPostErrorProbability(Double psmPostErrorProbability) {
         this.psmPostErrorProbability = psmPostErrorProbability;
+    }
+
+    public Double getMassError() {
+        return massError;
+    }
+
+    public void setMassError(Double massError) {
+        this.massError = massError;
+    }
+
+    public String getFragmentIons() {
+        return fragmentIons;
+    }
+
+    public void setFragmentIons(String fragmentIons) {
+        this.fragmentIons = fragmentIons;
+    }
+
+    public String getFragmentMasses() {
+        return fragmentMasses;
+    }
+
+    public void setFragmentMasses(String fragmentMasses) {
+        this.fragmentMasses = fragmentMasses;
     }
 
     public List<PeptideHasModification> getPeptideHasModifications() {
@@ -201,17 +244,18 @@ public class Peptide extends DatabaseEntity {
         if (psmProbability != null ? !CompareUtils.equals(psmProbability, peptide.psmProbability) : peptide.psmProbability != null) {
             return false;
         }
-        return !(psmPostErrorProbability != null ? !CompareUtils.equals(psmPostErrorProbability, peptide.psmPostErrorProbability) : peptide.psmPostErrorProbability != null);
+        if (psmPostErrorProbability != null ? !CompareUtils.equals(psmPostErrorProbability, peptide.psmPostErrorProbability) : peptide.psmPostErrorProbability != null) {
+            return false;
+        }
 
+        return !(massError != null ? !CompareUtils.equals(massError, peptide.massError) : peptide.massError != null);
     }
 
     @Override
     public int hashCode() {
         int result = sequence.hashCode();
         result = 31 * result + (theoreticalMass != null ? theoreticalMass.hashCode() : 0);
-        //result = 31 * result + (charge != null ? charge.hashCode() : 0);
-        //result = 31 * result + (psmProbability != null ? psmProbability.hashCode() : 0);
-        //result = 31 * result + (psmPostErrorProbability != null ? psmPostErrorProbability.hashCode() : 0);
+        result = 31 * result + (charge != null ? charge.hashCode() : 0);
         return result;
     }
 }

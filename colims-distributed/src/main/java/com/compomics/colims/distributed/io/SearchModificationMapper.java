@@ -139,10 +139,11 @@ public class SearchModificationMapper {
      * @param ontologyPrefix the ontology prefix
      * @param accession      the term accession
      * @param label          the term label
+     * @param utilitiesName  the Compomics Utilities modification name
      * @return the Colims SearchModification entity
      */
-    public SearchModification mapByOntologyTerm(final String ontologyPrefix, final String accession, final String label) {
-        return mapByOntologyTerm(ontologyPrefix, accession, label, null, null);
+    public SearchModification mapByOntologyTerm(final String ontologyPrefix, final String accession, final String label, final String utilitiesName) {
+        return mapByOntologyTerm(ontologyPrefix, accession, label, null, utilitiesName);
     }
 
     /**

@@ -8,27 +8,32 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.QuantificationReagentService;
 import com.compomics.colims.model.QuantificationReagent;
 import com.compomics.colims.repository.QuantificationReagentRepository;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author demet
  */
 @Service("quantificationReagentService")
 @Transactional
-public class QuantificationReagentServiceImpl implements QuantificationReagentService{
+public class QuantificationReagentServiceImpl implements QuantificationReagentService {
+
+    private final QuantificationReagentRepository quantificationReagentRepository;
 
     @Autowired
-    QuantificationReagentRepository quantificationReagentRepository;
-    
+    public QuantificationReagentServiceImpl(QuantificationReagentRepository quantificationReagentRepository) {
+        this.quantificationReagentRepository = quantificationReagentRepository;
+    }
+
     @Override
     public QuantificationReagent getQuantificationReagent(QuantificationReagent quantificationReagent) {
         //find by example
         List<QuantificationReagent> quantificationReagents = quantificationReagentRepository.findByExample(quantificationReagent);
-        
+
         if (!quantificationReagents.isEmpty()) {
             return quantificationReagents.get(0);
         } else {
@@ -67,5 +72,5 @@ public class QuantificationReagentServiceImpl implements QuantificationReagentSe
     public void remove(QuantificationReagent entity) {
         quantificationReagentRepository.remove(entity);
     }
-    
+
 }

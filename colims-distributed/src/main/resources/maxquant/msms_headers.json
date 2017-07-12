@@ -76,5 +76,11 @@
     "values": [
       "Retention Time"
     ]
+  },
+  "ION_MATCHES": {
+    "mandatory": true,
+    "values": [
+      "Matches"
+    ]
   }
 }

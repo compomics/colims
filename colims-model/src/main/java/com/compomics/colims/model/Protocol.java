@@ -163,7 +163,6 @@ public class Protocol extends AuditableDatabaseEntity {
         if (chemicalLabels != null ? !chemicalLabels.equals(protocol.chemicalLabels) : protocol.chemicalLabels != null)
             return false;
         return !(otherCvParams != null ? !otherCvParams.equals(protocol.otherCvParams) : protocol.otherCvParams != null);
-
     }
 
     @Override
@@ -172,8 +171,6 @@ public class Protocol extends AuditableDatabaseEntity {
         result = 31 * result + (reduction != null ? reduction.hashCode() : 0);
         result = 31 * result + (enzyme != null ? enzyme.hashCode() : 0);
         result = 31 * result + (cellBased != null ? cellBased.hashCode() : 0);
-        result = 31 * result + (chemicalLabels != null ? chemicalLabels.hashCode() : 0);
-        result = 31 * result + (otherCvParams != null ? otherCvParams.hashCode() : 0);
         return result;
     }
 

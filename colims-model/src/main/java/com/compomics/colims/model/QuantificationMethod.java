@@ -13,7 +13,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.FetchType;
 
 /**
  * This class represents a quantification method cv parameters entity in the database.

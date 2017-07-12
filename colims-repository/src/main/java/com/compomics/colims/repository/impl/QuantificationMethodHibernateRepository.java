@@ -4,14 +4,13 @@
  */
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.AnalyticalRunBinaryFile;
 import com.compomics.colims.model.QuantificationMethod;
 import com.compomics.colims.model.QuantificationMethodHasReagent;
 import com.compomics.colims.model.comparator.QuantificationMethodHasReagentsNameComparator;
 import org.springframework.stereotype.Repository;
 
 import com.compomics.colims.repository.QuantificationMethodRepository;
-import java.util.Collections;
+
 import java.util.Iterator;
 import java.util.List;
 import org.hibernate.Criteria;

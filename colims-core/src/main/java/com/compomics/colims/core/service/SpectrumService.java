@@ -8,6 +8,7 @@ import com.compomics.colims.model.SpectrumFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * This interface provides service methods for the Spectrum class.
@@ -25,6 +26,16 @@ public interface SpectrumService extends GenericService<Spectrum, Long> {
      * @throws java.io.IOException the IOException
      */
     Map<Double, Double> getSpectrumPeaks(SpectrumFile spectrumFile) throws IOException;
+
+    /**
+     * Get the spectrum peaks as a treemap (key: mz ratio, value: intensity) from
+     * the SpectrumFile.
+     *
+     * @param spectrumFile the SpectrumFile
+     * @return the peak map
+     * @throws java.io.IOException the IOException
+     */
+    TreeMap<Double, Double> getSortedSpectrumPeaks(SpectrumFile spectrumFile) throws IOException;
 
     /**
      * Count the spectra associated to the given analytical run.

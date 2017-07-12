@@ -37,7 +37,7 @@ public class OlsServiceImpl implements OlsService {
     private static final Logger LOGGER = Logger.getLogger(OlsServiceImpl.class);
 
     private static final String OLS_BASE_URL = "http://www.ebi.ac.uk/ols/api/ontologies";
-    private static final String OLS_BASE_SEARCH_URL = "http://www.ebi.ac.uk/ols/beta/api/search?q=";
+    private static final String OLS_BASE_SEARCH_URL = "http://www.ebi.ac.uk/ols/api/search?q=";
     private static final String PAGE_AND_SIZE = "?page=%1$d&size=%2$d";
     private static final String START_AND_ROWS = "&start={page}&rows={pageSize}";
     private static final String EMBEDDED = "_embedded";
@@ -103,9 +103,8 @@ public class OlsServiceImpl implements OlsService {
 
             //get the ontologies of the page
             JsonNode ontologiesNode = responseBody.get(EMBEDDED).get(ONTOLOGIES);
-            Iterator<JsonNode> ontologyIterator = ontologiesNode.iterator();
-            while (ontologyIterator.hasNext()) {
-                JsonNode ontologyConfigNode = ontologyIterator.next().get(CONFIG);
+            for (JsonNode anOntologiesNode : ontologiesNode) {
+                JsonNode ontologyConfigNode = anOntologiesNode.get(CONFIG);
                 Ontology ontology = objectReader.treeToValue(ontologyConfigNode, Ontology.class);
                 ontologies.add(ontology);
                 //add to cache if not already present
@@ -168,7 +167,7 @@ public class OlsServiceImpl implements OlsService {
     public SearchResultMetadata getPagedSearchMetadata(String query, List<String> ontologyNamespaces, EnumSet<OlsSearchResult.SearchField> searchFields) throws RestClientException, IOException {
         //build the request
         StringBuilder url = new StringBuilder(OLS_BASE_SEARCH_URL);
-        url.append(query);
+        url.append("*" + query + "*");
         if (!searchFields.isEmpty() && !searchFields.equals(OlsSearchResult.DEFAULT_SEARCH_FIELDS)) {
             url.append("&queryFields=");
             url.append(searchFields.stream().map(OlsSearchResult.SearchField::getQueryValue).collect(Collectors.joining(",")));
