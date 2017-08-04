@@ -28,13 +28,13 @@ public interface QuantificationSettingsService extends GenericService<Quantifica
     QuantificationEngine getQuantificationEngine(QuantificationEngineType quantificationEngineType, String version);
 
     /**
-     * Get the QuantificationMethodCvParam by example from the database. If nothing was found, store the given
-     * QuantificationMethodCvParam and return them.
+     * Get the {@link QuantificationMethod} by example from the database. If nothing was found, store the given
+     * QuantificationMethod and return it.
      *
      * @param quantificationMethod the QuantificationMethodCvParam instance
      * @return the found QuantificationMethodCvParam
      */
-    QuantificationMethod getQuantificationMethodCvParams(QuantificationMethod quantificationMethod);
+    QuantificationMethod getQuantificationMethod(QuantificationMethod quantificationMethod);
 
     /**
      * Get the QuantificationSettings by analytical run instance from database.
@@ -42,5 +42,5 @@ public interface QuantificationSettingsService extends GenericService<Quantifica
      * @param analyticalRun
      * @return the found QuantificationSettings
      */
-    QuantificationSettings getbyAnalyticalRun(AnalyticalRun analyticalRun);
+    QuantificationSettings getByAnalyticalRun(AnalyticalRun analyticalRun);
 }

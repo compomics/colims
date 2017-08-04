@@ -455,9 +455,9 @@ public class AnalyticalRunsAdditionController implements Controllable {
     }
 
     /**
-     * Find all quantificationMethod labels from COLIMS mapping.
+     * Find all the quantification method labels from the Colims ontology mapping.
      *
-     * @return quantificationMethods
+     * @return the list of quantification method labels
      */
     public List<String> findAllLabels() {
         List<String> quantificationMethods = new ArrayList<>();

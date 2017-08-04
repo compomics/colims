@@ -187,8 +187,8 @@ public class MaxQuantParser {
         maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra().forEach((runName, spectrum) -> analyticalRuns.get(runName).getSpectrums().addAll(spectrum));
 
         //parse the quantification settings
-        //for a silac experiment, we don't have any reagent name from maxquant.
-        //Colims gives reagent name due to number of sample.
+        //for a silac or icat experiments, we don't have any reagent name from maxquant.
+        //Colims gives reagent names according to the number of samples.
         if (maxQuantImport.getQuantificationLabel().equals("SILAC")) {
             List<String> silacReagents = new ArrayList<>();
             if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
@@ -198,6 +198,10 @@ public class MaxQuantParser {
                 silacReagents.addAll(Arrays.asList("SILAC light", "SILAC heavy"));
                 maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), silacReagents);
             }
+        } else if (maxQuantImport.getQuantificationLabel().equals("ICAT")) {
+            List<String> icatReagents = new ArrayList<>();
+            icatReagents.addAll(Arrays.asList("ICAT light reagent", "ICAT heavy reagent"));
+            maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), icatReagents);
         } else {
             List<String> reagents = new ArrayList<>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
             maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), reagents);

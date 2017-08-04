@@ -81,13 +81,13 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
 
             quantificationEngineRepository.persist(quantificationEngine);
         }
-        
+
         return quantificationEngine;
     }
 
     @Override
-    public QuantificationMethod getQuantificationMethodCvParams(QuantificationMethod quantificationMethod) {
-        //find QuantificationMethodCvParam by example
+    public QuantificationMethod getQuantificationMethod(QuantificationMethod quantificationMethod) {
+        //find the QuantificationMethod by example
         List<QuantificationMethod> quantificationMethods = quantificationMethodRepository.findByExample(quantificationMethod);
         if (!quantificationMethods.isEmpty()) {
             return quantificationMethods.get(0);
@@ -99,7 +99,7 @@ public class QuantificationSettingsServiceImpl implements QuantificationSettings
     }
 
     @Override
-    public QuantificationSettings getbyAnalyticalRun(AnalyticalRun analyticalRun) {
+    public QuantificationSettings getByAnalyticalRun(AnalyticalRun analyticalRun) {
         return quantificationSettingsRepository.findbyAnalyticalRunId(analyticalRun.getId());
     }
 

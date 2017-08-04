@@ -5,6 +5,7 @@
  */
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.OntologyTerm;
 import com.compomics.colims.core.service.QuantificationReagentService;
@@ -12,6 +13,7 @@ import com.compomics.colims.core.service.QuantificationSettingsService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.QuantificationEngineType;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,18 +32,19 @@ public class MaxQuantQuantificationSettingsParser {
      */
     private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
 
-    private static final String SILAC_LABEL = "SILAC";
-
     /**
      * The quantification settings indexed by analytical run (key: AnalyticalRun ; value: QuantificationSettings)
      */
     private final Map<AnalyticalRun, QuantificationSettings> runsAndQuantificationSettings = new HashMap<>();
-
+    /**
+     * Beans.
+     */
     private final OntologyMapper ontologyMapper;
     private final QuantificationSettingsService quantificationSettingsService;
     private final QuantificationReagentService quantificationReagentService;
     private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
 
+    @Autowired
     public MaxQuantQuantificationSettingsParser(QuantificationSettingsService quantificationSettingsService, OntologyMapper ontologyMapper,
                                                 QuantificationReagentService quantificationReagentService, MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) {
         this.quantificationSettingsService = quantificationSettingsService;
@@ -69,21 +72,20 @@ public class MaxQuantQuantificationSettingsParser {
     /**
      * Parse the quantification parameters for a MaxQuant experiment.
      *
-     * @param analyticalRuns
-     * @param quantificationLabel
-     * @param reagents
+     * @param analyticalRuns      the list of analytical runs
+     * @param quantificationLabel the quantification label
+     * @param reagents            the list of reagents
      */
     public void parse(List<AnalyticalRun> analyticalRuns, String quantificationLabel, List<String> reagents) {
-
         OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(quantificationLabel);
 
-        // create quantificationCvParam
+        //create the quantification method
         QuantificationMethod quantificationMethod =
                 new QuantificationMethod(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
         quantificationMethod.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethod, quantificationLabel, reagents));
-        // check if quantificationMethodCvParam is in the db
-        quantificationMethod = quantificationSettingsService.getQuantificationMethodCvParams(quantificationMethod);
-        // create quantificationSettings
+        //check if the quantification method is already present in the db
+        quantificationMethod = quantificationSettingsService.getQuantificationMethod(quantificationMethod);
+        //create the quantification settings
         QuantificationSettings quantificationSettings = new QuantificationSettings();
         quantificationSettings.setQuantificationMethod(quantificationMethod);
         quantificationSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(QuantificationEngineType.MAXQUANT, maxQuantSearchSettingsParser.getVersion()));
@@ -93,24 +95,23 @@ public class MaxQuantQuantificationSettingsParser {
             quantSettings.setQuantificationMethod(quantificationSettings.getQuantificationMethod());
             quantSettings.setQuantificationEngine(quantificationSettings.getQuantificationEngine());
             runsAndQuantificationSettings.put(analyticalRun, quantSettings);
-
         });
     }
 
     /**
-     * This method is to create QuantificationReagent and its link to QuantificationMethodCvParam.
+     * This method creates {@link QuantificationReagent} instances and their link to {@link QuantificationMethod} instances.
      *
-     * @param quantificationMethod
-     * @param quantificationLabel
-     * @param reagents
+     * @param quantificationMethod the {@link QuantificationMethod} instance
+     * @param quantificationLabel  the quantification label
+     * @param reagents             the list of reagents
      * @return QuantificationMethodHasReagents list
      */
     public List<QuantificationMethodHasReagent> createQuantificationReagent(QuantificationMethod quantificationMethod, String quantificationLabel, List<String> reagents) {
         List<QuantificationMethodHasReagent> quantificationMethodHasReagents = new ArrayList<>();
 
         reagents.forEach(reagent -> {
-            OntologyTerm ontologyTerm = null;
-            if (quantificationLabel.equals(SILAC_LABEL)) {
+            OntologyTerm ontologyTerm;
+            if (quantificationLabel.equals(MaxQuantImport.SILAC) || quantificationLabel.equals(MaxQuantImport.ICAT)) {
                 ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationReagents().get(reagent);
             } else {
                 ontologyTerm = ontologyMapper.getMaxQuantMapping().getQuantificationReagents().get(reagent);
@@ -121,7 +122,7 @@ public class MaxQuantQuantificationSettingsParser {
                 QuantificationReagent quantificationReagent =
                         new QuantificationReagent(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
 
-                // check if quantificationReagent is in the db
+                //check if the quantification reagent is already present in the database
                 quantificationReagent = quantificationReagentService.getQuantificationReagent(quantificationReagent);
 
                 quantificationMethodHasReagent.setQuantificationReagent(quantificationReagent);

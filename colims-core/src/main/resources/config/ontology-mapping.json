@@ -1298,6 +1298,11 @@
   },
   "Colims": {
     "quantification_methods": {
+      "label free": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000312",
+        "label": "Label free"
+      },
       "TMT": {
         "ontology_prefix": "PRIDE",
         "obo_id": "PRIDE:0000314",
@@ -1313,10 +1318,10 @@
         "obo_id": "PRIDE:0000315",
         "label": "SILAC"
       },
-      "label free": {
+      "ICAT": {
         "ontology_prefix": "PRIDE",
-        "obo_id": "PRIDE:0000312",
-        "label": "Label free"
+        "obo_id": "PRIDE:0000319",
+        "label": "ICAT"
       },
       "SRM": {
         "ontology_prefix": "PRIDE",
@@ -1339,6 +1344,16 @@
         "ontology_prefix": "PRIDE",
         "obo_id": "PRIDE:0000325",
         "label": "SILAC heavy"
+      },
+      "ICAT light reagent": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000345",
+        "label": "ICAT light reagent"
+      },
+      "ICAT heavy reagent": {
+        "ontology_prefix": "PRIDE",
+        "obo_id": "PRIDE:0000346",
+        "label": "ICAT heavy reagent"
       }
     }
   }
