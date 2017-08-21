@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 /**
  * Holder class for a {@link com.compomics.colims.model.Spectrum} instance and
- * it's annotations.
+ * its annotations.
  * <p>
  * Created by niels on 4/5/17.
  */

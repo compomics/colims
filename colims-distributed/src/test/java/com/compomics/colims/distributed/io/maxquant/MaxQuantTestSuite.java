@@ -36,13 +36,16 @@ public class MaxQuantTestSuite {
     public static Path maxQuantCombinedDirectory;
     public static Path maxQuantTextDirectory;
     public static Path maxQuantAndromedaDirectory;
+    public static Path maxQuantFastasDirectory;
     public static Path msmsFile;
     public static Path proteinGroupsFile;
     public static Path evidenceFile;
     public static Path mqparFile;
     public static Path peptidesFile;
-    public static FastaDb testFastaDb;
-    public static Path testFastaDbPath;
+    public static FastaDb spHumanFastaDb;
+    public static Path spHumanFastaDbPath;
+    public static FastaDb oryzaFastaDb;
+    public static Path oryzaFastaDbPath;
     public static FastaDb contaminantsFastaDb;
     public static Path contaminantsFastaDbPath;
 
@@ -50,6 +53,7 @@ public class MaxQuantTestSuite {
         try {
             maxQuantTestDataDirectory = new ClassPathResource("data" + File.separator + "maxquant").getFile().toPath();
             maxQuantIntegrationProjectDirectory = maxQuantTestDataDirectory.resolve(MAXQUANT_INTEGRATION_PROJECT);
+            maxQuantFastasDirectory = maxQuantTestDataDirectory.resolve("fasta");
             maxQuantCombinedDirectory = maxQuantIntegrationProjectDirectory.resolve("combined");
             maxQuantAndromedaDirectory = maxQuantCombinedDirectory.resolve("andromeda");
             maxQuantTextDirectory = maxQuantCombinedDirectory.resolve("txt");
@@ -58,15 +62,26 @@ public class MaxQuantTestSuite {
             evidenceFile = maxQuantTextDirectory.resolve("evidence.txt");
             peptidesFile = maxQuantTextDirectory.resolve("peptides.txt");
             mqparFile = maxQuantIntegrationProjectDirectory.resolve("mqpar.xml");
-            testFastaDbPath = maxQuantIntegrationProjectDirectory.resolve("SP_human.fasta");
-            testFastaDb = new FastaDb();
-            testFastaDb.setName("test fasta");
-            testFastaDb.setFileName("SP_human.fasta");
-            testFastaDb.setFilePath("SP_human.fasta");
-            testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
-            testFastaDb.setVersion("N/A");
-            testFastaDb.setDatabaseName("test db");
-            contaminantsFastaDbPath = maxQuantIntegrationProjectDirectory.resolve("contaminants.fasta");
+            //sp_human fasta
+            spHumanFastaDbPath = maxQuantFastasDirectory.resolve("SP_human.fasta");
+            spHumanFastaDb = new FastaDb();
+            spHumanFastaDb.setName("sp_human");
+            spHumanFastaDb.setFileName("SP_human.fasta");
+            spHumanFastaDb.setFilePath("SP_human.fasta");
+            spHumanFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+            spHumanFastaDb.setVersion("N/A");
+            spHumanFastaDb.setDatabaseName("test db");
+            //oryza sativa fasta
+            oryzaFastaDbPath = maxQuantFastasDirectory.resolve("Oryza_sativa_RefSeq.fasta");
+            oryzaFastaDb = new FastaDb();
+            oryzaFastaDb.setName("Oryza_sativa_RefSeq");
+            oryzaFastaDb.setFileName("Oryza_sativa_RefSeq.fasta");
+            oryzaFastaDb.setFilePath("Oryza_sativa_RefSeq.fasta");
+            oryzaFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+            oryzaFastaDb.setVersion("N/A");
+            oryzaFastaDb.setDatabaseName("test db");
+            //contaminants fasta
+            contaminantsFastaDbPath = maxQuantFastasDirectory.resolve("contaminants.fasta");
             contaminantsFastaDb = new FastaDb();
             contaminantsFastaDb.setName("test contaminants fasta");
             contaminantsFastaDb.setFileName("contaminants.fasta");

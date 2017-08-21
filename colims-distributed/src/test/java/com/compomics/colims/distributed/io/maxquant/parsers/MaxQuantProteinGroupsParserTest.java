@@ -1,15 +1,19 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.model.enums.FastaDbType;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -20,13 +24,74 @@ import java.util.*;
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 public class MaxQuantProteinGroupsParserTest {
 
+    private Path proteinGroupsFile;
+
     private LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
+    private EnumMap<FastaDbType, List<FastaDb>> fastaDbEnumMap = new EnumMap<>(FastaDbType.class);
     @Autowired
     private MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
+    @Autowired
+    private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
 
-    public MaxQuantProteinGroupsParserTest() {
-        fastaDbs.put(MaxQuantTestSuite.testFastaDb, MaxQuantTestSuite.testFastaDbPath);
+    public MaxQuantProteinGroupsParserTest() throws IOException {
+        //proteinGroupsFile = new ClassPathResource("data/maxquant/proteinGroups_subset.txt").getFile().toPath();
+    }
+
+    /**
+     * SILAC quantification parsing test.
+     *
+     * @throws java.lang.Exception in case of an exception
+     */
+    @Test
+    public void testSilac() throws Exception {
+        Path proteinGroupsFile = new ClassPathResource("data/maxquant/SILAC/combined/txt/proteinGroups.txt").getFile().toPath();
+        Path combinedDirectory = new ClassPathResource("data/maxquant/SILAC/combined").getFile().toPath();
+        Path mqparFile = new ClassPathResource("data/maxquant/SILAC/mqpar.xml").getFile().toPath();
+
+        fastaDbs.put(MaxQuantTestSuite.oryzaFastaDb, MaxQuantTestSuite.oryzaFastaDbPath);
         fastaDbs.put(MaxQuantTestSuite.contaminantsFastaDb, MaxQuantTestSuite.contaminantsFastaDbPath);
+
+        fastaDbEnumMap.put(FastaDbType.PRIMARY, Arrays.asList(MaxQuantTestSuite.oryzaFastaDb));
+        fastaDbEnumMap.put(FastaDbType.CONTAMINANTS, Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb));
+
+        maxQuantSearchSettingsParser.clear();
+        maxQuantSearchSettingsParser.parse(combinedDirectory, mqparFile, fastaDbEnumMap);
+
+        maxQuantProteinGroupsParser.parse(proteinGroupsFile,
+                fastaDbs, MaxQuantImport.SILAC, true, new ArrayList<>());
+
+        Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
+
+        Assert.assertEquals(143, result.size());
+    }
+
+    /**
+     * TMT quantification parsing test.
+     *
+     * @throws java.lang.Exception in case of an exception
+     */
+    @Test
+    public void testTmt() throws Exception {
+        Path proteinGroupsFile = new ClassPathResource("data/maxquant/TMT/combined/txt/proteinGroups.txt").getFile().toPath();
+        Path combinedDirectory = new ClassPathResource("data/maxquant/TMT/combined").getFile().toPath();
+        Path mqparFile = new ClassPathResource("data/maxquant/TMT/mqpar.xml").getFile().toPath();
+
+        fastaDbs.put(MaxQuantTestSuite.spHumanFastaDb, MaxQuantTestSuite.spHumanFastaDbPath);
+        fastaDbs.put(MaxQuantTestSuite.contaminantsFastaDb, MaxQuantTestSuite.contaminantsFastaDbPath);
+
+        fastaDbEnumMap.put(FastaDbType.PRIMARY, Arrays.asList(MaxQuantTestSuite.spHumanFastaDb));
+        fastaDbEnumMap.put(FastaDbType.CONTAMINANTS, Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb));
+
+        maxQuantSearchSettingsParser.clear();
+        maxQuantSearchSettingsParser.parse(combinedDirectory, mqparFile, fastaDbEnumMap);
+
+        maxQuantProteinGroupsParser.parse(proteinGroupsFile,
+                fastaDbs, MaxQuantImport.TMT, true, new ArrayList<>());
+
+        Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
+
+        Assert.assertEquals(143, result.size());
+        System.out.println("");
     }
 
     /**
@@ -37,7 +102,7 @@ public class MaxQuantProteinGroupsParserTest {
     @Test
     public void testParse() throws Exception {
         maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
-                fastaDbs, true, new ArrayList<>());
+                fastaDbs, "testLabel", true, new ArrayList<>());
 
         Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
 
@@ -53,7 +118,7 @@ public class MaxQuantProteinGroupsParserTest {
     @Test
     public void testParseWithoutContaminants() throws Exception {
         maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
-                fastaDbs, false, new ArrayList<>());
+                fastaDbs, "testLabel", false, new ArrayList<>());
 
         Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
 

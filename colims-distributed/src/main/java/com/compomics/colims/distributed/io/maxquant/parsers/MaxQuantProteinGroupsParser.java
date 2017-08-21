@@ -156,6 +156,7 @@ public class MaxQuantProteinGroupsParser {
                 }
             }
 
+            //handle quantification related entries
             maxQuantSearchSettingsParser.getAnalyticalRuns().forEach((run, name) -> {
                 String intensity = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY), name.toLowerCase()));
                 String lfqIntensity = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.LFQ_INTENSITY), name.toLowerCase()));
@@ -294,37 +295,14 @@ public class MaxQuantProteinGroupsParser {
      */
     private void parseLabeledQuantification(Map<String, String> proteinGroupsEntry, ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String experimentName,
                                             List<String> optionalHeaders) {
-        if (quantificationLabel.equals(MaxQuantImport.TMT)) {
-            for (int i = 0; i < maxQuantSearchSettingsParser.getIsobaricLabels().size(); i++) {
-                String reporterIntensityCorrected = proteinGroupsEntry.get(String.format(REPORTER_INTENSITY_CORRECTED, proteinGroupsHeaders.get(ProteinGroupsHeader.REPORTER_INTENSITY_CORRECTED), i, experimentName));
-                if (reporterIntensityCorrected != null && NumberUtils.isNumber(reporterIntensityCorrected) && maxQuantSearchSettingsParser.getIsobaricLabels().size() >= i + 1) {
-                    if (maxQuantSearchSettingsParser.getIsobaricLabels().get(i) != null) {
-                        createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getIsobaricLabels().get(i), reporterIntensityCorrected);
-                    } else {
-                        createProteinGroupQuantLabeled(proteinGroup, analyticalRun, ProteinGroupsHeader.REPORTER_INTENSITY_CORRECTED + " " + i, reporterIntensityCorrected);
-                    }
-                }
-            }
-        } else if (quantificationLabel.equals(MaxQuantImport.iTRAQ) || quantificationLabel.equals(MaxQuantImport.ICAT)) {
-            String intensityL = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_L), experimentName));
-            String intensityH = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_H), experimentName));
-            //in case of 2 label mods, we have a light and a heavy label (L, H).
-            //if there are 3 label mods, we have light, medium and heavy labels (L, M, H).
-            if (intensityL != null && NumberUtils.isNumber(intensityL)) {
-                if (maxQuantSearchSettingsParser.getLabelMods().get(0) != null) {
-                    createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getLabelMods().get(0), intensityL);
-                } else {
-                    createProteinGroupQuantLabeled(proteinGroup, analyticalRun, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_L), intensityL);
-                }
-            }
-            if (intensityH != null && NumberUtils.isNumber(intensityH)) {
-                if (maxQuantSearchSettingsParser.getLabelMods().get(maxQuantSearchSettingsParser.getLabelMods().size() - 1) != null) {
-                    createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getLabelMods().get(1), intensityH);
-                } else {
-                    createProteinGroupQuantLabeled(proteinGroup, analyticalRun, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_H), intensityH);
-                }
-            }
-            if (maxQuantSearchSettingsParser.getLabelMods().size() == 2) {
+        switch (quantificationLabel) {
+            case MaxQuantImport.SILAC:
+            case MaxQuantImport.iTRAQ:
+            case MaxQuantImport.ICAT:
+                String intensityL = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_L), experimentName));
+                String intensityH = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_H), experimentName));
+                //in case of 2 label mods, we have a light and a heavy label (L, H).
+                //if there are 3 label mods, we have light, medium and heavy labels (L, M, H).
                 if (intensityL != null && NumberUtils.isNumber(intensityL)) {
                     if (maxQuantSearchSettingsParser.getLabelMods().get(0) != null) {
                         createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getLabelMods().get(0), intensityL);
@@ -333,38 +311,38 @@ public class MaxQuantProteinGroupsParser {
                     }
                 }
                 if (intensityH != null && NumberUtils.isNumber(intensityH)) {
-                    if (maxQuantSearchSettingsParser.getLabelMods().get(1) != null) {
-                        createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getLabelMods().get(1), intensityH);
+                    if (maxQuantSearchSettingsParser.getLabelMods().get(maxQuantSearchSettingsParser.getLabelMods().size() - 1) != null) {
+                        createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getLabelMods().get(maxQuantSearchSettingsParser.getLabelMods().size() - 1), intensityH);
                     } else {
                         createProteinGroupQuantLabeled(proteinGroup, analyticalRun, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_H), intensityH);
                     }
                 }
-            } else if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
-                String intensityM = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_M), experimentName));
-                if (intensityL != null && NumberUtils.isNumber(intensityL)) {
-                    if (maxQuantSearchSettingsParser.getLabelMods().get(0) != null) {
-                        createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getLabelMods().get(0), intensityL);
-                    } else {
-                        createProteinGroupQuantLabeled(proteinGroup, analyticalRun, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_L), intensityL);
-                    }
+                if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) { //parse the medium label as well
+                    String intensityM = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_M), experimentName));
+                    if (intensityM != null && NumberUtils.isNumber(intensityM)) {
+                        if (maxQuantSearchSettingsParser.getLabelMods().get(1) != null) {
+                            createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getLabelMods().get(1), intensityM);
+                        } else {
+                            createProteinGroupQuantLabeled(proteinGroup, analyticalRun, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_M), intensityM);
+                        }
 
-                }
-                if (intensityM != null && NumberUtils.isNumber(intensityM)) {
-                    if (maxQuantSearchSettingsParser.getLabelMods().get(1) != null) {
-                        createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getLabelMods().get(1), intensityM);
-                    } else {
-                        createProteinGroupQuantLabeled(proteinGroup, analyticalRun, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_M), intensityM);
-                    }
-
-                }
-                if (intensityH != null && NumberUtils.isNumber(intensityH)) {
-                    if (maxQuantSearchSettingsParser.getLabelMods().get(2) != null) {
-                        createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getLabelMods().get(2), intensityH);
-                    } else {
-                        createProteinGroupQuantLabeled(proteinGroup, analyticalRun, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_H), intensityH);
                     }
                 }
-            }
+                break;
+            case MaxQuantImport.TMT:
+                for (int i = 0; i < maxQuantSearchSettingsParser.getIsobaricLabels().size(); i++) {
+                    String reporterIntensityCorrected = proteinGroupsEntry.get(String.format(REPORTER_INTENSITY_CORRECTED, proteinGroupsHeaders.get(ProteinGroupsHeader.REPORTER_INTENSITY_CORRECTED), i, experimentName));
+                    if (reporterIntensityCorrected != null && NumberUtils.isNumber(reporterIntensityCorrected) && maxQuantSearchSettingsParser.getIsobaricLabels().size() >= i + 1) {
+                        if (maxQuantSearchSettingsParser.getIsobaricLabels().get(i) != null) {
+                            createProteinGroupQuantLabeled(proteinGroup, analyticalRun, maxQuantSearchSettingsParser.getIsobaricLabels().get(i), reporterIntensityCorrected);
+                        } else {
+                            createProteinGroupQuantLabeled(proteinGroup, analyticalRun, ProteinGroupsHeader.REPORTER_INTENSITY_CORRECTED + " " + i, reporterIntensityCorrected);
+                        }
+                    }
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected quantification label: " + quantificationLabel);
         }
 
         // if given header has numeric value per run and protein group, store.

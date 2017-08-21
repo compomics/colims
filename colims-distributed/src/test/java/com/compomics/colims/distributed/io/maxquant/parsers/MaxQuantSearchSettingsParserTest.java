@@ -31,7 +31,7 @@ public class MaxQuantSearchSettingsParserTest {
     @Test
     public void testParse() throws Exception {
         EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
-        fastaDbs.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb)));
+        fastaDbs.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.spHumanFastaDb)));
 
         maxQuantSearchSettingsParser.parse(MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.mqparFile, fastaDbs);
         Map<String, SearchAndValidationSettings> runSettings = maxQuantSearchSettingsParser.getRunSettings();

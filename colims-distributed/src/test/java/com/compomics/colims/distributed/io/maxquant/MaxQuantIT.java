@@ -63,12 +63,12 @@ public class MaxQuantIT {
     @Test
     public void testMap() throws Exception {
         //save the test FASTA to the database first
-        fastaDbService.persist(MaxQuantTestSuite.testFastaDb);
+        fastaDbService.persist(MaxQuantTestSuite.spHumanFastaDb);
         //save the contaminants FASTA to the database first
         fastaDbService.persist(MaxQuantTestSuite.contaminantsFastaDb);
 
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
-        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.testFastaDb.getId())));
+        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.spHumanFastaDb.getId())));
         fastaDbIds.put(FastaDbType.CONTAMINANTS, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb.getId())));
 
         MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.mqparFile,

@@ -503,7 +503,7 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Match analytical run and related search and validation settings
      */
-    private void matchAnalyticalRunSearchSettings(){
+    private void matchAnalyticalRunSearchSettings() {
         analyticalRuns.keySet().forEach((run) -> run.setSearchAndValidationSettings(runSettings.get(run.getName())));
     }
 
