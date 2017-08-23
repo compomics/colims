@@ -330,7 +330,8 @@ public class MaxQuantProteinGroupsParser {
                 }
                 break;
             case MaxQuantImport.TMT:
-                for (int i = 0; i < maxQuantSearchSettingsParser.getIsobaricLabels().size(); i++) {
+                int reportersSize = calculateTmtReportersSize(maxQuantSearchSettingsParser.getIsobaricLabels().size());
+                for (int i = 0; i < reportersSize; i++) {
                     String reporterIntensityCorrected = proteinGroupsEntry.get(String.format(REPORTER_INTENSITY_CORRECTED, proteinGroupsHeaders.get(ProteinGroupsHeader.REPORTER_INTENSITY_CORRECTED), i, experimentName));
                     if (reporterIntensityCorrected != null && NumberUtils.isNumber(reporterIntensityCorrected) && maxQuantSearchSettingsParser.getIsobaricLabels().size() >= i + 1) {
                         if (maxQuantSearchSettingsParser.getIsobaricLabels().get(i) != null) {
@@ -348,5 +349,28 @@ public class MaxQuantProteinGroupsParser {
         // if given header has numeric value per run and protein group, store.
         optionalHeaders.stream().map(String::toLowerCase).filter(header -> proteinGroupsEntry.get(header + " " + experimentName) != null && NumberUtils.isNumber(proteinGroupsEntry.get(header + " " + experimentName)))
                 .forEach(optionalHeader -> createProteinGroupQuantLabeled(proteinGroup, analyticalRun, optionalHeader, proteinGroupsEntry.get(optionalHeader + " " + experimentName)));
+    }
+
+    /**
+     * Calculates the label size for the TMT reporters because it's possible that for example for TMT10plex MaxQuant list 20 labels instead of 10.
+     *
+     * @param isobaricLabelsSize the number of isobaric labels
+     * @return the number of reporters
+     */
+    private int calculateTmtReportersSize(int isobaricLabelsSize) {
+        int labelSize;
+        if (isobaricLabelsSize % 6 == 0) {
+            labelSize = 6;
+        } else if (isobaricLabelsSize % 10 == 0) {
+            labelSize = 10;
+        } else if (isobaricLabelsSize % 11 == 0) {
+            labelSize = 11;
+        } else if (isobaricLabelsSize % 2 == 0) {
+            labelSize = 2;
+        } else {
+            labelSize = isobaricLabelsSize;
+        }
+
+        return labelSize;
     }
 }

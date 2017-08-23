@@ -217,7 +217,9 @@ public class AnalyticalRunsAdditionController implements Controllable {
                         try {
                             showLabelSelectionView();
                         } catch (IOException ex) {
-                            java.util.logging.Logger.getLogger(AnalyticalRunsAdditionController.class.getName()).log(Level.SEVERE, null, ex);
+                            LOGGER.error(ex.getMessage(), ex);
+                            MessageEvent messageEvent = new MessageEvent("Protein groups file not found", "The proteinGroups.txt file was not found, make sure you have selected a valid combined directory", JOptionPane.WARNING_MESSAGE);
+                            eventBus.post(messageEvent);
                         }
 
                     } else {
@@ -269,7 +271,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * Show the view with the given DataImport en PersistMetadata instances for
      * updating a runs addition task.
      *
-     * @param dataImport the DataImport instance
+     * @param dataImport      the DataImport instance
      * @param persistMetaData the PersistMetadata instance
      */
     public void showEditView(DataImport dataImport, PersistMetadata persistMetaData) {
@@ -314,7 +316,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
         PersistType selectedStorageType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = analyticalRunsAdditionDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = analyticalRunsAdditionDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -382,7 +384,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * sendDbTask method.
      *
      * @param dataImport the DataImport instance with the necessary import
-     * information
+     *                   information
      */
     private void sendStorageTask(DataImport dataImport) {
         String storageDescription = analyticalRunsAdditionDialog.getStorageDescriptionTextField().getText();
