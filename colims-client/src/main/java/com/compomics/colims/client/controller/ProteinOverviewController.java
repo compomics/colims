@@ -226,10 +226,11 @@ public class ProteinOverviewController implements Controllable {
         //add action listeners
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener((TreeSelectionEvent e) -> {
             TreePath[] treePaths = e.getPaths();
-            for (int i = 0; i < treePaths.length; i++) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePaths[i].getLastPathComponent();
+            selectedAnalyticalRuns.clear();
+            if (treePaths.length > 0) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePaths[0].getLastPathComponent();
                 //check whether the path was added or removed
-                if (e.isAddedPath(i)) {
+                if (e.isAddedPath(0)) {
                     if (node.getUserObject() instanceof AnalyticalRun) {
                         AnalyticalRun selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
                         selectedAnalyticalRuns.add(selectedAnalyticalRun);
