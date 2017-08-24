@@ -181,7 +181,7 @@ create table modification (
 create table peptide (
     id bigint not null auto_increment,
     charge integer,
-    fragment_ions varchar(750),
+    fragment_ions varchar(1000),
     fragment_masses varchar(1500),
     mass_error double precision,
     psm_post_error_prob double precision,
