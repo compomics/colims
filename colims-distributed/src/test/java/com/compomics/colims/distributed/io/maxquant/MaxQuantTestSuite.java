@@ -44,8 +44,12 @@ public class MaxQuantTestSuite {
     public static Path peptidesFile;
     public static FastaDb spHumanFastaDb;
     public static Path spHumanFastaDbPath;
+    public static FastaDb spHuman_01_2017_FastaDb;
+    public static Path spHuman_01_2017_FastaDbPath;
     public static FastaDb oryzaFastaDb;
     public static Path oryzaFastaDbPath;
+    public static FastaDb lloFastaDb;
+    public static Path lloFastaDbPath;
     public static FastaDb contaminantsFastaDb;
     public static Path contaminantsFastaDbPath;
 
@@ -71,6 +75,15 @@ public class MaxQuantTestSuite {
             spHumanFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
             spHumanFastaDb.setVersion("N/A");
             spHumanFastaDb.setDatabaseName("test db");
+            //sp_human fasta version 01_2017
+            spHuman_01_2017_FastaDbPath = maxQuantFastasDirectory.resolve("SP_human_01_2017.fasta");
+            spHuman_01_2017_FastaDb = new FastaDb();
+            spHuman_01_2017_FastaDb.setName("sp_human");
+            spHuman_01_2017_FastaDb.setFileName("SP_human.fasta");
+            spHuman_01_2017_FastaDb.setFilePath("SP_human.fasta");
+            spHuman_01_2017_FastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+            spHuman_01_2017_FastaDb.setVersion("N/A");
+            spHuman_01_2017_FastaDb.setDatabaseName("test db");
             //oryza sativa fasta
             oryzaFastaDbPath = maxQuantFastasDirectory.resolve("Oryza_sativa_RefSeq.fasta");
             oryzaFastaDb = new FastaDb();
@@ -80,6 +93,15 @@ public class MaxQuantTestSuite {
             oryzaFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
             oryzaFastaDb.setVersion("N/A");
             oryzaFastaDb.setDatabaseName("test db");
+            //llo fasta
+            lloFastaDbPath = maxQuantFastasDirectory.resolve("LLO_sequence_EGD_RefSeq.fasta");
+            lloFastaDb = new FastaDb();
+            lloFastaDb.setName("LLO_sequence_EGD_RefSeq");
+            lloFastaDb.setFileName("LLO_sequence_EGD_RefSeq.fasta");
+            lloFastaDb.setFilePath("LLO_sequence_EGD_RefSeq.fasta");
+            lloFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+            lloFastaDb.setVersion("N/A");
+            lloFastaDb.setDatabaseName("test db");
             //contaminants fasta
             contaminantsFastaDbPath = maxQuantFastasDirectory.resolve("contaminants.fasta");
             contaminantsFastaDb = new FastaDb();
