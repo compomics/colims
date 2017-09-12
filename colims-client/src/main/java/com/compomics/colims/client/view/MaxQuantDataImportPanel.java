@@ -151,7 +151,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         selectCombinedFolderButton.setMinimumSize(new java.awt.Dimension(90, 25));
         selectCombinedFolderButton.setPreferredSize(new java.awt.Dimension(90, 25));
 
-        maxQuantDirectorySelectionLabel.setText("Select the parameter file (mqpar) directory*:");
+        maxQuantDirectorySelectionLabel.setText("Select the parameter file (mqpar.xml) *:");
 
         selectParameterDirectoryButton.setText("browse...");
         selectParameterDirectoryButton.setMaximumSize(new java.awt.Dimension(80, 25));
@@ -185,7 +185,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                             .addComponent(maxQuantDirectorySelectionLabel)
                             .addComponent(contaminantsCheckBox)
                             .addComponent(unidentifiedSpectraCheckBox))
-                        .addGap(0, 110, Short.MAX_VALUE)))
+                        .addGap(0, 160, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         leftPanelLayout.setVerticalGroup(
@@ -292,7 +292,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(additionalFastaFileSelectionLabel)
                     .addGroup(rightPanelLayout.createSequentialGroup()
-                        .addComponent(additionalFastaDbScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 446, Short.MAX_VALUE)
+                        .addComponent(additionalFastaDbScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(selectAdditionalFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)

@@ -13,6 +13,7 @@ import com.compomics.colims.core.service.ProteinGroupQuantLabeledService;
 import com.compomics.colims.core.service.QuantificationMethodService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.SearchEngineType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.eventbus.EventBus;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,9 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.*;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -65,6 +66,10 @@ public class MzTabExportController implements Controllable {
     private final DefaultTreeModel studyVariableTreeModel = new DefaultTreeModel(studyVariableRootNode);
     private final DefaultMutableTreeNode analyticalRunRootNode = new DefaultMutableTreeNode("Analytical runs");
     private final DefaultTreeModel analyticalRunTreeModel = new DefaultTreeModel(analyticalRunRootNode);
+    /**
+     * JSON object mapper.
+     */
+    private final ObjectMapper mapper = new ObjectMapper();
 
     /**
      * The FASTA DBs location as provided in the distributed properties file.
@@ -85,7 +90,7 @@ public class MzTabExportController implements Controllable {
 
     @Autowired
     public MzTabExportController(MzTabExporter mzTabExporter, EventBus eventBus, MainController mainController,
-                                 ProteinGroupQuantLabeledService proteinGroupQuantLabeledService, QuantificationMethodService quantificationMethodService) {
+            ProteinGroupQuantLabeledService proteinGroupQuantLabeledService, QuantificationMethodService quantificationMethodService) {
         this.mzTabExporter = mzTabExporter;
         this.eventBus = eventBus;
         this.mainController = mainController;
@@ -377,6 +382,9 @@ public class MzTabExportController implements Controllable {
         //reset assay lists
         assaysToCVListModel.clear();
 
+        //reset quantification label list
+        quantificationLabelsListModel.clear();
+
         //build analytical run tree
         mzTabExport.getSamples().stream().forEach(sample -> {
             DefaultMutableTreeNode sampleNode = new DefaultMutableTreeNode(sample);
@@ -387,10 +395,14 @@ public class MzTabExportController implements Controllable {
             });
         });
         setAnalyticalRunsAssays();
-        if(mzTabExport.getSamples().get(0).getAnalyticalRuns().get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType().equals(SearchEngineType.MAXQUANT)){
-            setQuantificationReagentsAndLabels();
+        if (mzTabExport.getSamples().get(0).getAnalyticalRuns().get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType().equals(SearchEngineType.MAXQUANT)) {
+            try {
+                setQuantificationReagentsAndLabels();
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
-       
+
         //reset second panel text field
         mzTabExportDialog.getStudyVariableTextField().setText("");
 
@@ -462,7 +474,7 @@ public class MzTabExportController implements Controllable {
         MzTabType selectedMzTabType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -481,16 +493,16 @@ public class MzTabExportController implements Controllable {
     private List<String> validateFirstPanel() {
         List<String> validationMessages = new ArrayList<>();
 
-        if(getSelectedMzTabType().equals(MzTabType.QUANTIFICATION) && mzTabExport.getRuns().get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType().equals(SearchEngineType.PEPTIDESHAKER)){
-            validationMessages.add("PeptideShaker experiments mztab export cannot be quatification type");
+        if (getSelectedMzTabType().equals(MzTabType.QUANTIFICATION) && mzTabExport.getRuns().get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType().equals(SearchEngineType.PEPTIDESHAKER)) {
+            validationMessages.add("PeptideShaker experiments mztab export cannot be quatification type.");
         }
-        
+
         if (mzTabExportDialog.getDescriptionTextArea().getText().isEmpty()) {
             validationMessages.add("Please provide a description.");
         }
 
         if (!quantificationLabelsListModel.isEmpty()) {
-            validationMessages.add("All labels should be matched to reagents");
+            validationMessages.add("All labels should be matched to reagents.");
         }
 
         //ensure that all runs linked with assays have been searched with the same search engine
@@ -498,14 +510,14 @@ public class MzTabExportController implements Controllable {
         SearchEngineType firstRunSearchEngineType = runs.get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType();
         for (int i = 1; i < runs.size(); i++) {
             if (!firstRunSearchEngineType.equals(runs.get(i).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType())) {
-                validationMessages.add("All runs linked to assays must have the same search engine");
+                validationMessages.add("All runs linked to assays must have the same search engine.");
             }
         }
         if (runs.get(0).getQuantificationSettings() != null) {
             QuantificationMethod firstQuantificationMethodCvParam = runs.get(0).getQuantificationSettings().getQuantificationMethod();
             for (int i = 1; i < runs.size(); i++) {
                 if (!firstQuantificationMethodCvParam.equals(runs.get(i).getQuantificationSettings().getQuantificationMethod())) {
-                    validationMessages.add("All runs should have the same quantification method");
+                    validationMessages.add("All runs should have the same quantification method.");
                 }
                 if (!quantificationMethodService.fetchQuantificationMethodHasReagents(runs.get(i).getQuantificationSettings().getQuantificationMethod()).isEmpty() && quantificationMethodService.fetchQuantificationMethodHasReagents(runs.get(i).getQuantificationSettings().getQuantificationMethod()).size() != mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i)).length) {
                     validationMessages.add("Assay number should be the same with quantification reagent of the run " + runs.get(i).getName());
@@ -566,7 +578,7 @@ public class MzTabExportController implements Controllable {
         MzTabMode selectedMzTabMode = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -582,7 +594,7 @@ public class MzTabExportController implements Controllable {
      * tree. Returns false if nothing or another path level (assay, root path)
      * is selected.
      *
-     * @param tree  the JTree instance
+     * @param tree the JTree instance
      * @param level the level of the node (0 for root node)
      * @return the boolean result
      */
@@ -607,7 +619,7 @@ public class MzTabExportController implements Controllable {
      * nothing or another path level (study variable or assay, root path) is
      * selected.
      *
-     * @param tree  the JTree instance
+     * @param tree the JTree instance
      * @param level the level of the node(s) (0 for root node) nodes nodes
      * @return the boolean result
      */
@@ -652,8 +664,8 @@ public class MzTabExportController implements Controllable {
     /**
      * Remove all assays from the given tree.
      *
-     * @param treeModel        the JTree model instance
-     * @param rootNode         the tree root node
+     * @param treeModel the JTree model instance
+     * @param rootNode the tree root node
      * @param assayParentLevel the level of the assay parent node
      */
     private void removeAllAssaysFromTree(DefaultTreeModel treeModel, DefaultMutableTreeNode rootNode, int assayParentLevel) {
@@ -701,7 +713,7 @@ public class MzTabExportController implements Controllable {
     }
 
     /**
-     * Set the analyticalRunAssaysRef
+     * Set the analyticalRunAssaysRef.
      */
     private void setAnalyticalRunsAssays() {
         mzTabExport.getRuns().clear();
@@ -716,7 +728,7 @@ public class MzTabExportController implements Controllable {
             //the analytical runs are on node level 2
             if (node.getLevel() == 2) {
                 AnalyticalRun analyticalRun = (AnalyticalRun) node.getUserObject();
-                if(getQuantificationSettings(analyticalRun) != null){
+                if (getQuantificationSettings(analyticalRun) != null) {
                     List<QuantificationMethodHasReagent> quantificationMethodHasReagents = quantificationMethodService.fetchQuantificationMethodHasReagents(getQuantificationSettings(analyticalRun).getQuantificationMethod());
                     int[] assayArray = new int[quantificationMethodHasReagents.size()];
                     // label free experiments
@@ -739,45 +751,46 @@ public class MzTabExportController implements Controllable {
                         mzTabExportDialog.getAssayWithRunsTree().expandPath(new TreePath(node.getPath()));
                     }
                     mzTabExport.getAnalyticalRunsAssaysRefs().put(analyticalRun, assayArray);
-                }else{
+                } else {
                     assayNumber++;
                     //add to tree and expand node
                     DefaultMutableTreeNode assayTreeNode = new DefaultMutableTreeNode(ASSAY + assayNumber);
                     analyticalRunTreeModel.insertNodeInto(assayTreeNode, node, analyticalRunTreeModel.getChildCount(node));
                     mzTabExportDialog.getAssayWithRunsTree().expandPath(new TreePath(node.getPath()));
-                    
-                }              
+
+                }
                 mzTabExport.getRuns().add(analyticalRun);
             }
         }
     }
 
     /**
-     * Set Quantification Reagents and Labels
+     * Set the quantification reagents and labels.
+     *
+     * @throws IOException in case of a JSON deserialize problem.
      */
-    private void setQuantificationReagentsAndLabels() {
-        int quantLabelIndex = 0;
-
+    private void setQuantificationReagentsAndLabels() throws IOException {
         List<QuantificationMethodHasReagent> quantificationMethodHasReagents = quantificationMethodService.fetchQuantificationMethodHasReagents(
                 getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod());
 
-        if (quantificationMethodHasReagents.isEmpty()) {
-            mzTabExportDialog.getQuantificationLabelList().setVisible(false);
-            mzTabExportDialog.getQuantificationReagentTree().setVisible(false);
-            mzTabExportDialog.getMatchReagentAndLabelButton().setVisible(false);
-            mzTabExportDialog.getRemoveReagentAndLabelButton().setVisible(false);
-        } else {
+        if (!quantificationMethodHasReagents.isEmpty()) {
             mzTabExportDialog.getQuantificationLabelList().setVisible(true);
             mzTabExportDialog.getQuantificationReagentTree().setVisible(true);
             mzTabExportDialog.getMatchReagentAndLabelButton().setVisible(true);
             mzTabExportDialog.getRemoveReagentAndLabelButton().setVisible(true);
-        }
-        for (int counter = 0; counter < quantificationMethodHasReagents.size(); counter++) {
-            quantificationLabelsListModel.add(quantLabelIndex, proteinGroupQuantLabeledService.getProteinGroupQuantLabeledForRun(mzTabExport.getRuns().get(0).getId()).get(counter).getLabel());
-            DefaultMutableTreeNode quantificationReagentTreeNode = new DefaultMutableTreeNode(quantificationMethodHasReagents.get(counter).getQuantificationReagent().getName());
-            quantificationReagentTreeModel.insertNodeInto(quantificationReagentTreeNode, quantificationReagentRootNode, quantificationReagentTreeModel.getChildCount(quantificationReagentRootNode));
-            mzTabExportDialog.getQuantificationReagentTree().expandPath(new TreePath(quantificationReagentRootNode.getPath()));
-            quantLabelIndex++;
+
+            List<String> labels = proteinGroupQuantLabeledService.getProteinGroupQuantLabelsForRun(mzTabExport.getRuns().get(0).getId(), quantificationMethodHasReagents.size());
+            for (int i = 0; i < labels.size(); i++) {
+                quantificationLabelsListModel.add(i, labels.get(i));
+                DefaultMutableTreeNode quantificationReagentTreeNode = new DefaultMutableTreeNode(quantificationMethodHasReagents.get(i).getQuantificationReagent().getName());
+                quantificationReagentTreeModel.insertNodeInto(quantificationReagentTreeNode, quantificationReagentRootNode, quantificationReagentTreeModel.getChildCount(quantificationReagentRootNode));
+                mzTabExportDialog.getQuantificationReagentTree().expandPath(new TreePath(quantificationReagentRootNode.getPath()));
+            }
+        } else {
+            mzTabExportDialog.getQuantificationLabelList().setVisible(false);
+            mzTabExportDialog.getQuantificationReagentTree().setVisible(false);
+            mzTabExportDialog.getMatchReagentAndLabelButton().setVisible(false);
+            mzTabExportDialog.getRemoveReagentAndLabelButton().setVisible(false);
         }
 
     }

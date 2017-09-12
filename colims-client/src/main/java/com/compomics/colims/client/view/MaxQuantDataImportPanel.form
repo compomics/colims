@@ -69,7 +69,7 @@
                               <Component id="contaminantsCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="unidentifiedSpectraCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="110" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="160" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -129,7 +129,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="maxQuantDirectorySelectionLabel">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Select the parameter file (mqpar) directory*:"/>
+            <Property name="text" type="java.lang.String" value="Select the parameter file (mqpar.xml) *:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="selectParameterDirectoryButton">
@@ -217,7 +217,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="additionalFastaFileSelectionLabel" min="-2" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Component id="additionalFastaDbScrollPane" pref="446" max="32767" attributes="0"/>
+                          <Component id="additionalFastaDbScrollPane" pref="419" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="selectAdditionalFastaDbButton" min="-2" pref="92" max="-2" attributes="0"/>

@@ -20,12 +20,20 @@ import org.springframework.stereotype.Repository;
 public class ProteinGroupQuantLabeledHibernateRepository extends GenericHibernateRepository<ProteinGroupQuantLabeled, Long> implements ProteinGroupQuantLabeledRepository{
 
     @Override
-    public List<ProteinGroupQuantLabeled> getProteinGroupQuantLabeledForRun(Long analyticalRunId) {
+    public ProteinGroupQuantLabeled getProteinGroupQuantLabeledForRun(Long analyticalRunId) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroupQuantLabeled.class);
 
         criteria.add(Restrictions.eq("analyticalRun.id", analyticalRunId));
+        criteria.setFirstResult(0);
+        criteria.setMaxResults(1);
 
-        return criteria.list();
+        List<ProteinGroupQuantLabeled> labels = criteria.list();
+        if(!labels.isEmpty()){
+            return labels.get(0);
+        }
+        else {
+            return null;
+        }
     }
 
     @Override

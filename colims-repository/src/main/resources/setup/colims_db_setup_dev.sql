@@ -273,8 +273,7 @@ create table protein_group_quant (
 
 create table protein_group_quant_labeled (
     id bigint not null auto_increment,
-    label varchar(255),
-    label_value double precision,
+    labels varchar(750) not null,
     l_analytical_run_id bigint,
     l_protein_group_id bigint,
     primary key (id)

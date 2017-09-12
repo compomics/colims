@@ -72,11 +72,11 @@ public class MaxQuantIT {
         fastaDbIds.put(FastaDbType.CONTAMINANTS, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb.getId())));
 
         MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.mqparFile,
-                MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds, false, false, new ArrayList<>(), "label free");
+                MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds, false, false, new ArrayList<>(), MaxQuantImport.SILAC);
         maxQuantMapper.clear();
 
         Path experimentsDirectory = new ClassPathResource("data/maxquant/maxquant_SILAC_integration").getFile().toPath();
-        Path fastasDirectory = new ClassPathResource("data/maxquant/maxquant_SILAC_integration").getFile().toPath();
+        Path fastasDirectory = new ClassPathResource("data/maxquant/fasta").getFile().toPath();
         MappedData mappedData = maxQuantMapper.mapData(maxQuantImport, experimentsDirectory, fastasDirectory);
         List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 

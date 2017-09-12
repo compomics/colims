@@ -5,6 +5,8 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.enums.FastaDbType;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.util.AssertionErrors;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -68,7 +71,7 @@ public class MaxQuantProteinGroupsParserTest {
         Assert.assertEquals(383, result.size());
         ProteinGroup proteinGroup = result.get(0);
         Assert.assertEquals(24, proteinGroup.getProteinGroupQuants().size());
-        Assert.assertEquals(48, proteinGroup.getProteinGroupQuantsLabeled().size());
+        Assert.assertEquals(24, proteinGroup.getProteinGroupQuantsLabeled().size());
 
     }
 
@@ -92,12 +95,22 @@ public class MaxQuantProteinGroupsParserTest {
         maxQuantSearchSettingsParser.parse(combinedDirectory, mqparFile, fastaDbEnumMap);
 
         maxQuantProteinGroupsParser.clear();
+        List<String> optionalHeaders = new ArrayList<>();
+        optionalHeaders.add("ibaq");
         maxQuantProteinGroupsParser.parse(proteinGroupsFile,
-                fastaDbs, MaxQuantImport.TMT, true, new ArrayList<>());
+                fastaDbs, MaxQuantImport.TMT, true, optionalHeaders);
 
         Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
 
         Assert.assertEquals(273, result.size());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Double> intensities = objectMapper.readValue(result.get(0).getProteinGroupQuantsLabeled().get(0).getLabels(), new TypeReference<HashMap<String, Double>>() {
+        });
+        Assert.assertEquals(11, intensities.size());
+        //look for the optional ibaq intensity
+        Optional<String> foundLabel = intensities.keySet().stream().filter(label -> label.startsWith("ibaq")).findFirst();
+        Assert.assertTrue(foundLabel.isPresent());
     }
 
     /**

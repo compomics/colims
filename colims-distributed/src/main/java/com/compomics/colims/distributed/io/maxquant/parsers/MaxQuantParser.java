@@ -187,7 +187,7 @@ public class MaxQuantParser {
         maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra().forEach((runName, spectrum) -> analyticalRuns.get(runName).getSpectrums().addAll(spectrum));
 
         //parse the quantification settings
-        //for a silac or icat experiments, we don't have any reagent name from maxquant.
+        //for a SILAC or ICAT experiments, we don't have any reagent name from maxquant.
         //Colims gives reagent names according to the number of samples.
         if (maxQuantImport.getQuantificationLabel().equals(MaxQuantImport.SILAC)) {
             List<String> silacReagents = new ArrayList<>();

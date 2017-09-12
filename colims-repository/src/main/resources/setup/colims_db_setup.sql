@@ -271,8 +271,7 @@ create table protein_group_quant (
 
 create table protein_group_quant_labeled (
     id bigint not null auto_increment,
-    label varchar(255),
-    label_value double precision,
+    labels varchar(750) not null,
     l_analytical_run_id bigint,
     l_protein_group_id bigint,
     primary key (id)
@@ -879,7 +878,7 @@ alter table user_query
     add constraint FKe1ujshd4acio6sjeg8tnr434j
 foreign key (l_user_query_user_id)
 references colims_user (id);
-        
+
 -- create default value insertions
 -- insert default admin and distributed users
 INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin@admin.com','admin','admin','admin','ud5JjaDO0ztrMKdcQDXxhq8G21LuDCOj'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed@distributed.com','distributed','distributed','distributed','4a1zr6paBPFaEP8ixjm3hDSVLpXvzP98');

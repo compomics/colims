@@ -6,27 +6,29 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.ProteinGroupQuantLabeled;
+
 import java.util.List;
 
 /**
  * This interface provides service methods for the ProteinGroupQuantLabeled class.
- * 
+ *
  * @author demet
  */
-public interface ProteinGroupQuantLabeledRepository extends GenericRepository<ProteinGroupQuantLabeled, Long>{
+public interface ProteinGroupQuantLabeledRepository extends GenericRepository<ProteinGroupQuantLabeled, Long> {
+
     /**
-     * Fetch a list of ProteinGroupQuantLabeled instances associated with a given analytical run.
+     * Fetch one ProteinGroupQuantLabeled instance associated with a given analytical run. Returns null if nothing was found.
      *
      * @param analyticalRunId the analytical run ID
-     * @return the list of protein group quantification labeled
+     * @return a random {@link ProteinGroupQuantLabeled} instance
      */
-    List<ProteinGroupQuantLabeled> getProteinGroupQuantLabeledForRun(Long analyticalRunId);
-    
+    ProteinGroupQuantLabeled getProteinGroupQuantLabeledForRun(Long analyticalRunId);
+
     /**
      * Fetch a list of ProteinGroupQuantLabeled instances associated with a given analytical run and protein group.
      *
      * @param analyticalRunId the analytical run ID
-     * @param proteinGroupId the protein group ID
+     * @param proteinGroupId  the protein group ID
      * @return the list of protein group quantification labeled
      */
     List<ProteinGroupQuantLabeled> getProteinGroupQuantLabeledForRunAndProteinGroup(Long analyticalRunId, Long proteinGroupId);

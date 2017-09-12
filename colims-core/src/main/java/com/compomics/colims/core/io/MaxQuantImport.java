@@ -21,6 +21,7 @@ public class MaxQuantImport extends DataImport {
     public static final String SILAC = "SILAC";
     public static final String ICAT = "ICAT";
     public static final String SRM = "Selected Reaction Monitoring";
+    public static final String NO_LABEL = "none";
 
     /**
      * The mqpar file path.
