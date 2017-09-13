@@ -139,10 +139,14 @@ public class ColimsPeptideMapper {
         //get the ion fragment number
         Integer ionNumber = Integer.valueOf(fragmentIon.substring(1, fragmentIon.length()));
         //get the utilities neutral loss
-        ArrayList<NeutralLoss> neutralLosses = new ArrayList<>();
+        NeutralLoss[] neutralLosses;
         if (neutralLossString != null) {
             NeutralLoss neutralLoss = NeutralLoss.getNeutralLoss(neutralLossString);
-            neutralLosses.add(neutralLoss);
+            neutralLosses = new NeutralLoss[1];
+            neutralLosses[1] = neutralLoss;
+        }
+        else{
+            neutralLosses = new NeutralLoss[]{};
         }
 
         PeptideFragmentIon peptideFragmentIon = new PeptideFragmentIon(ionType, ionNumber, fragmentMass, neutralLosses);
