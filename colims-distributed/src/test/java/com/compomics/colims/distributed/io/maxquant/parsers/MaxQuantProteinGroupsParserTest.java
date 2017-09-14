@@ -76,6 +76,39 @@ public class MaxQuantProteinGroupsParserTest {
     }
 
     /**
+     * ICAT quantification parsing test.
+     *
+     * @throws java.lang.Exception in case of an exception
+     */
+    @Test
+    public void testIcat() throws Exception {
+        Path proteinGroupsFile = new ClassPathResource("data/maxquant/ICAT/combined/txt/proteinGroups.txt").getFile().toPath();
+        Path combinedDirectory = new ClassPathResource("data/maxquant/ICAT/combined").getFile().toPath();
+        Path mqparFile = new ClassPathResource("data/maxquant/ICAT/mqpar.xml").getFile().toPath();
+
+        fastaDbs.put(MaxQuantTestSuite.spHuman_01_2017_FastaDb, MaxQuantTestSuite.spHuman_01_2017_FastaDbPath);
+        fastaDbs.put(MaxQuantTestSuite.contaminantsFastaDb, MaxQuantTestSuite.contaminantsFastaDbPath);
+
+        fastaDbEnumMap.put(FastaDbType.PRIMARY, Arrays.asList(MaxQuantTestSuite.oryzaFastaDb));
+        fastaDbEnumMap.put(FastaDbType.CONTAMINANTS, Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb));
+
+        maxQuantSearchSettingsParser.clear();
+        maxQuantSearchSettingsParser.parse(combinedDirectory, mqparFile, fastaDbEnumMap);
+
+        maxQuantProteinGroupsParser.clear();
+        maxQuantProteinGroupsParser.parse(proteinGroupsFile,
+                fastaDbs, MaxQuantImport.ICAT, true, new ArrayList<>());
+
+        Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
+
+        Assert.assertEquals(89, result.size());
+        ProteinGroup proteinGroup = result.get(0);
+        Assert.assertEquals(9, proteinGroup.getProteinGroupQuants().size());
+        Assert.assertEquals(9, proteinGroup.getProteinGroupQuantsLabeled().size());
+
+    }
+
+    /**
      * TMT quantification parsing test.
      *
      * @throws java.lang.Exception in case of an exception
