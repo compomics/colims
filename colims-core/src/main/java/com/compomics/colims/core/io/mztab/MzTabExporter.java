@@ -867,7 +867,7 @@ public class MzTabExporter {
                 });
                 Optional<String> foundLabel = intensities.keySet().stream().filter(dbLabel -> dbLabel.equals(label)).findFirst();
                 if(foundLabel.isPresent()){
-                    proteinAbundance = intensities.get(foundLabel);
+                    proteinAbundance = intensities.get(foundLabel.get());
                     break;
                 }
             }
