@@ -10,8 +10,7 @@ import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.compress.archivers.ArchiveException;
-import org.xmlpull.v1.XmlPullParserException;
+
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.IOException;
@@ -23,6 +22,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
+import org.hibernate.boot.archive.spi.ArchiveException;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * @author Niels Hulstaert
