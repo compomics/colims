@@ -163,9 +163,14 @@
 
     <repositories>
         <repository>
+            <id>public</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+
+        <repository>
             <id>jboss-public-repository-group</id>
             <name>JBoss Public Repository Group</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <url>https://maven-us.nuxeo.org/nexus/content/groups/public/</url>
         </repository>
 
         <!--  EBI repository  -->
