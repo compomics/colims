@@ -103,9 +103,10 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
      *
      * @throws IOException  thrown in case of an IO related problem
      * @throws SQLException thrown in case of an SQL related problem
+     * @throws InterruptedException thrown in case of thread related problem
      */
     @Override
-    public void clear() throws IOException, SQLException {
+    public void clear() throws IOException, SQLException, InterruptedException {
         spectrumFactory.clearFactory();
         sequenceFactory.clearFactory();
         //call clear methods on child mappers

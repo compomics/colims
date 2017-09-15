@@ -38,18 +38,11 @@ public class ProteinGroup extends DatabaseEntity {
      */
     @OneToMany(mappedBy = "proteinGroup", cascade = CascadeType.ALL)
     private List<ProteinGroupHasProtein> proteinGroupHasProteins = new ArrayList<>();
-
     /**
      * The protein quantification for this protein group.
      */
     @OneToMany(mappedBy = "proteinGroup", cascade = CascadeType.ALL)
     List<ProteinGroupQuant> proteinGroupQuants = new ArrayList<>();
-    
-    /**
-     * The protein quantification for this protein group for labeled experiments.
-     */
-    @OneToMany(mappedBy = "proteinGroup", cascade = CascadeType.ALL)
-    List<ProteinGroupQuantLabeled> proteinGroupQuantsLabeled = new ArrayList<>();
     
     /**
      * No-arg constructor.
@@ -108,14 +101,6 @@ public class ProteinGroup extends DatabaseEntity {
 
     public void setProteinGroupQuants(List<ProteinGroupQuant> proteinGroupQuants) {
         this.proteinGroupQuants = proteinGroupQuants;
-    }
-
-    public List<ProteinGroupQuantLabeled> getProteinGroupQuantsLabeled() {
-        return proteinGroupQuantsLabeled;
-    }
-
-    public void setProteinGroupQuantsLabeled(List<ProteinGroupQuantLabeled> proteinGroupQuantsLabeled) {
-        this.proteinGroupQuantsLabeled = proteinGroupQuantsLabeled;
     }
 
     /**

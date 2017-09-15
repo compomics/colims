@@ -71,17 +71,17 @@ public class MaxQuantSearchSettingsParser {
      */
     private final Map<String, EnumMap<MqParHeader, String>> mqParParamsWithRawFile = new HashMap<>();
     /**
-     * The analytical run name with experiment name (key: analyticalRun ; value:
+     * The analytical run name with experiment name (key: analyticalRun; value:
      * experiment name).
      */
     private final Map<AnalyticalRun, String> analyticalRuns = new HashMap<>();
     /**
-     * Isobaric labels for labeled quantification.(key: index , value : isobaric
+     * Isobaric labels for labeled quantification.(key: index; value: isobaric
      * label)
      */
     private final Map<Integer, String> isobaricLabels = new HashMap<>();
     /**
-     * label mods for SILAC experiments.(key: index , value : isobaric label)
+     * label mods for SILAC experiments.(key: index; value: isobaric label)
      */
     private final Map<Integer, String> labelMods = new HashMap<>();
     /**
@@ -503,7 +503,7 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Match analytical run and related search and validation settings
      */
-    private void matchAnalyticalRunSearchSettings(){
+    private void matchAnalyticalRunSearchSettings() {
         analyticalRuns.keySet().forEach((run) -> run.setSearchAndValidationSettings(runSettings.get(run.getName())));
     }
 

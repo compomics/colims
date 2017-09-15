@@ -15,16 +15,24 @@ public class MaxQuantImport extends DataImport {
 
     private static final long serialVersionUID = 304064762112880171L;
 
+    public static final String LABEL_FREE = "label free";
+    public static final String TMT = "TMT";
+    public static final String iTRAQ = "iTRAQ";
+    public static final String SILAC = "SILAC";
+    public static final String ICAT = "ICAT";
+    public static final String SRM = "Selected Reaction Monitoring";
+    public static final String NO_LABEL = "none";
+
     /**
      * The mqpar file path.
      */
     private Path mqParFile;
     /**
-     * The directory of Combined Folder.
+     * The directory of the combined folder.
      */
     private Path combinedDirectory;
     /**
-     * The full directory of Combined Folder.
+     * The full directory of combined folder.
      */
     private Path fullCombinedDirectory;
     /**
@@ -36,11 +44,11 @@ public class MaxQuantImport extends DataImport {
      */
     private boolean includeUnidentifiedSpectra;
     /**
-     * List of selected Protein Group Headers
+     * The list of selected protein group headers.
      */
     private List<String> selectedProteinGroupHeaders;
     /**
-     * Selected quantification label
+     * The quantification label.
      */
     private String quantificationLabel;
 

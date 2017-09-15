@@ -164,7 +164,7 @@ public class SampleRunsDialog extends javax.swing.JDialog {
         editAnalyticalRunButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         exportMzIdentMlButton.setText("export...");
-        exportMzIdentMlButton.setToolTipText("edit one or more runs to mzIdentML");
+        exportMzIdentMlButton.setToolTipText("export one or more runs to mzIdentML");
         exportMzIdentMlButton.setMaximumSize(new java.awt.Dimension(80, 25));
         exportMzIdentMlButton.setMinimumSize(new java.awt.Dimension(80, 25));
         exportMzIdentMlButton.setPreferredSize(new java.awt.Dimension(80, 25));

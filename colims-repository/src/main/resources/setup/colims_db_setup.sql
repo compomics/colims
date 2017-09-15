@@ -179,7 +179,7 @@ create table modification (
 create table peptide (
     id bigint not null auto_increment,
     charge integer,
-    fragment_ions varchar(750),
+    fragment_ions varchar(1000),
     fragment_masses varchar(1500),
     mass_error double precision,
     psm_post_error_prob double precision,
@@ -262,17 +262,9 @@ create table protein_group_quant (
     id bigint not null auto_increment,
     ibaq double precision,
     intensity double precision,
+    labels varchar(750) not null,
     lfq_intensity double precision,
     msms_count integer,
-    l_analytical_run_id bigint,
-    l_protein_group_id bigint,
-    primary key (id)
-);
-
-create table protein_group_quant_labeled (
-    id bigint not null auto_increment,
-    label varchar(255),
-    label_value double precision,
     l_analytical_run_id bigint,
     l_protein_group_id bigint,
     primary key (id)
@@ -700,16 +692,6 @@ alter table protein_group_quant
 foreign key (l_protein_group_id)
 references protein_group (id);
 
-alter table protein_group_quant_labeled
-    add constraint FKeuo2o1ppm296du364nuclhq7q
-foreign key (l_analytical_run_id)
-references analytical_run (id);
-
-alter table protein_group_quant_labeled
-    add constraint FKwk0o9rnoxa33jj5iycabedk5
-foreign key (l_protein_group_id)
-references protein_group (id);
-
 alter table protocol
     add constraint FKg5vc0ccy9ejrdb5hpyepyphdi
 foreign key (l_cell_based_cv_id)
@@ -879,7 +861,7 @@ alter table user_query
     add constraint FKe1ujshd4acio6sjeg8tnr434j
 foreign key (l_user_query_user_id)
 references colims_user (id);
-        
+
 -- create default value insertions
 -- insert default admin and distributed users
 INSERT INTO colims_user (id, creation_date, modification_date, user_name, email, first_name, last_name, name, password) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','admin@admin.com','admin','admin','admin','ud5JjaDO0ztrMKdcQDXxhq8G21LuDCOj'),(2,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','distributed@distributed.com','distributed','distributed','distributed','4a1zr6paBPFaEP8ixjm3hDSVLpXvzP98');

@@ -179,7 +179,7 @@
             <Component class="javax.swing.JButton" name="exportMzIdentMlButton">
               <Properties>
                 <Property name="text" type="java.lang.String" value="export..."/>
-                <Property name="toolTipText" type="java.lang.String" value="edit one or more runs to mzIdentML"/>
+                <Property name="toolTipText" type="java.lang.String" value="export one or more runs to mzIdentML"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[80, 25]"/>
                 </Property>

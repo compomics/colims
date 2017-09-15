@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 /**
  * This class represents protein group quantification in the database
- * 
+ *
  * @author demet
  */
 @Table(name = "protein_group_quant")
@@ -29,38 +29,38 @@ public class ProteinGroupQuant extends DatabaseEntity {
     @JoinColumn(name = "l_protein_group_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private ProteinGroup proteinGroup;
-    
     /**
      * The analytical run instance of this join entity.
      */
     @JoinColumn(name = "l_analytical_run_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private AnalyticalRun analyticalRun;
-    
     /**
      * The intensity value.
      */
     @Column(name = "intensity")
     private Double intensity;
-    
     /**
      * The LFQ intensity value.
      */
     @Column(name = "lfq_intensity")
     private Double lfqIntensity;
-
     /**
      * The iBAQ value.
      */
     @Column(name = "ibaq")
     private Double ibaq;
-    
     /**
      * The MSMS Count value.
      */
     @Column(name = "msms_count")
     private Integer msmsCount;
-    
+    /**
+     * The labels as a json String.
+     */
+    @Column(name = "labels", nullable = false, length = 750)
+    private String labels;
+
     public ProteinGroup getProteinGroup() {
         return proteinGroup;
     }
@@ -108,5 +108,12 @@ public class ProteinGroupQuant extends DatabaseEntity {
     public void setMsmsCount(Integer msmsCount) {
         this.msmsCount = msmsCount;
     }
-   
+
+    public String getLabels() {
+        return labels;
+    }
+
+    public void setLabels(String labels) {
+        this.labels = labels;
+    }
 }

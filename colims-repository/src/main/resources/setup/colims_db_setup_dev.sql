@@ -181,7 +181,7 @@ create table modification (
 create table peptide (
     id bigint not null auto_increment,
     charge integer,
-    fragment_ions varchar(750),
+    fragment_ions varchar(1000),
     fragment_masses varchar(1500),
     mass_error double precision,
     psm_post_error_prob double precision,
@@ -264,17 +264,9 @@ create table protein_group_quant (
     id bigint not null auto_increment,
     ibaq double precision,
     intensity double precision,
+    labels varchar(750) not null,
     lfq_intensity double precision,
     msms_count integer,
-    l_analytical_run_id bigint,
-    l_protein_group_id bigint,
-    primary key (id)
-);
-
-create table protein_group_quant_labeled (
-    id bigint not null auto_increment,
-    label varchar(255),
-    label_value double precision,
     l_analytical_run_id bigint,
     l_protein_group_id bigint,
     primary key (id)
@@ -699,16 +691,6 @@ references analytical_run (id);
 
 alter table protein_group_quant
     add constraint FK2ox1qfmdd9imbq2xcn6un2dw3
-foreign key (l_protein_group_id)
-references protein_group (id);
-
-alter table protein_group_quant_labeled
-    add constraint FKeuo2o1ppm296du364nuclhq7q
-foreign key (l_analytical_run_id)
-references analytical_run (id);
-
-alter table protein_group_quant_labeled
-    add constraint FKwk0o9rnoxa33jj5iycabedk5
 foreign key (l_protein_group_id)
 references protein_group (id);
 

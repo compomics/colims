@@ -54,7 +54,7 @@ public class OntologyMapper {
      */
     @PostConstruct
     private void parse() throws IOException {
-        Resource ontologyMapping = ResourceUtils.getResourceByRelativePath("config/ontology_mapping.json");
+        Resource ontologyMapping = ResourceUtils.getResourceByRelativePath("config/ontology-mapping.json");
 
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectReader objectReader = objectMapper.reader();

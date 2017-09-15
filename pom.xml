@@ -163,9 +163,14 @@
 
     <repositories>
         <repository>
+            <id>public</id>
+            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+        </repository>
+
+        <repository>
             <id>jboss-public-repository-group</id>
             <name>JBoss Public Repository Group</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <url>https://maven-us.nuxeo.org/nexus/content/groups/public/</url>
         </repository>
 
         <!--  EBI repository  -->
@@ -370,7 +375,7 @@
             <dependency>
                 <groupId>com.compomics</groupId>
                 <artifactId>utilities</artifactId>
-                <version>4.8.6</version>
+                <version>4.11.19</version>
                 <exclusions>
                     <exclusion>
                         <artifactId>commons-math</artifactId>
@@ -410,7 +415,7 @@
             <dependency>
                 <groupId>eu.isas.peptideshaker</groupId>
                 <artifactId>PeptideShaker</artifactId>
-                <version>1.14.2</version>
+                <version>1.16.13</version>
             </dependency>
 
             <dependency>

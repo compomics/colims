@@ -15,6 +15,7 @@ import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
@@ -152,7 +153,9 @@ public class MzTabExporter {
     private static final String POST = "post";
     private static final String START = "start";
     private static final String END = "end";
-
+    /**
+     * JSON object mapper.
+     */
     private final ObjectMapper mapper = new ObjectMapper();
     private List<MzTabParam> mzTabParams = new ArrayList<>();
     /**
@@ -182,7 +185,6 @@ public class MzTabExporter {
 
     private final ProteinGroupService proteinGroupService;
     private final PeptideService peptideService;
-    private final ProteinGroupQuantLabeledService proteinGroupQuantLabeledService;
     private final ProteinGroupQuantService proteinGroupQuantService;
     private final SearchAndValidationSettingsService searchAndValidationSettingsService;
     private final FastaDbService fastaDbService;
@@ -197,14 +199,12 @@ public class MzTabExporter {
 
     @Autowired
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
-            FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantLabeledService proteinGroupQuantLabeledService,
-            ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
-            UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
+                         FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
+                         UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
         this.proteinGroupService = proteinGroupService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbService = fastaDbService;
         this.uniProtService = uniProtService;
-        this.proteinGroupQuantLabeledService = proteinGroupQuantLabeledService;
         this.proteinGroupQuantService = proteinGroupQuantService;
         this.peptideService = peptideService;
         this.fastaDbParser = fastaDbParser;
@@ -236,9 +236,9 @@ public class MzTabExporter {
         this.mzTabExport = mzTabExport;
 
         try (FileOutputStream fos = new FileOutputStream(new File(mzTabExport.getExportDirectory(), mzTabExport.getFileName() + MZTAB_EXTENSION));
-                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-                BufferedWriter bw = new BufferedWriter(osw);
-                PrintWriter pw = new PrintWriter(bw)) {
+             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+             BufferedWriter bw = new BufferedWriter(osw);
+             PrintWriter pw = new PrintWriter(bw)) {
 
             switch (mzTabExport.getMzTabType()) {
                 case QUANTIFICATION:
@@ -592,7 +592,7 @@ public class MzTabExporter {
                     }
                 }
 
-                // set protein abundance for every assay
+                // set the protein abundance for every assay
                 if (type == 1 || type == 2) {
                     for (int r = 0; r < mzTabExport.getRuns().size(); r++) {
                         for (int j = 0; j < mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(r)).length; j++) {
@@ -672,7 +672,7 @@ public class MzTabExporter {
 
             // spectra reference
             psms.append(createSpectraRef(peptideHasProteinGroup.getKey().getPeptide().getSpectrum(), peptideHasProteinGroup.getValue())).append(COLUMN_DELIMITER);
-            
+
             List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(proteinGroupHasProtein.entrySet().stream().findFirst().get().getValue().getSequence(), peptideHasProteinGroup.getKey().getPeptide().getSequence());
             // preceding amino acid (pre)
             psms.append(peptidePositions.get(0).getPreAA()).append(COLUMN_DELIMITER);
@@ -849,21 +849,26 @@ public class MzTabExporter {
      * @param assay
      * @return protein abundance
      */
-    private double getProteinAbundanceForAssay(ProteinGroupDTO proteinGroup, String assay) {
+    private double getProteinAbundanceForAssay(ProteinGroupDTO proteinGroup, String assay) throws IOException {
         double proteinAbundance = 0.0;
         AnalyticalRun analyticalRun = assayAnalyticalRunRef.get(assay);
         if (assayReagentRef.get(assay).equals(UNLABELED_SAMPLE)) {
             proteinAbundance = proteinGroupQuantService.getProteinGroupQuantForRunAndProteinGroup(analyticalRun.getId(), proteinGroup.getId()).getIntensity();
         } else {
-            // get label from user interface.
+            //get the label from the user interface.
             String label = mzTabExport.getQuantificationReagentLabelMatch().get(assayReagentRef.get(assay));
-            List<ProteinGroupQuantLabeled> proteinGroupQuantLabeleds = proteinGroupQuantLabeledService.getProteinGroupQuantLabeledForRunAndProteinGroup(analyticalRun.getId(), proteinGroup.getId());
-            for (ProteinGroupQuantLabeled proteinGroupQuantLabeled : proteinGroupQuantLabeleds) {
-                if (proteinGroupQuantLabeled.getLabel().equals(label)) {
-                    proteinAbundance = proteinGroupQuantLabeled.getLabelValue();
+            ProteinGroupQuant proteinGroupQuant = proteinGroupQuantService.getProteinGroupQuantForRunAndProteinGroup(analyticalRun.getId(), proteinGroup.getId());
+            if (proteinGroupQuant != null) {
+                //deserialize the intensities json string
+                Map<String, Double> intensities = mapper.readValue(proteinGroupQuant.getLabels(), new TypeReference<Map<String, Double>>() {
+                });
+                Optional<String> foundLabel = intensities.keySet().stream().filter(dbLabel -> dbLabel.equals(label)).findFirst();
+                if (foundLabel.isPresent()) {
+                    proteinAbundance = intensities.get(foundLabel.get());
                 }
             }
         }
+
         return proteinAbundance;
     }
 
@@ -922,7 +927,7 @@ public class MzTabExporter {
         StringBuilder modifications = new StringBuilder();
         peptideService.fetchPeptideHasModifications(peptide);
         for (PeptideHasModification peptideHasModification : peptide.getPeptideHasModifications()) {
-            if(peptideHasModification.getModification().getAccession() == null){
+            if (peptideHasModification.getModification().getAccession() == null) {
                 return null;
             }
             modifications.append(peptideHasModification.getLocation());
@@ -935,7 +940,7 @@ public class MzTabExporter {
             modifications.append(peptideHasModification.getProbabilityScore()).append(CLOSE_BRACKET).append("-");
             modifications.append(peptideHasModification.getModification().getAccession()).append(COMMA_SEPARATOR);
         }
-        if (modifications.length() > 0 ) {
+        if (modifications.length() > 0) {
             return modifications.deleteCharAt(modifications.length() - 1).toString();
         } else {
             return null;

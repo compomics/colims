@@ -327,5 +327,11 @@
             <artifactId>asm</artifactId>
             <version>5.0.4</version>
         </dependency>
+        <dependency>
+            <groupId>com.adobe.flex.compiler</groupId>
+            <artifactId>adt</artifactId>
+            <version>4.5.0.18623</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>

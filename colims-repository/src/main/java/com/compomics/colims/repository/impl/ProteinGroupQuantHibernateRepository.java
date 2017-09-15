@@ -11,8 +11,9 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
- *
  * @author demet
  */
 @Repository("proteinGroupQuantRepository")
@@ -26,6 +27,22 @@ public class ProteinGroupQuantHibernateRepository extends GenericHibernateReposi
         criteria.add(Restrictions.eq("proteinGroup.id", proteinGroupId));
 
         return (ProteinGroupQuant) criteria.uniqueResult();
+    }
+
+    @Override
+    public ProteinGroupQuant getProteinGroupQuantLabeledForRun(Long analyticalRunId) {
+        Criteria criteria = getCurrentSession().createCriteria(ProteinGroupQuant.class);
+
+        criteria.add(Restrictions.eq("analyticalRun.id", analyticalRunId));
+        criteria.setFirstResult(0);
+        criteria.setMaxResults(1);
+
+        List<ProteinGroupQuant> labels = criteria.list();
+        if (!labels.isEmpty()) {
+            return labels.get(0);
+        } else {
+            return null;
+        }
     }
 
 }

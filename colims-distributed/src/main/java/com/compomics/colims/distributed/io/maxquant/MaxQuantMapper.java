@@ -51,7 +51,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         List<AnalyticalRun> analyticalRuns;
         try {
             maxQuantParser.clear();
-
+            
             //make the MaxQuantImport resources (mqpar file and combined directory) absolute and check it they exist
             Path relativeCombinedDirectory = maxQuantImport.getCombinedDirectory();
             Path absoluteCombinedDirectory = experimentsDirectory.resolve(relativeCombinedDirectory);
@@ -70,6 +70,8 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             maxQuantParser.parse(maxQuantImport, fastasDirectory);
 
             analyticalRuns = maxQuantParser.getAnalyticalRuns();
+            // set storage location.
+            analyticalRuns.forEach(run ->run.setStorageLocation(maxQuantImport.getFullCombinedDirectory().toString()));
         } catch (IOException | UnparseableException | JDOMException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your MaxQuant data, underlying exception: ", ex);
