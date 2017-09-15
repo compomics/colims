@@ -170,13 +170,19 @@ public class MaxQuantProteinGroupsParser {
                 String ibaq = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.IBAQ), name.toLowerCase()));
                 String msmsCount = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.MSMS_COUNT), name.toLowerCase()));
 
-                if (intensity != null || lfqIntensity != null || ibaq != null || msmsCount != null) {
-                    createProteinGroupQuant(proteinGroup, run, intensity, lfqIntensity, ibaq, msmsCount);
+                Map<String, Double> labeledIntensities = null;
+                if (!quantificationLabel.equals(MaxQuantImport.LABEL_FREE)) {
+                    labeledIntensities = parseLabeledQuantification(proteinGroupsEntry, proteinGroup, run, name.toLowerCase(), optionalHeaders);
                 }
 
-                if (!quantificationLabel.equals(MaxQuantImport.LABEL_FREE)) {
-                    parseLabeledQuantification(proteinGroupsEntry, proteinGroup, run, name.toLowerCase(), optionalHeaders);
+                if (intensity != null || lfqIntensity != null || ibaq != null || msmsCount != null || labeledIntensities != null) {
+                    try {
+                        createProteinGroupQuant(proteinGroup, run, intensity, lfqIntensity, ibaq, msmsCount, labeledIntensities);
+                    } catch (JsonProcessingException e) {
+                        LOGGER.error(e.getMessage(), e);
+                    }
                 }
+
             });
         } else {
             omittedProteinGroupIds.add(Integer.valueOf(proteinGroupsEntry.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))));
@@ -228,14 +234,16 @@ public class MaxQuantProteinGroupsParser {
     /**
      * Create protein group quantification and it's relation to a protein group and analytical run.
      *
-     * @param proteinGroup  the protein group
-     * @param analyticalRun the analytical run related to quantification
-     * @param intensity     the intensity
-     * @param lfqIntensity  the LFQ intensity
-     * @param ibaq          the iBAQ
-     * @param msmsCount     the MSMS Count
+     * @param proteinGroup       the protein group
+     * @param analyticalRun      the analytical run related to quantification
+     * @param intensity          the intensity
+     * @param lfqIntensity       the LFQ intensity
+     * @param ibaq               the iBAQ
+     * @param msmsCount          the MSMS Count
+     * @param labeledIntensities the labeled intensities map (key: label; value: intensity)
+     * @throws JsonProcessingException in case of a json serializing problem
      */
-    private void createProteinGroupQuant(ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String intensity, String lfqIntensity, String ibaq, String msmsCount) {
+    private void createProteinGroupQuant(ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String intensity, String lfqIntensity, String ibaq, String msmsCount, Map<String, Double> labeledIntensities) throws JsonProcessingException {
         ProteinGroupQuant proteinGroupQuant = new ProteinGroupQuant();
         //set the protein group
         proteinGroupQuant.setProteinGroup(proteinGroup);
@@ -257,6 +265,11 @@ public class MaxQuantProteinGroupsParser {
         if (msmsCount != null) {
             proteinGroupQuant.setMsmsCount(Integer.parseInt(msmsCount));
         }
+        //set the labeled intensities as a JSON string
+        if (!labeledIntensities.isEmpty()) {
+            proteinGroupQuant.setLabels(objectMapper.writeValueAsString(labeledIntensities));
+        }
+
         //add this protein quantification to protein group.
         proteinGroup.getProteinGroupQuants().add(proteinGroupQuant);
         //add this protein quantification to the related analytical run.
@@ -264,40 +277,17 @@ public class MaxQuantProteinGroupsParser {
     }
 
     /**
-     * Create protein group quantification for labeled experiment and it's relation to a protein group and analytical
-     * run.
-     *
-     * @param proteinGroup  the protein group
-     * @param analyticalRun the analytical run related to quantification
-     * @param intensities   the intensities map (key: label; value: intensity)
-     * @throws JsonProcessingException in case of a json serializing problem
-     */
-    private void createProteinGroupQuantLabeled(ProteinGroup proteinGroup, AnalyticalRun analyticalRun, Map<String, Double> intensities) throws JsonProcessingException {
-        ProteinGroupQuantLabeled proteinGroupQuantLabeled = new ProteinGroupQuantLabeled();
-
-        //serialize the intensities map as a JSON string
-        proteinGroupQuantLabeled.setLabels(objectMapper.writeValueAsString(intensities));
-        //set the protein group
-        proteinGroupQuantLabeled.setProteinGroup(proteinGroup);
-        //set analytical run
-        proteinGroupQuantLabeled.setAnalyticalRun(analyticalRun);
-        //add this protein quantification to protein group.
-        proteinGroup.getProteinGroupQuantsLabeled().add(proteinGroupQuantLabeled);
-        //add this protein quantification to the related analytical run.
-        analyticalRun.getProteinGroupQuantsLabeled().add(proteinGroupQuantLabeled);
-    }
-
-    /**
-     * Parse labeled quantifications for the given run and protein group where the quantification names come from MQPAR file.
+     * Parse labeled quantifications for the given run and protein group where the quantification names come from mqpar file.
      * If the value is null or not numeric, it is not stored.
      *
      * @param proteinGroupsEntry key-value pairs from an evidence entry
      * @param proteinGroup       the {@link ProteinGroup} instance
      * @param analyticalRun      the analytical run
      * @param experimentName     the experiment name
+     * @return the map of labeled intensities
      */
-    private void parseLabeledQuantification(Map<String, String> proteinGroupsEntry, ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String experimentName,
-                                            List<String> optionalHeaders) {
+    private Map<String, Double> parseLabeledQuantification(Map<String, String> proteinGroupsEntry, ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String experimentName,
+                                                           List<String> optionalHeaders) {
         Map<String, Double> intensities = new LinkedHashMap<>();
         switch (quantificationLabel) {
             case MaxQuantImport.SILAC:
@@ -358,13 +348,7 @@ public class MaxQuantProteinGroupsParser {
             }
         }
 
-        if (!intensities.isEmpty()) {
-            try {
-                createProteinGroupQuantLabeled(proteinGroup, analyticalRun, intensities);
-            } catch (JsonProcessingException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
-        }
+        return intensities;
     }
 
     /**

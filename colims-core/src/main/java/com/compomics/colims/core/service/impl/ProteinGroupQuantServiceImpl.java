@@ -8,26 +8,37 @@ package com.compomics.colims.core.service.impl;
 import com.compomics.colims.core.service.ProteinGroupQuantService;
 import com.compomics.colims.model.ProteinGroupQuant;
 import com.compomics.colims.repository.ProteinGroupQuantRepository;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author demet
  */
 @Service("proteinGroupQuantService")
 @Transactional
-public class ProteinGroupQuantServiceImpl implements ProteinGroupQuantService{
+public class ProteinGroupQuantServiceImpl implements ProteinGroupQuantService {
 
-    final ProteinGroupQuantRepository proteinGroupQuantRepository;
+    private static final Logger LOGGER = Logger.getLogger(ProteinGroupQuantServiceImpl.class);
+
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final ProteinGroupQuantRepository proteinGroupQuantRepository;
 
     @Autowired
     public ProteinGroupQuantServiceImpl(ProteinGroupQuantRepository proteinGroupQuantRepository) {
         this.proteinGroupQuantRepository = proteinGroupQuantRepository;
     }
-    
+
     @Override
     public ProteinGroupQuant findById(Long id) {
         return proteinGroupQuantRepository.findById(id);
@@ -62,5 +73,26 @@ public class ProteinGroupQuantServiceImpl implements ProteinGroupQuantService{
     public ProteinGroupQuant getProteinGroupQuantForRunAndProteinGroup(Long analyticalRunId, Long proteinGroupId) {
         return proteinGroupQuantRepository.getProteinGroupQuantForRunAndProteinGroup(analyticalRunId, proteinGroupId);
     }
-    
+
+    @Override
+    public List<String> getProteinGroupQuantLabelsForRun(Long analyticalRunId, int numberOfLabels) {
+        List<String> labels = new ArrayList<>();
+
+        ProteinGroupQuant proteinGroupQuantLabeledForRun = proteinGroupQuantRepository.getProteinGroupQuantLabeledForRun(analyticalRunId);
+        if (proteinGroupQuantLabeledForRun != null) {
+            try {
+                //deserialize the JSON file
+                LinkedHashMap<String, Double> intensities = mapper.readValue(proteinGroupQuantLabeledForRun.getLabels(), new TypeReference<LinkedHashMap<String, Double>>() {
+                });
+                Iterator<String> labelIterator = intensities.keySet().iterator();
+                for (int i = 0; i < numberOfLabels && labelIterator.hasNext(); i++) {
+                    labels.add(labelIterator.next());
+                }
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+
+        return labels;
+    }
 }

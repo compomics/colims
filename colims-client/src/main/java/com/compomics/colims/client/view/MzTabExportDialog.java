@@ -481,6 +481,8 @@ public class MzTabExportDialog extends javax.swing.JDialog {
 
         studyVariablesPanel.setOpaque(false);
 
+        studyVariableTreeScrollPane.setBorder(null);
+
         studyVariableTree.setBorder(javax.swing.BorderFactory.createTitledBorder("study variables"));
         treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
         studyVariableTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
@@ -544,7 +546,10 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         gridBagConstraints.weighty = 1.0;
         secondPanel.add(studyVariablesPanel, gridBagConstraints);
 
+        assaysToSVPanel.setBorder(null);
         assaysToSVPanel.setOpaque(false);
+
+        assaysToSVListScrollPane.setBorder(null);
 
         assaysToSVList.setBorder(javax.swing.BorderFactory.createTitledBorder("assays"));
         assaysToSVListScrollPane.setViewportView(assaysToSVList);
@@ -753,8 +758,6 @@ public class MzTabExportDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(parentPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
-        getAccessibleContext().setAccessibleName("MzTab export");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

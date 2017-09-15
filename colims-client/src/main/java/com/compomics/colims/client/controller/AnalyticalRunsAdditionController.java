@@ -218,7 +218,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
                             showLabelSelectionView();
                         } catch (IOException ex) {
                             LOGGER.error(ex.getMessage(), ex);
-                            MessageEvent messageEvent = new MessageEvent("Protein groups file not found", "The proteinGroups.txt file was not found, make sure you have selected a valid combined directory", JOptionPane.WARNING_MESSAGE);
+                            MessageEvent messageEvent = new MessageEvent("Protein groups file not found", "The proteinGroups.txt file was not found, make sure you have selected a valid combined directory.", JOptionPane.WARNING_MESSAGE);
                             eventBus.post(messageEvent);
                         }
 

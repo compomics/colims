@@ -74,18 +74,11 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
      */
     @OneToOne(mappedBy = "analyticalRun", cascade = CascadeType.ALL)
     QuantificationSettings quantificationSettings;
-    
     /**
      * The protein quantification for this run.
      */
     @OneToMany(mappedBy = "analyticalRun", cascade = CascadeType.REMOVE)
     List<ProteinGroupQuant> proteinGroupQuants = new ArrayList<>();
-
-    /**
-     * The protein quantification for labeled experiments for this run.
-     */
-    @OneToMany(mappedBy = "analyticalRun", cascade = CascadeType.REMOVE)
-    List<ProteinGroupQuantLabeled> proteinGroupQuantsLabeled = new ArrayList<>();
     
     public String getName() {
         return name;
@@ -165,14 +158,6 @@ public class AnalyticalRun extends AuditableDatabaseEntity {
 
     public void setProteinGroupQuants(List<ProteinGroupQuant> proteinGroupQuants) {
         this.proteinGroupQuants = proteinGroupQuants;
-    }
-
-    public List<ProteinGroupQuantLabeled> getProteinGroupQuantsLabeled() {
-        return proteinGroupQuantsLabeled;
-    }
-
-    public void setProteinGroupQuantsLabeled(List<ProteinGroupQuantLabeled> proteinGroupQuantsLabeled) {
-        this.proteinGroupQuantsLabeled = proteinGroupQuantsLabeled;
     }
 
     @Override

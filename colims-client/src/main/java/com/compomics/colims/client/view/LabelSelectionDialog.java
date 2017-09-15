@@ -66,19 +66,21 @@ public class LabelSelectionDialog extends javax.swing.JDialog {
         closeLabelButton.setMinimumSize(new java.awt.Dimension(80, 25));
         closeLabelButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        labelPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        labelPanel.setBorder(null);
+
+        labelDualList.setBorder(null);
 
         javax.swing.GroupLayout labelPanelLayout = new javax.swing.GroupLayout(labelPanel);
         labelPanel.setLayout(labelPanelLayout);
         labelPanelLayout.setHorizontalGroup(
             labelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
+            .addGap(0, 602, Short.MAX_VALUE)
             .addGroup(labelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(labelDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE))
         );
         labelPanelLayout.setVerticalGroup(
             labelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGap(0, 302, Short.MAX_VALUE)
             .addGroup(labelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(labelDualList, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
         );

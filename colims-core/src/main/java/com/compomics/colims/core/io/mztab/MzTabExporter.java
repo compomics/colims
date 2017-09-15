@@ -185,7 +185,6 @@ public class MzTabExporter {
 
     private final ProteinGroupService proteinGroupService;
     private final PeptideService peptideService;
-    private final ProteinGroupQuantLabeledService proteinGroupQuantLabeledService;
     private final ProteinGroupQuantService proteinGroupQuantService;
     private final SearchAndValidationSettingsService searchAndValidationSettingsService;
     private final FastaDbService fastaDbService;
@@ -200,14 +199,12 @@ public class MzTabExporter {
 
     @Autowired
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
-                         FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantLabeledService proteinGroupQuantLabeledService,
-                         ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
+                         FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
                          UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
         this.proteinGroupService = proteinGroupService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbService = fastaDbService;
         this.uniProtService = uniProtService;
-        this.proteinGroupQuantLabeledService = proteinGroupQuantLabeledService;
         this.proteinGroupQuantService = proteinGroupQuantService;
         this.peptideService = peptideService;
         this.fastaDbParser = fastaDbParser;
@@ -860,15 +857,14 @@ public class MzTabExporter {
         } else {
             //get the label from the user interface.
             String label = mzTabExport.getQuantificationReagentLabelMatch().get(assayReagentRef.get(assay));
-            List<ProteinGroupQuantLabeled> proteinGroupQuantLabels = proteinGroupQuantLabeledService.getProteinGroupQuantLabeledForRunAndProteinGroup(analyticalRun.getId(), proteinGroup.getId());
-            for (ProteinGroupQuantLabeled proteinGroupQuantLabeled : proteinGroupQuantLabels) {
+            ProteinGroupQuant proteinGroupQuant = proteinGroupQuantService.getProteinGroupQuantForRunAndProteinGroup(analyticalRun.getId(), proteinGroup.getId());
+            if (proteinGroupQuant != null) {
                 //deserialize the intensities json string
-                Map<String, Double> intensities = mapper.readValue(proteinGroupQuantLabeled.getLabels(), new TypeReference<Map<String, Double>>() {
+                Map<String, Double> intensities = mapper.readValue(proteinGroupQuant.getLabels(), new TypeReference<Map<String, Double>>() {
                 });
                 Optional<String> foundLabel = intensities.keySet().stream().filter(dbLabel -> dbLabel.equals(label)).findFirst();
-                if(foundLabel.isPresent()){
+                if (foundLabel.isPresent()) {
                     proteinAbundance = intensities.get(foundLabel.get());
-                    break;
                 }
             }
         }

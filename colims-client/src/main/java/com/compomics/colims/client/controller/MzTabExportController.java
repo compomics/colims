@@ -9,7 +9,7 @@ import com.compomics.colims.core.io.mztab.MzTabExport;
 import com.compomics.colims.core.io.mztab.MzTabExporter;
 import com.compomics.colims.core.io.mztab.enums.MzTabMode;
 import com.compomics.colims.core.io.mztab.enums.MzTabType;
-import com.compomics.colims.core.service.ProteinGroupQuantLabeledService;
+import com.compomics.colims.core.service.ProteinGroupQuantService;
 import com.compomics.colims.core.service.QuantificationMethodService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.SearchEngineType;
@@ -85,16 +85,16 @@ public class MzTabExportController implements Controllable {
     //services
     private final EventBus eventBus;
     private final MzTabExporter mzTabExporter;
-    private final ProteinGroupQuantLabeledService proteinGroupQuantLabeledService;
+    private final ProteinGroupQuantService proteinGroupQuantService;
     private final QuantificationMethodService quantificationMethodService;
 
     @Autowired
     public MzTabExportController(MzTabExporter mzTabExporter, EventBus eventBus, MainController mainController,
-            ProteinGroupQuantLabeledService proteinGroupQuantLabeledService, QuantificationMethodService quantificationMethodService) {
+                                 ProteinGroupQuantService proteinGroupQuantLabeledService, QuantificationMethodService quantificationMethodService) {
         this.mzTabExporter = mzTabExporter;
         this.eventBus = eventBus;
         this.mainController = mainController;
-        this.proteinGroupQuantLabeledService = proteinGroupQuantLabeledService;
+        this.proteinGroupQuantService = proteinGroupQuantLabeledService;
         this.quantificationMethodService = quantificationMethodService;
     }
 
@@ -474,7 +474,7 @@ public class MzTabExportController implements Controllable {
         MzTabType selectedMzTabType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -578,7 +578,7 @@ public class MzTabExportController implements Controllable {
         MzTabMode selectedMzTabMode = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -594,7 +594,7 @@ public class MzTabExportController implements Controllable {
      * tree. Returns false if nothing or another path level (assay, root path)
      * is selected.
      *
-     * @param tree the JTree instance
+     * @param tree  the JTree instance
      * @param level the level of the node (0 for root node)
      * @return the boolean result
      */
@@ -619,7 +619,7 @@ public class MzTabExportController implements Controllable {
      * nothing or another path level (study variable or assay, root path) is
      * selected.
      *
-     * @param tree the JTree instance
+     * @param tree  the JTree instance
      * @param level the level of the node(s) (0 for root node) nodes nodes
      * @return the boolean result
      */
@@ -664,8 +664,8 @@ public class MzTabExportController implements Controllable {
     /**
      * Remove all assays from the given tree.
      *
-     * @param treeModel the JTree model instance
-     * @param rootNode the tree root node
+     * @param treeModel        the JTree model instance
+     * @param rootNode         the tree root node
      * @param assayParentLevel the level of the assay parent node
      */
     private void removeAllAssaysFromTree(DefaultTreeModel treeModel, DefaultMutableTreeNode rootNode, int assayParentLevel) {
@@ -779,7 +779,7 @@ public class MzTabExportController implements Controllable {
             mzTabExportDialog.getMatchReagentAndLabelButton().setVisible(true);
             mzTabExportDialog.getRemoveReagentAndLabelButton().setVisible(true);
 
-            List<String> labels = proteinGroupQuantLabeledService.getProteinGroupQuantLabelsForRun(mzTabExport.getRuns().get(0).getId(), quantificationMethodHasReagents.size());
+            List<String> labels = proteinGroupQuantService.getProteinGroupQuantLabelsForRun(mzTabExport.getRuns().get(0).getId(), quantificationMethodHasReagents.size());
             for (int i = 0; i < labels.size(); i++) {
                 quantificationLabelsListModel.add(i, labels.get(i));
                 DefaultMutableTreeNode quantificationReagentTreeNode = new DefaultMutableTreeNode(quantificationMethodHasReagents.get(i).getQuantificationReagent().getName());

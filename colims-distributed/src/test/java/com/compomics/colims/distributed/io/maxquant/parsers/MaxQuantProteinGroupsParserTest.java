@@ -71,8 +71,6 @@ public class MaxQuantProteinGroupsParserTest {
         Assert.assertEquals(383, result.size());
         ProteinGroup proteinGroup = result.get(0);
         Assert.assertEquals(24, proteinGroup.getProteinGroupQuants().size());
-        Assert.assertEquals(24, proteinGroup.getProteinGroupQuantsLabeled().size());
-
     }
 
     /**
@@ -104,8 +102,6 @@ public class MaxQuantProteinGroupsParserTest {
         Assert.assertEquals(89, result.size());
         ProteinGroup proteinGroup = result.get(0);
         Assert.assertEquals(9, proteinGroup.getProteinGroupQuants().size());
-        Assert.assertEquals(9, proteinGroup.getProteinGroupQuantsLabeled().size());
-
     }
 
     /**
@@ -138,7 +134,7 @@ public class MaxQuantProteinGroupsParserTest {
         Assert.assertEquals(273, result.size());
 
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Double> intensities = objectMapper.readValue(result.get(0).getProteinGroupQuantsLabeled().get(0).getLabels(), new TypeReference<HashMap<String, Double>>() {
+        Map<String, Double> intensities = objectMapper.readValue(result.get(0).getProteinGroupQuants().get(0).getLabels(), new TypeReference<HashMap<String, Double>>() {
         });
         Assert.assertEquals(11, intensities.size());
         //look for the optional ibaq intensity
