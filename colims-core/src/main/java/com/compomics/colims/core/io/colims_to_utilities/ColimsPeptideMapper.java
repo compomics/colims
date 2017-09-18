@@ -3,7 +3,6 @@ package com.compomics.colims.core.io.colims_to_utilities;
 import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Peptide;
-import com.compomics.util.experiment.biology.Ion;
 import com.compomics.util.experiment.biology.NeutralLoss;
 import com.compomics.util.experiment.biology.ions.PeptideFragmentIon;
 import com.compomics.util.experiment.identification.matches.IonMatch;
@@ -28,8 +27,8 @@ import java.util.TreeMap;
 public class ColimsPeptideMapper {
 
     private static final String FRAGMENTS_DELIMITER = ";";
-    private static final String NEUTRAL_LOSSES_PREFIX = "-";
-    private static final String CHARGE_PREFIX = "(";
+    private static final char NEUTRAL_LOSSES_PREFIX = '-';
+    private static final char CHARGE_PREFIX = '(';
 
     private final PeptideService peptideService;
     private final SpectrumService spectrumService;
@@ -162,17 +161,21 @@ public class ColimsPeptideMapper {
      * @return the {@link Peak} instance
      */
     private Peak findClosestPeak(TreeMap<Double, Double> peakMap, Double fragmentMass) {
+        Peak peak = null;
+        
         Map.Entry<Double, Double> low = peakMap.floorEntry(fragmentMass);
         Map.Entry<Double, Double> high = peakMap.ceilingEntry(fragmentMass);
-        Map.Entry<Double, Double> peakEntry = null;
+        Map.Entry<Double, Double> peakEntry;
         if (low != null && high != null) {
             peakEntry = Math.abs(fragmentMass - low.getKey()) < Math.abs(fragmentMass - high.getKey())
                     ? low
                     : high;
+            peak = new Peak(peakEntry.getKey(), peakEntry.getValue());
         } else if (low != null || high != null) {
             peakEntry = low != null ? low : high;
+            peak =new Peak(peakEntry.getKey(), peakEntry.getValue());
         }
-
-        return new Peak(peakEntry.getKey(), peakEntry.getValue());
+        
+        return peak;
     }
 }

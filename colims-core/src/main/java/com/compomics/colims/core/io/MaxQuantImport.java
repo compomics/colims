@@ -17,7 +17,7 @@ public class MaxQuantImport extends DataImport {
 
     public static final String LABEL_FREE = "label free";
     public static final String TMT = "TMT";
-    public static final String iTRAQ = "iTRAQ";
+    public static final String ITRAQ = "iTRAQ";
     public static final String SILAC = "SILAC";
     public static final String ICAT = "ICAT";
     public static final String SRM = "Selected Reaction Monitoring";
@@ -67,7 +67,7 @@ public class MaxQuantImport extends DataImport {
      * @param fastaDbIds                  the FASTA database map (key: FastaDb type; value: the FastaDb instance ID)
      * @param includeContaminants         whether to import proteins from contaminants file.
      * @param includeUnidentifiedSpectra  whether to import unidentified spectra from APL files.
-     * @param selectedProteinGroupHeaders list of optional headers to store in protein group quantification labeled
+     * @param selectedProteinGroupsHeaders list of optional headers to store in protein group quantification labeled
      *                                    table.
      * @param quantificationLabel         the quantification label
      */
@@ -77,7 +77,7 @@ public class MaxQuantImport extends DataImport {
                           final EnumMap<FastaDbType, List<Long>> fastaDbIds,
                           boolean includeContaminants,
                           boolean includeUnidentifiedSpectra,
-                          List<String> selectedProteinGroupHeaders,
+                          List<String> selectedProteinGroupsHeaders,
                           String quantificationLabel) {
         super(fastaDbIds);
         this.mqParFile = mqParFile;
@@ -85,7 +85,7 @@ public class MaxQuantImport extends DataImport {
         this.fullCombinedDirectory = fullCombinedDirectory;
         this.includeContaminants = includeContaminants;
         this.includeUnidentifiedSpectra = includeUnidentifiedSpectra;
-        this.selectedProteinGroupHeaders = selectedProteinGroupHeaders;
+        this.selectedProteinGroupHeaders = selectedProteinGroupsHeaders;
         this.quantificationLabel = quantificationLabel;
     }
 
@@ -105,7 +105,7 @@ public class MaxQuantImport extends DataImport {
         return includeUnidentifiedSpectra;
     }
 
-    public List<String> getSelectedProteinGroupHeaders() {
+    public List<String> getSelectedProteinGroupsHeaders() {
         return selectedProteinGroupHeaders;
     }
 

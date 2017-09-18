@@ -123,14 +123,6 @@
         group by peptide.sequence
     </query>
 
-    <query name="Protein.getProteinsByProteinGroupId">
-        select proteinGroupHasProtein.protein, proteinGroupHasProtein
-        from ProteinGroupHasProtein as proteinGroupHasProtein
-        join fetch proteinGroupHasProtein.proteinGroup as proteinGroup
-        where proteinGroup.id = :proteinGroupId
-        and proteinGroupHasProtein.isMainGroupProtein = 1
-    </query>
-
     <query name="ProteinGroup.getProteinGroupsByRunIds">
         select distinct proteinGroup
         from ProteinGroup as proteinGroup

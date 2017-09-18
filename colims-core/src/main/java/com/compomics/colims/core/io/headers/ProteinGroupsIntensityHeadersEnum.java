@@ -5,16 +5,15 @@
  */
 package com.compomics.colims.core.io.headers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.List;
 
 /**
  *
  * @author demet
  */
-public enum ProteinGroupIntensityHeadersEnum{
+public enum ProteinGroupsIntensityHeadersEnum {
 
     RATIO_M_L("Ratio M/L"),
     RATIO_H_L("Ratio H/L"),
@@ -40,25 +39,34 @@ public enum ProteinGroupIntensityHeadersEnum{
     LFQ_L("LFQ intensity L"),
     LFQ_M("LFQ intensity M"),
     LFQ_H("LFQ intensity H");
- 
-    private String header;
-    /**
-     * The list of header values for the enum value.
-     */
-    private static Map<String,String> headerValues;
 
     /**
-     * Constructor
-     * @param header 
+     * The proteinGroups.txt header value.
      */
-    ProteinGroupIntensityHeadersEnum(String header){
+    private final String header;
+
+    /**
+     * Constructor.
+     *
+     * @param header the proteinGroups.txt header value
+     */
+    ProteinGroupsIntensityHeadersEnum(String header) {
         this.header = header;
     }
-    
-    public static Map<String,String> getHeaderValues() {
-        headerValues = new HashMap<>();
-        ProteinGroupIntensityHeadersEnum[] headersEnum = ProteinGroupIntensityHeadersEnum.values();
-        Arrays.stream(headersEnum).forEach(e -> headerValues.put(e.header.toLowerCase(Locale.US), e.header));
+
+    public String getHeader() {
+        return header;
+    }
+
+    /**
+     * Get the (lower case) header values as a list.
+     *
+     * @return the list of header values
+     */
+    public static List<String> getHeaderValues() {
+        List<String> headerValues = new ArrayList<>();
+        Arrays.asList(values()).forEach(value -> headerValues.add(value.getHeader()));
+
         return headerValues;
     }
 

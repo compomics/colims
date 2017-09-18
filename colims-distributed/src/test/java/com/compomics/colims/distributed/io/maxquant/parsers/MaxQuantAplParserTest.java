@@ -14,7 +14,6 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -118,9 +117,7 @@ public class MaxQuantAplParserTest {
         Assert.assertEquals(1, maxQuantSpectra.getSpectra().size());
         //unidentified
         int numberOfUnidentifiedSpectra = 0;
-        for (List<Spectrum> unidentifiedSpectra : maxQuantSpectra.getUnidentifiedSpectra().values()) {
-            numberOfUnidentifiedSpectra += unidentifiedSpectra.size();
-        }
+        numberOfUnidentifiedSpectra = maxQuantSpectra.getUnidentifiedSpectra().values().stream().map((unidentifiedSpectra) -> unidentifiedSpectra.size()).reduce(numberOfUnidentifiedSpectra, Integer::sum);
         //one identified, 2 omitted
         Assert.assertEquals(2585, numberOfUnidentifiedSpectra);
 

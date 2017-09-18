@@ -12,7 +12,6 @@ import com.compomics.colims.core.service.QuantificationReagentService;
 import com.compomics.colims.core.service.QuantificationSettingsService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.QuantificationEngineType;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,11 +25,6 @@ import java.util.Map;
  */
 @Component("maxQuantQuantificationSettingsParser")
 public class MaxQuantQuantificationSettingsParser {
-
-    /**
-     * Logger instance.
-     */
-    private static Logger LOGGER = Logger.getLogger(MaxQuantSearchSettingsParser.class);
 
     /**
      * The quantification settings indexed by analytical run (key: AnalyticalRun ; value: QuantificationSettings)

@@ -26,7 +26,8 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * This class provides methods for monitoring and managing the distributed module queues and topics.
+ * This class provides methods for monitoring and managing the distributed
+ * module queues and topics.
  *
  * @author Niels Hulstaert
  */
@@ -63,7 +64,8 @@ public class QueueManagerImpl implements QueueManager {
      */
     private final DbTaskErrorMessageConvertor storageErrorMessageConvertor = new DbTaskErrorMessageConvertor();
     /**
-     * The queue object name with placeholders for the broker and destination names.
+     * The queue object name with placeholders for the broker and destination
+     * names.
      */
     private final String queueObjectName = "org.apache.activemq:type=Broker,brokerName=%s,destinationType=Queue,destinationName=%s";
     /**
@@ -73,7 +75,7 @@ public class QueueManagerImpl implements QueueManager {
     /**
      * Mapper for converting a JSON construct to the matching java object.
      */
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     /**
      * The JMS template instance.
      */
@@ -154,7 +156,8 @@ public class QueueManagerImpl implements QueueManager {
             ObjectName activeMQ = new ObjectName(String.format(brokerObjectName, brokerName));
             BrokerViewMBean brokerViewMBean = MBeanServerInvocationHandler.newProxyInstance(clientConnector, activeMQ, BrokerViewMBean.class, true);
             //get broker ID to test the connection
-            @SuppressWarnings("UnusedAssignment") String brokerId = brokerViewMBean.getBrokerId();
+            @SuppressWarnings("UnusedAssignment")
+            String brokerId = brokerViewMBean.getBrokerId();
 
             connectionAchieved = true;
         } catch (MalformedObjectNameException | UndeclaredThrowableException ex) {

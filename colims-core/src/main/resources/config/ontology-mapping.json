@@ -146,7 +146,6 @@
         "obo_id": "UNIMOD:199",
         "label": "Dimethyl:2H(4)",
         "affected_AAs": "-",
-        "utilities_name": "Pyrolidone from Q",
         "utilities_name": "Dimethylation of peptide N-term 2H(4)"
       },
       "DimethLys8": {

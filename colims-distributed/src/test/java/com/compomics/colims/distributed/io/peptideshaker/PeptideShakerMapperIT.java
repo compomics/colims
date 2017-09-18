@@ -16,7 +16,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -51,7 +50,7 @@ public class PeptideShakerMapperIT {
     private FastaDbService fastaDbService;
 
     @Before
-    public void setup() throws IOException, XmlPullParserException {
+    public void setup() throws IOException {
         //set admin user in authentication bean
         User adminUser = userService.findByName("admin");
         userService.fetchAuthenticationRelations(adminUser);

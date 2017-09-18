@@ -132,7 +132,7 @@ public class OlsServiceImpl implements OlsService {
     @Override
     public List<Ontology> getOntologiesByNamespace(List<String> namespaces) throws RestClientException, IOException {
         List<Ontology> ontologies = new ArrayList<>();
-        
+
         for (String namespace : namespaces) {
             if (ontologiesCache.containsKey(namespace)) {
                 ontologies.add(ontologiesCache.get(namespace));
@@ -167,7 +167,7 @@ public class OlsServiceImpl implements OlsService {
     public SearchResultMetadata getPagedSearchMetadata(String query, List<String> ontologyNamespaces, EnumSet<OlsSearchResult.SearchField> searchFields) throws RestClientException, IOException {
         //build the request
         StringBuilder url = new StringBuilder(OLS_BASE_SEARCH_URL);
-        url.append("*" + query + "*");
+        url.append("*").append(query).append("*");
         if (!searchFields.isEmpty() && !searchFields.equals(OlsSearchResult.DEFAULT_SEARCH_FIELDS)) {
             url.append("&queryFields=");
             url.append(searchFields.stream().map(OlsSearchResult.SearchField::getQueryValue).collect(Collectors.joining(",")));
@@ -329,11 +329,12 @@ public class OlsServiceImpl implements OlsService {
     /**
      * Get the modification by it's PSI MOD accession.
      *
-     * @param clazz           the AbstractModification subclass (Modification or SearchModification)
+     * @param clazz the AbstractModification subclass (Modification or
+     * SearchModification)
      * @param psiModAccession the PSI MOD accession of the modification
-     * @param <T>             the AbstractModification subclass instance
+     * @param <T> the AbstractModification subclass instance
      * @return the found modification
-     * @throws IOException              in case of an I/O related problem
+     * @throws IOException in case of an I/O related problem
      * @throws HttpClientErrorException in case of a HTTP 4xx error was received
      */
     private <T extends AbstractModification> T getByPsiModAccession(final Class<T> clazz, final String psiModAccession) throws IOException, HttpClientErrorException {
@@ -373,9 +374,9 @@ public class OlsServiceImpl implements OlsService {
      * Copy (the instance fields of) the modification from one subclass of
      * AbstractModification to another.
      *
-     * @param clazz     the subclass of AbstractModification
+     * @param clazz the subclass of AbstractModification
      * @param modToCopy the modification to copy
-     * @param <T>       the AbstractModification subclass
+     * @param <T> the AbstractModification subclass
      * @return the copied modification
      */
     private <T extends AbstractModification> T copyModification(Class<T> clazz, AbstractModification modToCopy) {

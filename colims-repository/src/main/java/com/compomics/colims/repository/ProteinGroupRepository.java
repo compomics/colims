@@ -1,6 +1,5 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
@@ -56,15 +55,6 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
     long getProteinGroupCountForRun(final List<Long> analyticalRunIds, final String filter);
 
     /**
-     * Get the protein groups projections for the given run (Min and max number of distinct peptide sequences per
-     * protein group, and min en max number of spectra per protein group).
-     *
-     * @param analyticalRun the AnalyticalRun instance
-     * @return the protein groups projection values for the given run
-     */
-    Object[] getProteinGroupsProjections(final AnalyticalRun analyticalRun);
-
-    /**
      * Cascade save or update the given protein group. We don't use the JPA merge method because of cascading issues.
      *
      * @param proteinGroup the ProteinGroup instance to save or update
@@ -81,12 +71,11 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
     List<ProteinGroupHasProtein> getAmbiguityMembers(final Long proteinGroupId);
 
     /**
-     * Get ProteinGroupHasProtein object by proteinGroupId
-     * (only main protein of the group)
-     * if nothing found return null
+     * Get the {@link ProteinGroupHasProtein} instance of the main protein of the group.
+     * Returns null if nothing was found.
      *
-     * @param proteinGroupId
-     * @return ProteinGroupHasProtein and protein
+     * @param proteinGroupId the protein group ID
+     * @return the found {@link ProteinGroupHasProtein} instance
      */
-    Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinsByProteinGroupId(final Long proteinGroupId);
+    ProteinGroupHasProtein getMainProteinGroupHasProtein(final Long proteinGroupId);
 }

@@ -60,16 +60,6 @@ public interface ProteinGroupService extends GenericService<ProteinGroup, Long> 
     long getProteinGroupCountForRuns(final List<Long> analyticalRunIds, final String filter);
 
     /**
-     * Get the protein groups projections for the given run (Min and max number
-     * of distinct peptide sequences per protein group, and min en max number of
-     * spectra per protein group).
-     *
-     * @param analyticalRun the AnalyticalRun instance
-     * @return the protein groups projection values for the given run
-     */
-    Object[] getProteinGroupsProjections(final AnalyticalRun analyticalRun);
-
-    /**
      * Get the ambiguity members of the given protein group. Return an empty
      * list if nothing was found.
      *
@@ -78,12 +68,21 @@ public interface ProteinGroupService extends GenericService<ProteinGroup, Long> 
      */
     List<ProteinGroupHasProtein> getAmbiguityMembers(final Long proteinGroupId);
 
+//    /**
+//     * Get ProteinGroupHasProtein object by proteinGroupId. Returns null if
+//     * nothing was found.
+//     *
+//     * @param proteinGroupId the protein group ID
+//     * @return ProteinGroupHasProtein and Protein
+//     */
+//    Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinByProteinGroupId(final Long proteinGroupId);
+
     /**
-     * Get ProteinGroupHasProtein object by proteinGroupId. Returns null if
-     * nothing was found.
+     * Get the {@link ProteinGroupHasProtein} instance of the main protein of the group.
+     * Returns null if nothing was found.
      *
      * @param proteinGroupId the protein group ID
-     * @return ProteinGroupHasProtein and Protein
+     * @return the found {@link ProteinGroupHasProtein} instance
      */
-    Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinByProteinGroupId(final Long proteinGroupId);
+    ProteinGroupHasProtein getMainProteinGroupHasProtein(final Long proteinGroupId);
 }

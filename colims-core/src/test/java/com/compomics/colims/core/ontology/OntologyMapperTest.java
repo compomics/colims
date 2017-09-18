@@ -20,6 +20,12 @@ public class OntologyMapperTest {
     @Autowired
     private OntologyMapper ontologyMapper;
 
+    /**
+     * Test the colims mapping.
+     *
+     * @throws HttpClientErrorException
+     * @throws IOException
+     */
     @Test
     public void testGetColimsMapping() throws HttpClientErrorException, IOException {
         ColimsMapping colimsMapping = ontologyMapper.getColimsMapping();
@@ -27,6 +33,12 @@ public class OntologyMapperTest {
         Assert.assertFalse(colimsMapping.getQuantificationMethods().isEmpty());
     }
 
+    /**
+     * Test the MaxQuant mapping.
+     *
+     * @throws HttpClientErrorException
+     * @throws IOException
+     */
     @Test
     public void testGetMaxQuantMapping() throws HttpClientErrorException, IOException {
         MaxQuantMapping maxQuantMapping = ontologyMapper.getMaxQuantMapping();

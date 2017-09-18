@@ -111,11 +111,13 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Constructor.
      *
-     * @param searchAndValidationSettingsService the search and validation settings service
-     * @param typedCvParamService                the type CV param service
-     * @param searchModificationMapper           the search modification mapper
-     * @param ontologyMapper                     the ontology mapper
-     * @throws IOException in case of an Input/Output related problem while parsing the headers.
+     * @param searchAndValidationSettingsService the search and validation
+     * settings service
+     * @param typedCvParamService the type CV param service
+     * @param searchModificationMapper the search modification mapper
+     * @param ontologyMapper the ontology mapper
+     * @throws IOException in case of an Input/Output related problem while
+     * parsing the headers.
      */
     public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, TypedCvParamService typedCvParamService, SearchModificationMapper searchModificationMapper, OntologyMapper ontologyMapper) throws IOException {
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
@@ -146,7 +148,8 @@ public class MaxQuantSearchSettingsParser {
     }
 
     /**
-     * Get the analytical runs name and their associated MaxQuant experiment name.
+     * Get the analytical runs name and their associated MaxQuant experiment
+     * name.
      *
      * @return analyticalRuns
      */
@@ -188,9 +191,10 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Parse the search parameters for a MaxQuant experiment.
      *
-     * @param combinedFolderDirectory the MaxQuant combined folder directory path
-     * @param mqParFile               the mqpar.xml parameter file
-     * @param fastaDbs                the FASTA databases used in the experiment
+     * @param combinedFolderDirectory the MaxQuant combined folder directory
+     * path
+     * @param mqParFile the mqpar.xml parameter file
+     * @param fastaDbs the FASTA databases used in the experiment
      * @throws IOException in case of of an I/O related problem
      */
     public void parse(Path combinedFolderDirectory, Path mqParFile, EnumMap<FastaDbType, List<FastaDb>> fastaDbs) throws IOException, JDOMException {
@@ -314,7 +318,7 @@ public class MaxQuantSearchSettingsParser {
      * linked to that parameter.
      *
      * @param searchParameters the search parameters
-     * @param rawFileName      the RAW file name
+     * @param rawFileName the RAW file name
      * @return list of SearchParametersHasModification objects
      */
     private List<SearchParametersHasModification> createModifications(SearchParameters searchParameters, String rawFileName) {
@@ -379,8 +383,9 @@ public class MaxQuantSearchSettingsParser {
      * Parse the mqpar.xml file and match with runs.
      *
      * @param mqParFile the mqpar.xml file path
-     * @throws JDOMException in case of an problem occurring in one of the JDOM classes
-     * @throws IOException   in case of an problem with the mqpar.xml file
+     * @throws JDOMException in case of an problem occurring in one of the JDOM
+     * classes
+     * @throws IOException in case of an problem with the mqpar.xml file
      */
     private void parseMqParFile(Path mqParFile) throws JDOMException, IOException {
         //create a map to hold raw files for each run (key: group index; value: raw file).
@@ -511,7 +516,7 @@ public class MaxQuantSearchSettingsParser {
      * Find child element by name, case insensitive. Returns null if nothing was
      * found.
      *
-     * @param parent    the parent element
+     * @param parent the parent element
      * @param childName the child name
      * @return the found child element
      */

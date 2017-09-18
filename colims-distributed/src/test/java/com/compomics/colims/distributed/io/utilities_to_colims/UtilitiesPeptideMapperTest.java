@@ -31,10 +31,10 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 public class UtilitiesPeptideMapperTest {
 
-    private PTM oxidation = PTMFactory.getInstance().getPTM("Oxidation of M");
-    private PTM phosphorylation = PTMFactory.getInstance().getPTM("Phosphorylation of Y");
-    private CvTerm nonUtilitiesPtm = new CvTerm("PSI-MOD", "MOD:01645", "L-proline removal", "-97.052764");
-    private String nonUtilitiesPtmName = "L-proline removal";
+    private final PTM oxidation = PTMFactory.getInstance().getPTM("Oxidation of M");
+    private final PTM phosphorylation = PTMFactory.getInstance().getPTM("Phosphorylation of Y");
+    private final CvTerm nonUtilitiesPtm = new CvTerm("PSI-MOD", "MOD:01645", "L-proline removal", "-97.052764");
+    private final String nonUtilitiesPtmName = "L-proline removal";
     @Autowired
     private UtilitiesPeptideMapper utilitiesPeptideMapper;
 

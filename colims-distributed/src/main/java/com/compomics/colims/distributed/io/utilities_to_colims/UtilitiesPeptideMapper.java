@@ -90,11 +90,10 @@ public class UtilitiesPeptideMapper {
      */
     private void mapModifications(final ArrayList<ModificationMatch> modificationMatches, final PSPtmScores ptmScores, final Peptide targetPeptide) {
         //iterate over modification matches
-        for (ModificationMatch modificationMatch : modificationMatches) {
+        modificationMatches.forEach((modificationMatch) -> {
             //get the CvTerm from the PTMFactory
             PTM ptm = PTMFactory.getInstance().getPTM(modificationMatch.getTheoreticPtm());
             CvTerm cvTerm = ptm.getCvTerm();
-
             Modification modification;
             if (cvTerm != null) {
                 modification = modificationMapper.mapByOntologyTerm(
@@ -106,7 +105,6 @@ public class UtilitiesPeptideMapper {
             } else {
                 modification = modificationMapper.mapByName(modificationMatch.getTheoreticPtm());
             }
-
             //set entity associations if modification could be mapped
             if (modification != null) {
                 PeptideHasModification peptideHasModification = new PeptideHasModification();
@@ -159,7 +157,7 @@ public class UtilitiesPeptideMapper {
 
                 targetPeptide.getPeptideHasModifications().add(peptideHasModification);
             }
-        }
+        });
     }
 
 }

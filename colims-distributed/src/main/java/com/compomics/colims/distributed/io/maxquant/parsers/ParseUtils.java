@@ -66,7 +66,7 @@ public class ParseUtils {
         }
 
         //check for the mandatory headers
-        for (MaxQuantHeader maxQuantHeader : maxQuantHeaders) {
+        maxQuantHeaders.forEach((maxQuantHeader) -> {
             Optional<String> optionalHeader = maxQuantHeader.getValues()
                     .stream()
                     .filter(parameters.keySet()::contains)
@@ -77,7 +77,7 @@ public class ParseUtils {
             } else {
                 throw new IllegalArgumentException("The mandatory header " + maxQuantHeader.getName() + " is not present in the given file " + parametersPath.getFileName());
             }
-        }
+        });
 
         return parameters;
     }

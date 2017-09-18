@@ -42,8 +42,8 @@ public class MaxQuantEvidenceParser {
     static final String C_TERMINAL_MODIFICATION = "Protein C-term";
 
     /**
-     * The parsed peptides map (key: evidence ID; value: the associated {@link Peptide}
-     * objects).
+     * The parsed peptides map (key: evidence ID; value: the associated
+     * {@link Peptide} objects).
      */
     private final Map<Integer, List<Peptide>> peptides = new HashMap<>();
     /**
@@ -78,8 +78,9 @@ public class MaxQuantEvidenceParser {
      * No-arg constructor.
      *
      * @param modificationMapper the modification mapper
-     * @param ontologyMapper     the ontology mapper
-     * @throws IOException in case of an Input/Output related problem while parsing the headers.
+     * @param ontologyMapper the ontology mapper
+     * @throws IOException in case of an Input/Output related problem while
+     * parsing the headers.
      */
     @Autowired
     public MaxQuantEvidenceParser(ModificationMapper modificationMapper, OntologyMapper ontologyMapper) throws IOException {
@@ -108,7 +109,7 @@ public class MaxQuantEvidenceParser {
     /**
      * This method parses an evidence file.
      *
-     * @param evidenceFilePath       the MaxQuant evidence file path
+     * @param evidenceFilePath the MaxQuant evidence file path
      * @param omittedProteinGroupIds removed protein group IDs
      * @throws IOException in case of an I/O related problem
      */
@@ -165,9 +166,10 @@ public class MaxQuantEvidenceParser {
     /**
      * Create a Peptide from a row entry in the evidence file.
      *
-     * @param evidenceId                 the evidence ID
-     * @param evidenceEntry              key-value pairs from an evidence entry
-     * @param nonOmittedProteinGroupsIds the set of non omitted protein group IDs for the given evidence entry
+     * @param evidenceId the evidence ID
+     * @param evidenceEntry key-value pairs from an evidence entry
+     * @param nonOmittedProteinGroupsIds the set of non omitted protein group
+     * IDs for the given evidence entry
      */
     private void createPeptide(Integer evidenceId, Map<String, String> evidenceEntry, Set<Integer> nonOmittedProteinGroupsIds) {
         Peptide peptide = new Peptide();
@@ -215,7 +217,7 @@ public class MaxQuantEvidenceParser {
      * Create modifications for the given peptide.
      *
      * @param peptide Peptide to associate with modifications
-     * @param values  Row of data from evidence file
+     * @param values Row of data from evidence file
      * @return List of PeptideHasModification objects
      */
     private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) {
@@ -327,10 +329,10 @@ public class MaxQuantEvidenceParser {
     /**
      * Create a PeptideHasModification instance for the given peptide.
      *
-     * @param location    the modification location
+     * @param location the modification location
      * @param probability the probability score
-     * @param deltaScore  the delta score value
-     * @param peptide     the Peptide instance
+     * @param deltaScore the delta score value
+     * @param peptide the Peptide instance
      * @return the PeptideHasModification instance
      */
     private PeptideHasModification createPeptideHasModification(Integer location, Double probability, Double deltaScore, Peptide peptide) {

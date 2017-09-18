@@ -139,7 +139,8 @@ public class MzIdentMlExporter {
      */
     private final Map<String, com.compomics.colims.core.ontology.OntologyTerm> modificationMappings;
     /**
-     * The Utilities annotation settings used for the fragment ion annotations calculation.
+     * The Utilities annotation settings used for the fragment ion annotations
+     * calculation.
      */
     private AnnotationSettings annotationSettings;
     /**
@@ -170,15 +171,15 @@ public class MzIdentMlExporter {
 
     @Autowired
     public MzIdentMlExporter(OlsService olsService, SearchAndValidationSettingsService searchAndValidationSettingsService,
-                             FastaDbParser fastaDbParser,
-                             ProteinGroupService proteinGroupService,
-                             PeptideService peptideService,
-                             SpectrumService spectrumService,
-                             AnalyticalRunService analyticalRunService,
-                             ColimsPeptideMapper colimsPeptideMapper,
-                             ColimsSpectrumMapper colimsSpectrumMapper,
-                             ColimsSearchParametersMapper colimsSearchParametersMapper,
-                             OntologyMapper ontologyMapper) {
+            FastaDbParser fastaDbParser,
+            ProteinGroupService proteinGroupService,
+            PeptideService peptideService,
+            SpectrumService spectrumService,
+            AnalyticalRunService analyticalRunService,
+            ColimsPeptideMapper colimsPeptideMapper,
+            ColimsSpectrumMapper colimsSpectrumMapper,
+            ColimsSearchParametersMapper colimsSearchParametersMapper,
+            OntologyMapper ontologyMapper) {
         this.olsService = olsService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbParser = fastaDbParser;
@@ -384,7 +385,8 @@ public class MzIdentMlExporter {
     /**
      * Construct the list of analysis software.
      *
-     * @param auditCollection the {@link AuditCollection} to add the software organization to
+     * @param auditCollection the {@link AuditCollection} to add the software
+     * organization to
      * @return the populated {@link AnalysisSoftware} instance
      * @throws IOException in case of an JSON parsing related problem
      */
@@ -493,7 +495,8 @@ public class MzIdentMlExporter {
      * Update the CV list if the given CV reference is not present.
      *
      * @param cvRef the CV reference String
-     * @return true if the CV was added or already present, false if the CV was not found by it's reference
+     * @return true if the CV was added or already present, false if the CV was
+     * not found by it's reference
      */
     private boolean updateCvList(String cvRef) throws IOException {
         boolean present = true;
@@ -530,7 +533,7 @@ public class MzIdentMlExporter {
      * Populate a {@link SearchDatabase} instance
      *
      * @param fastaDb the {@link FastaDb} instance
-     * @param id      the search database ID
+     * @param id the search database ID
      * @return the populated search database instance
      * @throws IOException in case of a JSON parsing related problem
      */
@@ -565,8 +568,9 @@ public class MzIdentMlExporter {
      * Get the {@link FastaDb} instances by type from the list of
      * {@link SearchSettingsHasFastaDb} instances.
      *
-     * @param searchSettingsHasFastaDbs the list of searchSettingsHasFastaDbs instances
-     * @param fastaDbType               the FASTA DB type
+     * @param searchSettingsHasFastaDbs the list of searchSettingsHasFastaDbs
+     * instances
+     * @param fastaDbType the FASTA DB type
      * @return the list of {@link FastaDb} instances with the given type
      */
     private List<FastaDb> getFastaDbsByType(List<SearchSettingsHasFastaDb> searchSettingsHasFastaDbs, FastaDbType fastaDbType) {
@@ -786,7 +790,7 @@ public class MzIdentMlExporter {
     /**
      * Add the given {@link MassAccuracyType} to the {@link CvParam}.
      *
-     * @param cvParam          the CV param instance
+     * @param cvParam the CV param instance
      * @param massAccuracyType the mass accuracy
      * @throws IOException in case of an JSON parsing related problem
      */
@@ -836,6 +840,8 @@ public class MzIdentMlExporter {
             //look for the enzyme with the OLS service
             OntologyTerm olsEnzyme = olsService.findEnzymeByName(colimsEnzymeName);
             if (olsEnzyme != null) {
+                enzyme = new CvParam();
+
                 Cv cv = new Cv();
                 cv.setId(olsEnzyme.getOntologyPrefix());
                 enzyme.setCv(cv);
@@ -1058,8 +1064,7 @@ public class MzIdentMlExporter {
 
                     //add to the map
                     spectrumIdentificationResults.put(spectrum.getId(), spectrumIdentificationResult);
-                }
-                //otherwise it's a peptide linked to multiple protein groups or a chimeric spectrum
+                } //otherwise it's a peptide linked to multiple protein groups or a chimeric spectrum
                 else {
                     SpectrumIdentificationResult existingSpectrumIdentificationResult = spectrumIdentificationResults.get(spectrum.getId());
                     //check if an existing spectrum identification item has the same ID
@@ -1080,16 +1085,19 @@ public class MzIdentMlExporter {
             //calculate the sequence coverage for the main group protein
             double coverage = SequenceUtils.calculateProteinCoverage(mainSequence, peptideSequences);
             sequenceCoverage.setValue(Double.toString(MathUtils.round(coverage, 2)));
-            mainProteinDetectionHypothesis.getCvParam().add(sequenceCoverage);
+            if (mainProteinDetectionHypothesis != null) {
+                mainProteinDetectionHypothesis.getCvParam().add(sequenceCoverage);
+            }
         }
     }
 
     /**
      * Populate a peptide evidence instance.
      *
-     * @param dbSequence      the {@link DBSequence} instance
-     * @param id              the peptide evidence ID
-     * @param mzPeptide       the {@link uk.ac.ebi.jmzidml.model.mzidml.Peptide} instance
+     * @param dbSequence the {@link DBSequence} instance
+     * @param id the peptide evidence ID
+     * @param mzPeptide the {@link uk.ac.ebi.jmzidml.model.mzidml.Peptide}
+     * instance
      * @param peptidePosition the {@link PeptidePosition} instance
      * @return the populated {@link PeptideEvidence} instance
      */
@@ -1157,7 +1165,7 @@ public class MzIdentMlExporter {
         CvParam errorCvParam = getMzIdentMlElement("/Measure/MZ_error", CvParam.class);
         addUnit(errorCvParam, "m/z", "MS:1000040", "MS");
         errorMeasure.getCvParam().add(errorCvParam);
-        if(searchEngine.getSearchEngineType().equals(SearchEngineType.PEPTIDESHAKER)) {
+        if (searchEngine.getSearchEngineType().equals(SearchEngineType.PEPTIDESHAKER)) {
             fragmentationTable.getMeasure().add(errorMeasure);
         }
 
@@ -1170,10 +1178,10 @@ public class MzIdentMlExporter {
     /**
      * Add a unit the the given {@link CvParam}.
      *
-     * @param cvParam       the CV param instance
-     * @param unitName      the unit name
+     * @param cvParam the CV param instance
+     * @param unitName the unit name
      * @param unitAccession the unit accession
-     * @param cvRef         the CV reference
+     * @param cvRef the CV reference
      * @throws IOException in case of an JSON parsing related problem
      */
     private void addUnit(CvParam cvParam, String unitName, String unitAccession, String cvRef) throws IOException {
@@ -1185,7 +1193,7 @@ public class MzIdentMlExporter {
     /**
      * Set up the spectrum identification.
      *
-     * @param spectraData                the spectra data
+     * @param spectraData the spectra data
      * @param spectrumIdentificationList the spectrum identification list
      * @return the {@link SpectrumIdentification} instance
      */
@@ -1242,7 +1250,7 @@ public class MzIdentMlExporter {
     /**
      * Set up the protein detection.
      *
-     * @param proteinDetectionList       the protein detection list
+     * @param proteinDetectionList the protein detection list
      * @param spectrumIdentificationList the spectrum identification list
      * @return the {@link ProteinDetection} instance
      */
@@ -1264,8 +1272,8 @@ public class MzIdentMlExporter {
     /**
      * Create a spectrum identification result from a Colims spectrum.
      *
-     * @param spectrum      the Colims {@link Spectrum} instance
-     * @param spectraData   the spectra data instance
+     * @param spectrum the Colims {@link Spectrum} instance
+     * @param spectraData the spectra data instance
      * @param spectrumIndex the spectrum index
      * @return Spectrum identification result
      * @throws IOException in case of an JSON parsing related problem
@@ -1302,7 +1310,7 @@ public class MzIdentMlExporter {
     /**
      * Add the protein scores to the {@link ProteinAmbiguityGroup} instance.
      *
-     * @param proteinGroup          the protein group instance
+     * @param proteinGroup the protein group instance
      * @param proteinAmbiguityGroup the protein ambiguity group instance
      */
     private void addProteinScores(ProteinGroup proteinGroup, ProteinAmbiguityGroup proteinAmbiguityGroup) throws IOException {
@@ -1340,7 +1348,7 @@ public class MzIdentMlExporter {
      * Create a spectrum identification item from a Colims spectrum.
      *
      * @param spectrum the Colims {@link Spectrum} instance
-     * @param peptide  the Colims {@link Peptide} instance
+     * @param peptide the Colims {@link Peptide} instance
      * @return the populated {@link SpectrumIdentification} instance
      * @throws IOException in case of an JSON parsing related problem
      */
@@ -1412,11 +1420,13 @@ public class MzIdentMlExporter {
     }
 
     /**
-     * Add the given fragment ion annotations to the spectrum identification item.
+     * Add the given fragment ion annotations to the spectrum identification
+     * item.
      *
-     * @param peptideSequence            the peptide sequence
-     * @param spectrumIdentificationItem the {@link SpectrumIdentificationItem} instance
-     * @param ionMatches                 the list of fragment ions
+     * @param peptideSequence the peptide sequence
+     * @param spectrumIdentificationItem the {@link SpectrumIdentificationItem}
+     * instance
+     * @param ionMatches the list of fragment ions
      * @throws IOException in case of an JSON parsing related problem
      */
     private void populateFragmentation(String peptideSequence, SpectrumIdentificationItem spectrumIdentificationItem, List<IonMatch> ionMatches) throws IOException {
@@ -1518,7 +1528,7 @@ public class MzIdentMlExporter {
      * Calculate the fragment ion matches.
      *
      * @param spectrum the Spectrum instance
-     * @param peptide  the Peptide instance
+     * @param peptide the Peptide instance
      * @return the list of fragment ions
      */
     private ArrayList<IonMatch> calculateIonMatches(Spectrum spectrum, Peptide peptide) {
@@ -1554,7 +1564,8 @@ public class MzIdentMlExporter {
     }
 
     /**
-     * Create a spectrum identification item from an MaxQuant MBR dummy spectrum.
+     * Create a spectrum identification item from an MaxQuant MBR dummy
+     * spectrum.
      *
      * @param peptide the Colims {@link Peptide} instance
      * @return the populated {@link SpectrumIdentification} instance
@@ -1621,8 +1632,8 @@ public class MzIdentMlExporter {
      * and sequence.
      *
      * @param accession the protein accession
-     * @param sequence  the protein sequence
-     * @param id        the db sequence ID
+     * @param sequence the protein sequence
+     * @param id the db sequence ID
      * @return representative DBSequence
      */
     private DBSequence populateDBSequence(String accession, String sequence, Long id) throws IOException {
@@ -1666,7 +1677,7 @@ public class MzIdentMlExporter {
      * Get the CV representation of a Colims modification.
      *
      * @param modification a colims modification
-     * @param <T>          subclass of {@link AbstractModification}
+     * @param <T> subclass of {@link AbstractModification}
      * @return the modification in CvParam form
      * @throws IOException in case of an JSON parsing related problem
      */
@@ -1690,8 +1701,8 @@ public class MzIdentMlExporter {
      * Get a list of child MzIdentML elements by their class and parent name.
      *
      * @param parentName name of key or dot notation path to key
-     * @param type       type of objects to return
-     * @param <T>        subclass of MzIdentMLObject
+     * @param type type of objects to return
+     * @param <T> subclass of MzIdentMLObject
      * @return list of objects of type T
      * @throws IOException in case of a JSON parsing related problem
      */
@@ -1717,7 +1728,7 @@ public class MzIdentMlExporter {
      *
      * @param name Name of key or dot notation path to key
      * @param type Type of object to be returned
-     * @param <T>  Subclass of MzIdentMLObject
+     * @param <T> Subclass of MzIdentMLObject
      * @return Object of type T, null if nothing was found
      * @throws java.io.IOException in case of an I/O related problem
      */
@@ -1792,8 +1803,8 @@ class UniqueEvidence {
      * Constructor.
      *
      * @param proteinAccession the protein accession
-     * @param peptideDTO       the {@link PeptideDTO} instance
-     * @param peptidePosition  the {@link PeptidePosition} instance
+     * @param peptideDTO the {@link PeptideDTO} instance
+     * @param peptidePosition the {@link PeptidePosition} instance
      */
     public UniqueEvidence(String proteinAccession, PeptideDTO peptideDTO, PeptidePosition peptidePosition) {
         this.proteinAccession = proteinAccession;
@@ -1837,7 +1848,7 @@ class UniqueEvidence {
         if (!Objects.equals(this.peptidePosition.getStartPosition(), that.peptidePosition.getStartPosition())) {
             return false;
         }
-        return Objects.equals(this.peptidePosition.getEndPosition(), that.peptidePosition.getEndPosition()) && this.peptidePosition.getPreAA() == that.peptidePosition.getPreAA() && this.peptidePosition.getPostAA() == that.peptidePosition.getPostAA();
+        return Objects.equals(this.peptidePosition.getEndPosition(), that.peptidePosition.getEndPosition()) && Objects.equals(this.peptidePosition.getPreAA(), that.peptidePosition.getPreAA()) && Objects.equals(this.peptidePosition.getPostAA(), that.peptidePosition.getPostAA());
     }
 
     @Override

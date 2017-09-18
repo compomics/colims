@@ -1,7 +1,6 @@
 package com.compomics.colims.core.util;
 
 import java.nio.file.Path;
-import java.util.Iterator;
 
 /**
  * This utility class provides methods for file paths.
@@ -17,14 +16,15 @@ public final class PathUtils {
     }
 
     /**
-     * Get the relative child path for the path component in the given path. (For example: if the path is
-     * "/home/foo/bar/test.txt" and the path component is "foo", the method will return "bar/test.txt")
+     * Get the relative child path for the path component in the given path.
+     * (For example: if the path is "/home/foo/bar/test.txt" and the path
+     * component is "foo", the method will return "bar/test.txt")
      *
-     * @param path          the given path
+     * @param path the given path
      * @param pathComponent the path component
      * @return the relative child path
-     * @throws IllegalArgumentException if the path doesn't contain the path component or if the given path doesn't have
-     *                                  a root
+     * @throws IllegalArgumentException if the path doesn't contain the path
+     * component or if the given path doesn't have a root
      */
     public static Path getRelativeChildPath(final Path path, final String pathComponent) {
         Path relativePath = null;
@@ -51,18 +51,19 @@ public final class PathUtils {
     }
 
     /**
-     * Get the relative child path for the child path compared to the parent path. (For example: if the path is
-     * "/home/foo/bar/test.txt" and the path component is "/home/foo", the method will return "bar/test.txt")
+     * Get the relative child path for the child path compared to the parent
+     * path. (For example: if the path is "/home/foo/bar/test.txt" and the path
+     * component is "/home/foo", the method will return "bar/test.txt")
      *
      * @param parentPath the parent path
-     * @param childPath  the child path
+     * @param childPath the child path
      * @return the relative child path
-     * @throws IllegalArgumentException if the child path doesn't contain the parent path or if the given paths don't
-     *                                  have the same root
+     * @throws IllegalArgumentException if the child path doesn't contain the
+     * parent path or if the given paths don't have the same root
      */
     public static Path getRelativeChildPath(final Path parentPath, final Path childPath) {
         Path parentRootPath = parentPath.getRoot();
-        if (parentPath == null) {
+        if (parentRootPath == null) {
             throw new IllegalArgumentException("The given parent path " + parentPath.toString() + " doesn't have a root.");
         }
         Path childRootPath = childPath.getRoot();

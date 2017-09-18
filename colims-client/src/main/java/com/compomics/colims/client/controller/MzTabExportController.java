@@ -704,7 +704,7 @@ public class MzTabExportController implements Controllable {
             int index = 0;
             while (assays.hasMoreElements()) {
                 String assay = ((DefaultMutableTreeNode) assays.nextElement()).getUserObject().toString();
-                int assayNo = Integer.valueOf(assay.substring(assay.indexOf(" ") + 1));
+                int assayNo = Integer.valueOf(assay.substring(assay.indexOf(' ') + 1));
                 assayNumbers[index] = assayNo;
                 index++;
             }

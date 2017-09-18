@@ -62,7 +62,7 @@ public class FixedTabularFileIterator<T extends Enum<T>> implements Iterable<Map
 
         List<String> firstLineList = Arrays.asList(firstLine.split(String.valueOf(DELIMITER)));
         //check if each of the given header values is present in the file header
-        for (MaxQuantHeader maxQuantHeader : maxQuantHeaders.getMandatoryHeaders()) {
+        maxQuantHeaders.getMandatoryHeaders().forEach((maxQuantHeader) -> {
             Optional<String> header = maxQuantHeader.getValues()
                     .stream()
                     .filter(firstLineList::contains)
@@ -74,7 +74,7 @@ public class FixedTabularFileIterator<T extends Enum<T>> implements Iterable<Map
             } else {
                 throw new IllegalArgumentException("The mandatory header " + maxQuantHeader.getName() + " is not present in the given file " + tsvFile.getFileName());
             }
-        }
+        });
 
         advanceLine();
     }

@@ -42,7 +42,7 @@ public class CompletedDbTaskQueueTableModel extends AbstractTableModel {
     public static final int DURATION_INDEX = 7;
 
     private List<CompletedDbTask> messages;
-    private UserService userService;
+    private final UserService userService;
 
     /**
      * No-arg constructor.

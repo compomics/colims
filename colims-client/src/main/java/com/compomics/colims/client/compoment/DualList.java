@@ -20,6 +20,9 @@ import java.util.stream.Collectors;
  */
 public class DualList<T> extends javax.swing.JPanel {
 
+    /**
+     * The property change event name.
+     */
     public static final String CHANGED = "changed";
     //model
     /**
@@ -195,7 +198,7 @@ public class DualList<T> extends javax.swing.JPanel {
                     //remove from addedItemBindingList
                     addedItemBindingList.remove(selectedItem);
                 });
-                
+
                 //sort
                 sort(availableItemBindingList);
 

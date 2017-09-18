@@ -33,7 +33,7 @@ import java.util.EnumMap;
 public class UtilitiesSearchSettingsMapperTest {
 
     private IdentificationParameters identificationParameters;
-    private EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
+    private final EnumMap<FastaDbType, FastaDb> fastaDbs = new EnumMap<>(FastaDbType.class);
     @Autowired
     private UtilitiesSearchSettingsMapper utilitiesSearchSettingsMapper;
     @Autowired

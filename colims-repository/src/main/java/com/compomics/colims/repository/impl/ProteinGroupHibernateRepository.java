@@ -1,6 +1,5 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
@@ -108,11 +107,6 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public Object[] getProteinGroupsProjections(AnalyticalRun analyticalRun) {
-        return null;
-    }
-
-    @Override
     public void saveOrUpdate(ProteinGroup proteinGroup) {
         getCurrentSession().saveOrUpdate(proteinGroup);
     }
@@ -169,19 +163,22 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public Map<ProteinGroupHasProtein, Protein> getProteinGroupHasProteinsByProteinGroupId(Long proteinGroupId) {
+    public ProteinGroupHasProtein getMainProteinGroupHasProtein(Long proteinGroupId) {
+        ProteinGroupHasProtein proteinGroupHasProtein = null;
 
-        Query query = getCurrentSession().getNamedQuery("Protein.getProteinsByProteinGroupId");
-        query.setParameter("proteinGroupId", proteinGroupId);
+        Criteria criteria = getCurrentSession().createCriteria(ProteinGroupHasProtein.class);
 
-        List list = query.list();
+        //join to fetch the protein group
+        criteria.createAlias("protein", "protein");
 
-        Map<ProteinGroupHasProtein, Protein> proteins = new HashMap<>();
-        for (Object object : list) {
-            Object[] objectArray = (Object[]) object;
-            proteins.put((ProteinGroupHasProtein) objectArray[1], (Protein) objectArray[0]);
+        criteria.add(Restrictions.eq("proteinGroup.id", proteinGroupId));
+        criteria.add(Restrictions.eq("isMainGroupProtein", true));
+
+        List<ProteinGroupHasProtein> results = criteria.list();
+        if (!results.isEmpty()) {
+            proteinGroupHasProtein = results.get(0);
         }
 
-        return proteins;
+        return proteinGroupHasProtein;
     }
 }

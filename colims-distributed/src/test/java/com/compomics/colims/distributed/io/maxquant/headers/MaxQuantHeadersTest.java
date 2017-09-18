@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class MaxQuantHeadersTest {
 
-    private EvidenceHeaders evidenceHeaders;
+    private final EvidenceHeaders evidenceHeaders;
 
     public MaxQuantHeadersTest() throws IOException {
         evidenceHeaders = new EvidenceHeaders();

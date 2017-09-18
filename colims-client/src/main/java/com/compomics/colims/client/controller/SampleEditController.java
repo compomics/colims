@@ -10,19 +10,15 @@ import com.compomics.colims.client.event.*;
 import com.compomics.colims.client.event.admin.MaterialChangeEvent;
 import com.compomics.colims.client.event.admin.ProtocolChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
-import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
-import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
 import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleBinaryFileDialog;
 import com.compomics.colims.client.view.SampleEditDialog;
-import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.MaterialService;
 import com.compomics.colims.core.service.ProtocolService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
-import com.compomics.colims.model.enums.DefaultPermission;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.apache.log4j.Logger;
@@ -38,7 +34,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -342,46 +337,6 @@ public class SampleEditController implements Controllable {
                 sampleEditDialog.dispose();
             }
         }
-    }
-
-    /**
-     * Delete the database entity (project, experiment, analytical runs) from
-     * the database. Shows a confirmation dialog first. When confirmed, a
-     * DeleteDbTask message is sent to the DB task queue. A message dialog is
-     * shown in case the queue cannot be reached or in case of an IOException
-     * thrown by the sendDbTask method.
-     *
-     * @param entity the entity to delete
-     * @param dbEntityClass the database entity class
-     * @return true if the delete task is confirmed.
-     */
-    private boolean deleteEntity(final DatabaseEntity entity, final Class dbEntityClass) {
-        boolean deleteConfirmation = false;
-
-        //check delete permissions
-        if (userBean.getDefaultPermissions().get(DefaultPermission.DELETE)) {
-            int option = JOptionPane.showConfirmDialog(mainController.getMainFrame(), "Are you sure? This will remove all underlying database relations (spectra, psm's, ...) as well."
-                    + System.lineSeparator() + "A delete task will be sent to the database task queue.", "Delete " + dbEntityClass.getSimpleName() + " confirmation.", JOptionPane.YES_NO_OPTION);
-            if (option == JOptionPane.YES_OPTION) {
-                //check connection
-                if (queueManager.isReachable()) {
-                    DeleteDbTask deleteDbTask = new DeleteDbTask(dbEntityClass, entity.getId(), userBean.getCurrentUser().getId());
-                    try {
-                        dbTaskProducer.sendDbTask(deleteDbTask);
-                        deleteConfirmation = true;
-                    } catch (IOException e) {
-                        LOGGER.error(e, e.getCause());
-                        eventBus.post(new UnexpectedErrorMessageEvent(e.getMessage()));
-                    }
-                } else {
-                    eventBus.post(new StorageQueuesConnectionErrorMessageEvent(queueManager.getBrokerName(), queueManager.getBrokerUrl(), queueManager.getBrokerJmxUrl()));
-                }
-            }
-        } else {
-            mainController.showPermissionErrorDialog("Your user doesn't have rights to delete this " + entity.getClass().getSimpleName());
-        }
-
-        return deleteConfirmation;
     }
 
     /**

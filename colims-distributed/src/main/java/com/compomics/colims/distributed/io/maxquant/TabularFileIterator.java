@@ -57,7 +57,7 @@ public class TabularFileIterator implements Iterable<Map<String, String>>, Itera
 
         List<String> firstLineList = Arrays.asList(firstLine.split(String.valueOf(DELIMITER)));
         //check if each of the given header values is present in the file header
-        for (MaxQuantHeader maxQuantHeader : maxQuantHeaders) {
+        maxQuantHeaders.forEach((maxQuantHeader) -> {
             Optional<String> header = maxQuantHeader.getValues()
                     .stream()
                     .filter(firstLineList::contains)
@@ -68,7 +68,7 @@ public class TabularFileIterator implements Iterable<Map<String, String>>, Itera
             } else {
                 throw new IllegalArgumentException("The mandatory header " + maxQuantHeader.getName() + " is not present in the given file " + tsvFile.getFileName());
             }
-        }
+        });
 
         headerValues = firstLine.split(String.valueOf(DELIMITER));
 

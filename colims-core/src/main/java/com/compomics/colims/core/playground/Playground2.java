@@ -3,17 +3,12 @@ package com.compomics.colims.core.playground;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsPeptideMapper;
 import com.compomics.colims.core.service.PeptideService;
-import com.compomics.colims.core.service.UserQueryService;
-import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.PeptideHasProteinGroup;
-import com.compomics.colims.model.User;
-import com.compomics.util.experiment.identification.matches.IonMatch;
 import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 

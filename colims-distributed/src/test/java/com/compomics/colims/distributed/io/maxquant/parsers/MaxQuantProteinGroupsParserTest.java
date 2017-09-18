@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.AssertionErrors;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -29,8 +28,8 @@ public class MaxQuantProteinGroupsParserTest {
 
     private Path proteinGroupsFile;
 
-    private LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
-    private EnumMap<FastaDbType, List<FastaDb>> fastaDbEnumMap = new EnumMap<>(FastaDbType.class);
+    private final LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
+    private final EnumMap<FastaDbType, List<FastaDb>> fastaDbEnumMap = new EnumMap<>(FastaDbType.class);
     @Autowired
     private MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
     @Autowired

@@ -15,7 +15,7 @@ import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.io.PeptideShakerImport;
-import com.compomics.colims.core.io.headers.ProteinGroupHeaders;
+import com.compomics.colims.core.io.headers.ProteinGroupsIntensityHeadersParser;
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.*;
@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * @author Niels Hulstaert
@@ -100,7 +99,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
     @Autowired
     private OntologyMapper ontologyMapper;
     @Autowired
-    private ProteinGroupHeaders proteinGroupHeaders;
+    private ProteinGroupsIntensityHeadersParser proteinGroupsIntensityHeadersParser;
 
     /**
      * Get the view of this controller.
@@ -271,7 +270,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * Show the view with the given DataImport en PersistMetadata instances for
      * updating a runs addition task.
      *
-     * @param dataImport      the DataImport instance
+     * @param dataImport the DataImport instance
      * @param persistMetaData the PersistMetadata instance
      */
     public void showEditView(DataImport dataImport, PersistMetadata persistMetaData) {
@@ -316,7 +315,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
         PersistType selectedStorageType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = analyticalRunsAdditionDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+        for (Enumeration<AbstractButton> buttons = analyticalRunsAdditionDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -328,14 +327,15 @@ public class AnalyticalRunsAdditionController implements Controllable {
     }
 
     /**
-     * Show label selection view if protein group headers list is not empty.
+     * Show label selection view if the protein groups headers list is not
+     * empty.
      *
-     * @throws IOException
+     * @throws IOException in case of a proteinGroups.txt read problem
      */
     private void showLabelSelectionView() throws IOException {
-        Path proteinGroupDirectory = Paths.get(maxQuantDataImportController.getDataImport().getFullCombinedDirectory().toString() + File.separator + "txt" + File.separator + "proteinGroups.txt");
-        proteinGroupHeaders.parseProteinGroupHeaders(proteinGroupDirectory);
-        if (proteinGroupHeaders.getProteinGroupHeaders().size() > 0) {
+        Path proteinGroupsFile = Paths.get(maxQuantDataImportController.getDataImport().getFullCombinedDirectory().toString() + File.separator + "txt" + File.separator + "proteinGroups.txt");
+        proteinGroupsIntensityHeadersParser.parseProteinGroupHeaders(proteinGroupsFile);
+        if (proteinGroupsIntensityHeadersParser.getProteinGroupsIntensityHeaders().size() > 0) {
             initLabelSelectionView();
             GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), labelSelectionDialog);
             labelSelectionDialog.setVisible(true);
@@ -351,11 +351,11 @@ public class AnalyticalRunsAdditionController implements Controllable {
     private void initLabelSelectionView() {
         labelSelectionDialog = new LabelSelectionDialog(analyticalRunsAdditionDialog, true);
         labelSelectionDialog.getLabelDualList().init(String::compareToIgnoreCase);
-        labelSelectionDialog.getLabelDualList().populateLists(proteinGroupHeaders.getProteinGroupHeaders(), new ArrayList<>(), proteinGroupHeaders.getProteinGroupHeaders().size());
-        maxQuantDataImportController.getDataImport().getSelectedProteinGroupHeaders().clear();
+        labelSelectionDialog.getLabelDualList().populateLists(proteinGroupsIntensityHeadersParser.getProteinGroupsIntensityHeaders(), new ArrayList<>(), proteinGroupsIntensityHeadersParser.getProteinGroupsIntensityHeaders().size());
+        maxQuantDataImportController.getDataImport().getSelectedProteinGroupsHeaders().clear();
 
         labelSelectionDialog.getLabelSaveOrUpdateButton().addActionListener(e -> {
-            maxQuantDataImportController.getDataImport().getSelectedProteinGroupHeaders().addAll(labelSelectionDialog.getLabelDualList().getAddedItems());
+            maxQuantDataImportController.getDataImport().getSelectedProteinGroupsHeaders().addAll(labelSelectionDialog.getLabelDualList().getAddedItems());
             sendStorageTask(maxQuantDataImportController.getDataImport());
             getCardLayout().show(analyticalRunsAdditionDialog.getTopPanel(), CONFIRMATION_CARD);
             labelSelectionDialog.dispose();
@@ -384,7 +384,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * sendDbTask method.
      *
      * @param dataImport the DataImport instance with the necessary import
-     *                   information
+     * information
      */
     private void sendStorageTask(DataImport dataImport) {
         String storageDescription = analyticalRunsAdditionDialog.getStorageDescriptionTextField().getText();
@@ -432,12 +432,6 @@ public class AnalyticalRunsAdditionController implements Controllable {
                 updateInfo("Click on \"proceed\" to select the necessary input files/directories.");
                 break;
             case PS_DATA_IMPORT_CARD:
-                analyticalRunsAdditionDialog.getBackButton().setEnabled(true);
-                analyticalRunsAdditionDialog.getProceedButton().setEnabled(false);
-                analyticalRunsAdditionDialog.getFinishButton().setEnabled(true);
-                //show info
-                updateInfo("Click on \"finish\" to validate the input and store the run(s).");
-                break;
             case MAX_QUANT_DATA_IMPORT_CARD:
                 analyticalRunsAdditionDialog.getBackButton().setEnabled(true);
                 analyticalRunsAdditionDialog.getProceedButton().setEnabled(false);
@@ -457,7 +451,8 @@ public class AnalyticalRunsAdditionController implements Controllable {
     }
 
     /**
-     * Find all the quantification method labels from the Colims ontology mapping.
+     * Find all the quantification method labels from the Colims ontology
+     * mapping.
      *
      * @return the list of quantification method labels
      */

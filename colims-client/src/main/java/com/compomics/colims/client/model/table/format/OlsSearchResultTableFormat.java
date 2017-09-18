@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  */
 public class OlsSearchResultTableFormat implements AdvancedTableFormat<OlsSearchResult> {
 
-    public final static String[] COLUMN_NAMES = {"ontology", "accession", "match(es)"};
+    private final static String[] COLUMN_NAMES = {"ontology", "accession", "match(es)"};
     private static final String HTML_OPEN = "<html>";
     private static final String HTML_CLOSE = "</html>";
     public static final int ONTOLOGY_PREFIX = 0;

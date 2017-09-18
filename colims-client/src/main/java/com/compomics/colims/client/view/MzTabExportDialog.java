@@ -136,7 +136,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     }
 
     public JTree getAssayWithRunsTree() {
-        return AssayWithRunsTree;
+        return assayWithRunsTree;
     }
 
     public JButton getMatchReagentAndLabelButton() {
@@ -185,8 +185,8 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         descriptionScrollPane = new javax.swing.JScrollPane();
         descriptionTextArea = new javax.swing.JTextArea();
         numberOfAssaysPanel = new javax.swing.JPanel();
-        AssayWithRunsScrollPane = new javax.swing.JScrollPane();
-        AssayWithRunsTree = new javax.swing.JTree();
+        assayWithRunsScrollPane = new javax.swing.JScrollPane();
+        assayWithRunsTree = new javax.swing.JTree();
         explanationLabel = new javax.swing.JLabel();
         quantificationLabelScrollPane = new javax.swing.JScrollPane();
         quantificationLabelList = new javax.swing.JList<>();
@@ -381,9 +381,9 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         numberOfAssaysPanel.setOpaque(false);
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
-        AssayWithRunsTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        AssayWithRunsTree.setToolTipText("");
-        AssayWithRunsScrollPane.setViewportView(AssayWithRunsTree);
+        assayWithRunsTree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        assayWithRunsTree.setToolTipText("");
+        assayWithRunsScrollPane.setViewportView(assayWithRunsTree);
 
         explanationLabel.setText("Please match quantification reagents and quantification labels");
 
@@ -411,7 +411,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
             numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(numberOfAssaysPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(AssayWithRunsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
+                .addComponent(assayWithRunsScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(numberOfAssaysPanelLayout.createSequentialGroup()
@@ -445,7 +445,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, numberOfAssaysPanelLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(numberOfAssaysPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(AssayWithRunsScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(assayWithRunsScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(quantificationLabelScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
@@ -764,10 +764,10 @@ public class MzTabExportDialog extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane AssayWithRunsScrollPane;
-    private javax.swing.JTree AssayWithRunsTree;
     private javax.swing.JButton addAssaysToSVButton;
     private javax.swing.JButton addStudyVariableButton;
+    private javax.swing.JScrollPane assayWithRunsScrollPane;
+    private javax.swing.JTree assayWithRunsTree;
     private javax.swing.JPanel assaysToSVButtonsPanel;
     private javax.swing.JPanel assaysToSVButtonsParentPanel;
     private javax.swing.JList<String> assaysToSVList;

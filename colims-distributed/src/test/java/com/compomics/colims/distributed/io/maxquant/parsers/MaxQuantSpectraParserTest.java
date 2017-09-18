@@ -1,7 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
-import com.compomics.colims.model.Spectrum;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +9,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -49,9 +47,7 @@ public class MaxQuantSpectraParserTest {
 
         Assert.assertEquals(2864, maxQuantSpectra.getSpectrumToPsms().size());
         int numberOfUnidentifiedSpectra = 0;
-        for (List<Spectrum> unidentifiedSpectra : maxQuantSpectra.getUnidentifiedSpectra().values()) {
-            numberOfUnidentifiedSpectra += unidentifiedSpectra.size();
-        }
+        numberOfUnidentifiedSpectra = maxQuantSpectra.getUnidentifiedSpectra().values().stream().map((unidentifiedSpectra) -> unidentifiedSpectra.size()).reduce(numberOfUnidentifiedSpectra, Integer::sum);
         Assert.assertEquals(11306, numberOfUnidentifiedSpectra);
     }
 

@@ -35,7 +35,8 @@ public class MaxQuantProteinGroupsParser {
     private static final String INTENSITY_HEADER = "%1$s %2$s";
 
     /**
-     * The map of parsed protein groups (key: proteinGroups.txt entry ID; value: the {@link ProteinGroup} instance).
+     * The map of parsed protein groups (key: proteinGroups.txt entry ID; value:
+     * the {@link ProteinGroup} instance).
      */
     private final Map<Integer, ProteinGroup> proteinGroups = new HashMap<>();
     /**
@@ -44,7 +45,8 @@ public class MaxQuantProteinGroupsParser {
      */
     private final Set<Integer> omittedProteinGroupIds = new HashSet<>();
     /**
-     * The map of parsed protein sequences (key: protein accession; value: protein sequence).
+     * The map of parsed protein sequences (key: protein accession; value:
+     * protein sequence).
      */
     private Map<String, String> proteinSequences = new HashMap<>();
     /**
@@ -97,11 +99,11 @@ public class MaxQuantProteinGroupsParser {
     /**
      * Parse the proteinGroups.txt file.
      *
-     * @param proteinGroupsFile   MaxQuant protein groups file
-     * @param fastaDbMap          the map of {@link FastaDb} instances
+     * @param proteinGroupsFile MaxQuant protein groups file
+     * @param fastaDbMap the map of {@link FastaDb} instances
      * @param quantificationLabel the quantification label
      * @param includeContaminants whether or not to include contaminants
-     * @param optionalHeaders     the list of optional headers
+     * @param optionalHeaders the list of optional headers
      * @throws IOException in case of an Input/Output related problem
      */
     public void parse(Path proteinGroupsFile, LinkedHashMap<FastaDb, Path> fastaDbMap, String quantificationLabel, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
@@ -120,7 +122,8 @@ public class MaxQuantProteinGroupsParser {
     }
 
     /**
-     * Construct a {@link ProteinGroup} instance from a proteinGroups file entry.
+     * Construct a {@link ProteinGroup} instance from a proteinGroups file
+     * entry.
      *
      * @param proteinGroupsEntry key-value pairs from an proteinGroups entry
      * @return the {@link ProteinGroup} object
@@ -172,7 +175,7 @@ public class MaxQuantProteinGroupsParser {
 
                 Map<String, Double> labeledIntensities = null;
                 if (!quantificationLabel.equals(MaxQuantImport.LABEL_FREE)) {
-                    labeledIntensities = parseLabeledQuantification(proteinGroupsEntry, proteinGroup, run, name.toLowerCase(), optionalHeaders);
+                    labeledIntensities = parseLabeledQuantification(proteinGroupsEntry, name.toLowerCase(), optionalHeaders);
                 }
 
                 if (intensity != null || lfqIntensity != null || ibaq != null || msmsCount != null || labeledIntensities != null) {
@@ -209,7 +212,7 @@ public class MaxQuantProteinGroupsParser {
     /**
      * Create a protein and it's relation to a protein group.
      *
-     * @param sequence  the sequence of the protein
+     * @param sequence the sequence of the protein
      * @param accession the accession of the protein
      * @param mainGroup whether this is the main protein of the group
      * @return a ProteinGroupHasProtein object
@@ -232,15 +235,17 @@ public class MaxQuantProteinGroupsParser {
     }
 
     /**
-     * Create protein group quantification and it's relation to a protein group and analytical run.
+     * Create protein group quantification and it's relation to a protein group
+     * and analytical run.
      *
-     * @param proteinGroup       the protein group
-     * @param analyticalRun      the analytical run related to quantification
-     * @param intensity          the intensity
-     * @param lfqIntensity       the LFQ intensity
-     * @param ibaq               the iBAQ
-     * @param msmsCount          the MSMS Count
-     * @param labeledIntensities the labeled intensities map (key: label; value: intensity)
+     * @param proteinGroup the protein group
+     * @param analyticalRun the analytical run related to quantification
+     * @param intensity the intensity
+     * @param lfqIntensity the LFQ intensity
+     * @param ibaq the iBAQ
+     * @param msmsCount the MSMS Count
+     * @param labeledIntensities the labeled intensities map (key: label; value:
+     * intensity)
      * @throws JsonProcessingException in case of a json serializing problem
      */
     private void createProteinGroupQuant(ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String intensity, String lfqIntensity, String ibaq, String msmsCount, Map<String, Double> labeledIntensities) throws JsonProcessingException {
@@ -277,21 +282,19 @@ public class MaxQuantProteinGroupsParser {
     }
 
     /**
-     * Parse labeled quantifications for the given run and protein group where the quantification names come from mqpar file.
-     * If the value is null or not numeric, it is not stored.
+     * Parse labeled quantifications for the given run and protein group where
+     * the quantification names come from mqpar file. If the value is null or
+     * not numeric, it is not stored.
      *
      * @param proteinGroupsEntry key-value pairs from an evidence entry
-     * @param proteinGroup       the {@link ProteinGroup} instance
-     * @param analyticalRun      the analytical run
-     * @param experimentName     the experiment name
+     * @param experimentName the experiment name
      * @return the map of labeled intensities
      */
-    private Map<String, Double> parseLabeledQuantification(Map<String, String> proteinGroupsEntry, ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String experimentName,
-                                                           List<String> optionalHeaders) {
+    private Map<String, Double> parseLabeledQuantification(Map<String, String> proteinGroupsEntry, String experimentName, List<String> optionalHeaders) {
         Map<String, Double> intensities = new LinkedHashMap<>();
         switch (quantificationLabel) {
             case MaxQuantImport.SILAC:
-            case MaxQuantImport.iTRAQ:
+            case MaxQuantImport.ITRAQ:
             case MaxQuantImport.ICAT:
                 String intensityL = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_L), experimentName));
                 String intensityH = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_H), experimentName));
@@ -315,7 +318,7 @@ public class MaxQuantProteinGroupsParser {
                     String intensityM = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_M), experimentName));
                     if (intensityM != null && NumberUtils.isNumber(intensityM)) {
                         if (maxQuantSearchSettingsParser.getLabelMods().get(1) != null) {
-                            intensities.put(maxQuantSearchSettingsParser.getLabelMods().get(maxQuantSearchSettingsParser.getLabelMods().get(1)), Double.valueOf(intensityM));
+                            intensities.put(maxQuantSearchSettingsParser.getLabelMods().get(1), Double.valueOf(intensityM));
                         } else {
                             intensities.put(MaxQuantImport.NO_LABEL, Double.valueOf(intensityM));
                         }
@@ -340,24 +343,24 @@ public class MaxQuantProteinGroupsParser {
                 throw new IllegalArgumentException("Unexpected quantification label: " + quantificationLabel);
         }
 
-        //if the given optional header has numeric value per run and protein group, store.
-        for (String optionalHeader : optionalHeaders) {
+        //store the given optional header if it has a numeric value per run and protein group
+        optionalHeaders.forEach((optionalHeader) -> {
             String experimentOptionalHeader = optionalHeader.toLowerCase() + " " + experimentName;
             if (proteinGroupsEntry.containsKey(experimentOptionalHeader) && NumberUtils.isNumber(proteinGroupsEntry.get(experimentOptionalHeader))) {
                 intensities.put(optionalHeader, Double.valueOf(proteinGroupsEntry.get(experimentOptionalHeader)));
             }
-        }
+        });
 
         return intensities;
     }
 
     /**
-     * Calculates the label size for the TMT reporters because it's possible that for example for TMT10plex MaxQuant list 20 labels instead of 10.
+     * Calculates the label size for the TMT reporters because it's possible
+     * that for example for TMT10plex MaxQuant list 20 labels instead of 10.
      *
      * @param isobaricLabelsSize the number of isobaric labels
      * @return the number of reporters
      */
-
     private int calculateTmtReportersSize(int isobaricLabelsSize) {
         int labelSize;
         if (isobaricLabelsSize % 6 == 0) {

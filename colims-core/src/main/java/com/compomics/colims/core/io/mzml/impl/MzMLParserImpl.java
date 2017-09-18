@@ -296,7 +296,7 @@ public class MzMLParserImpl implements MzMLParser {
                                 mzRatio = Double.valueOf(cvParam.getValue());
                                 break;
                             case "MS:1000041":
-                                charge = Integer.valueOf(cvParam.getValue());
+                                charge = Integer.parseInt(cvParam.getValue());
                                 break;
                             default:
                         }

@@ -49,28 +49,34 @@ public class AnnotatedSpectraParser {
     private static final String APL_HEADER_DELIMITER = "=";
     private static final String APL_HEADER = "header";
     /**
-     * Spectrum peaks from APL files. key: APL key of the spectrum, value :list of peaks.
+     * Spectrum peaks from APL files. key: APL key of the spectrum, value :list
+     * of peaks.
      */
-    private Map<String, List<Peak>> spectrumPeaks = new HashMap<>();
+    private final Map<String, List<Peak>> spectrumPeaks = new HashMap<>();
     /**
-     * Annotations from MSMS file
-     * key:APL key of the spectrum, value map( key : Peak that keeps mass and intensity, value : match).
+     * Annotations from MSMS file key:APL key of the spectrum, value map( key :
+     * Peak that keeps mass and intensity, value : match).
      */
-    private Map<String, Map<Peak, String>> annotations = new HashMap<>();
+    private final Map<String, Map<Peak, String>> annotations = new HashMap<>();
     /**
      * List of aplKeys from MSMS file.
      */
-    private List<String> aplKeys = new ArrayList<>();
+    private final List<String> aplKeys = new ArrayList<>();
     /**
-     * The apl spectrum file paths map (key: apl file path; value: apl param file path);
+     * The apl spectrum file paths map (key: apl file path; value: apl param
+     * file path);
      */
-    private Map<Path, Path> aplFilePaths = new HashMap<>();
-    private MsmsHeaders msmsHeaders;
+    private final Map<Path, Path> aplFilePaths = new HashMap<>();
+    /**
+     * The msms.txt file headers.
+     */
+    private final MsmsHeaders msmsHeaders;
 
     /**
      * No-arg constructor.
      *
-     * @throws IOException in case of an Input/Output related problem while parsing the headers.
+     * @throws IOException in case of an Input/Output related problem while
+     * parsing the headers.
      */
     public AnnotatedSpectraParser() throws IOException {
         msmsHeaders = new MsmsHeaders();
@@ -94,22 +100,22 @@ public class AnnotatedSpectraParser {
      * Parse msms file only for given ID numbers.
      *
      * @param msmsFile the msms.txt file
-     * @param msmsIDs  the list of msms IDs to parse
+     * @param msmsIDs the list of msms IDs to parse
      */
     private void parseMSMS(Path msmsFile, List<String> msmsIDs) throws IOException {
         TabularFileIterator valuesIterator = new TabularFileIterator(msmsFile, msmsHeaders.getMandatoryHeaders());
         for (Map<String, String> spectrumValues : valuesIterator) {
-            if (msmsIDs.contains(spectrumValues.get(MsmsHeader.ID))) {
+            if (msmsIDs.contains(spectrumValues.get(msmsHeaders.get(MsmsHeader.ID)))) {
                 //concatenate the RAW file name and scan index
-                String aplKey = KEY_START + spectrumValues.get(MsmsHeader.RAW_FILE)
+                String aplKey = KEY_START + spectrumValues.get(msmsHeaders.get(MsmsHeader.RAW_FILE))
                         + KEY_MIDDLE
-                        + spectrumValues.get(MsmsHeader.SCAN_NUMBER);
+                        + spectrumValues.get(msmsHeaders.get(MsmsHeader.SCAN_NUMBER));
 
                 //map the spectrum
                 if (!aplKeys.contains(aplKey)) {
-                    Map<Peak, String> annotatedPeakList = parsePeakList(spectrumValues.get(MsmsHeader.MATCHES),
-                            spectrumValues.get(MsmsHeader.INTENSITIES),
-                            spectrumValues.get(MsmsHeader.MASSES));
+                    Map<Peak, String> annotatedPeakList = parsePeakList(spectrumValues.get(msmsHeaders.get(MsmsHeader.MATCHES)),
+                            spectrumValues.get(msmsHeaders.get(MsmsHeader.INTENSITIES)),
+                            spectrumValues.get(msmsHeaders.get(MsmsHeader.MASSES)));
                     annotations.put(aplKey, annotatedPeakList);
                     aplKeys.add(aplKey);
 
@@ -148,7 +154,8 @@ public class AnnotatedSpectraParser {
     }
 
     /**
-     * Parse APL File Paths. Put all the apl files to be used in aplFilePaths list.
+     * Parse APL File Paths. Put all the apl files to be used in aplFilePaths
+     * list.
      *
      * @param andromedaDirectory
      * @throws FileNotFoundException
@@ -156,8 +163,9 @@ public class AnnotatedSpectraParser {
      */
     private void parseAplFilePaths(Path andromedaDirectory) throws FileNotFoundException, IOException {
         /**
-         * Parse the apl summary file 'aplfiles.txt' to extract the apl spectrum file paths, the spectrum parameter file paths
-         * and the mass analyzer and fragmentation type.
+         * Parse the apl summary file 'aplfiles.txt' to extract the apl spectrum
+         * file paths, the spectrum parameter file paths and the mass analyzer
+         * and fragmentation type.
          */
         if (!Files.exists(andromedaDirectory)) {
             throw new FileNotFoundException("The andromeda directory " + andromedaDirectory.toString() + " could not be found.");
@@ -177,9 +185,9 @@ public class AnnotatedSpectraParser {
 
     }
 
-
     /**
-     * Parse the APL files for given aplKeys and put the peaks in the spectrumPeaks list.
+     * Parse the APL files for given aplKeys and put the peaks in the
+     * spectrumPeaks list.
      */
     private void parseAplFile() throws IOException {
         for (Path aplFilePath : aplFilePaths.keySet()) {
@@ -195,7 +203,7 @@ public class AnnotatedSpectraParser {
                     if (line.startsWith(APL_SPECTUM_START)) {
                         //go to the next line
                         line = bufferedReader.readLine();
-                        //parse spectrum header part
+                        //parse spectrum header part                       
                         while (!Character.isDigit(line.charAt(0))) {
                             String[] split = line.split(APL_HEADER_DELIMITER);
                             headers.put(split[0], split[1]);

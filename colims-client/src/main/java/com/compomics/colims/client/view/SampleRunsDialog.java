@@ -106,7 +106,7 @@ public class SampleRunsDialog extends javax.swing.JDialog {
         deleteAnalyticalRunButton = new javax.swing.JButton();
         editAnalyticalRunButton = new javax.swing.JButton();
         exportMzIdentMlButton = new javax.swing.JButton();
-        SearchSettingsAndRunDetails = new javax.swing.JPanel();
+        searchSettingsAndRunDetails = new javax.swing.JPanel();
         nameLabel = new javax.swing.JLabel();
         nameTextField = new javax.swing.JTextField();
         startDateLabel = new javax.swing.JLabel();
@@ -199,8 +199,8 @@ public class SampleRunsDialog extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        SearchSettingsAndRunDetails.setBackground(new java.awt.Color(255, 255, 255));
-        SearchSettingsAndRunDetails.setBorder(javax.swing.BorderFactory.createTitledBorder("Details & search settings"));
+        searchSettingsAndRunDetails.setBackground(new java.awt.Color(255, 255, 255));
+        searchSettingsAndRunDetails.setBorder(javax.swing.BorderFactory.createTitledBorder("Details & search settings"));
 
         nameLabel.setText("Name");
 
@@ -292,91 +292,91 @@ public class SampleRunsDialog extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout SearchSettingsAndRunDetailsLayout = new javax.swing.GroupLayout(SearchSettingsAndRunDetails);
-        SearchSettingsAndRunDetails.setLayout(SearchSettingsAndRunDetailsLayout);
-        SearchSettingsAndRunDetailsLayout.setHorizontalGroup(
-            SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SearchSettingsAndRunDetailsLayout.createSequentialGroup()
+        javax.swing.GroupLayout searchSettingsAndRunDetailsLayout = new javax.swing.GroupLayout(searchSettingsAndRunDetails);
+        searchSettingsAndRunDetails.setLayout(searchSettingsAndRunDetailsLayout);
+        searchSettingsAndRunDetailsLayout.setHorizontalGroup(
+            searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchSettingsAndRunDetailsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(SearchSettingsAndRunDetailsLayout.createSequentialGroup()
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(searchSettingsAndRunDetailsLayout.createSequentialGroup()
+                        .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(attachmentsLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
                             .addComponent(locationLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(6, 6, 6)
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(attachmentsTextField)
                             .addComponent(locationTextField)))
-                    .addGroup(SearchSettingsAndRunDetailsLayout.createSequentialGroup()
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(searchSettingsAndRunDetailsLayout.createSequentialGroup()
+                        .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(startDateLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(instrumentLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
                             .addComponent(nameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(6, 6, 6)
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(startDateTextField)
                             .addComponent(instrumentTextField)
                             .addComponent(nameTextField)))
-                    .addGroup(SearchSettingsAndRunDetailsLayout.createSequentialGroup()
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(searchSettingsAndRunDetailsLayout.createSequentialGroup()
+                        .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(fastaNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(enzymeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(searchEngineLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
                         .addGap(6, 6, 6)
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(enzymeTextField, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(fastaNameTextField, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(searchEngineTextField, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addGroup(SearchSettingsAndRunDetailsLayout.createSequentialGroup()
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(searchSettingsAndRunDetailsLayout.createSequentialGroup()
+                        .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(maxMissedCleLabel)
                             .addComponent(preMasTolLabel))
                         .addGap(12, 12, 12)
-                        .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(maxMissedCleTextField)
                             .addComponent(preMasTolTextField))))
                 .addContainerGap())
         );
-        SearchSettingsAndRunDetailsLayout.setVerticalGroup(
-            SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SearchSettingsAndRunDetailsLayout.createSequentialGroup()
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        searchSettingsAndRunDetailsLayout.setVerticalGroup(
+            searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(searchSettingsAndRunDetailsLayout.createSequentialGroup()
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(startDateLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(startDateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(instrumentLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(instrumentTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(locationLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(locationTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(attachmentsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(attachmentsTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchEngineLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchEngineTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fastaNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fastaNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(enzymeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(enzymeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(maxMissedCleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(maxMissedCleTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(SearchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(searchSettingsAndRunDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(preMasTolLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(preMasTolTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -387,14 +387,14 @@ public class SampleRunsDialog extends javax.swing.JDialog {
         analyticalRunsSearchSettingsParentPanelLayout.setHorizontalGroup(
             analyticalRunsSearchSettingsParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(SearchSettingsAndRunDetails, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(searchSettingsAndRunDetails, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         analyticalRunsSearchSettingsParentPanelLayout.setVerticalGroup(
             analyticalRunsSearchSettingsParentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(analyticalRunsSearchSettingsParentPanelLayout.createSequentialGroup()
                 .addComponent(analyticalRunsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(SearchSettingsAndRunDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(searchSettingsAndRunDetails, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         closeButton.setText("close");
@@ -469,7 +469,6 @@ public class SampleRunsDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_preMasTolTextFieldActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel SearchSettingsAndRunDetails;
     private javax.swing.JPanel analyticalRunsPanel;
     private javax.swing.JPanel analyticalRunsSearchSettingsParentPanel;
     private javax.swing.JTable analyticalRunsTable;
@@ -496,6 +495,7 @@ public class SampleRunsDialog extends javax.swing.JDialog {
     private javax.swing.JTextField preMasTolTextField;
     private javax.swing.JLabel searchEngineLabel;
     private javax.swing.JTextField searchEngineTextField;
+    private javax.swing.JPanel searchSettingsAndRunDetails;
     private javax.swing.JLabel startDateLabel;
     private javax.swing.JTextField startDateTextField;
     // End of variables declaration//GEN-END:variables

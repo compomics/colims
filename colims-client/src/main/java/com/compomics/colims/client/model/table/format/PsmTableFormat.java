@@ -3,7 +3,6 @@ package com.compomics.colims.client.model.table.format;
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import com.compomics.colims.core.service.PeptideService;
 import com.compomics.colims.core.service.SpectrumService;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
@@ -28,12 +27,10 @@ public class PsmTableFormat implements AdvancedTableFormat<Spectrum> {
     public static final int PSM_CONFIDENCE = 6;
     public static final int PROTEIN_ACCESSIONS = 7;
 
-    private SpectrumService spectrumService;
-    private PeptideService peptideService;
+    private final SpectrumService spectrumService;
 
     public PsmTableFormat() {
         this.spectrumService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(SpectrumService.class);
-        this.peptideService = ApplicationContextProvider.getInstance().getApplicationContext().getBean(PeptideService.class);
     }
 
     @Override

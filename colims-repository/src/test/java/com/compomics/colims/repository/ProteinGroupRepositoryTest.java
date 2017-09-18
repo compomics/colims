@@ -1,6 +1,7 @@
 package com.compomics.colims.repository;
 
 import com.compomics.colims.model.ProteinGroup;
+import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.colims.repository.hibernate.SortDirection;
 import org.junit.Assert;
@@ -120,6 +121,15 @@ public class ProteinGroupRepositoryTest {
         List<ProteinGroup> proteinGroupsForRuns = proteinGroupRepository.getProteinGroupsForRuns(analyticalRunIds);
 
         Assert.assertEquals(2, proteinGroupsForRuns.size());
+    }
+
+    @Test
+    public void testGetMainProteinGroupHasProtein() {
+        ProteinGroupHasProtein proteinGroupHasProtein = proteinGroupRepository.getMainProteinGroupHasProtein(2L);
+
+        Assert.assertNotNull(proteinGroupHasProtein);
+        Assert.assertTrue(proteinGroupHasProtein.getIsMainGroupProtein());
+        Assert.assertNotNull(proteinGroupHasProtein.getProtein());
     }
 
 //    @Test

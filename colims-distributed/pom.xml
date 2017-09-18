@@ -300,7 +300,7 @@
                 <exclusion>
                     <groupId>com.jgoodies</groupId>
                     <artifactId>looks</artifactId>
-                </exclusion>
+                </exclusion>                
             </exclusions>
         </dependency>
 
@@ -394,24 +394,6 @@
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
             <version>3.3.0.Final</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>5.0.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>xpp3</groupId>
-            <artifactId>xpp3</artifactId>
-            <version>1.1.4c</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>2.2.10-b140310.1920</version>
-        </dependency>
+        </dependency>        
     </dependencies>
 </project>

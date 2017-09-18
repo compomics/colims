@@ -338,7 +338,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="AssayWithRunsScrollPane" pref="327" max="32767" attributes="0"/>
+                                  <Component id="assayWithRunsScrollPane" pref="327" max="32767" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="0" attributes="0">
@@ -382,7 +382,7 @@
                               <Group type="102" alignment="1" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="AssayWithRunsScrollPane" alignment="1" min="-2" pref="229" max="-2" attributes="0"/>
+                                      <Component id="assayWithRunsScrollPane" alignment="1" min="-2" pref="229" max="-2" attributes="0"/>
                                       <Component id="quantificationLabelScrollPane" alignment="1" min="-2" pref="195" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -390,14 +390,14 @@
                         </DimensionLayout>
                       </Layout>
                       <SubComponents>
-                        <Container class="javax.swing.JScrollPane" name="AssayWithRunsScrollPane">
+                        <Container class="javax.swing.JScrollPane" name="assayWithRunsScrollPane">
                           <AuxValues>
                             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
                           </AuxValues>
 
                           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                           <SubComponents>
-                            <Component class="javax.swing.JTree" name="AssayWithRunsTree">
+                            <Component class="javax.swing.JTree" name="assayWithRunsTree">
                               <Properties>
                                 <Property name="model" type="javax.swing.tree.TreeModel" editor="org.netbeans.modules.form.editors2.TreeModelEditor">
                                   <TreeModel code=""/>

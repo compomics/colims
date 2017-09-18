@@ -142,18 +142,16 @@ public class UtilitiesSearchParametersMapper implements Mapper<IdentificationPar
      */
     private void mapSearchModifications(final PtmSettings ptmSettings, final SearchParameters searchParameters) {
         //iterate over all modifications
-        for (String modificationName : ptmSettings.getAllModifications()) {
+        ptmSettings.getAllModifications().forEach((modificationName) -> {
             //try to find the PTM and the associated CvTerm in the backed up PTMs
             PTM ptm = ptmSettings.getBackedUpPtmsMap().get(modificationName);
             CvTerm cvTerm = ptm.getCvTerm();
-
             SearchModification searchModification;
             if (cvTerm != null) {
                 searchModification = searchModificationMapper.mapByOntologyTerm(cvTerm.getOntology(), cvTerm.getAccession(), cvTerm.getName(), cvTerm.getValue(), modificationName);
             } else {
                 searchModification = searchModificationMapper.mapByName(modificationName);
             }
-
             //set entity associations if the search modification could be mapped
             if (searchModification != null) {
                 SearchParametersHasModification searchParametersHasModification = new SearchParametersHasModification();
@@ -176,7 +174,7 @@ public class UtilitiesSearchParametersMapper implements Mapper<IdentificationPar
 
                 searchParameters.getSearchParametersHasModifications().add(searchParametersHasModification);
             }
-        }
+        });
 
     }
 

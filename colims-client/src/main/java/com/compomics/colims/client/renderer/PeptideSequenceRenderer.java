@@ -111,12 +111,12 @@ public class PeptideSequenceRenderer {
     private static TreeMap<Integer, PeptideHasModification> getOrderedPeptideHasModifications(List<PeptideHasModification> peptideHasModifications) {
         TreeMap<Integer, PeptideHasModification> orderedPeptideHasModifications = new TreeMap<>();
 
-        for (PeptideHasModification peptideHasModification : peptideHasModifications) {
+        peptideHasModifications.forEach((peptideHasModification) -> {
             PeptideHasModification previous = orderedPeptideHasModifications.put(peptideHasModification.getLocation(), peptideHasModification);
             if (previous != null) {
                 throw new IllegalStateException("More than on modification for the same location " + peptideHasModification.getModification());
             }
-        }
+        });
 
         return orderedPeptideHasModifications;
     }

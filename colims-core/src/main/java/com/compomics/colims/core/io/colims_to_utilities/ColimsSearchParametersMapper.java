@@ -92,31 +92,31 @@ public class ColimsSearchParametersMapper {
      *
      * @param fragmentIonType the ion type String represantation
      */
-    private String getFragmentIonTypeToString(final int fragmentIonType) {
-        String ionLetter;
-        switch (fragmentIonType) {
-            case 0:
-                ionLetter = "a";
-                break;
-            case 1:
-                ionLetter = "b";
-                break;
-            case 2:
-                ionLetter = "c";
-                break;
-            case 3:
-                ionLetter = "x";
-                break;
-            case 4:
-                ionLetter = "y";
-                break;
-            case 5:
-                ionLetter = "z";
-                break;
-            default:
-                throw new IllegalStateException("Should be unreachable.");
-        }
-        return ionLetter;
-    }
+//    private String getFragmentIonTypeToString(final int fragmentIonType) {
+//        String ionLetter;
+//        switch (fragmentIonType) {
+//            case 0:
+//                ionLetter = "a";
+//                break;
+//            case 1:
+//                ionLetter = "b";
+//                break;
+//            case 2:
+//                ionLetter = "c";
+//                break;
+//            case 3:
+//                ionLetter = "x";
+//                break;
+//            case 4:
+//                ionLetter = "y";
+//                break;
+//            case 5:
+//                ionLetter = "z";
+//                break;
+//            default:
+//                throw new IllegalStateException("Should be unreachable.");
+//        }
+//        return ionLetter;
+//    }
 
 }

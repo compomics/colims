@@ -51,6 +51,7 @@ public class MaxQuantSpectraParser {
     /**
      * Constructor.
      *
+     * @param maxQuantAndromedaParser
      * @throws IOException in case of an Input/Output related problem while
      *                     parsing the headers.
      */

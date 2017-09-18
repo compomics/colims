@@ -26,7 +26,7 @@ public class DbTaskErrorMessageConvertor implements MessageConverter {
     /**
      * Mapper for converting a DbTask object to the matching JSON construct.
      */
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Message toMessage(final Object object, final Session session) throws JMSException {

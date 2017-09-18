@@ -35,27 +35,27 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
     /**
      * The controller.
      */
-    private ProjectOverviewController projectOverviewController;
+    private final ProjectOverviewController projectOverviewController;
     /**
      * The compomics PTM factory.
      */
-    private PTMFactory ptmFactory = PTMFactory.getInstance();
+    private final PTMFactory ptmFactory = PTMFactory.getInstance();
     /**
      * The annotation preferences.
      */
-    private AnnotationSettings annotationSettings = new AnnotationSettings(); // @TODO: set the preferences
+    private final AnnotationSettings annotationSettings = new AnnotationSettings(); // @TODO: set the preferences
     /**
      * The neutral loss menus.
      */
-    private HashMap<NeutralLoss, JCheckBoxMenuItem> lossMenus = new HashMap<>();
+    private final HashMap<NeutralLoss, JCheckBoxMenuItem> lossMenus = new HashMap<>();
     /**
      * The charge menus.
      */
-    private HashMap<Integer, JCheckBoxMenuItem> chargeMenus = new HashMap<>();
+    private final HashMap<Integer, JCheckBoxMenuItem> chargeMenus = new HashMap<>();
     /**
      * The current search parameters.
      */
-    private SearchParameters searchParameters = new SearchParameters(); // @TODO: get from the given project
+    private final SearchParameters searchParameters = new SearchParameters(); // @TODO: get from the given project
     /**
      * If true the relative error (ppm) is used instead of the absolute error (Da).
      */
@@ -513,10 +513,10 @@ public class ProjectOverviewPanel extends javax.swing.JPanel {
 
         psmTable.setModel(new javax.swing.table.DefaultTableModel(
                 new Object[][]{
-                        {new Integer(1), "Q10586", "ABC", "spectrum_1", new Double(970.48), new Integer(2), new Double(639526.0), new Double(1646.55402)},
-                        {new Integer(2), "Q10586", "ABC", "spectrum_2", new Double(926.11), new Integer(3), new Double(973623.1875), new Double(1646.74992)},
-                        {new Integer(3), "Q10586", "ABC", "spectrum_3", new Double(899.42), new Integer(2), new Double(1608097.75), new Double(1646.90436)},
-                        {new Integer(4), "Q10586", "ABC", "spectrum_4", new Double(886.96), new Integer(2), new Double(615790.3125), new Double(1647.13464)}
+                        {1, "Q10586", "ABC", "spectrum_1", 970.48, 2, 639526.0, 1646.55402},
+                        {2, "Q10586", "ABC", "spectrum_2", 926.11, 3, 973623.1875, 1646.74992},
+                        {3, "Q10586", "ABC", "spectrum_3", 899.42, 2, 1608097.75, 1646.90436},
+                        {4, "Q10586", "ABC", "spectrum_4", 886.96, 2, 615790.3125, 1647.13464}
                 },
                 new String[]{
                         "", "Accession", "Sequence", "Title", "m/z", "Charge", "Intensity", "RT"

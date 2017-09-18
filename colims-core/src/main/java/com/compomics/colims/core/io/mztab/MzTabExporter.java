@@ -199,8 +199,8 @@ public class MzTabExporter {
 
     @Autowired
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
-                         FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
-                         UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
+            FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
+            UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
         this.proteinGroupService = proteinGroupService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbService = fastaDbService;
@@ -236,9 +236,9 @@ public class MzTabExporter {
         this.mzTabExport = mzTabExport;
 
         try (FileOutputStream fos = new FileOutputStream(new File(mzTabExport.getExportDirectory(), mzTabExport.getFileName() + MZTAB_EXTENSION));
-             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-             BufferedWriter bw = new BufferedWriter(osw);
-             PrintWriter pw = new PrintWriter(bw)) {
+                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+                BufferedWriter bw = new BufferedWriter(osw);
+                PrintWriter pw = new PrintWriter(bw)) {
 
             switch (mzTabExport.getMzTabType()) {
                 case QUANTIFICATION:
@@ -631,10 +631,10 @@ public class MzTabExporter {
         Map<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroups = getPeptideHasProteinGroupForAnalyticalRuns(analyticalRunIds);
         for (Map.Entry<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroup : peptideHasProteinGroups.entrySet()) {
             StringBuilder psms = new StringBuilder();
-            Map<ProteinGroupHasProtein, Protein> proteinGroupHasProtein = proteinGroupService.getProteinGroupHasProteinByProteinGroupId(peptideHasProteinGroup.getKey().getProteinGroup().getId());
+            ProteinGroupHasProtein mainProteinGroupHasProtein = proteinGroupService.getMainProteinGroupHasProtein(peptideHasProteinGroup.getKey().getProteinGroup().getId());
 
             psms.append(PSM_PREFIX).append(COLUMN_DELIMITER).append(peptideHasProteinGroup.getKey().getPeptide().getSequence()).append(COLUMN_DELIMITER).append(peptideHasProteinGroup.getKey().getPeptide().getId())
-                    .append(COLUMN_DELIMITER).append(proteinGroupHasProtein.entrySet().stream().findFirst().get().getKey().getProteinAccession())
+                    .append(COLUMN_DELIMITER).append(mainProteinGroupHasProtein.getProteinAccession())
                     .append(COLUMN_DELIMITER);
 
             // if peptide was seen more than once in peptideHasProteinGroups list, it is not unique
@@ -644,7 +644,7 @@ public class MzTabExporter {
                 psms.append("0").append(COLUMN_DELIMITER);
             }
 
-            FastaDb fastaFile = findFastaDb(proteinGroupHasProtein.entrySet().stream().findFirst().get().getKey().getProteinAccession());
+            FastaDb fastaFile = findFastaDb(mainProteinGroupHasProtein.getProteinAccession());
 
             // database and version
             psms.append(fastaFile.getDatabaseName()).append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
@@ -673,7 +673,7 @@ public class MzTabExporter {
             // spectra reference
             psms.append(createSpectraRef(peptideHasProteinGroup.getKey().getPeptide().getSpectrum(), peptideHasProteinGroup.getValue())).append(COLUMN_DELIMITER);
 
-            List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(proteinGroupHasProtein.entrySet().stream().findFirst().get().getValue().getSequence(), peptideHasProteinGroup.getKey().getPeptide().getSequence());
+            List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(mainProteinGroupHasProtein.getProtein().getSequence(), peptideHasProteinGroup.getKey().getPeptide().getSequence());
             // preceding amino acid (pre)
             psms.append(peptidePositions.get(0).getPreAA()).append(COLUMN_DELIMITER);
 
@@ -877,21 +877,21 @@ public class MzTabExporter {
      *
      * @return map (key:index ; value:database and version)
      */
-    private Map<Integer, String> findDatabaseAndVersion() {
-        // key:database ; value:version
-        Map<Integer, String> databaseVersion = new HashMap<>();
-
-        SearchAndValidationSettings searchAndValidationSettings = searchAndValidationSettingsService.getByAnalyticalRun(mzTabExport.getRuns().get(0));
-        Map<FastaDb, FastaDbType> fastaDbs = fastaDbService.findBySearchAndValidationSettings(searchAndValidationSettings);
-
-        for (FastaDb fastaDb : fastaDbs.keySet()) {
-            if (fastaDbs.get(fastaDb).equals(FastaDbType.PRIMARY)) {
-                databaseVersion.put(0, fastaDb.getDatabaseName());
-                databaseVersion.put(1, fastaDb.getVersion());
-            }
-        }
-        return databaseVersion;
-    }
+//    private Map<Integer, String> findDatabaseAndVersion() {
+//        // key:database ; value:version
+//        Map<Integer, String> databaseVersion = new HashMap<>();
+//
+//        SearchAndValidationSettings searchAndValidationSettings = searchAndValidationSettingsService.getByAnalyticalRun(mzTabExport.getRuns().get(0));
+//        Map<FastaDb, FastaDbType> fastaDbs = fastaDbService.findBySearchAndValidationSettings(searchAndValidationSettings);
+//
+//        for (Map.Entry<FastaDb, FastaDbType> fastaDbEntry : fastaDbs.entrySet()) {
+//            if (fastaDbEntry.getValue().equals(FastaDbType.PRIMARY)) {
+//                databaseVersion.put(0, fastaDbEntry.getKey().getDatabaseName());
+//                databaseVersion.put(1, fastaDbEntry.getKey().getVersion());
+//            }
+//        }
+//        return databaseVersion;
+//    }
 
     /**
      * Create spectra reference for given spectrum.

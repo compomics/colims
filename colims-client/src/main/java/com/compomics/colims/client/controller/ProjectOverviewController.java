@@ -524,22 +524,6 @@ public class ProjectOverviewController implements Controllable {
     }
 
     /**
-     * Update the given experiment in the experiments EventList.
-     *
-     * @param updatedExperiment the updated experiment
-     */
-    private void updateExperiment(Experiment updatedExperiment) {
-        //find the experiment in the experiments EventList.
-        for (int i = 0; i < experiments.size(); i++) {
-            if (experiments.get(i).getId().compareTo(updatedExperiment.getId()) == 0) {
-                //update the experiments EventList
-                experiments.set(i, updatedExperiment);
-                break;
-            }
-        }
-    }
-
-    /**
      * Get the selected sample from the experiment table.
      *
      * @return the selected sample, null if no sample is selected
@@ -553,22 +537,6 @@ public class ProjectOverviewController implements Controllable {
         }
 
         return selectedSample;
-    }
-
-    /**
-     * Update the given sample in the samples EventList.
-     *
-     * @param updatedSample the updated sample
-     */
-    private void updateSample(Sample updatedSample) {
-        //find the sample in the samples EventList.
-        for (int i = 0; i < samples.size(); i++) {
-            if (samples.get(i).getId().compareTo(updatedSample.getId()) == 0) {
-                //update the samples EventList
-                samples.set(i, updatedSample);
-                break;
-            }
-        }
     }
 
     /**

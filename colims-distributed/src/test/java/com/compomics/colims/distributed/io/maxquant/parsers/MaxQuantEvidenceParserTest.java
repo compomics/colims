@@ -24,7 +24,7 @@ import java.util.Set;
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 public class MaxQuantEvidenceParserTest {
 
-    private Path evidenceFile;
+    private final Path evidenceFile;
 
     @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;

@@ -1,27 +1,11 @@
 package com.compomics.colims.client.playground;
 
-import com.compomics.colims.core.distributed.model.DbTask;
-import com.compomics.colims.core.distributed.model.PersistDbTask;
-import com.compomics.colims.core.distributed.model.PersistMetadata;
-import com.compomics.colims.core.distributed.model.enums.PersistType;
-import com.compomics.colims.core.io.DataImport;
 import com.compomics.colims.core.io.MappingException;
-import com.compomics.colims.core.io.PeptideShakerImport;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.enums.FastaDbType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.List;
 import org.hibernate.boot.archive.spi.ArchiveException;
 import org.xmlpull.v1.XmlPullParserException;
 

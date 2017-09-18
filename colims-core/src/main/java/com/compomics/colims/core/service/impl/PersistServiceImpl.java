@@ -9,7 +9,6 @@ import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AnalyticalRunRepository;
-import com.compomics.colims.repository.PeptideRepository;
 import com.compomics.colims.repository.ProteinGroupRepository;
 import com.compomics.colims.repository.SpectrumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +28,12 @@ public class PersistServiceImpl implements PersistService {
 
     private final AnalyticalRunRepository analyticalRunRepository;
     private final ProteinGroupRepository proteinGroupRepository;
-    private final PeptideRepository peptideRepository;
     private final SpectrumRepository spectrumRepository;
 
     @Autowired
-    public PersistServiceImpl(AnalyticalRunRepository analyticalRunRepository, ProteinGroupRepository proteinGroupRepository, PeptideRepository peptideRepository, SpectrumRepository spectrumRepository) {
+    public PersistServiceImpl(AnalyticalRunRepository analyticalRunRepository, ProteinGroupRepository proteinGroupRepository, SpectrumRepository spectrumRepository) {
         this.analyticalRunRepository = analyticalRunRepository;
         this.proteinGroupRepository = proteinGroupRepository;
-        this.peptideRepository = peptideRepository;
         this.spectrumRepository = spectrumRepository;
     }
 

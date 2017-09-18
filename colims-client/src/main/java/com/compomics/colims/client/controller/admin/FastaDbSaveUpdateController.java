@@ -370,13 +370,15 @@ public class FastaDbSaveUpdateController implements Controllable {
                 case DELETED:
                     taxonomyBindingList.remove(cvParam);
                     break;
+                default:
+                    throw new IllegalStateException("Should not be able to get here.");
             }
         }
     }
 
     /**
-     * Update the instance fields of the selected {@link FastaDb} instance in the fastaDb
-     * management dialog.
+     * Update the instance fields of the selected {@link FastaDb} instance in
+     * the fastaDb management dialog.
      */
     private void updateFastaToEdit() {
         fastaDbToEdit.setName(fastaDbSaveUpdatePanel.getNameTextField().getText());
@@ -463,7 +465,8 @@ public class FastaDbSaveUpdateController implements Controllable {
     /**
      * Populate the Database Combo Box.
      *
-     * @param dbNames the set of database names as read from the properties files
+     * @param dbNames the set of database names as read from the properties
+     * files
      */
     private void populateDatabaseComboBox(TreeSet<String> dbNames) {
         databaseNamesBindingList.add(DATABASE_NAME_NOT_PRESENT);
@@ -494,10 +497,9 @@ class HeaderParseRule {
      * @param parseRule the parse rule
      */
     public HeaderParseRule(String parseRule) {
-        if(parseRule != null) {
+        if (parseRule != null) {
             this.parseRule = parseRule;
-        }
-        else {
+        } else {
             this.parseRule = NONE_RULE.parseRule;
             this.explanation = NONE_RULE.explanation;
         }
@@ -506,7 +508,7 @@ class HeaderParseRule {
     /**
      * Constructor.
      *
-     * @param parseRule   the parse rule
+     * @param parseRule the parse rule
      * @param explanation the explanation
      */
     public HeaderParseRule(String parseRule, String explanation) {
