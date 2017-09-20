@@ -1,13 +1,11 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
-import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
+import com.compomics.colims.repository.hibernate.PeptideMzTabDTO;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This interface provides repository methods for the Peptide class.
@@ -23,16 +21,7 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @param analyticalRunIds the list of analytical run IDs
      * @return the list of PeptideDTO objects
      */
-    List<PeptideDTO> getPeptideDTOsByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds);
-
-    /**
-     * Fetch the {@link Peptide} instances associated with the given protein group and analytical runs.
-     *
-     * @param proteinGroupId   the protein group ID
-     * @param analyticalRunIds the list of analytical run IDs
-     * @return the list of PeptideDTO objects
-     */
-    List<Peptide> getPeptidesByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds);
+    List<PeptideDTO> getPeptideDTOs(Long proteinGroupId, List<Long> analyticalRunIds);
 
     /**
      * Fetch the PeptideHasModification join entities.
@@ -50,22 +39,22 @@ public interface PeptideRepository extends GenericRepository<Peptide, Long> {
      * @param analyticalRunIds the list of anayicalRun IDs
      * @return the list of Peptide sequence
      */
-    List<String> getDistinctPeptideSequenceByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds);
+    List<String> getDistinctPeptideSequences(Long proteinGroupId, List<Long> analyticalRunIds);
 
     /**
-     * Fetch the unique Peptide instances associated with the given protein group and analyticalRun.
+     * Fetch the unique Peptide instances associated with the given protein group and analytical runs.
      *
      * @param proteinGroupId   the protein group ID
-     * @param analyticalRunIds the list of anayicalRun IDs
-     * @return the list of unique Peptides
+     * @param analyticalRunIds the list of anayical run IDs
+     * @return the list of unique peptides
      */
-    List<Peptide> getUniquePeptideByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds);
+    List<Peptide> getUniquePeptides(Long proteinGroupId, List<Long> analyticalRunIds);
 
     /**
-     * Fetch the PeptideHasProteinGroup instances associated with the given analyticalRuns.
+     * Fetch the {@link PeptideMzTabDTO} instances associated with the given analytical runs.
      *
-     * @param analyticalRunIds the list of anayicalRun IDs
-     * @return the map (key : PeptideHasProteinGroup ; value : analyticalRun)
+     * @param analyticalRunIds the list of anayical run IDs
+     * @return the list of {@link PeptideMzTabDTO} instances
      */
-    Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAndRunIds(List<Long> analyticalRunIds);
+    List<PeptideMzTabDTO> getPeptideMzTabDTOs(List<Long> analyticalRunIds);
 }

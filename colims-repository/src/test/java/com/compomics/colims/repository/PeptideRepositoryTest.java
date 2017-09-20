@@ -1,8 +1,9 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.Peptide;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import java.util.ArrayList;
+
+import com.compomics.colims.repository.hibernate.PeptideMzTabDTO;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,7 @@ public class PeptideRepositoryTest {
     public void testGetPeptideDTOsByProteinGroupId() {
         List<Long> analyticalRunIDs = new ArrayList<>();
         analyticalRunIDs.add(1L);
-        List<PeptideDTO> peptideDTOs = peptideRepository.getPeptideDTOsByProteinGroupIdAndRunIds(2L,analyticalRunIDs);
+        List<PeptideDTO> peptideDTOs = peptideRepository.getPeptideDTOs(2L,analyticalRunIDs);
 
         Assert.assertFalse(peptideDTOs.isEmpty());
         Assert.assertEquals(2, peptideDTOs.size());
@@ -49,19 +50,25 @@ public class PeptideRepositoryTest {
     }
 
     @Test
-    public void testGetPeptidesByProteinGroupId() {
+    public void testGetDistinctPeptideSequences() {
         List<Long> analyticalRunIDs = new ArrayList<>();
         analyticalRunIDs.add(1L);
-        List<Peptide> peptides = peptideRepository.getPeptidesByProteinGroupIdAndRunIds(2L,analyticalRunIDs);
+        List<String> peptideSequences = peptideRepository.getDistinctPeptideSequences(2L,analyticalRunIDs);
 
-        Assert.assertFalse(peptides.isEmpty());
-        Assert.assertEquals(2, peptides.size());
+        Assert.assertFalse(peptideSequences.isEmpty());
+        Assert.assertEquals(2, peptideSequences.size());
+    }
 
-        Peptide peptide = peptides.get(0);
-        Assert.assertNotNull(peptide);
 
-        peptide = peptides.get(1);
-        Assert.assertNotNull(peptide);
+
+    @Test
+    public void testGetPeptideMzTabDTOs() {
+        List<Long> analyticalRunIDs = new ArrayList<>();
+        analyticalRunIDs.add(1L);
+        List<PeptideMzTabDTO> peptideMzTabDTOS = peptideRepository.getPeptideMzTabDTOs(analyticalRunIDs);
+
+        Assert.assertFalse(peptideMzTabDTOS.isEmpty());
+        Assert.assertEquals(4, peptideMzTabDTOS.size());
     }
 
 }

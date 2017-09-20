@@ -105,10 +105,10 @@
         and spectrum.analyticalRun.id in (:analyticalRunIds)
     </query>
 
-    <query name="Peptide.getPeptideHasProteinGroupsByRunIds">
-        select peptide, peptideHasProteinGroup, spectrum.analyticalRun
-        from PeptideHasProteinGroup as peptideHasProteinGroup
-        join peptideHasProteinGroup.peptide as peptide
+    <query name="Peptide.getPeptideMzTabDTOsByRunIds">
+        select peptide, peptideHasProteinGroup.proteinGroup.id, spectrum.analyticalRun.id
+        from Peptide as peptide
+        join peptide.peptideHasProteinGroups as peptideHasProteinGroup
         join fetch peptide.spectrum as spectrum
         where spectrum.analyticalRun.id in (:analyticalRunIds)
     </query>

@@ -99,7 +99,7 @@ public class FastaDbSaveUpdateController implements Controllable {
     private ObservableList<String> databaseNamesBindingList;
     private boolean saveUpdate = false;
     private FastaDb fastaDbToEdit;
-    private HeaderParseRuleTestTableModel headerParseRuleTestTableModel = new HeaderParseRuleTestTableModel();
+    private final HeaderParseRuleTestTableModel headerParseRuleTestTableModel = new HeaderParseRuleTestTableModel();
     private TableColumnAdjuster tableColumnAdjuster;
     //view
     private FastaDbSaveUpdatePanel fastaDbSaveUpdatePanel;
@@ -286,7 +286,7 @@ public class FastaDbSaveUpdateController implements Controllable {
         headerParseRuleAdditionDialog.getSaveParseRuleButton().addActionListener(e -> {
             try {
                 config = PropertiesUtil.addProperty(config, headerParseRuleAdditionDialog.getDescriptionTextField().getText(), headerParseRuleAdditionDialog.getParseRuleTextField().getText());
-            } catch (ConfigurationException | IOException ex) {
+            } catch (ConfigurationException ex) {
                 LOGGER.error(ex.getMessage(), ex);
                 MessageEvent messageEvent = new MessageEvent("Header parse rule save problem", "Something went wrong while trying to save the header parse rule to the properties file.", JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);
@@ -485,7 +485,7 @@ class HeaderParseRule {
     /**
      * The parse rule.
      */
-    private String parseRule;
+    private final String parseRule;
     /**
      * The explanation.
      */

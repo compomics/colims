@@ -396,11 +396,7 @@ public class MzTabExportController implements Controllable {
         });
         setAnalyticalRunsAssays();
         if (mzTabExport.getSamples().get(0).getAnalyticalRuns().get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType().equals(SearchEngineType.MAXQUANT)) {
-            try {
-                setQuantificationReagentsAndLabels();
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
+            setQuantificationReagentsAndLabels();
         }
 
         //reset second panel text field
@@ -766,10 +762,8 @@ public class MzTabExportController implements Controllable {
 
     /**
      * Set the quantification reagents and labels.
-     *
-     * @throws IOException in case of a JSON deserialize problem.
      */
-    private void setQuantificationReagentsAndLabels() throws IOException {
+    private void setQuantificationReagentsAndLabels() {
         List<QuantificationMethodHasReagent> quantificationMethodHasReagents = quantificationMethodService.fetchQuantificationMethodHasReagents(
                 getQuantificationSettings(mzTabExport.getRuns().get(0)).getQuantificationMethod());
 

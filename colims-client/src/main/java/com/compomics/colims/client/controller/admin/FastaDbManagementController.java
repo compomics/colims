@@ -303,12 +303,10 @@ public class FastaDbManagementController implements Controllable {
      * Add a new fasta db to the fastadb binding list.
      *
      * @param fastaDb
-     * @return the index of the added FastaDb instance
      */
-    public int addFastaDb(FastaDb fastaDb) {
+    public void addFastaDb(FastaDb fastaDb) {
         fastaDbs.add(fastaDb);
         fastaDbManagementDialog.getFastaDbList().updateUI();
-        return sortedFastaDbs.indexOf(fastaDb);
     }
 
     /**

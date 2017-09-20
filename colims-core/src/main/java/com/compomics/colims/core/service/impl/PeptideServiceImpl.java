@@ -6,6 +6,7 @@ import com.compomics.colims.repository.ModificationRepository;
 import com.compomics.colims.repository.PeptideRepository;
 import com.compomics.colims.repository.SpectrumRepository;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
+import com.compomics.colims.repository.hibernate.PeptideMzTabDTO;
 import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Niels Hulstaert
@@ -84,22 +84,22 @@ public class PeptideServiceImpl implements PeptideService {
 
     @Override
     public List<PeptideDTO> getPeptideDTOs(Long proteinGroupId, List<Long> analyticalRunIds) {
-        return peptideRepository.getPeptideDTOsByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
+        return peptideRepository.getPeptideDTOs(proteinGroupId, analyticalRunIds);
     }
 
     @Override
-    public List<String> getDistinctPeptideSequence(Long proteinGroupId, List<Long> analyticalRunIds) {
-        return peptideRepository.getDistinctPeptideSequenceByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
+    public List<String> getDistinctPeptideSequences(Long proteinGroupId, List<Long> analyticalRunIds) {
+        return peptideRepository.getDistinctPeptideSequences(proteinGroupId, analyticalRunIds);
     }
 
     @Override
     public List<Peptide> getUniquePeptides(Long proteinGroupId, List<Long> analyticalRunIds) {
-        return peptideRepository.getUniquePeptideByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
+        return peptideRepository.getUniquePeptides(proteinGroupId, analyticalRunIds);
     }
 
 
     @Override
-    public Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAnalyticalRunId(List<Long> analyticalRunIds) {
-        return peptideRepository.getPeptideHasProteinGroupByAndRunIds(analyticalRunIds);
+    public List<PeptideMzTabDTO> getPeptideMzTabDTOs(List<Long> analyticalRunIds) {
+        return peptideRepository.getPeptideMzTabDTOs(analyticalRunIds);
     }
 }

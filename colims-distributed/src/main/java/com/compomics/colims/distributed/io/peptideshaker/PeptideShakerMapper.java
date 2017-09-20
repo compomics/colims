@@ -101,8 +101,8 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
     /**
      * Clear the mapping resources: reset the SpectrumFactory, SequenceFactory, ...
      *
-     * @throws IOException  thrown in case of an IO related problem
-     * @throws SQLException thrown in case of an SQL related problem
+     * @throws IOException          thrown in case of an IO related problem
+     * @throws SQLException         thrown in case of an SQL related problem
      * @throws InterruptedException thrown in case of thread related problem
      */
     @Override
@@ -284,9 +284,8 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
      * @param proteinScoreType            the protein target-decoy scoring strategy
      * @param proteinThreshold            the protein score threshold
      * @return the mapped search and validation settings
-     * @throws IOException thrown in case of an I/O related problem
      */
-    private SearchAndValidationSettings mapSearchSettings(final UnpackedPeptideShakerImport unpackedPeptideShakerImport, final AnalyticalRun analyticalRun, final FastaDb fastaDb, final ScoreType proteinScoreType, final Double proteinThreshold) throws IOException {
+    private SearchAndValidationSettings mapSearchSettings(final UnpackedPeptideShakerImport unpackedPeptideShakerImport, final AnalyticalRun analyticalRun, final FastaDb fastaDb, final ScoreType proteinScoreType, final Double proteinThreshold) {
         SearchAndValidationSettings searchAndValidationSettings;
 
         CpsParent cpsParent = unpackedPeptideShakerImport.getCpsParent();

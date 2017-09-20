@@ -1,14 +1,11 @@
 package com.compomics.colims.core.service;
 
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.colims.repository.hibernate.SortDirection;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This interface provides service methods for the ProteinGroup class.
@@ -22,11 +19,11 @@ public interface ProteinGroupService extends GenericService<ProteinGroup, Long> 
      * runs.
      *
      * @param analyticalRunIds the list of analytical run IDs
-     * @param start start point in result list
-     * @param length length of result page
-     * @param orderBy column to order results by
-     * @param sortDirection the sort direction
-     * @param filter the filter text (an empty string matches all results)
+     * @param start            start point in result list
+     * @param length           length of result page
+     * @param orderBy          column to order results by
+     * @param sortDirection    the sort direction
+     * @param filter           the filter text (an empty string matches all results)
      * @return the list of {@link ProteinGroupDTO} instances
      */
     List<ProteinGroupDTO> getPagedProteinGroupsForRuns(List<Long> analyticalRunIds, final int start, final int length, final String orderBy, final SortDirection sortDirection, final String filter);
@@ -54,7 +51,7 @@ public interface ProteinGroupService extends GenericService<ProteinGroup, Long> 
      * including optional filter term.
      *
      * @param analyticalRunIds the list of analytical run IDs of interest
-     * @param filter the filter string
+     * @param filter           the filter string
      * @return the number of protein groups
      */
     long getProteinGroupCountForRuns(final List<Long> analyticalRunIds, final String filter);

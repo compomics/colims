@@ -14,6 +14,7 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.colims.model.enums.SearchEngineType;
+import com.compomics.colims.repository.hibernate.PeptideMzTabDTO;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -199,8 +200,8 @@ public class MzTabExporter {
 
     @Autowired
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
-            FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
-            UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
+                         FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
+                         UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
         this.proteinGroupService = proteinGroupService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbService = fastaDbService;
@@ -236,9 +237,9 @@ public class MzTabExporter {
         this.mzTabExport = mzTabExport;
 
         try (FileOutputStream fos = new FileOutputStream(new File(mzTabExport.getExportDirectory(), mzTabExport.getFileName() + MZTAB_EXTENSION));
-                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-                BufferedWriter bw = new BufferedWriter(osw);
-                PrintWriter pw = new PrintWriter(bw)) {
+             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+             BufferedWriter bw = new BufferedWriter(osw);
+             PrintWriter pw = new PrintWriter(bw)) {
 
             switch (mzTabExport.getMzTabType()) {
                 case QUANTIFICATION:
@@ -587,7 +588,7 @@ public class MzTabExporter {
                         List<Long> analyticalRunIdList = new ArrayList<>(1);
                         analyticalRunIdList.add(mzTabExport.getRuns().get(j).getId());
                         proteins.append(peptideService.getPeptideDTOs(aProteinList.getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
-                        proteins.append(peptideService.getDistinctPeptideSequence(aProteinList.getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
+                        proteins.append(peptideService.getDistinctPeptideSequences(aProteinList.getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
                         proteins.append(peptideService.getUniquePeptides(aProteinList.getId(), analyticalRunIdList).size()).append(COLUMN_DELIMITER);
                     }
                 }
@@ -607,7 +608,7 @@ public class MzTabExporter {
         }
     }
 
-    private void constructPSM(PrintWriter pw) throws IOException {
+    private void constructPSM(PrintWriter pw) {
         StringBuilder psms = new StringBuilder();
 
         psms.append(PSM_HEADER_PREFIX).append(COLUMN_DELIMITER).append(SEQUENCE).append(COLUMN_DELIMITER).append(PSM_ID).append(COLUMN_DELIMITER).append(ACCESSION)
@@ -625,20 +626,20 @@ public class MzTabExporter {
      *
      * @return proteins
      */
-    private void addPSMData(PrintWriter pw) throws IOException {
+    private void addPSMData(PrintWriter pw) {
         List<Long> analyticalRunIds = new ArrayList<>();
         mzTabExport.getRuns().forEach(analyticalRun -> analyticalRunIds.add(analyticalRun.getId()));
-        Map<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroups = getPeptideHasProteinGroupForAnalyticalRuns(analyticalRunIds);
-        for (Map.Entry<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroup : peptideHasProteinGroups.entrySet()) {
+        List<PeptideMzTabDTO> peptideMzTabDTOs = peptideService.getPeptideMzTabDTOs(analyticalRunIds);
+        for (PeptideMzTabDTO peptideMzTabDTO : peptideMzTabDTOs) {
             StringBuilder psms = new StringBuilder();
-            ProteinGroupHasProtein mainProteinGroupHasProtein = proteinGroupService.getMainProteinGroupHasProtein(peptideHasProteinGroup.getKey().getProteinGroup().getId());
+            ProteinGroupHasProtein mainProteinGroupHasProtein = proteinGroupService.getMainProteinGroupHasProtein(peptideMzTabDTO.getProteinGroupId());
 
-            psms.append(PSM_PREFIX).append(COLUMN_DELIMITER).append(peptideHasProteinGroup.getKey().getPeptide().getSequence()).append(COLUMN_DELIMITER).append(peptideHasProteinGroup.getKey().getPeptide().getId())
+            psms.append(PSM_PREFIX).append(COLUMN_DELIMITER).append(peptideMzTabDTO.getPeptide().getSequence()).append(COLUMN_DELIMITER).append(peptideMzTabDTO.getPeptide().getId())
                     .append(COLUMN_DELIMITER).append(mainProteinGroupHasProtein.getProteinAccession())
                     .append(COLUMN_DELIMITER);
 
-            // if peptide was seen more than once in peptideHasProteinGroups list, it is not unique
-            if (isPeptideUnique(peptideHasProteinGroups, peptideHasProteinGroup.getKey().getPeptide())) {
+            //if peptide was seen more than once in peptides list, it is not unique
+            if (isPeptideUnique(peptideMzTabDTOs, peptideMzTabDTO.getPeptide())) {
                 psms.append("1").append(COLUMN_DELIMITER);
             } else {
                 psms.append("0").append(COLUMN_DELIMITER);
@@ -646,44 +647,44 @@ public class MzTabExporter {
 
             FastaDb fastaFile = findFastaDb(mainProteinGroupHasProtein.getProteinAccession());
 
-            // database and version
+            //database and version
             psms.append(fastaFile.getDatabaseName()).append(COLUMN_DELIMITER).append(fastaFile.getVersion()).append(COLUMN_DELIMITER);
 
-            // search engine
+            //search engine
             psms.append(getSearchEngine()).append(COLUMN_DELIMITER);
 
-            // search engine score
-            psms.append(peptideHasProteinGroup.getKey().getPeptide().getPsmProbability()).append(COLUMN_DELIMITER);
+            //search engine score
+            psms.append(peptideMzTabDTO.getPeptide().getPsmProbability()).append(COLUMN_DELIMITER);
 
-            // modifications 
-            psms.append(getModifications(peptideHasProteinGroup.getKey().getPeptide())).append(COLUMN_DELIMITER);
+            //modifications
+            psms.append(getModifications(peptideMzTabDTO.getPeptide())).append(COLUMN_DELIMITER);
 
             //retention time
-            psms.append(peptideHasProteinGroup.getKey().getPeptide().getSpectrum().getRetentionTime()).append(COLUMN_DELIMITER);
+            psms.append(peptideMzTabDTO.getPeptide().getSpectrum().getRetentionTime()).append(COLUMN_DELIMITER);
 
             //charge
-            psms.append(peptideHasProteinGroup.getKey().getPeptide().getCharge()).append(COLUMN_DELIMITER);
+            psms.append(peptideMzTabDTO.getPeptide().getCharge()).append(COLUMN_DELIMITER);
 
-            // experimental mass to charge
-            psms.append(peptideHasProteinGroup.getKey().getPeptide().getSpectrum().getMzRatio()).append(COLUMN_DELIMITER);
+            //experimental mass to charge
+            psms.append(peptideMzTabDTO.getPeptide().getSpectrum().getMzRatio()).append(COLUMN_DELIMITER);
 
-            // calculated mass to charge
-            psms.append(peptideHasProteinGroup.getKey().getPeptide().getTheoreticalMass()).append(COLUMN_DELIMITER);
+            //calculated mass to charge
+            psms.append(peptideMzTabDTO.getPeptide().getTheoreticalMass()).append(COLUMN_DELIMITER);
 
-            // spectra reference
-            psms.append(createSpectraRef(peptideHasProteinGroup.getKey().getPeptide().getSpectrum(), peptideHasProteinGroup.getValue())).append(COLUMN_DELIMITER);
+            //spectra reference
+            psms.append(createSpectrumRef(peptideMzTabDTO.getPeptide().getSpectrum(), peptideMzTabDTO.getAnalyticalRunId())).append(COLUMN_DELIMITER);
 
-            List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(mainProteinGroupHasProtein.getProtein().getSequence(), peptideHasProteinGroup.getKey().getPeptide().getSequence());
-            // preceding amino acid (pre)
+            List<PeptidePosition> peptidePositions = SequenceUtils.getPeptidePositions(mainProteinGroupHasProtein.getProtein().getSequence(), peptideMzTabDTO.getPeptide().getSequence());
+            //preceding amino acid (pre)
             psms.append(peptidePositions.get(0).getPreAA()).append(COLUMN_DELIMITER);
 
-            // following amino acid (post)
+            //following amino acid (post)
             psms.append(peptidePositions.get(0).getPostAA()).append(COLUMN_DELIMITER);
 
-            // start position of the peptide
+            //start position of the peptide
             psms.append(peptidePositions.get(0).getStartPosition()).append(COLUMN_DELIMITER);
 
-            // end position of the peptide
+            //end position of the peptide
             psms.append(peptidePositions.get(0).getEndPosition()).append(COLUMN_DELIMITER);
 
             pw.println(psms);
@@ -814,16 +815,6 @@ public class MzTabExporter {
     }
 
     /**
-     * Get PeptideHasProteinGroup for the given list of analytical runs.
-     *
-     * @param analyticalRunIds
-     * @return list of PeptideHasProteinGroup
-     */
-    private Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupForAnalyticalRuns(List<Long> analyticalRunIds) {
-        return peptideService.getPeptideHasProteinGroupByAnalyticalRunId(analyticalRunIds);
-    }
-
-    /**
      * Get ambiguity members for given proteinGroupID.
      *
      * @param proteinGroupId
@@ -894,26 +885,26 @@ public class MzTabExporter {
 //    }
 
     /**
-     * Create spectra reference for given spectrum.
+     * Create the spectra reference for the given spectrum and run.
      *
-     * @param spectrum
-     * @param analyticalRun
-     * @return
+     * @param spectrum        the spectrum
+     * @param analyticalRunId the analytical run ID
+     * @return the spectrum reference
      */
-    private String createSpectraRef(Spectrum spectrum, AnalyticalRun analyticalRun) {
-        return String.format(MS_RUN_REF, analyticalRunIndexRef.get(analyticalRun.getId())) + ":index=" + spectrum.getScanNumber();
+    private String createSpectrumRef(Spectrum spectrum, Long analyticalRunId) {
+        return String.format(MS_RUN_REF, analyticalRunIndexRef.get(analyticalRunId)) + ":index=" + spectrum.getScanNumber();
     }
 
     /**
      * Check if given peptide is unique.
      *
-     * @param peptideHasProteinGroups
-     * @param peptide
+     * @param peptideMzTabDTOS the list of {@link PeptideMzTabDTO} instances
+     * @param peptide          the {@link Peptide} instance
      * @return true or false
      */
-    private boolean isPeptideUnique(Map<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroups, Peptide peptide) {
+    private boolean isPeptideUnique(List<PeptideMzTabDTO> peptideMzTabDTOS, Peptide peptide) {
         List<Peptide> peptides = new ArrayList<>();
-        peptideHasProteinGroups.keySet().stream().filter(p -> Objects.equals(p.getPeptide().getId(), peptide.getId())).forEach(peptideHasProteinGroup -> peptides.add(peptideHasProteinGroup.getPeptide()));
+        peptideMzTabDTOS.stream().filter(peptideMzTabDTO -> Objects.equals(peptideMzTabDTO.getPeptide().getId(), peptide.getId())).forEach(peptideMzTabDTO -> peptides.add(peptideMzTabDTO.getPeptide()));
         return peptides.size() == 1;
     }
 

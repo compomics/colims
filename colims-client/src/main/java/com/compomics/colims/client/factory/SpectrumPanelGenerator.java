@@ -47,11 +47,6 @@ import java.util.HashMap;
 public class SpectrumPanelGenerator {
 
     /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(SpectrumPanelGenerator.class);
-
-    /**
      * The ID of the current analytical run.
      */
     private Long analyticalRunId = Long.MIN_VALUE;

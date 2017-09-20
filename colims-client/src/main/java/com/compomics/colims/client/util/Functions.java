@@ -23,7 +23,7 @@ public class Functions {
     /**
      * This function replaces a null value with an empty String.
      */
-    public static Function<Object, String> replaceNullWithEmptyString = (Object t) -> {
+    public static final Function<Object, String> replaceNullWithEmptyString = (Object t) -> {
         if (t == null) {
             return "";
         } else {

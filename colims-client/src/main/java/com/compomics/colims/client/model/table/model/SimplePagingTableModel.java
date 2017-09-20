@@ -22,7 +22,7 @@ public abstract class SimplePagingTableModel extends DefaultEventTableModel {
     /**
      * The number of rows per page.
      */
-    protected int pageSize;
+    protected final int pageSize;
     /**
      * The total number of rows.
      */

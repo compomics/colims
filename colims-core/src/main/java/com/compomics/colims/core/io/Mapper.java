@@ -14,8 +14,6 @@ public interface Mapper<S, T> {
      *
      * @param source the source POJO
      * @param target the target POJO
-     * @throws MappingException the mapping exception, thrown in case of a
-     * mapping error
      */
-    void map(S source, T target) throws MappingException;
+    void map(S source, T target);
 }

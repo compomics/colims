@@ -25,7 +25,6 @@ import com.compomics.colims.model.Sample;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -193,7 +192,7 @@ public class PersistDbTaskHandler {
      * @throws java.sql.SQLException                                  thrown in case of an SQL related problem
      * @throws InterruptedException                                   thrown in case a thread is interrupted
      */
-    private MappedData mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException, JDOMException {
+    private MappedData mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
         MappedData mappedData = null;
 
         notificationProducer.sendNotification(new Notification(STARTED_MESSAGE, ""));

@@ -27,7 +27,7 @@ public abstract class AdvancedPagingTableModel extends DefaultEventTableModel {
     /**
      * The index of the default sorting column.
      */
-    protected int defaultSortColumnIndex;
+    protected final int defaultSortColumnIndex;
     /**
      * The index of the column that will be sorted on.
      */

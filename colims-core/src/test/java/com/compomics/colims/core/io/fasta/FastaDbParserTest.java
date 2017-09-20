@@ -23,7 +23,7 @@ import java.util.*;
 @ContextConfiguration(locations = {"classpath:colims-core-simple-test-context.xml"})
 public class FastaDbParserTest {
 
-    private FastaDb testFastaDb;
+    private final FastaDb testFastaDb;
     private FastaDb contaminantsFastaDb;
 
     @Autowired

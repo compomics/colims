@@ -42,14 +42,14 @@ public class MzMLParserImpl implements MzMLParser {
     public void importMzMLFiles(List<File> mzMlfiles) {
         //clear map before importing
         mzMLUnmarshallers.clear();
-        mzMlfiles.stream().forEach((mzMlFile) -> {
+        mzMlfiles.forEach((mzMlFile) -> {
             MzMLUnmarshaller mzMlUnmarshaller = new MzMLUnmarshaller(mzMlFile);
             mzMLUnmarshallers.put(mzMlFile.getName(), mzMlUnmarshaller);
         });
     }
 
     @Override
-    public Experiment parseMzMlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException, MappingException {
+    public Experiment parseMzMlFile(String mzMLFileName) throws MzMLUnmarshallerException, IOException {
         LOGGER.info("Start parsing experiment from file " + mzMLFileName);
         Experiment experiment = new Experiment();
 
@@ -72,7 +72,7 @@ public class MzMLParserImpl implements MzMLParser {
      * @param mzMLFileName the mzML file name
      * @param experiment the experiment
      */
-    private void addSamples(String mzMLFileName, Experiment experiment) throws MzMLUnmarshallerException, IOException, MappingException {
+    private void addSamples(String mzMLFileName, Experiment experiment) throws MzMLUnmarshallerException, IOException {
         LOGGER.info("Start parsing samples");
         List<Sample> samples = new ArrayList<>();
 
@@ -80,10 +80,10 @@ public class MzMLParserImpl implements MzMLParser {
         SampleList sampleList = mzMLUnmarshallers.get(mzMLFileName).unmarshalFromXpath("/sampleList", SampleList.class);
         if (sampleList != null) {
             LOGGER.debug("Unmarshalling " + sampleList.getCount() + " sample(s) from mzML file: " + mzMLFileName);
-            sampleList.getSample().stream().forEach(mzMLSample -> {
+            sampleList.getSample().forEach(mzMLSample -> {
                 Sample sample = new Sample(mzMLSample.getId());
 
-                //a sample can contain mutliple materials
+                //a sample can contain mulyiple materials
                 //Material material = new Material();
                 sample.setExperiment(experiment);
                 samples.add(sample);
@@ -111,7 +111,7 @@ public class MzMLParserImpl implements MzMLParser {
      * @param mzMLFileName the mzML file name
      * @param samples the sample list
      */
-    private void addRun(String mzMLFileName, List<Sample> samples) throws MzMLUnmarshallerException, IOException, MappingException {
+    private void addRun(String mzMLFileName, List<Sample> samples) throws MzMLUnmarshallerException, IOException {
         //get run
         Run run = mzMLUnmarshallers.get(mzMLFileName).unmarshalFromXpath("/run", Run.class);
         LOGGER.debug("Unmarshalling run from mzML file: " + mzMLFileName);
@@ -202,7 +202,7 @@ public class MzMLParserImpl implements MzMLParser {
         //set analyzers
         if (componentList.getAnalyzer() != null && !componentList.getAnalyzer().isEmpty()) {
             List<InstrumentCvParam> analyzers = new ArrayList<>();
-            componentList.getAnalyzer().stream().forEach(analyzerComponent -> {
+            componentList.getAnalyzer().forEach(analyzerComponent -> {
                 InstrumentCvParam analyzer = new InstrumentCvParam();
                 if (analyzerComponent.getCvParam() != null && !analyzerComponent.getCvParam().isEmpty()) {
                     CVParam cVParam = analyzerComponent.getCvParam().get(0);
@@ -230,7 +230,7 @@ public class MzMLParserImpl implements MzMLParser {
      * @param mzMLFileName the mzML file name
      * @param analyticalRun the analytical run
      */
-    private void addSpectra(String mzMLFileName, AnalyticalRun analyticalRun) throws MzMLUnmarshallerException, IOException, MappingException {
+    private void addSpectra(String mzMLFileName, AnalyticalRun analyticalRun) throws MzMLUnmarshallerException, IOException {
         LOGGER.debug("Adding spectra to run: " + analyticalRun.getName());
         List<Spectrum> spectrums = new ArrayList<>();
         Set<String> spectrumIds = mzMLUnmarshallers.get(mzMLFileName).getSpectrumIDs();
@@ -248,7 +248,7 @@ public class MzMLParserImpl implements MzMLParser {
         analyticalRun.setSpectrums(spectrums);
     }
 
-    private Spectrum getSpectrumById(String mzMLFileName, String spectrumId) throws MzMLUnmarshallerException, IOException, MappingException {
+    private Spectrum getSpectrumById(String mzMLFileName, String spectrumId) throws MzMLUnmarshallerException, IOException {
         Spectrum spectrum = new Spectrum();
 
         uk.ac.ebi.jmzml.model.mzml.Spectrum mzMLSpectrum = mzMLUnmarshallers.get(mzMLFileName).getSpectrumById(spectrumId);

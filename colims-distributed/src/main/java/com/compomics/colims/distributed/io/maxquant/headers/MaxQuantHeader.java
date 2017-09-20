@@ -12,7 +12,7 @@ public class MaxQuantHeader {
     /**
      * The header name as found in the JSON file. This name should be the String value of the corresponding enum.
      */
-    String name;
+    final String name;
     /**
      * Boolean that indicates whether the header is mandatory for parsing or not.
      */

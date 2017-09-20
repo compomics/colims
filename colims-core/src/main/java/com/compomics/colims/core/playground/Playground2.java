@@ -3,14 +3,12 @@ package com.compomics.colims.core.playground;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.io.colims_to_utilities.ColimsPeptideMapper;
 import com.compomics.colims.core.service.PeptideService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.PeptideHasProteinGroup;
+import com.compomics.colims.repository.hibernate.PeptideMzTabDTO;
 import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Niels Hulstaert
@@ -29,10 +27,10 @@ public class Playground2 {
         runIds.add(1L);
         runIds.add(2L);
         runIds.add(3L);
-        Map<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroupByAnalyticalRunId = peptideService.getPeptideHasProteinGroupByAnalyticalRunId(runIds);
+        List<PeptideMzTabDTO> peptideMzTabDTOs = peptideService.getPeptideMzTabDTOs(runIds);
 
-        for(PeptideHasProteinGroup peptideHasProteinGroup : peptideHasProteinGroupByAnalyticalRunId.keySet()){
-            colimsPeptideMapper.mapFragmentAnnotations(peptideHasProteinGroup.getPeptide());
+        for (PeptideMzTabDTO peptideMzTabDTO : peptideMzTabDTOs) {
+            colimsPeptideMapper.mapFragmentAnnotations(peptideMzTabDTO.getPeptide());
         }
 
 //        UserQueryService userQueryService = (UserQueryService) applicationContext.getBean("userQueryService");

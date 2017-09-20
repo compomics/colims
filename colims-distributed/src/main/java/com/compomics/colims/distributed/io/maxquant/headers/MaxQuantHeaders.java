@@ -19,15 +19,15 @@ public abstract class MaxQuantHeaders<T extends Enum<T>> {
     /**
      * The header enum class.
      */
-    protected Class<T> enumType;
+    protected final Class<T> enumType;
     /**
      * The headers map (key: header enum; value: the {@link MaxQuantHeader} instance).
      */
-    protected EnumMap<T, MaxQuantHeader> headersMap;
+    protected final EnumMap<T, MaxQuantHeader> headersMap;
     /**
      * The path of the JSON file with the header information.
      */
-    protected String jsonRelativePath;
+    protected final String jsonRelativePath;
 
     /**
      * Constructor.

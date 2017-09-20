@@ -1,8 +1,6 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.ProteinGroupService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Iain on 08/09/2015.
@@ -32,12 +29,12 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
 
     @Override
     public List<ProteinGroupDTO> getPagedProteinGroupsForRuns(List<Long> analyticalRunIds, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
-        return proteinGroupRepository.getPagedProteinGroupsForRun(analyticalRunIds, start, length, orderBy, sortDirection, filter);
+        return proteinGroupRepository.getPagedProteinGroups(analyticalRunIds, start, length, orderBy, sortDirection, filter);
     }
 
     @Override
     public long getProteinGroupCountForRuns(List<Long> analyticalRunIds, String filter) {
-        return proteinGroupRepository.getProteinGroupCountForRun(analyticalRunIds, filter);
+        return proteinGroupRepository.getProteinGroupCount(analyticalRunIds, filter);
     }
 
     @Override
@@ -72,12 +69,12 @@ public class ProteinGroupServiceImpl implements ProteinGroupService {
 
     @Override
     public List<ProteinGroupDTO> getProteinGroupDTOsForRuns(List<Long> analyticalRunIds) {
-        return proteinGroupRepository.getProteinGroupDTOsForRuns(analyticalRunIds);
+        return proteinGroupRepository.getProteinGroupDTOs(analyticalRunIds);
     }
 
     @Override
     public List<ProteinGroup> getProteinGroupsForRuns(List<Long> analyticalRunIds) {
-        return proteinGroupRepository.getProteinGroupsForRuns(analyticalRunIds);
+        return proteinGroupRepository.getProteinGroups(analyticalRunIds);
     }
 
     @Override

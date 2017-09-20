@@ -1,13 +1,11 @@
 package com.compomics.colims.repository;
 
-import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.colims.repository.hibernate.SortDirection;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This interface provides repository methods for the ProteinGroup class.
@@ -17,7 +15,7 @@ import java.util.Map;
 public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, Long> {
 
     /**
-     * Fetch a paged list of ProteinGroupForRun instances associated with a given analytical run.
+     * Fetch a paged list of ProteinGroupForRun instances associated with the given analytical runs.
      *
      * @param analyticalRunIds the list of analytical run IDs
      * @param start            the start point in result list
@@ -27,7 +25,7 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param filter           the filter text (an empty string matches all results)
      * @return the list of protein groups
      */
-    List<ProteinGroupDTO> getPagedProteinGroupsForRun(List<Long> analyticalRunIds, final int start, final int length, final String orderBy, final SortDirection sortDirection, final String filter);
+    List<ProteinGroupDTO> getPagedProteinGroups(List<Long> analyticalRunIds, final int start, final int length, final String orderBy, final SortDirection sortDirection, final String filter);
 
     /**
      * Fetch a list of {@link ProteinGroupDTO} instances associated with the given analytical runs.
@@ -35,7 +33,7 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param analyticalRunIds the list of analytical run IDs
      * @return the list of protein group DTO objects
      */
-    List<ProteinGroupDTO> getProteinGroupDTOsForRuns(List<Long> analyticalRunIds);
+    List<ProteinGroupDTO> getProteinGroupDTOs(List<Long> analyticalRunIds);
 
     /**
      * Fetch a list of {@link ProteinGroup} instances associated with the given analytical runs.
@@ -43,16 +41,16 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @param analyticalRunIds the list of analytical run IDs
      * @return the list of protein groups
      */
-    List<ProteinGroup> getProteinGroupsForRuns(List<Long> analyticalRunIds);
+    List<ProteinGroup> getProteinGroups(List<Long> analyticalRunIds);
 
     /**
-     * Count the number of proteins groups related to a given analytical run, including optional filter term.
+     * Count the number of proteins groups related to the given analytical runs, including optional filter term.
      *
      * @param analyticalRunIds the list of analytical run IDs of interest
      * @param filter           the filter string
      * @return the number of protein groups
      */
-    long getProteinGroupCountForRun(final List<Long> analyticalRunIds, final String filter);
+    long getProteinGroupCount(final List<Long> analyticalRunIds, final String filter);
 
     /**
      * Cascade save or update the given protein group. We don't use the JPA merge method because of cascading issues.

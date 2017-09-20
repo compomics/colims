@@ -147,7 +147,7 @@ public class ProteinOverviewController implements Controllable {
         proteinOverviewPanel.getProteinGroupTable().setSelectionModel(proteinGroupSelectionModel);
 
         //init peptide table
-        //SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, (o1, o2) -> o2.getPeptides().size() - (o1.getPeptides().size()));
+        //SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, (o1, o2) -> o2.getProteinGroupPeptides().size() - (o1.getProteinGroupPeptides().size()));
         SortedList<PeptideTableRow> sortedPeptides = new SortedList<>(peptideTableRows, new PeptideStartIndexComparator());
 
         peptideTableModel = GlazedListsSwing.eventTableModel(sortedPeptides, new PeptideTableFormat());

@@ -34,7 +34,7 @@ public class ProteinGroupServiceTest {
 
         List<ProteinGroup> proteinGroupsForRuns = proteinGroupService.getProteinGroupsForRuns(runIds);
 
-        Assert.assertEquals(3, proteinGroupsForRuns.size());
+        Assert.assertEquals(4, proteinGroupsForRuns.size());
     }
 
 }

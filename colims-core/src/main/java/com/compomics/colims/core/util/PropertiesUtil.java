@@ -44,9 +44,8 @@ public class PropertiesUtil {
      * @param value
      * @return properties configuration object.
      * @throws ConfigurationException
-     * @throws IOException
      */
-    public static PropertiesConfiguration addProperty(PropertiesConfiguration config, String key, Object value) throws ConfigurationException, IOException {
+    public static PropertiesConfiguration addProperty(PropertiesConfiguration config, String key, Object value) throws ConfigurationException {
         config.setProperty(key, value);
         config.save();
 

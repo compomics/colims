@@ -18,7 +18,7 @@ public class UniprotProteinCache extends LinkedHashMap<String, Map<String, Strin
 
     private static final long serialVersionUID = 1L;
 
-    private Integer  uniprotMaxCashSize;
+    private final Integer  uniprotMaxCashSize;
 
     public UniprotProteinCache(Integer uniprotMaxCashSize) {
         this.uniprotMaxCashSize = uniprotMaxCashSize;

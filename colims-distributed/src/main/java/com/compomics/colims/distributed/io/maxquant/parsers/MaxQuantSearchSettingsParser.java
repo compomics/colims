@@ -228,9 +228,8 @@ public class MaxQuantSearchSettingsParser {
      *
      * @param fastaDbs the FASTA databases used in the experiment
      * @return the mapped SearchAndValidationSettings instance
-     * @throws IOException thrown in case of of an I/O related problem
      */
-    private SearchAndValidationSettings parseSearchSettings(EnumMap<FastaDbType, List<FastaDb>> fastaDbs, String rawFileName) throws IOException {
+    private SearchAndValidationSettings parseSearchSettings(EnumMap<FastaDbType, List<FastaDb>> fastaDbs, String rawFileName) {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         //set the FASTA databases entity associations

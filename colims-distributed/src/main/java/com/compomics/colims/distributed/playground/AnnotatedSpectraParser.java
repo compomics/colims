@@ -161,7 +161,7 @@ public class AnnotatedSpectraParser {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private void parseAplFilePaths(Path andromedaDirectory) throws FileNotFoundException, IOException {
+    private void parseAplFilePaths(Path andromedaDirectory) throws IOException {
         /**
          * Parse the apl summary file 'aplfiles.txt' to extract the apl spectrum
          * file paths, the spectrum parameter file paths and the mass analyzer

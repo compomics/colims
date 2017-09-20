@@ -142,7 +142,7 @@ public class ColimsPeptideMapper {
         if (neutralLossString != null) {
             NeutralLoss neutralLoss = NeutralLoss.getNeutralLoss(neutralLossString);
             neutralLosses = new NeutralLoss[1];
-            neutralLosses[1] = neutralLoss;
+            neutralLosses[0] = neutralLoss;
         }
         else{
             neutralLosses = new NeutralLoss[]{};

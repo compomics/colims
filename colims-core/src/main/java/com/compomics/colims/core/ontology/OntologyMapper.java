@@ -27,11 +27,11 @@ public class OntologyMapper {
     /**
      * The Colims terms mapping.
      */
-    private ColimsMapping colimsMapping = new ColimsMapping();
+    private final ColimsMapping colimsMapping = new ColimsMapping();
     /**
      * The MaxQuant terms mapping.
      */
-    private MaxQuantMapping maxQuantMapping = new MaxQuantMapping();
+    private final MaxQuantMapping maxQuantMapping = new MaxQuantMapping();
 
     /**
      * No-arg constructor.

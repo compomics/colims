@@ -15,7 +15,7 @@ import java.util.Map;
 @Component("userBean")
 public class UserBean {
 
-    public static final String USER_NOT_AVAILABLE = "N/A";
+    private static final String USER_NOT_AVAILABLE = "N/A";
 
     /**
      * The logged in user.

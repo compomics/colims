@@ -24,8 +24,8 @@ import javax.swing.table.*;
  */
 public class TableColumnAdjuster implements PropertyChangeListener, TableModelListener {
 
-    private JTable table;
-    private int spacing;
+    private final JTable table;
+    private final int spacing;
     private boolean isColumnHeaderIncluded;
     private boolean isColumnDataIncluded;
     private boolean isOnlyAdjustLarger;

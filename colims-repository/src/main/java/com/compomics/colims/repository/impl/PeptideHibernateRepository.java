@@ -1,11 +1,11 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.PeptideHasProteinGroup;
 import com.compomics.colims.repository.PeptideRepository;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
+import com.compomics.colims.repository.hibernate.PeptideMzTabDTO;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.ProjectionList;
@@ -26,7 +26,7 @@ import java.util.*;
 public class PeptideHibernateRepository extends GenericHibernateRepository<Peptide, Long> implements PeptideRepository {
 
     @Override
-    public List<PeptideDTO> getPeptideDTOsByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds) {
+    public List<PeptideDTO> getPeptideDTOs(Long proteinGroupId, List<Long> analyticalRunIds) {
         Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideDTOsByProteinGroupId");
         query.setLong("proteinGroupId", proteinGroupId);
         query.setParameterList("analyticalRunIds", analyticalRunIds);
@@ -66,15 +66,6 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     }
 
     @Override
-    public List<Peptide> getPeptidesByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds) {
-        Query query = getCurrentSession().getNamedQuery("Peptide.getPeptidesByProteinGroupId");
-        query.setLong("proteinGroupId", proteinGroupId);
-        query.setParameterList("analyticalRunIds", analyticalRunIds);
-
-        return query.list();
-    }
-
-    @Override
     public List<PeptideHasModification> fetchPeptideHasModifications(Long peptideId) {
         Criteria criteria = getCurrentSession().createCriteria(PeptideHasModification.class);
 
@@ -84,7 +75,7 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     }
 
     @Override
-    public List<String> getDistinctPeptideSequenceByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds) {
+    public List<String> getDistinctPeptideSequences(Long proteinGroupId, List<Long> analyticalRunIds) {
         Query query = getCurrentSession().getNamedQuery("Peptide.getDistinctPeptideSequencesByProteinGroupIdAndRunIds");
 
         query.setLong("proteinGroupId", proteinGroupId);
@@ -94,9 +85,9 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     }
 
     @Override
-    public List<Peptide> getUniquePeptideByProteinGroupIdAndRunIds(Long proteinGroupId, List<Long> analyticalRunIds) {
+    public List<Peptide> getUniquePeptides(Long proteinGroupId, List<Long> analyticalRunIds) {
         List<Peptide> peptides = new ArrayList<>();
-        List<PeptideDTO> peptideDTOs = getPeptideDTOsByProteinGroupIdAndRunIds(proteinGroupId, analyticalRunIds);
+        List<PeptideDTO> peptideDTOs = getPeptideDTOs(proteinGroupId, analyticalRunIds);
         peptideDTOs.forEach(peptideDto -> {
             Criteria criteria = getCurrentSession().createCriteria(PeptideHasProteinGroup.class);
             criteria.add(Restrictions.eq("peptide.id", peptideDto.getPeptide().getId()));
@@ -109,18 +100,21 @@ public class PeptideHibernateRepository extends GenericHibernateRepository<Pepti
     }
 
     @Override
-    public Map<PeptideHasProteinGroup, AnalyticalRun> getPeptideHasProteinGroupByAndRunIds(List<Long> analyticalRunIds) {
-        Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideHasProteinGroupsByRunIds");
+    public List<PeptideMzTabDTO> getPeptideMzTabDTOs(List<Long> analyticalRunIds) {
+        Query query = getCurrentSession().getNamedQuery("Peptide.getPeptideMzTabDTOsByRunIds");
         query.setParameterList("analyticalRunIds", analyticalRunIds);
 
         List list = query.list();
 
-        Map<PeptideHasProteinGroup, AnalyticalRun> peptideHasProteinGroups = new HashMap<>();
+        List<PeptideMzTabDTO> peptideMzTabDTOs = new ArrayList();
         for (Object object : list) {
             Object[] objectArray = (Object[]) object;
-            peptideHasProteinGroups.put((PeptideHasProteinGroup) objectArray[1], (AnalyticalRun) objectArray[2]);
+
+            PeptideMzTabDTO peptideMzTabDTO = new PeptideMzTabDTO((Peptide) objectArray[0], (Long) objectArray[2], (Long) objectArray[1]);
+            peptideMzTabDTOs.add(peptideMzTabDTO);
         }
-        return peptideHasProteinGroups;
+
+        return peptideMzTabDTOs;
     }
 
 }

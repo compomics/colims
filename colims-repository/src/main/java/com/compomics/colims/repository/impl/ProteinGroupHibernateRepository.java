@@ -1,6 +1,5 @@
 package com.compomics.colims.repository.impl;
 
-import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
@@ -15,9 +14,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Niels Hulstaert
@@ -26,7 +23,7 @@ import java.util.Map;
 public class ProteinGroupHibernateRepository extends GenericHibernateRepository<ProteinGroup, Long> implements ProteinGroupRepository {
 
     @Override
-    public List<ProteinGroupDTO> getPagedProteinGroupsForRun(List<Long> analyticalRunIds, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
+    public List<ProteinGroupDTO> getPagedProteinGroups(List<Long> analyticalRunIds, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
         //joins
@@ -78,7 +75,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public long getProteinGroupCountForRun(List<Long> analyticalRunIds, String filter) {
+    public long getProteinGroupCount(List<Long> analyticalRunIds, String filter) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
         //joins
@@ -112,7 +109,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public List<ProteinGroupDTO> getProteinGroupDTOsForRuns(List<Long> analyticalRunIds) {
+    public List<ProteinGroupDTO> getProteinGroupDTOs(List<Long> analyticalRunIds) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
         //joins
@@ -145,7 +142,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
     }
 
     @Override
-    public List<ProteinGroup> getProteinGroupsForRuns(List<Long> analyticalRunIds) {
+    public List<ProteinGroup> getProteinGroups(List<Long> analyticalRunIds) {
         Query query = getCurrentSession().getNamedQuery("ProteinGroup.getProteinGroupsByRunIds");
         query.setParameterList("analyticalRunIds", analyticalRunIds);
 

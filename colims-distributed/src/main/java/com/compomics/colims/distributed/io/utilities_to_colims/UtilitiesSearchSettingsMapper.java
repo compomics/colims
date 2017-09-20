@@ -9,7 +9,6 @@ import com.compomics.util.preferences.IdentificationParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.EnumMap;
 
 /**
@@ -43,9 +42,8 @@ public class UtilitiesSearchSettingsMapper {
      * @param proteinThreshold         the protein score threshold
      * @param storeIdentificationFile  store the identification or not
      * @return the mapped SearchAndValidationSettings
-     * @throws IOException thrown in case of an I/O related exception
      */
-    public SearchAndValidationSettings map(final SearchEngineType searchEngineType, final String version, final EnumMap<FastaDbType, FastaDb> fastaDbs, final IdentificationParameters identificationParameters, final ScoreType proteinScoreType, final Double proteinThreshold, boolean storeIdentificationFile) throws IOException {
+    public SearchAndValidationSettings map(final SearchEngineType searchEngineType, final String version, final EnumMap<FastaDbType, FastaDb> fastaDbs, final IdentificationParameters identificationParameters, final ScoreType proteinScoreType, final Double proteinThreshold, boolean storeIdentificationFile) {
         SearchAndValidationSettings searchAndValidationSettings = new SearchAndValidationSettings();
 
         //SearchParameterSettings
