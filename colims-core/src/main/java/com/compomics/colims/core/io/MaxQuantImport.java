@@ -46,7 +46,7 @@ public class MaxQuantImport extends DataImport {
     /**
      * The list of selected protein group headers.
      */
-    private List<String> selectedProteinGroupHeaders;
+    private List<String> selectedProteinGroupsHeaders;
     /**
      * The quantification label.
      */
@@ -61,15 +61,15 @@ public class MaxQuantImport extends DataImport {
     /**
      * Constructor.
      *
-     * @param mqParFile                   the mqpar.xml parameter file
-     * @param combinedDirectory           File pointer to the MaxQuant combined directory
-     * @param fullCombinedDirectory       File pointer to the MaxQuant full combined directory
-     * @param fastaDbIds                  the FASTA database map (key: FastaDb type; value: the FastaDb instance ID)
-     * @param includeContaminants         whether to import proteins from contaminants file.
-     * @param includeUnidentifiedSpectra  whether to import unidentified spectra from APL files.
+     * @param mqParFile                    the mqpar.xml parameter file
+     * @param combinedDirectory            File pointer to the MaxQuant combined directory
+     * @param fullCombinedDirectory        File pointer to the MaxQuant full combined directory
+     * @param fastaDbIds                   the FASTA database map (key: FastaDb type; value: the FastaDb instance ID)
+     * @param includeContaminants          whether to import proteins from contaminants file.
+     * @param includeUnidentifiedSpectra   whether to import unidentified spectra from APL files.
      * @param selectedProteinGroupsHeaders list of optional headers to store in protein group quantification labeled
-     *                                    table.
-     * @param quantificationLabel         the quantification label
+     *                                     table.
+     * @param quantificationLabel          the quantification label
      */
     public MaxQuantImport(final Path mqParFile,
                           final Path combinedDirectory,
@@ -85,7 +85,7 @@ public class MaxQuantImport extends DataImport {
         this.fullCombinedDirectory = fullCombinedDirectory;
         this.includeContaminants = includeContaminants;
         this.includeUnidentifiedSpectra = includeUnidentifiedSpectra;
-        this.selectedProteinGroupHeaders = selectedProteinGroupsHeaders;
+        this.selectedProteinGroupsHeaders = selectedProteinGroupsHeaders;
         this.quantificationLabel = quantificationLabel;
     }
 
@@ -106,7 +106,7 @@ public class MaxQuantImport extends DataImport {
     }
 
     public List<String> getSelectedProteinGroupsHeaders() {
-        return selectedProteinGroupHeaders;
+        return selectedProteinGroupsHeaders;
     }
 
     public String getQuantificationLabel() {
@@ -133,7 +133,7 @@ public class MaxQuantImport extends DataImport {
         hash = 97 * hash + Objects.hashCode(this.fullCombinedDirectory);
         hash = 97 * hash + (this.includeContaminants ? 1 : 0);
         hash = 97 * hash + (this.includeUnidentifiedSpectra ? 1 : 0);
-        hash = 97 * hash + Objects.hashCode(this.selectedProteinGroupHeaders);
+        hash = 97 * hash + Objects.hashCode(this.selectedProteinGroupsHeaders);
         hash = 97 * hash + Objects.hashCode(this.quantificationLabel);
         return hash;
     }
@@ -162,7 +162,7 @@ public class MaxQuantImport extends DataImport {
         if (!Objects.equals(this.fullCombinedDirectory, other.fullCombinedDirectory)) {
             return false;
         }
-        return Objects.equals(this.selectedProteinGroupHeaders, other.selectedProteinGroupHeaders);
+        return Objects.equals(this.selectedProteinGroupsHeaders, other.selectedProteinGroupsHeaders);
     }
 
 }
