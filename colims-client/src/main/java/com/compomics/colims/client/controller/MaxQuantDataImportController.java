@@ -96,7 +96,9 @@ public class MaxQuantDataImportController implements Controllable {
 
         Path experimentsDirectory = Paths.get(experimentsPath);
         if (!Files.exists(experimentsDirectory)) {
-            throw new IllegalArgumentException("The experiments directory defined in the client properties file " + experimentsPath+ " doesn't exist.");
+            throw new IllegalArgumentException("The experiments directory defined in the client properties file (/config/colims-client.properties) " + experimentsPath + " doesn't exist."
+                    + System.lineSeparator()
+                    + "Please make sure the path is correct and mapped on the file system.");
         }
 
         //init the mqpar file directory selection

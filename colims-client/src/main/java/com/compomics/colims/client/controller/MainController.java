@@ -143,8 +143,13 @@ public class MainController implements Controllable, ActionListener {
             if (e instanceof PermissionException) {
                 showPermissionErrorDialog(e.getMessage());
             } else {
-                showUnexpectedErrorDialog(e.getMessage());
-                System.exit(0);
+                if (e.getCause() != null) {
+                    showUnexpectedErrorDialog(e.getCause().getMessage());
+                } else {
+                    showUnexpectedErrorDialog(e.getMessage());
+                }
+
+                //System.exit(0);
             }
         });
 
@@ -388,7 +393,8 @@ public class MainController implements Controllable, ActionListener {
     private void showUnexpectedErrorDialog(final String message) {
         showMessageDialog("Unexpected error", "An unexpected error occured: "
                 + System.lineSeparator() + message
-                + System.lineSeparator() + "please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
+                + System.lineSeparator()
+                + System.lineSeparator() + "Please try to rerun the application.", JOptionPane.ERROR_MESSAGE);
     }
 
     /**

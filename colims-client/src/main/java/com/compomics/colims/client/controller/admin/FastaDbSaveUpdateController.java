@@ -172,7 +172,9 @@ public class FastaDbSaveUpdateController implements Controllable {
 
         Path fastasDirectory = Paths.get(fastasPath);
         if (!Files.exists(fastasDirectory)) {
-            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file " + fastasPath + " doesn't exist.");
+            throw new IllegalArgumentException("The FASTA DB files directory defined in the client properties file (/config/colims-client.properties) " + fastasPath + " doesn't exist."
+                    + System.lineSeparator()
+                    + "Please make sure the path is correct and mapped on the file system.");
         }
 
         //init FASTA file selection

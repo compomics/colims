@@ -264,7 +264,7 @@ create table protein_group_quant (
     id bigint not null auto_increment,
     ibaq double precision,
     intensity double precision,
-    labels varchar(750) not null,
+    labels varchar(750),
     lfq_intensity double precision,
     msms_count integer,
     l_analytical_run_id bigint,

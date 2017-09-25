@@ -270,7 +270,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * Show the view with the given DataImport en PersistMetadata instances for
      * updating a runs addition task.
      *
-     * @param dataImport the DataImport instance
+     * @param dataImport      the DataImport instance
      * @param persistMetaData the PersistMetadata instance
      */
     public void showEditView(DataImport dataImport, PersistMetadata persistMetaData) {
@@ -315,7 +315,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
         PersistType selectedStorageType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = analyticalRunsAdditionDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = analyticalRunsAdditionDialog.getDataTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -384,7 +384,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * sendDbTask method.
      *
      * @param dataImport the DataImport instance with the necessary import
-     * information
+     *                   information
      */
     private void sendStorageTask(DataImport dataImport) {
         String storageDescription = analyticalRunsAdditionDialog.getStorageDescriptionTextField().getText();
@@ -503,10 +503,6 @@ public class AnalyticalRunsAdditionController implements Controllable {
         }
 
         return selectedLabel;
-    }
-
-    public MaxQuantDataImportController getMaxQuantDataImportController() {
-        return maxQuantDataImportController;
     }
 
 }

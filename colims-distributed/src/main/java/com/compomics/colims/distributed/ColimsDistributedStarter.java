@@ -1,12 +1,19 @@
 package com.compomics.colims.distributed;
 
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.distributed.consumer.PersistDbTaskHandler;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.UserBean;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.CannotCreateTransactionException;
+
+import java.net.ConnectException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * The Colims distributed module starter class.
@@ -49,9 +56,32 @@ public final class ColimsDistributedStarter {
             User distributedUser = userService.findByName("distributed");
             userService.fetchAuthenticationRelations(distributedUser);
             userBean.setCurrentUser(distributedUser);
+
+            //check if the experiments and FASTA DBs locations exist
+            PersistDbTaskHandler persistDbTaskHandler = applicationContext.getBean("persistDbTaskHandler", PersistDbTaskHandler.class);
+            Path experimentsDirectory = Paths.get(persistDbTaskHandler.getExperimentsPath());
+            if (!Files.exists(experimentsDirectory)) {
+                throw new IllegalArgumentException("The experiments directory " + experimentsDirectory + " doesn't exist."
+                        + System.lineSeparator()
+                        + "Please make sure that the 'experiments.path' property in the /config/colims-distributed.config is correct and mapped in the file system.");
+            }
+            Path fastasDirectory = Paths.get(persistDbTaskHandler.getFastasPath());
+            if (!Files.exists(fastasDirectory)) {
+                throw new IllegalArgumentException("The FASTA DBs directory " + fastasDirectory + " doesn't exist." +
+                        System.lineSeparator()
+                        + "Please make sure that the 'fastas.path' property in the /config/colims-distributed.config is correct and mapped in the file system.");
+            }
         } catch (CannotCreateTransactionException ex) {
+            System.out.println("-----------------------------------");
+            System.out.println("Couldn't connect to the database.");
+            System.out.println("Please make sure that the database connection parameters in the /config/colims-distributed.config file are correct.");
+            System.out.println("----------------------------------");
             LOGGER.error(ex.getMessage(), ex);
-            System.exit(1);
+        } catch (Exception ex) {
+            System.out.println("-----------------------------------");
+            System.out.println("An unexpected exception occurred.");
+            System.out.println("-----------------------------------");
+            LOGGER.error(ex.getMessage(), ex);
         }
     }
 }

@@ -58,7 +58,7 @@ public class ProteinGroupQuant extends DatabaseEntity {
     /**
      * The labels as a json String.
      */
-    @Column(name = "labels", nullable = false, length = 750)
+    @Column(name = "labels", length = 750)
     private String labels;
 
     public ProteinGroup getProteinGroup() {

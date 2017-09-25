@@ -135,6 +135,14 @@ public class PersistDbTaskHandler {
         this.notificationProducer = notificationProducer;
     }
 
+    public String getExperimentsPath() {
+        return experimentsPath;
+    }
+
+    public String getFastasPath() {
+        return fastasPath;
+    }
+
     public void handlePersistDbTask(PersistDbTask persistDbTask) {
         Long started = System.currentTimeMillis();
         try {

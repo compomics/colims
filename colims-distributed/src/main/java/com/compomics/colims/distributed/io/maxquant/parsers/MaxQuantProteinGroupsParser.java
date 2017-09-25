@@ -99,11 +99,11 @@ public class MaxQuantProteinGroupsParser {
     /**
      * Parse the proteinGroups.txt file.
      *
-     * @param proteinGroupsFile MaxQuant protein groups file
-     * @param fastaDbMap the map of {@link FastaDb} instances
+     * @param proteinGroupsFile   MaxQuant protein groups file
+     * @param fastaDbMap          the map of {@link FastaDb} instances
      * @param quantificationLabel the quantification label
      * @param includeContaminants whether or not to include contaminants
-     * @param optionalHeaders the list of optional headers
+     * @param optionalHeaders     the list of optional headers
      * @throws IOException in case of an Input/Output related problem
      */
     public void parse(Path proteinGroupsFile, LinkedHashMap<FastaDb, Path> fastaDbMap, String quantificationLabel, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
@@ -212,7 +212,7 @@ public class MaxQuantProteinGroupsParser {
     /**
      * Create a protein and it's relation to a protein group.
      *
-     * @param sequence the sequence of the protein
+     * @param sequence  the sequence of the protein
      * @param accession the accession of the protein
      * @param mainGroup whether this is the main protein of the group
      * @return a ProteinGroupHasProtein object
@@ -238,14 +238,14 @@ public class MaxQuantProteinGroupsParser {
      * Create protein group quantification and it's relation to a protein group
      * and analytical run.
      *
-     * @param proteinGroup the protein group
-     * @param analyticalRun the analytical run related to quantification
-     * @param intensity the intensity
-     * @param lfqIntensity the LFQ intensity
-     * @param ibaq the iBAQ
-     * @param msmsCount the MSMS Count
+     * @param proteinGroup       the protein group
+     * @param analyticalRun      the analytical run related to quantification
+     * @param intensity          the intensity
+     * @param lfqIntensity       the LFQ intensity
+     * @param ibaq               the iBAQ
+     * @param msmsCount          the MSMS Count
      * @param labeledIntensities the labeled intensities map (key: label; value:
-     * intensity)
+     *                           intensity)
      * @throws JsonProcessingException in case of a json serializing problem
      */
     private void createProteinGroupQuant(ProteinGroup proteinGroup, AnalyticalRun analyticalRun, String intensity, String lfqIntensity, String ibaq, String msmsCount, Map<String, Double> labeledIntensities) throws JsonProcessingException {
@@ -271,7 +271,7 @@ public class MaxQuantProteinGroupsParser {
             proteinGroupQuant.setMsmsCount(Integer.parseInt(msmsCount));
         }
         //set the labeled intensities as a JSON string
-        if (!labeledIntensities.isEmpty()) {
+        if (labeledIntensities != null && !labeledIntensities.isEmpty()) {
             proteinGroupQuant.setLabels(objectMapper.writeValueAsString(labeledIntensities));
         }
 
@@ -287,7 +287,7 @@ public class MaxQuantProteinGroupsParser {
      * not numeric, it is not stored.
      *
      * @param proteinGroupsEntry key-value pairs from an evidence entry
-     * @param experimentName the experiment name
+     * @param experimentName     the experiment name
      * @return the map of labeled intensities
      */
     private Map<String, Double> parseLabeledQuantification(Map<String, String> proteinGroupsEntry, String experimentName, List<String> optionalHeaders) {
