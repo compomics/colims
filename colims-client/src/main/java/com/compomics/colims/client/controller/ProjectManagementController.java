@@ -239,11 +239,11 @@ public class ProjectManagementController implements Controllable {
             if (projectToDelete != null) {
                 boolean deleteConfirmation = deleteEntity(projectToDelete, Project.class);
                 if (deleteConfirmation) {
-                    //remove from overview table and clear selection
-                    mainController.getProjects().remove(projectToDelete);
-                    projectsSelectionModel.clearSelection();
-
-                    eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, projectToDelete.getId()));
+//                    //remove from overview table and clear selection
+//                    mainController.getProjects().remove(projectToDelete);
+//                    projectsSelectionModel.clearSelection();
+//
+//                    eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, projectToDelete.getId()));
                 }
             } else {
                 eventBus.post(new MessageEvent("Project selection", "Please select a project to delete.", JOptionPane.INFORMATION_MESSAGE));
@@ -286,15 +286,15 @@ public class ProjectManagementController implements Controllable {
                 //send DeleteDbTask to DbTask queue
                 boolean deleteConfirmation = deleteEntity(experimentToDelete, Experiment.class);
                 if (deleteConfirmation) {
-                    //remove from overview table and clear selection
-                    experiments.remove(experimentToDelete);
-                    experimentsSelectionModel.clearSelection();
-
-                    //remove experiment from the selected project and update the table
-                    getSelectedProject().getExperiments().remove(experimentToDelete);
-                    projectManagementPanel.getProjectsTable().updateUI();
-
-                    eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, experimentToDelete.getId()));
+//                    //remove from overview table and clear selection
+//                    experiments.remove(experimentToDelete);
+//                    experimentsSelectionModel.clearSelection();
+//
+//                    //remove experiment from the selected project and update the table
+//                    getSelectedProject().getExperiments().remove(experimentToDelete);
+//                    projectManagementPanel.getProjectsTable().updateUI();
+//
+//                    eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, experimentToDelete.getId()));
                 }
             } else {
                 eventBus.post(new MessageEvent("Experiment selection", "Please select an experiment to delete.", JOptionPane.INFORMATION_MESSAGE));
@@ -324,15 +324,15 @@ public class ProjectManagementController implements Controllable {
             if (sampleToDelete != null) {
                 boolean deleteConfirmation = deleteEntity(sampleToDelete, Sample.class);
                 if (deleteConfirmation) {
-                    //remove from overview table and clear selection
-                    samples.remove(sampleToDelete);
-                    samplesSelectionModel.clearSelection();
-
-                    //remove sample from the selected experiment and update the table
-                    getSelectedExperiment().getSamples().remove(sampleToDelete);
-                    projectManagementPanel.getExperimentsTable().updateUI();
-
-                    eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete.getId()));
+//                    //remove from overview table and clear selection
+//                    samples.remove(sampleToDelete);
+//                    samplesSelectionModel.clearSelection();
+//
+//                    //remove sample from the selected experiment and update the table
+//                    getSelectedExperiment().getSamples().remove(sampleToDelete);
+//                    projectManagementPanel.getExperimentsTable().updateUI();
+//
+//                    eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, sampleToDelete.getId()));
                 }
             } else {
                 eventBus.post(new MessageEvent("Sample selection", "Please select a sample to delete.", JOptionPane.INFORMATION_MESSAGE));
@@ -555,6 +555,14 @@ public class ProjectManagementController implements Controllable {
                 //update the runs
                 sample.setAnalyticalRuns(sampleChangeEvent.getAnalyticalRuns());
                 samplesSelectionModel.clearSelection();
+
+                //check if the sample's experiment is selected
+                if (getSelectedExperiment().getId().equals(sample.getExperiment().getId())) {
+                    int selectedExperimentIndex = getSelectedExperimentIndex();
+                    //refresh the selection
+                    experimentsSelectionModel.clearSelection();
+                    experimentsSelectionModel.setLeadSelectionIndex(selectedExperimentIndex);
+                }
             });
         }
     }

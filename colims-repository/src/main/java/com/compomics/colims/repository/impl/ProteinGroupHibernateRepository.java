@@ -7,11 +7,13 @@ import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.colims.repository.hibernate.SortDirection;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
+import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -177,5 +179,14 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         }
 
         return proteinGroupHasProtein;
+    }
+
+    @Override
+    public List<Long> getConstraintLessProteinGroupIdsForRuns(List<Long> analyticalRunIds) {
+        SQLQuery sqlQuery = (SQLQuery) getCurrentSession().getNamedQuery("ProteinGroup.getConstraintLessProteinGroupIdsForRuns");
+        sqlQuery.setParameterList("runIds", analyticalRunIds);
+        sqlQuery.addScalar("protein_group.id", LongType.INSTANCE);
+
+        return sqlQuery.list();
     }
 }
