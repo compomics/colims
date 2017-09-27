@@ -135,17 +135,8 @@ public class SampleRunsController implements Controllable {
             if (selectedAnalyticalRuns.size() == 1) {
                 boolean deleteConfirmation = deleteEntity(selectedAnalyticalRuns.get(0), AnalyticalRun.class);
                 if (deleteConfirmation) {
-//                    AnalyticalRun selectedAnalyticalRun = selectedAnalyticalRuns.get(0);
-//
-//                    //remove from overview table and clear selection
-//                    analyticalRuns.remove(selectedAnalyticalRun);
-//                    analyticalRunsSelectionModel.clearSelection();
-//
-//                    //remove analytical run from the selected sample and update the table
-//                    sampleToEdit.getAnalyticalRuns().remove(selectedAnalyticalRun);
-//                    sampleRunsDialog.getAnalyticalRunsTable().updateUI();
-//
-//                    eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRun.getId(), sampleToEdit.getId()));
+                    //close the dialog
+                    sampleRunsDialog.dispose();
                 }
             } else {
                 eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
@@ -224,6 +215,7 @@ public class SampleRunsController implements Controllable {
                     try {
                         dbTaskProducer.sendDbTask(deleteDbTask);
                         deleteConfirmation = true;
+                        eventBus.post(new MessageEvent("Delete run confirmation", "The delete task has been sent to the distributed module.", JOptionPane.INFORMATION_MESSAGE));
                     } catch (IOException e) {
                         LOGGER.error(e, e.getCause());
                         eventBus.post(new UnexpectedErrorMessageEvent(e.getMessage()));

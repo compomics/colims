@@ -53,9 +53,9 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="parameterDirectoryTextField" max="32767" attributes="0"/>
+                          <Component id="mqparFileTextField" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="selectParameterDirectoryButton" min="-2" pref="92" max="-2" attributes="0"/>
+                          <Component id="selectMqparFileButton" min="-2" pref="92" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="combinedFolderDirectoryTextField" max="32767" attributes="0"/>
@@ -90,8 +90,8 @@
                   <Component id="maxQuantDirectorySelectionLabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="parameterDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="selectParameterDirectoryButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="mqparFileTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="selectMqparFileButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                   <Component id="contaminantsCheckBox" min="-2" max="-2" attributes="0"/>
@@ -132,7 +132,7 @@
             <Property name="text" type="java.lang.String" value="Select the parameter file (mqpar.xml) *:"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="selectParameterDirectoryButton">
+        <Component class="javax.swing.JButton" name="selectMqparFileButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="browse..."/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -146,7 +146,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="parameterDirectoryTextField">
+        <Component class="javax.swing.JTextField" name="mqparFileTextField">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
           </Properties>

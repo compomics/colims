@@ -131,6 +131,8 @@ public class ProjectEditController implements Controllable {
 
                 //refresh selection in project list in management overview dialog
                 projectManagementController.setSelectedProject(index);
+
+                projectEditDialog.dispose();
             } else {
                 MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);

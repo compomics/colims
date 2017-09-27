@@ -285,6 +285,10 @@ public class MainController implements Controllable, ActionListener {
             //check task type
             //if the task is a persist database task, get the sample with fetched runs
             if (completedDbTask.getDbTask() instanceof PersistDbTask) {
+                eventBus.post(new MessageEvent("Analytical runs addition", "You or another user has added runs and the client will be updated."
+                        + System.lineSeparator()
+                        + "If you notice any strange behaviour, please restart the client.", JOptionPane.INFORMATION_MESSAGE));
+
                 PersistDbTask persistDbTask = (PersistDbTask) completedDbTask.getDbTask();
                 java.util.List<AnalyticalRun> analyticalRuns = analyticalRunService.findBySampleId(persistDbTask.getEnitityId());
 
@@ -308,6 +312,16 @@ public class MainController implements Controllable, ActionListener {
                         //check if the experiment is present in the project management view
                         Long experimentId = (Long) parentIds[1];
                         if (isExperimentPresent(experimentId)) {
+                            //find the experiment
+                            Optional<Experiment> foundExperiment = project.getExperiments().stream().filter(experiment -> experiment.getId().equals(experimentId)).findFirst();
+                            if (foundExperiment.isPresent()) {
+                                sample = sampleService.findById(persistDbTask.getEnitityId());
+                                sample.setAnalyticalRuns(analyticalRuns);
+                                foundExperiment.get().getSamples().add(sample);
+                                projectManagementController.getProjectManagementPanel().getExperimentsTable().updateUI();
+                                eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.UPDATED, experimentId));
+                            }
+                        } else {
                             //add the experiment to the previously found project
                             project.getExperiments().add(experimentService.findByIdWithEagerFetching(experimentId));
                             eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.CREATED, experimentId));
@@ -316,6 +330,12 @@ public class MainController implements Controllable, ActionListener {
                 }
             } else {
                 DeleteDbTask deleteDbTask = (DeleteDbTask) completedDbTask.getDbTask();
+
+                eventBus.post(new MessageEvent("Removal of a " + deleteDbTask.getDbEntityClass().getSimpleName()
+                        , "You or another user has removed a " + deleteDbTask.getDbEntityClass().getSimpleName() + " and the client will be updated."
+                        + System.lineSeparator()
+                        + "If you notice any strange behaviour, please restart the client.", JOptionPane.INFORMATION_MESSAGE));
+
                 removeFromProjects(deleteDbTask);
             }
         } catch (Exception ex) {

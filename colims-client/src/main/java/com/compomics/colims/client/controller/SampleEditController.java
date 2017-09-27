@@ -161,6 +161,8 @@ public class SampleEditController implements Controllable {
 
                 //refresh selection in sample table
                 projectManagementController.setSelectedSample(index);
+
+                sampleEditDialog.dispose();
             } else {
                 MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);

@@ -136,6 +136,8 @@ public class ExperimentEditController implements Controllable {
 
                 //refresh selection in experiment table
                 projectManagementController.setSelectedExperiment(index);
+
+                experimentEditDialog.dispose();
             } else {
                 MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);
