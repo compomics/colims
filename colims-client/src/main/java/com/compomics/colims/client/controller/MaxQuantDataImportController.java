@@ -263,14 +263,9 @@ public class MaxQuantDataImportController implements Controllable {
         }
         if (primaryFastaDb == null) {
             validationMessages.add("Please select a primary FASTA file.");
-        } else if (primaryFastaDb.getHeaderParseRule() == null) {
-            validationMessages.add("Please add header parse rule to primary FASTA file!");
         }
-
         if (contaminantsFastaDb == null) {
             validationMessages.add("Please select a contaminants FASTA file.");
-        } else if (contaminantsFastaDb.getHeaderParseRule() == null) {
-            validationMessages.add("Please add header parse rule to contaminants FASTA file!");
         }
         additionalFastaDbBindingList.stream().forEach(additionalFastaDb -> {
             if (additionalFastaDb != null && additionalFastaDb.getHeaderParseRule() == null) {

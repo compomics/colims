@@ -386,6 +386,23 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
+     * Listen to a ProjectChangeEvent and update the projects table if
+     * necessary.
+     *
+     * @param projectChangeEvent the ProjectChangeEvent instance
+     */
+    @Subscribe
+    public void onProjectChangeEvent(ProjectChangeEvent projectChangeEvent) {
+        if (projectChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
+            if (getSelectedProject() != null && getSelectedProject().getId().equals(projectChangeEvent.getProjectId())) {
+                //reset the project selection
+                int selectedProjectIndex = getSelectedProjectIndex();
+                setSelectedProject(selectedProjectIndex);
+            }
+        }
+    }
+
+    /**
      * Get the row index of the selected experiment in the experiments table.
      *
      * @return the selected experiment index
@@ -456,8 +473,7 @@ public class ProjectManagementController implements Controllable {
                 int selectedProjectIndex = getSelectedProjectIndex();
                 setSelectedProject(selectedProjectIndex);
             }
-        }
-        else if(experimentChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)){
+        } else if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
             if (getSelectedExperiment() != null && getSelectedExperiment().getId().equals(experimentChangeEvent.getExperimentId())) {
                 //reset the experiment selection
                 int selectedExperimentIndex = getSelectedExperimentIndex();
@@ -531,10 +547,11 @@ public class ProjectManagementController implements Controllable {
     @Subscribe
     public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
         if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
-            if (getSelectedSample() != null && getSelectedSample().getId().equals(sampleChangeEvent.getSampleId())) {
-                //reset parent experiment selection
+            if (getSelectedExperiment() != null) {
+                //reset experiment selection
                 int selectedExperimentIndex = getSelectedExperimentIndex();
                 setSelectedExperiment(selectedExperimentIndex);
+                projectManagementPanel.getExperimentsTable().updateUI();
             }
         } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.RUNS_ADDED)) {
             Optional<Sample> foundSample = samples.stream().filter(sample -> sample.getId().equals(sampleChangeEvent.getSampleId())).findFirst();

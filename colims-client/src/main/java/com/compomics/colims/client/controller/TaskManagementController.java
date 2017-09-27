@@ -12,11 +12,13 @@ import com.compomics.colims.client.view.TaskManagementPanel;
 import com.compomics.colims.core.distributed.model.*;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +29,7 @@ import javax.swing.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 import org.springframework.context.annotation.Lazy;
 
 /**
@@ -284,7 +287,7 @@ public class TaskManagementController implements Controllable {
     /**
      * Shows a message dialog.
      *
-     * @param title the dialog title
+     * @param title   the dialog title
      * @param message the dialog message
      */
     private void showMessageDialog(final String title, final String message) {

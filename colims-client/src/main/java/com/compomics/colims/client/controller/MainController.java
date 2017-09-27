@@ -315,16 +315,21 @@ public class MainController implements Controllable, ActionListener {
                             //find the experiment
                             Optional<Experiment> foundExperiment = project.getExperiments().stream().filter(experiment -> experiment.getId().equals(experimentId)).findFirst();
                             if (foundExperiment.isPresent()) {
+                                //get the sample and add the runs
                                 sample = sampleService.findById(persistDbTask.getEnitityId());
                                 sample.setAnalyticalRuns(analyticalRuns);
+
+                                //add the sample to it's experiment
                                 foundExperiment.get().getSamples().add(sample);
+
+                                //update the necessary tables
                                 projectManagementController.getProjectManagementPanel().getExperimentsTable().updateUI();
                                 eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.UPDATED, experimentId));
                             }
                         } else {
                             //add the experiment to the previously found project
                             project.getExperiments().add(experimentService.findByIdWithEagerFetching(experimentId));
-                            eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.CREATED, experimentId));
+                            eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.UPDATED, projectId));
                         }
                     }
                 }
