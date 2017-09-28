@@ -226,11 +226,24 @@ public class ProteinOverviewController implements Controllable {
         //add action listeners
         proteinOverviewPanel.getProjectTree().addTreeSelectionListener((TreeSelectionEvent e) -> {
             TreePath[] treePaths = e.getPaths();
-            selectedAnalyticalRuns.clear();
-            if (treePaths.length > 0) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePaths[0].getLastPathComponent();
+            for (int i = 0; i < treePaths.length; i++) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePaths[i].getLastPathComponent();
                 //check whether the path was added or removed
-                if (e.isAddedPath(0)) {
+                if (!e.isAddedPath(i)) {
+                    if (node.getUserObject() instanceof AnalyticalRun) {
+                        AnalyticalRun selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
+                        selectedAnalyticalRuns.remove(selectedAnalyticalRun);
+                    } else if (node.getUserObject() instanceof Sample) {
+                        Sample selectedSample = (Sample) node.getUserObject();
+                        selectedAnalyticalRuns.removeAll(selectedSample.getAnalyticalRuns());
+                    }   
+                } 
+            }
+            
+            for (int i = 0; i < treePaths.length; i++) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePaths[i].getLastPathComponent();
+                //check whether the path was added or removed
+                if (e.isAddedPath(i)) {
                     if (node.getUserObject() instanceof AnalyticalRun) {
                         AnalyticalRun selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
                         selectedAnalyticalRuns.add(selectedAnalyticalRun);
@@ -238,12 +251,6 @@ public class ProteinOverviewController implements Controllable {
                         Sample selectedSample = (Sample) node.getUserObject();
                         selectedAnalyticalRuns.addAll(selectedSample.getAnalyticalRuns());
                     }
-                } else if (node.getUserObject() instanceof AnalyticalRun) {
-                    AnalyticalRun selectedAnalyticalRun = (AnalyticalRun) node.getUserObject();
-                    selectedAnalyticalRuns.remove(selectedAnalyticalRun);
-                } else if (node.getUserObject() instanceof Sample) {
-                    Sample selectedSample = (Sample) node.getUserObject();
-                    selectedAnalyticalRuns.removeAll(selectedSample.getAnalyticalRuns());
                 }
             }
 
