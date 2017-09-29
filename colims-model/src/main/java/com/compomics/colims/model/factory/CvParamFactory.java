@@ -8,7 +8,7 @@ import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.cv.CvParam;
 import com.compomics.colims.model.cv.TypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory class for creating CV term types.
@@ -93,7 +93,7 @@ public final class CvParamFactory {
             cvParam.setLabel(label);
             cvParam.setName(name);
         } catch (InstantiationException | IllegalAccessException ex) {
-            Logger.getLogger(CvParamFactory.class);
+            LoggerFactory.getLogger(CvParamFactory.class);
         }
 
         return cvParam;

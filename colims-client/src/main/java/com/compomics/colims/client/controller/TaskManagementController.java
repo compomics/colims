@@ -19,7 +19,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jms.UncategorizedJmsException;
@@ -43,7 +44,7 @@ public class TaskManagementController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(TaskManagementController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskManagementController.class);
 
     private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
     private static final String STARTED_MESSAGE = "started processing task ";

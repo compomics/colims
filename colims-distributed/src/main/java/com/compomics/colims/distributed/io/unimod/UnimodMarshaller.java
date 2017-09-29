@@ -2,9 +2,10 @@ package com.compomics.colims.distributed.io.unimod;
 
 import com.compomics.colims.model.AbstractModification;
 import com.compomics.colims.model.SearchModification;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class UnimodMarshaller {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(UnimodMarshaller.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UnimodMarshaller.class);
 
     private static final Namespace NAMESPACE = Namespace.getNamespace("http://www.unimod.org/xmlns/schema/unimod_2");
     private static final String UNIMOD_ACCESSION = "UNIMOD:%d";

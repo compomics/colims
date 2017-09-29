@@ -4,7 +4,8 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.consumer.PersistDbTaskHandler;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.UserBean;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -25,7 +26,7 @@ public final class ColimsDistributedStarter {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(ColimsDistributedStarter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ColimsDistributedStarter.class);
 
     /**
      * private no-arg constructor.

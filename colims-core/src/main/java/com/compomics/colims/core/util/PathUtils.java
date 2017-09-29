@@ -1,5 +1,8 @@
 package com.compomics.colims.core.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.file.Path;
 
 /**
@@ -8,6 +11,8 @@ import java.nio.file.Path;
  * @author Niels Hulstaert
  */
 public final class PathUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PathUtils.class);
 
     /**
      * Private constructor to prevent instantiation.
@@ -78,6 +83,8 @@ public final class PathUtils {
         if (!childPath.toString().contains(relativePath.toString())) {
             throw new IllegalArgumentException("The given child path " + childPath.toString() + " doesn't contain the root path " + parentPath.toString());
         }
+
+        LOGGER.info(relativePath.toString());
 
         return relativePath;
     }

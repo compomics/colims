@@ -38,8 +38,9 @@ import com.google.common.eventbus.Subscribe;
 import no.uib.jsparklines.renderers.JSparklinesBarChartTableCellRenderer;
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import no.uib.jsparklines.renderers.JSparklinesMultiIntervalChartTableCellRenderer;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jfree.chart.plot.PlotOrientation;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -70,7 +71,7 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(ProteinOverviewController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProteinOverviewController.class);
 
     //column filters
     private static final Pattern HTML_TAGS = Pattern.compile("<[a-z/]{1,5}>");
@@ -640,7 +641,7 @@ public class ProteinOverviewController implements Controllable {
                 eventBus.post(new MessageEvent("Spectrum dialog", "The selected PSM is a matching-between-runs identification.", JOptionPane.WARNING_MESSAGE));
             }
         } catch (MappingException | InterruptedException | SQLException | IOException | ClassNotFoundException e) {
-            LOGGER.error(e, e.getCause());
+            LOGGER.error(e.getMessage(), e);
             eventBus.post(new MessageEvent("Spectrum dialog problem", "The spectrum cannot be shown", JOptionPane.INFORMATION_MESSAGE));
         }
     }

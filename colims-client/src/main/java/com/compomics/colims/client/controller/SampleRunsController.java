@@ -39,7 +39,8 @@ import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -56,7 +57,7 @@ public class SampleRunsController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(SampleRunsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SampleRunsController.class);
     //view
     SampleRunsDialog sampleRunsDialog;
     //model
@@ -217,7 +218,7 @@ public class SampleRunsController implements Controllable {
                         deleteConfirmation = true;
                         eventBus.post(new MessageEvent("Delete run confirmation", "The delete task has been sent to the distributed module.", JOptionPane.INFORMATION_MESSAGE));
                     } catch (IOException e) {
-                        LOGGER.error(e, e.getCause());
+                        LOGGER.error(e.getMessage(), e);
                         eventBus.post(new UnexpectedErrorMessageEvent(e.getMessage()));
                     }
                 } else {

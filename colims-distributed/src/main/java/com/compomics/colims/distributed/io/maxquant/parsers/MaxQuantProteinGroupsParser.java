@@ -10,7 +10,8 @@ import com.compomics.colims.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ import java.util.*;
 @Component("maxQuantProteinGroupParser")
 public class MaxQuantProteinGroupsParser {
 
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantProteinGroupsParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantProteinGroupsParser.class);
 
     private static final String CONTAMINANT_SHORT_PREFIX = "CON";
     private static final String REVERSE_PREFIX = "REV";

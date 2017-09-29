@@ -6,7 +6,8 @@ import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerIm
 import com.google.common.io.Files;
 import eu.isas.peptideshaker.utils.CpsParent;
 import org.apache.commons.compress.archivers.ArchiveException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -26,7 +27,7 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(PeptideShakerIOImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PeptideShakerIOImpl.class);
 
     @Override
     public UnpackedPeptideShakerImport unpackPeptideShakerCpsxArchive(File peptideShakerCpsArchive) throws IOException, ClassNotFoundException, SQLException, InterruptedException, ArchiveException {

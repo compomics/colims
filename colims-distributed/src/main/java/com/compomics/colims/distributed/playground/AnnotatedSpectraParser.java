@@ -13,7 +13,8 @@ import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantAplParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.ParseUtils;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -35,10 +36,6 @@ import java.util.Map;
 @Component("annotatedSpectraParser")
 public class AnnotatedSpectraParser {
 
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantAplParser.class);
     /**
      * The start of the spectrum header in the apl file.
      */

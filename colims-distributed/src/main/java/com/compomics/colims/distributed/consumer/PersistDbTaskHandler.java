@@ -24,7 +24,8 @@ import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -47,7 +48,7 @@ public class PersistDbTaskHandler {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(PersistDbTaskHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistDbTaskHandler.class);
 
     private static final String STARTED_MESSAGE = "started parsing...  ";
     private static final String FINISHED_MESSAGE = "finished parsing ";

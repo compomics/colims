@@ -6,7 +6,8 @@ import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Precursor;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedWriter;
@@ -27,7 +28,7 @@ public class UtilitiesSpectrumMapper {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(UtilitiesSpectrumMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UtilitiesSpectrumMapper.class);
 
     private static final String SCAN_NUMBER = "scan=";
     /**
@@ -93,7 +94,7 @@ public class UtilitiesSpectrumMapper {
             //set content of the SpectrumFile
             spectrumFile.setContent(zbaos.toByteArray());
         } catch (IOException ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ex.getMessage(), ex);
             throw new MappingException(ex.getMessage(), ex.getCause());
         }
 

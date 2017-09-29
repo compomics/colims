@@ -3,7 +3,7 @@ package com.compomics.colims.core.service.impl.interceptable;
 import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.model.BinaryFile;
 import com.compomics.colims.repository.BinaryFileRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,11 +16,6 @@ import java.util.List;
 @Service("binaryFileService")
 @Transactional
 public class BinaryFileServiceImpl implements BinaryFileService {
-
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(BinaryFileServiceImpl.class);
 
     private final BinaryFileRepository binaryFileRepository;
 

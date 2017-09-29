@@ -3,13 +3,14 @@ package com.compomics.colims.client;
 import com.compomics.colims.client.controller.DatabaseLoginController;
 import com.compomics.colims.client.controller.MainController;
 import com.compomics.colims.core.config.ApplicationContextProvider;
-import org.apache.log4j.Logger;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class starts the client application.
@@ -21,7 +22,7 @@ public final class ColimsClientStarter {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(ColimsClientStarter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ColimsClientStarter.class);
     /**
      * The startup error message.
      */

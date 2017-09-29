@@ -3,7 +3,8 @@ package com.compomics.colims.core.io.fasta;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.protein.Header;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -25,7 +26,7 @@ public class FastaDbParser {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(FastaDbParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FastaDbParser.class);
 
     private static final String BLOCK_SEPARATOR = ">";
     private static final String SPLITTER = " ";

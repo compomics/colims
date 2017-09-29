@@ -27,7 +27,8 @@ import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -51,7 +52,7 @@ public class ProjectManagementController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(ProjectManagementController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectManagementController.class);
 
     //model
     private AdvancedTableModel<Project> projectsTableModel;
@@ -399,6 +400,8 @@ public class ProjectManagementController implements Controllable {
                 int selectedProjectIndex = getSelectedProjectIndex();
                 setSelectedProject(selectedProjectIndex);
             }
+            //update the projects table UI
+            projectManagementPanel.getProjectsTable().updateUI();
         }
     }
 
@@ -473,6 +476,8 @@ public class ProjectManagementController implements Controllable {
                 int selectedProjectIndex = getSelectedProjectIndex();
                 setSelectedProject(selectedProjectIndex);
             }
+            //update the projects table UI
+            projectManagementPanel.getProjectsTable().updateUI();
         } else if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {
             if (getSelectedExperiment() != null && getSelectedExperiment().getId().equals(experimentChangeEvent.getExperimentId())) {
                 //reset the experiment selection
@@ -540,18 +545,21 @@ public class ProjectManagementController implements Controllable {
     }
 
     /**
-     * Listen to a SampleChangeEvent and update the samples table if necessary.
+     * Listen to a SampleChangeEvent and update the experiment and samples tables if necessary.
      *
      * @param sampleChangeEvent the sampleChangeEvent
      */
     @Subscribe
     public void onSampleChangeEvent(SampleChangeEvent sampleChangeEvent) {
         if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
-            if (getSelectedExperiment() != null) {
-                //reset experiment selection
-                int selectedExperimentIndex = getSelectedExperimentIndex();
-                setSelectedExperiment(selectedExperimentIndex);
-                projectManagementPanel.getExperimentsTable().updateUI();
+            //only update the view if the project of the deleted sample is selected
+            if(getSelectedProject().getId().equals(sampleChangeEvent.getProjectId())) {
+                if (getSelectedExperiment() != null) {
+                    //reset experiment selection
+                    int selectedExperimentIndex = getSelectedExperimentIndex();
+                    setSelectedExperiment(selectedExperimentIndex);
+                    projectManagementPanel.getExperimentsTable().updateUI();
+                }
             }
         } else if (sampleChangeEvent.getType().equals(EntityChangeEvent.Type.RUNS_ADDED)) {
             Optional<Sample> foundSample = samples.stream().filter(sample -> sample.getId().equals(sampleChangeEvent.getSampleId())).findFirst();
@@ -616,7 +624,7 @@ public class ProjectManagementController implements Controllable {
                         deleteConfirmation = true;
                         eventBus.post(new MessageEvent("Delete " + dbEntityClass.getSimpleName() + " confirmation", "The delete task has been sent to the distributed module.", JOptionPane.INFORMATION_MESSAGE));
                     } catch (IOException e) {
-                        LOGGER.error(e, e.getCause());
+                        LOGGER.error(e.getMessage(), e);
                         eventBus.post(new UnexpectedErrorMessageEvent(e.getMessage()));
                     }
                 } else {

@@ -2,7 +2,8 @@ package com.compomics.colims.distributed.producer;
 
 import com.compomics.colims.core.distributed.model.Notification;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,7 @@ public class NotificationProducer {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(NotificationProducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NotificationProducer.class);
 
     /**
      * Mapper for converting a DbTaskError object to the matching JSON construct.

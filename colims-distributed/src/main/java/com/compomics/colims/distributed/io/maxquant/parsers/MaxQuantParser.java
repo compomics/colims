@@ -6,8 +6,9 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jdom2.JDOMException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,7 @@ public class MaxQuantParser {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantParser.class);
 
     /**
      * The map of analytical runs (key: run name; value: the

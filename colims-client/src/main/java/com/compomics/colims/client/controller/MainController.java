@@ -25,8 +25,9 @@ import com.compomics.colims.core.service.*;
 import com.compomics.colims.model.*;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jdesktop.beansbinding.ELProperty;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -51,7 +52,7 @@ public class MainController implements Controllable, ActionListener {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MainController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
     private final GridBagConstraints gridBagConstraints;
 
@@ -294,15 +295,15 @@ public class MainController implements Controllable, ActionListener {
 
                 //find the sample in the projects list
                 Sample sample = findSampleById(persistDbTask.getEnitityId());
+                Object[] parentIds = sampleService.getParentIds(persistDbTask.getEnitityId());
+                //first check if the project is present in this client
+                Long projectId = (Long) parentIds[0];
                 if (sample != null) {
                     sample.setAnalyticalRuns(analyticalRuns);
-                    eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.RUNS_ADDED, sample.getId(), analyticalRuns));
+                    eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.RUNS_ADDED, projectId, sample.getId(), analyticalRuns));
                 } else {
                     //the sample was not found so another user persisted the given project/experiment/sample
                     //and this client was not updated yet
-                    Object[] parentIds = sampleService.getParentIds(persistDbTask.getEnitityId());
-                    //first check if the project is present in this client
-                    Long projectId = (Long) parentIds[0];
                     Project project = findProjectById(projectId);
                     if (project == null) {
                         //get the project with eager fetching and add it to the projects
@@ -568,7 +569,7 @@ public class MainController implements Controllable, ActionListener {
                 for (Experiment experiment : project.getExperiments()) {
                     boolean removed = experiment.getSamples().removeIf(sample -> sample.getId().equals(deleteDbTask.getEnitityId()));
                     if (removed) {
-                        eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
+                        eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, project.getId(), deleteDbTask.getEnitityId()));
                         break outerloop;
                     }
                 }

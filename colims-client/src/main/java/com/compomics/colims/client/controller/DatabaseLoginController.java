@@ -14,7 +14,8 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -29,7 +30,7 @@ public class DatabaseLoginController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(DatabaseLoginController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseLoginController.class);
 
     //model
     private final PropertiesConfiguration propertiesConfiguration;

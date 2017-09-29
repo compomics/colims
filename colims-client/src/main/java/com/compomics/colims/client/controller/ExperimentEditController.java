@@ -15,7 +15,7 @@ import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -34,11 +34,6 @@ import java.util.stream.Collectors;
 @Component("experimentEditController")
 @Lazy
 public class ExperimentEditController implements Controllable {
-
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ExperimentEditController.class);
 
     //model
     private Experiment experimentToEdit;

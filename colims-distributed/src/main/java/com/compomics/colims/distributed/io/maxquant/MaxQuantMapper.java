@@ -6,8 +6,9 @@ import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.model.AnalyticalRun;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jdom2.JDOMException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantMapper.class);
     /**
      * The MaxQuant parent parser class.
      */

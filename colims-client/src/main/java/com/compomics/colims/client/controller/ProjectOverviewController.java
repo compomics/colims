@@ -25,8 +25,9 @@ import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jfree.chart.plot.PlotOrientation;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.swing.*;
@@ -51,7 +52,7 @@ public class ProjectOverviewController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(ProjectOverviewController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectOverviewController.class);
 
     private static final double INTENSITY_LEVEL = 0.75;
     //model
@@ -465,7 +466,7 @@ public class ProjectOverviewController implements Controllable {
                 GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), spectrumDialog);
                 spectrumDialog.setVisible(true);
             } catch (MappingException | InterruptedException | SQLException | ClassNotFoundException | IOException e) {
-                LOGGER.error(e);
+                LOGGER.error(e.getMessage(), e);
             }
 
             mainController.getMainFrame().setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));

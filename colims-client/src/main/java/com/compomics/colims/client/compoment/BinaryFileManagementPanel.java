@@ -12,13 +12,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 
-import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The binary file management view.
@@ -31,7 +32,7 @@ public class BinaryFileManagementPanel<T extends BinaryFile> extends javax.swing
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(BinaryFileManagementPanel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BinaryFileManagementPanel.class);
 
     public static final String ADD = "add";
     public static final String REMOVE = "remove";

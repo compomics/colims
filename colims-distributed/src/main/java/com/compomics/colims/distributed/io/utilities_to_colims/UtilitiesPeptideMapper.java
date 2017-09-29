@@ -13,7 +13,8 @@ import com.compomics.util.pride.CvTerm;
 import eu.isas.peptideshaker.parameters.PSParameter;
 import eu.isas.peptideshaker.parameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,10 +28,6 @@ import java.util.ArrayList;
 @Component("utilitiesPeptideMapper")
 public class UtilitiesPeptideMapper {
 
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UtilitiesPeptideMapper.class);
     /**
      * The Utilities to Colims modification mapper instance.
      */

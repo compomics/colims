@@ -1,6 +1,5 @@
 package com.compomics.colims.client;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
@@ -11,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter De Bruycker
@@ -20,7 +21,7 @@ public class SplashScreen implements ApplicationContextAware, BeanPostProcessor,
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(SplashScreen.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SplashScreen.class);
 
     /**
      * The splash screen window.
