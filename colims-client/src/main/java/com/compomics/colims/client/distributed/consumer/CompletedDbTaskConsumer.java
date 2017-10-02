@@ -4,7 +4,8 @@ import com.compomics.colims.client.event.CompletedDbTaskEvent;
 import com.compomics.colims.core.distributed.model.CompletedDbTask;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.eventbus.EventBus;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ public class CompletedDbTaskConsumer implements MessageListener {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(CompletedDbTaskConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompletedDbTaskConsumer.class);
 
     /**
      * Mapper for converting JSON constructs from the queue to corresponding java objects.

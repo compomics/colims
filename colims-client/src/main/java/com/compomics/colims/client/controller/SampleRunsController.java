@@ -31,13 +31,16 @@ import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.eventbus.EventBus;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -54,7 +57,7 @@ public class SampleRunsController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(SampleRunsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SampleRunsController.class);
     //view
     SampleRunsDialog sampleRunsDialog;
     //model
@@ -70,8 +73,6 @@ public class SampleRunsController implements Controllable {
     //parent controller
     @Autowired
     private MainController mainController;
-    @Autowired
-    private ProjectManagementController projectManagementController;
     //child controller
     @Autowired
     @Lazy
@@ -86,8 +87,6 @@ public class SampleRunsController implements Controllable {
     private EventBus eventBus;
     @Autowired
     private AnalyticalRunService analyticalRunService;
-    @Autowired
-    private BinaryFileService binaryFileService;
     @Autowired
     private SearchAndValidationSettingsService searchAndValidationSettingsService;
 
@@ -137,17 +136,8 @@ public class SampleRunsController implements Controllable {
             if (selectedAnalyticalRuns.size() == 1) {
                 boolean deleteConfirmation = deleteEntity(selectedAnalyticalRuns.get(0), AnalyticalRun.class);
                 if (deleteConfirmation) {
-                    AnalyticalRun selectedAnalyticalRun = selectedAnalyticalRuns.get(0);
-
-                    //remove from overview table and clear selection
-                    analyticalRuns.remove(selectedAnalyticalRun);
-                    analyticalRunsSelectionModel.clearSelection();
-
-                    eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, selectedAnalyticalRun.getId(), sampleToEdit.getId()));
-
-                    //remove analytical run from the selected sample and update the table
-                    sampleToEdit.getAnalyticalRuns().remove(selectedAnalyticalRun);
-                    sampleRunsDialog.getAnalyticalRunsTable().updateUI();
+                    //close the dialog
+                    sampleRunsDialog.dispose();
                 }
             } else {
                 eventBus.post(new MessageEvent("Analytical run selection", "Please select one and only one analytical run to delete.", JOptionPane.INFORMATION_MESSAGE));
@@ -208,7 +198,7 @@ public class SampleRunsController implements Controllable {
      * shown in case the queue cannot be reached or in case of an IOException
      * thrown by the sendDbTask method.
      *
-     * @param entity the entity to delete
+     * @param entity        the entity to delete
      * @param dbEntityClass the database entity class
      * @return true if the delete task is confirmed.
      */
@@ -226,8 +216,9 @@ public class SampleRunsController implements Controllable {
                     try {
                         dbTaskProducer.sendDbTask(deleteDbTask);
                         deleteConfirmation = true;
+                        eventBus.post(new MessageEvent("Delete run confirmation", "The delete task has been sent to the distributed module.", JOptionPane.INFORMATION_MESSAGE));
                     } catch (IOException e) {
-                        LOGGER.error(e, e.getCause());
+                        LOGGER.error(e.getMessage(), e);
                         eventBus.post(new UnexpectedErrorMessageEvent(e.getMessage()));
                     }
                 } else {

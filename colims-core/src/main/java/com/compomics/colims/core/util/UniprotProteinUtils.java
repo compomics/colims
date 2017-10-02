@@ -9,7 +9,7 @@ import com.compomics.colims.core.cache.Cache;
 import com.compomics.colims.core.cache.impl.UniprotProteinCache;
 import com.compomics.colims.core.service.UniProtService;
 import com.compomics.colims.model.FastaDb;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,11 +25,6 @@ import java.util.Map;
  */
 @Component("uniprotProteinUtils")
 public class UniprotProteinUtils {
-
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(UniprotProteinUtils.class);
 
     @Autowired
     private UniProtService uniProtService;

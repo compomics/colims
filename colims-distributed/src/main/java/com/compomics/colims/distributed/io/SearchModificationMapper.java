@@ -6,7 +6,8 @@ import com.compomics.colims.distributed.io.unimod.UnimodMarshaller;
 import com.compomics.colims.model.SearchModification;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -28,7 +29,7 @@ public class SearchModificationMapper {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(SearchModificationMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SearchModificationMapper.class);
 
     private static final String UNIMOD_PREFIX = "UNIMOD";
     private static final String MOD_PREFIX = "MOD";

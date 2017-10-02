@@ -19,6 +19,10 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
+import static com.compomics.colims.model.enums.QuantificationMethod.ICAT;
+import static com.compomics.colims.model.enums.QuantificationMethod.SILAC;
+import static com.compomics.colims.model.enums.QuantificationMethod.TMT;
+
 /**
  * @author Davy
  */
@@ -63,7 +67,7 @@ public class MaxQuantProteinGroupsParserTest {
 
         maxQuantProteinGroupsParser.clear();
         maxQuantProteinGroupsParser.parse(proteinGroupsFile,
-                fastaDbs, MaxQuantImport.SILAC, true, new ArrayList<>());
+                fastaDbs, SILAC, true, new ArrayList<>());
 
         Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
 
@@ -94,7 +98,7 @@ public class MaxQuantProteinGroupsParserTest {
 
         maxQuantProteinGroupsParser.clear();
         maxQuantProteinGroupsParser.parse(proteinGroupsFile,
-                fastaDbs, MaxQuantImport.ICAT, true, new ArrayList<>());
+                fastaDbs, ICAT, true, new ArrayList<>());
 
         Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
 
@@ -126,7 +130,7 @@ public class MaxQuantProteinGroupsParserTest {
         List<String> optionalHeaders = new ArrayList<>();
         optionalHeaders.add("ibaq");
         maxQuantProteinGroupsParser.parse(proteinGroupsFile,
-                fastaDbs, MaxQuantImport.TMT, true, optionalHeaders);
+                fastaDbs, TMT, true, optionalHeaders);
 
         Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
 
@@ -155,7 +159,7 @@ public class MaxQuantProteinGroupsParserTest {
 
         maxQuantProteinGroupsParser.clear();
         maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
-                fastaDbs, MaxQuantImport.SILAC, true, new ArrayList<>());
+                fastaDbs, SILAC, true, new ArrayList<>());
 
         Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
 
@@ -177,7 +181,7 @@ public class MaxQuantProteinGroupsParserTest {
 
         maxQuantProteinGroupsParser.clear();
         maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
-                fastaDbs, MaxQuantImport.SILAC, false, new ArrayList<>());
+                fastaDbs, SILAC, false, new ArrayList<>());
 
         Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
 

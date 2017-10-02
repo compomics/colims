@@ -132,6 +132,38 @@ public class ProteinGroupRepositoryTest {
         Assert.assertNotNull(proteinGroupHasProtein.getProtein());
     }
 
+    @Test
+    public void testGetConstraintLessProteinGroupIdsForRunsTest() {
+        List<Long> runIds = new ArrayList<>();
+        runIds.add(1L);
+
+        List<Long> proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+
+        //3 ProteinGroup entries, 2 linked to run 1, one linked to run 2 and 3.
+        //2 ProteinGroup entries linked only to run 1.
+        Assert.assertEquals(2, proteinGroupIds.size());
+
+        runIds.add(2L);
+        proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+        //2 ProteinGroup entries linked only to run 1 and 2.
+        Assert.assertEquals(2, proteinGroupIds.size());
+
+        runIds.add(3L);
+        proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+        //All the 3 entries are linked to run 1, 2 or 3.
+        Assert.assertEquals(3, proteinGroupIds.size());
+
+        runIds.remove(0);
+        //Only ProteinGroup entry is linked only to run 2 or 3.
+        proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+        Assert.assertEquals(1, proteinGroupIds.size());
+
+        runIds.remove(0);
+        //No ProteinGroup entry is only linked to run 3.
+        proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+        Assert.assertEquals(0, proteinGroupIds.size());
+    }
+
 //    @Test
 //    public void testGetProteinGroupsProjections(){
 //        AnalyticalRun analyticalRun = analyticalRunRepository.findById(1L);

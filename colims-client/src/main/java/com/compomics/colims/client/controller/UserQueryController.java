@@ -11,7 +11,7 @@ import com.compomics.colims.core.service.UserQueryService;
 import com.compomics.colims.model.UserBean;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.google.common.eventbus.EventBus;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.hibernate.engine.jdbc.internal.Formatter;
 import org.hibernate.exception.GenericJDBCException;
 import org.hibernate.exception.SQLGrammarException;
@@ -21,6 +21,7 @@ import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -54,7 +55,7 @@ public class UserQueryController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(UserQueryController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserQueryController.class);
 
     private static final Color SELECTED_BACKGROUND = new Color(57, 105, 138);
     private static final Color SELECTED_FOREGROUND = new Color(255, 255, 255);

@@ -34,7 +34,8 @@ import com.compomics.util.pride.CvTerm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -73,7 +74,7 @@ public class MzIdentMlExporter {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MzIdentMlExporter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MzIdentMlExporter.class);
 
     private static final String MODIFICATION_ACCESSION_DELIMITER = ":";
     private static final String SEARCH_DB_ID = "SEARCHDB-%d";

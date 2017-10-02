@@ -164,23 +164,34 @@
         WHERE peptide_has_modification.l_modification_id IS NULL
     </sql-query>
 
-    <sql-query name="Protein.getConstraintLessProteinIdsForRuns">
+    <sql-query name="ProteinGroup.getConstraintLessProteinGroupIdsForRuns">
+        SELECT
+        DISTINCT protein_group.id
+        from protein_group
+        LEFT JOIN peptide_has_protein_group ON
+        (
+        peptide_has_protein_group.l_protein_group_id = protein_group.id
+        AND peptide_has_protein_group.id NOT IN
+        (
+        SELECT
+        DISTINCT pep_has_pg.id
+        FROM peptide_has_protein_group pep_has_pg
+        JOIN peptide pep ON pep.id = pep_has_pg.l_peptide_id
+        JOIN spectrum sp ON sp.id = pep.l_spectrum_id
+        WHERE sp.l_analytical_run_id IN (:runIds)
+        )
+        )
+        WHERE peptide_has_protein_group.l_protein_group_id IS NULL
+    </sql-query>
+
+    <sql-query name="Protein.getConstraintLessProteinIdsForProteinGroups">
         SELECT
         DISTINCT protein.id
         from protein
         LEFT JOIN protein_group_has_protein ON
         (
         protein_group_has_protein.l_protein_id = protein.id
-        AND protein_group_has_protein.id NOT IN
-        (
-        SELECT
-        DISTINCT pg_has_p.id
-        FROM protein_group_has_protein pg_has_p
-        JOIN peptide_has_protein_group p_has_pg ON p_has_pg.l_protein_group_id = pg_has_p.l_protein_group_id
-        JOIN peptide pep ON pep.id = p_has_pg.l_peptide_id
-        JOIN spectrum sp ON sp.id = pep.l_spectrum_id
-        WHERE sp.l_analytical_run_id IN (:ids)
-        )
+        AND protein_group_has_protein.l_protein_group_id NOT IN (:proteinGroupIds)
         )
         WHERE protein_group_has_protein.l_protein_id IS NULL
     </sql-query>

@@ -8,7 +8,8 @@ import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.util.experiment.identification.matches.ProteinMatch;
 import com.compomics.util.experiment.identification.protein_sequences.SequenceFactory;
 import eu.isas.peptideshaker.parameters.PSParameter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ public class UtilitiesProteinGroupMapper {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(UtilitiesProteinGroupMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UtilitiesProteinGroupMapper.class);
     /**
      * The protein service instance.
      */

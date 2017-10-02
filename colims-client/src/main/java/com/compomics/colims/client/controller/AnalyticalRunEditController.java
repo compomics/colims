@@ -16,7 +16,6 @@ import com.compomics.colims.model.BinaryFile;
 import com.compomics.colims.model.Instrument;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import org.apache.log4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
@@ -44,11 +43,6 @@ import org.hibernate.exception.GenericJDBCException;
 @Lazy
 public class AnalyticalRunEditController implements Controllable {
 
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(AnalyticalRunEditController.class);
-
     //model
     private BindingGroup bindingGroup;
     private ObservableList<Instrument> instrumentBindingList;
@@ -68,15 +62,6 @@ public class AnalyticalRunEditController implements Controllable {
     private BinaryFileService binaryFileService;
     @Autowired
     private EventBus eventBus;
-
-    /**
-     * Get the view of this controller.
-     *
-     * @return the AnalyticalRunEditDialog
-     */
-    public AnalyticalRunEditDialog getAnalyticalRunEditDialog() {
-        return analyticalRunEditDialog;
-    }
 
     @Override
     @PostConstruct
@@ -119,6 +104,8 @@ public class AnalyticalRunEditController implements Controllable {
 
                 //refresh selection in analytical list in sample edit dialog
                 analyticalRunsSearchSettingsController.setSelectedAnalyticalRun(index);
+
+                analyticalRunEditDialog.dispose();
             } else {
                 MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);

@@ -15,8 +15,9 @@ import com.compomics.colims.model.cv.AuditableTypedCvParam;
 import com.compomics.colims.model.enums.CvParamType;
 import com.compomics.colims.model.factory.CvParamFactory;
 import com.google.common.eventbus.EventBus;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -38,7 +39,7 @@ public class TypedCvParamManagementController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(TypedCvParamManagementController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TypedCvParamManagementController.class);
 
     private static final String DIALOG_TITLE_SUFFIX = " ontology terms management";
 

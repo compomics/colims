@@ -10,13 +10,14 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.XmlFileFilter;
 import com.google.common.eventbus.EventBus;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -44,7 +45,7 @@ public class MaxQuantDataImportController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantDataImportController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantDataImportController.class);
 
     /**
      * The experiments location as provided in the client properties file.
@@ -103,21 +104,21 @@ public class MaxQuantDataImportController implements Controllable {
 
         //init the mqpar file directory selection
         //disable select multiple files
-        maxQuantDataImportPanel.getMqParDirectoryChooser().setMultiSelectionEnabled(false);
+        maxQuantDataImportPanel.getMqparFileChooser().setMultiSelectionEnabled(false);
         //set select directories only
-        maxQuantDataImportPanel.getMqParDirectoryChooser().setFileFilter(new XmlFileFilter());
+        maxQuantDataImportPanel.getMqparFileChooser().setFileFilter(new XmlFileFilter());
 
-        maxQuantDataImportPanel.getMqParDirectoryChooser().setCurrentDirectory(experimentsDirectory.toFile());
+        maxQuantDataImportPanel.getMqparFileChooser().setCurrentDirectory(experimentsDirectory.toFile());
 
-        maxQuantDataImportPanel.getSelectParameterDirectoryButton().addActionListener(e -> {
+        maxQuantDataImportPanel.getSelectMqparFileButton().addActionListener(e -> {
             //in response to the button click, show open dialog
-            int returnVal = maxQuantDataImportPanel.getMqParDirectoryChooser().showOpenDialog(maxQuantDataImportPanel);
+            int returnVal = maxQuantDataImportPanel.getMqparFileChooser().showOpenDialog(maxQuantDataImportPanel);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
-                    Path fullMqparPath = maxQuantDataImportPanel.getMqParDirectoryChooser().getSelectedFile().toPath();
+                    Path fullMqparPath = maxQuantDataImportPanel.getMqparFileChooser().getSelectedFile().toPath();
                     mqparFile = PathUtils.getRelativeChildPath(experimentsDirectory, fullMqparPath);
                     //show MaxQuant directory name in label
-                    maxQuantDataImportPanel.getParameterDirectoryTextField().setText(mqparFile.getFileName().toString());
+                    maxQuantDataImportPanel.getMqparFileTextField().setText(mqparFile.getFileName().toString());
                 } catch (IllegalArgumentException ex) {
                     MessageEvent messageEvent = new MessageEvent("Invalid mqpar file location", "The mqpar file location doesn't contain the experiments directory as defined in the properties file.", JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
@@ -142,6 +143,9 @@ public class MaxQuantDataImportController implements Controllable {
                     combinedDirectory = PathUtils.getRelativeChildPath(experimentsDirectory, fullCombinedDirectory);
                     //show combined directory name in label
                     maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(combinedDirectory.toString());
+
+                    //set the mqpar file file chooser to the parent directory of the combined directory
+                    maxQuantDataImportPanel.getMqparFileChooser().setCurrentDirectory(fullCombinedDirectory.getParent().toFile());
                 } catch (IllegalArgumentException ex) {
                     MessageEvent messageEvent = new MessageEvent("Invalid combined directory location", "The combined directory location doesn't contain the experiments directory as defined in the properties file.", JOptionPane.WARNING_MESSAGE);
                     eventBus.post(messageEvent);
@@ -205,7 +209,7 @@ public class MaxQuantDataImportController implements Controllable {
         selectedProteinGroupHeaders = new ArrayList<>();
         additionalFastaDbBindingList.clear();
         //reset the input fields
-        maxQuantDataImportPanel.getParameterDirectoryTextField().setText("");
+        maxQuantDataImportPanel.getMqparFileTextField().setText("");
         maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText("");
         maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText("");
         maxQuantDataImportPanel.getAdditionalFastaFileList().clearSelection();
@@ -214,13 +218,13 @@ public class MaxQuantDataImportController implements Controllable {
         maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().setSelected(false);
         //reset the file chooser directories
         Path experimentsDirectory = Paths.get(experimentsPath);
-        maxQuantDataImportPanel.getMqParDirectoryChooser().setCurrentDirectory(experimentsDirectory.toFile());
+        maxQuantDataImportPanel.getMqparFileChooser().setCurrentDirectory(experimentsDirectory.toFile());
         maxQuantDataImportPanel.getCombinedFolderChooser().setCurrentDirectory(experimentsDirectory.toFile());
     }
 
     public void showEditView(MaxQuantImport maxQuantImport) {
         showView();
-        maxQuantDataImportPanel.getParameterDirectoryTextField().setText(maxQuantImport.getMqParFile().toString());
+        maxQuantDataImportPanel.getMqparFileTextField().setText(maxQuantImport.getMqParFile().toString());
         maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(maxQuantImport.getCombinedDirectory().toString());
         if (maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0) != null) {
             primaryFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
@@ -260,14 +264,9 @@ public class MaxQuantDataImportController implements Controllable {
         }
         if (primaryFastaDb == null) {
             validationMessages.add("Please select a primary FASTA file.");
-        } else if (primaryFastaDb.getHeaderParseRule() == null) {
-            validationMessages.add("Please add header parse rule to primary FASTA file!");
         }
-
         if (contaminantsFastaDb == null) {
             validationMessages.add("Please select a contaminants FASTA file.");
-        } else if (contaminantsFastaDb.getHeaderParseRule() == null) {
-            validationMessages.add("Please add header parse rule to contaminants FASTA file!");
         }
         additionalFastaDbBindingList.stream().forEach(additionalFastaDb -> {
             if (additionalFastaDb != null && additionalFastaDb.getHeaderParseRule() == null) {
@@ -295,8 +294,8 @@ public class MaxQuantDataImportController implements Controllable {
         });
         fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDbIDs);
 
-        return new MaxQuantImport(mqparFile, combinedDirectory, fullCombinedDirectory, fastaDbIds, includeContaminants,
-                includeUnidentifiedSpectra, selectedProteinGroupHeaders, analyticalRunsAdditionController.getSelectedLabel());
+        return new MaxQuantImport(mqparFile.toString(), combinedDirectory.toString(), fullCombinedDirectory.toString(), fastaDbIds, includeContaminants,
+                includeUnidentifiedSpectra, selectedProteinGroupHeaders, analyticalRunsAdditionController.getSelectedQuantificationMethod());
     }
 
 }

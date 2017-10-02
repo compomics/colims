@@ -1,8 +1,8 @@
 package com.compomics.colims.core.io;
 
 import com.compomics.colims.model.enums.FastaDbType;
+import com.compomics.colims.model.enums.QuantificationMethod;
 
-import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Objects;
@@ -15,26 +15,20 @@ public class MaxQuantImport extends DataImport {
 
     private static final long serialVersionUID = 304064762112880171L;
 
-    public static final String LABEL_FREE = "label free";
-    public static final String TMT = "TMT";
-    public static final String ITRAQ = "iTRAQ";
-    public static final String SILAC = "SILAC";
-    public static final String ICAT = "ICAT";
-    public static final String SRM = "Selected Reaction Monitoring";
     public static final String NO_LABEL = "none";
 
     /**
      * The mqpar file path.
      */
-    private Path mqParFile;
+    private String mqParFile;
     /**
      * The directory of the combined folder.
      */
-    private Path combinedDirectory;
+    private String combinedDirectory;
     /**
      * The full directory of combined folder.
      */
-    private Path fullCombinedDirectory;
+    private String fullCombinedDirectory;
     /**
      * Whether to import proteins from contaminants file.
      */
@@ -50,7 +44,7 @@ public class MaxQuantImport extends DataImport {
     /**
      * The quantification label.
      */
-    private String quantificationLabel;
+    private QuantificationMethod quantificationMethod;
 
     /**
      * no-arg Constructor.
@@ -62,23 +56,23 @@ public class MaxQuantImport extends DataImport {
      * Constructor.
      *
      * @param mqParFile                    the mqpar.xml parameter file
-     * @param combinedDirectory            File pointer to the MaxQuant combined directory
-     * @param fullCombinedDirectory        File pointer to the MaxQuant full combined directory
+     * @param combinedDirectory            file pointer to the MaxQuant combined directory
+     * @param fullCombinedDirectory        file pointer to the MaxQuant full combined directory
      * @param fastaDbIds                   the FASTA database map (key: FastaDb type; value: the FastaDb instance ID)
      * @param includeContaminants          whether to import proteins from contaminants file.
      * @param includeUnidentifiedSpectra   whether to import unidentified spectra from APL files.
      * @param selectedProteinGroupsHeaders list of optional headers to store in protein group quantification labeled
      *                                     table.
-     * @param quantificationLabel          the quantification label
+     * @param quantificationMethod           the quantification type
      */
-    public MaxQuantImport(final Path mqParFile,
-                          final Path combinedDirectory,
-                          final Path fullCombinedDirectory,
+    public MaxQuantImport(final String mqParFile,
+                          final String combinedDirectory,
+                          final String fullCombinedDirectory,
                           final EnumMap<FastaDbType, List<Long>> fastaDbIds,
                           boolean includeContaminants,
                           boolean includeUnidentifiedSpectra,
                           List<String> selectedProteinGroupsHeaders,
-                          String quantificationLabel) {
+                          QuantificationMethod quantificationMethod) {
         super(fastaDbIds);
         this.mqParFile = mqParFile;
         this.combinedDirectory = combinedDirectory;
@@ -86,14 +80,14 @@ public class MaxQuantImport extends DataImport {
         this.includeContaminants = includeContaminants;
         this.includeUnidentifiedSpectra = includeUnidentifiedSpectra;
         this.selectedProteinGroupsHeaders = selectedProteinGroupsHeaders;
-        this.quantificationLabel = quantificationLabel;
+        this.quantificationMethod = quantificationMethod;
     }
 
-    public Path getMqParFile() {
+    public String getMqParFile() {
         return mqParFile;
     }
 
-    public Path getCombinedDirectory() {
+    public String getCombinedDirectory() {
         return combinedDirectory;
     }
 
@@ -109,19 +103,19 @@ public class MaxQuantImport extends DataImport {
         return selectedProteinGroupsHeaders;
     }
 
-    public String getQuantificationLabel() {
-        return quantificationLabel;
+    public QuantificationMethod getQuantificationMethod() {
+        return quantificationMethod;
     }
 
-    public void setMqParFile(Path mqParFile) {
+    public void setMqParFile(String mqParFile) {
         this.mqParFile = mqParFile;
     }
 
-    public void setCombinedDirectory(Path combinedDirectory) {
+    public void setCombinedDirectory(String combinedDirectory) {
         this.combinedDirectory = combinedDirectory;
     }
 
-    public Path getFullCombinedDirectory() {
+    public String getFullCombinedDirectory() {
         return fullCombinedDirectory;
     }
 
@@ -134,7 +128,7 @@ public class MaxQuantImport extends DataImport {
         hash = 97 * hash + (this.includeContaminants ? 1 : 0);
         hash = 97 * hash + (this.includeUnidentifiedSpectra ? 1 : 0);
         hash = 97 * hash + Objects.hashCode(this.selectedProteinGroupsHeaders);
-        hash = 97 * hash + Objects.hashCode(this.quantificationLabel);
+        hash = 97 * hash + Objects.hashCode(this.quantificationMethod);
         return hash;
     }
 
@@ -153,7 +147,7 @@ public class MaxQuantImport extends DataImport {
         if (this.includeUnidentifiedSpectra != other.includeUnidentifiedSpectra) {
             return false;
         }
-        if (!Objects.equals(this.quantificationLabel, other.quantificationLabel)) {
+        if (!Objects.equals(this.quantificationMethod, other.quantificationMethod)) {
             return false;
         }
         if (!Objects.equals(this.mqParFile, other.mqParFile)) {

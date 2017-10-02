@@ -6,7 +6,8 @@ import com.compomics.colims.core.distributed.model.Notification;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
 import com.compomics.colims.distributed.producer.NotificationProducer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class DbTaskConsumer implements MessageListener {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(DbTaskConsumer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbTaskConsumer.class);
 
     private static final String STARTED_MESSAGE = "started processing task ";
     private static final String FINISHED_MESSAGE = "finished processing task ";

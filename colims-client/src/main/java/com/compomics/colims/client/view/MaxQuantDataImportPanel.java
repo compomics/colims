@@ -12,7 +12,7 @@ import javax.swing.JTextField;
  */
 public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
-    private final JFileChooser parameterDirectoryChooser = new JFileChooser();
+    private final JFileChooser mqparFileChooser = new JFileChooser();
     private final JFileChooser combinedFolderChooser = new JFileChooser();
     private final JFileChooser primaryFastaFileChooser = new JFileChooser();
     private final JFileChooser additionalFastaFileChooser = new JFileChooser();
@@ -25,8 +25,8 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public JFileChooser getMqParDirectoryChooser() {
-        return parameterDirectoryChooser;
+    public JFileChooser getMqparFileChooser() {
+        return mqparFileChooser;
     }
 
     public JFileChooser getCombinedFolderChooser() {
@@ -49,8 +49,8 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         return contaminantsFastaDbTextField;
     }
 
-    public JTextField getParameterDirectoryTextField() {
-        return parameterDirectoryTextField;
+    public JTextField getMqparFileTextField() {
+        return mqparFileTextField;
     }
 
     public JTextField getCombinedFolderDirectoryTextField() {
@@ -77,8 +77,8 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         return selectContaminantsFastaDbButton;
     }
 
-    public JButton getSelectParameterDirectoryButton() {
-        return selectParameterDirectoryButton;
+    public JButton getSelectMqparFileButton() {
+        return selectMqparFileButton;
     }
 
     public JButton getSelectCombinedFolderButton() {
@@ -115,8 +115,8 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         combinedFolderDirectoryTextField = new javax.swing.JTextField();
         selectCombinedFolderButton = new javax.swing.JButton();
         maxQuantDirectorySelectionLabel = new javax.swing.JLabel();
-        selectParameterDirectoryButton = new javax.swing.JButton();
-        parameterDirectoryTextField = new javax.swing.JTextField();
+        selectMqparFileButton = new javax.swing.JButton();
+        mqparFileTextField = new javax.swing.JTextField();
         contaminantsCheckBox = new javax.swing.JCheckBox();
         unidentifiedSpectraCheckBox = new javax.swing.JCheckBox();
         separator = new javax.swing.JSeparator();
@@ -153,12 +153,12 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         maxQuantDirectorySelectionLabel.setText("Select the parameter file (mqpar.xml) *:");
 
-        selectParameterDirectoryButton.setText("browse...");
-        selectParameterDirectoryButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        selectParameterDirectoryButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        selectParameterDirectoryButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        selectMqparFileButton.setText("browse...");
+        selectMqparFileButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        selectMqparFileButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        selectMqparFileButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        parameterDirectoryTextField.setEditable(false);
+        mqparFileTextField.setEditable(false);
 
         contaminantsCheckBox.setText("Import proteins from contaminants file");
 
@@ -172,9 +172,9 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(leftPanelLayout.createSequentialGroup()
-                        .addComponent(parameterDirectoryTextField)
+                        .addComponent(mqparFileTextField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(selectParameterDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(selectMqparFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(leftPanelLayout.createSequentialGroup()
                         .addComponent(combinedFolderDirectoryTextField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -201,8 +201,8 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addComponent(maxQuantDirectorySelectionLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(parameterDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(selectParameterDirectoryButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(mqparFileTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(selectMqparFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(14, 14, 14)
                 .addComponent(contaminantsCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -351,7 +351,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel leftPanel;
     private javax.swing.JLabel maxQuantDirectorySelectionLabel;
-    private javax.swing.JTextField parameterDirectoryTextField;
+    private javax.swing.JTextField mqparFileTextField;
     private javax.swing.JTextField primaryFastaDbTextField;
     private javax.swing.JLabel primaryFastaFileSelectionLabel;
     private javax.swing.JButton removeAdditionalFastaDbButton;
@@ -359,7 +359,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
     private javax.swing.JButton selectAdditionalFastaDbButton;
     private javax.swing.JButton selectCombinedFolderButton;
     private javax.swing.JButton selectContaminantsFastaDbButton;
-    private javax.swing.JButton selectParameterDirectoryButton;
+    private javax.swing.JButton selectMqparFileButton;
     private javax.swing.JButton selectPrimaryFastaDbButton;
     private javax.swing.JSeparator separator;
     private javax.swing.JCheckBox unidentifiedSpectraCheckBox;

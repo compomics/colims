@@ -8,7 +8,8 @@ import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,7 @@ public class ColimsSpectrumMapper {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(ColimsSpectrumMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ColimsSpectrumMapper.class);
 
     private final SpectrumService spectrumService;
 
@@ -70,7 +71,7 @@ public class ColimsSpectrumMapper {
                 Map<Double, Double> mzAndIntensities = spectrumService.getSpectrumPeaks(spectrumFile);
                 mzAndIntensities.entrySet().stream().map((entry) -> new Peak(entry.getKey(), entry.getValue())).forEach(targetSpectrum::addPeak);
             } catch (IOException ex) {
-                LOGGER.error(ex);
+                LOGGER.error(ex.getMessage(), ex);
                 throw new MappingException(ex);
             }
         }

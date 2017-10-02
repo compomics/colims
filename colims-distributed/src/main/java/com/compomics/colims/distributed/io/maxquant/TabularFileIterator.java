@@ -2,7 +2,8 @@ package com.compomics.colims.distributed.io.maxquant;
 
 import com.compomics.colims.distributed.io.maxquant.headers.MaxQuantHeader;
 import com.google.common.io.LineReader;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class TabularFileIterator implements Iterable<Map<String, String>>, Itera
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(TabularFileIterator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TabularFileIterator.class);
 
     private static final char DELIMITER = '\t';
 

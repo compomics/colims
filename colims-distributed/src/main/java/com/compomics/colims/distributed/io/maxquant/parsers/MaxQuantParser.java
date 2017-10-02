@@ -6,8 +6,9 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jdom2.JDOMException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,7 @@ public class MaxQuantParser {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantParser.class);
 
     /**
      * The map of analytical runs (key: run name; value: the
@@ -97,7 +98,7 @@ public class MaxQuantParser {
 
         //parse the search settings
         LOGGER.debug("parsing search settings");
-        maxQuantSearchSettingsParser.parse(maxQuantImport.getCombinedDirectory(), maxQuantImport.getMqParFile(), fastaDbs);
+        maxQuantSearchSettingsParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), Paths.get(maxQuantImport.getMqParFile()), fastaDbs);
 
         //populate the analytical runs map
         maxQuantSearchSettingsParser.getAnalyticalRuns().keySet().forEach((run -> analyticalRuns.put(run.getName(), run)));
@@ -130,10 +131,10 @@ public class MaxQuantParser {
         if (!Files.exists(proteinGroupsFile)) {
             throw new FileNotFoundException("The proteinGroups.txt " + proteinGroupsFile.toString() + " was not found.");
         }
-        maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbMap, maxQuantImport.getQuantificationLabel(), maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupsHeaders());
+        maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbMap, maxQuantImport.getQuantificationMethod(), maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupsHeaders());
 
         LOGGER.debug("parsing msms.txt");
-        maxQuantSpectraParser.parse(maxQuantImport.getCombinedDirectory(), maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
+        maxQuantSpectraParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
         LOGGER.debug("parsing evidence.txt");
         Path evidenceFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.EVIDENCE_FILE.value());
@@ -189,24 +190,24 @@ public class MaxQuantParser {
         //parse the quantification settings
         //for a SILAC or ICAT experiments, we don't have any reagent name from maxquant.
         //Colims gives reagent names according to the number of samples.
-        switch (maxQuantImport.getQuantificationLabel()) {
-            case MaxQuantImport.SILAC:
+        switch (maxQuantImport.getQuantificationMethod()) {
+            case SILAC:
                 List<String> silacReagents = new ArrayList<>();
                 if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
                     silacReagents.addAll(Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
-                    maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), silacReagents);
+                    maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), silacReagents);
                 } else if (maxQuantSearchSettingsParser.getLabelMods().size() == 2) {
                     silacReagents.addAll(Arrays.asList("SILAC light", "SILAC heavy"));
-                    maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), silacReagents);
+                    maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), silacReagents);
                 }   break;
-            case MaxQuantImport.ICAT:
+            case ICAT:
                 List<String> icatReagents = new ArrayList<>();
                 icatReagents.addAll(Arrays.asList("ICAT light reagent", "ICAT heavy reagent"));
-                maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), icatReagents);
+                maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), icatReagents);
                 break;
             default:
                 List<String> reagents = new ArrayList<>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
-                maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationLabel(), reagents);
+                maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), reagents);
                 break;
         }
         //link the quantification settings to each analytical run

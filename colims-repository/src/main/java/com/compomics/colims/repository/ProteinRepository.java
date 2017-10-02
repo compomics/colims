@@ -20,12 +20,12 @@ public interface ProteinRepository extends GenericRepository<Protein, Long> {
     Protein findBySequence(String sequence);
 
     /**
-     * Get the IDs of the proteins that are only related to the given runs.
+     * Get the IDs of the proteins that are only related to the given protein groups.
      *
-     * @param analyticalRunIds the list of analytical run IDs
+     * @param proteinGroupIds the list of protein group IDs
      * @return the list of protein IDs
      */
-    List<Long> getConstraintLessProteinIdsForRuns(List<Long> analyticalRunIds);
+    List<Long> getConstraintLessProteinIdsForProteinGroups(List<Long> proteinGroupIds);
 
 //    /**
 //     * Find a protein with hibernate search by the sequence.

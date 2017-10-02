@@ -4,7 +4,8 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +31,7 @@ public class MaxQuantAndromedaParser {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantAndromedaParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantAndromedaParser.class);
 
     private static final String ALL_SPECTRA = "allSpectra.";
     private static final String ANALYZER_TYPE_DELIMITER = "\\.";

@@ -23,18 +23,86 @@ public class ProteinRepositoryTest {
 
     @Autowired
     private ProteinRepository proteinRepository;
+    @Autowired
+    private ProteinGroupRepository proteinGroupRepository;
 
+    /**
+     * Test with protein group IDs.
+     */
     @Test
     public void testGetConstraintLessProteinIdsForRunsTest() {
+        List<Long> proteinGroupIds = new ArrayList<>();
+        proteinGroupIds.add(1L);
+
+        List<Long> proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
+
+        //3 ProteinGroup entries, 1 only linked to run 1, so one should return 1.
+        Assert.assertEquals(1, proteinIds.size());
+
+        proteinGroupIds.add(3L);
+        proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
+        //Only 1 proteins is only linked to protein group 1 and 3.
+        Assert.assertEquals(1, proteinIds.size());
+
+        proteinGroupIds.remove(1);
+        proteinGroupIds.add(2L);
+        //Only 3 proteins are only linked to protein group 1 and 2.
+        proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
+        Assert.assertEquals(3, proteinIds.size());
+
+        proteinGroupIds.clear();
+        proteinGroupIds.add(3L);
+        //Protein group 3 does not have proteins linked uniquely to it.
+        proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
+        Assert.assertEquals(0, proteinIds.size());
+
+        proteinGroupIds.add(1L);
+        proteinGroupIds.add(2L);
+        //All proteins are linked to the 3 protein groups.
+        proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
+        Assert.assertEquals(4, proteinIds.size());
+    }
+
+    /**
+     * Test with analytical run IDs.
+     */
+    @Test
+    public void testGetConstraintLessProteinIdsForRunsTest2() {
         List<Long> runIds = new ArrayList<>();
         runIds.add(1L);
 
-        List<Long> proteinIds = proteinRepository.getConstraintLessProteinIdsForRuns(runIds);
+        List<Long> proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+        List<Long> proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
 
-        //5 ProteinGroupHasProtein entries, 4 linked to 1 run.
-        //The last 4 are linked to 4 proteins but one of the proteins is also linked to the other ProteinGroupHasProtein entry
-        //so only 3 protein IDs should be returned.
+        //3 proteins linked only to run 1.
         Assert.assertEquals(3, proteinIds.size());
+
+        runIds.add(3L);
+        proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+        proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
+        //3 proteins linked only to run 1 and 3.
+        Assert.assertEquals(3, proteinIds.size());
+
+        runIds.remove(1);
+        runIds.add(2L);
+        proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+        //3 proteins are only linked to protein group 1 and 2.
+        proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
+        Assert.assertEquals(3, proteinIds.size());
+
+        runIds.clear();
+        runIds.add(3L);
+        proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+        //Run 3 does not have proteins linked uniquely to it.
+        proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
+        Assert.assertEquals(0, proteinIds.size());
+
+        runIds.add(1L);
+        runIds.add(2L);
+        proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+        //All proteins are linked to one of the 3 runs.
+        proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
+        Assert.assertEquals(4, proteinIds.size());
     }
 
 //    @Test

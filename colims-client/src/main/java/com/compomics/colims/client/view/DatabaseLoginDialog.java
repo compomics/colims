@@ -7,7 +7,8 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 /**
@@ -16,7 +17,7 @@ import org.springframework.core.io.ClassPathResource;
  */
 public class DatabaseLoginDialog extends javax.swing.JDialog {
 
-    private static final Logger LOGGER = Logger.getLogger(DatabaseLoginDialog.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseLoginDialog.class);
 
     /**
      * Dialog constructor.

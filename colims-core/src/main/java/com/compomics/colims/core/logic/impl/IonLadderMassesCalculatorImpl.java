@@ -1,6 +1,6 @@
 package com.compomics.colims.core.logic.impl;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 import com.compomics.colims.core.logic.IonLadderMassesCalculator;
 import com.compomics.colims.model.AASequenceMassUnknownException;
@@ -8,6 +8,7 @@ import com.compomics.colims.model.AminoAcidSequence;
 import com.compomics.colims.model.Constants;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.UnknownAAException;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -18,7 +19,7 @@ public class IonLadderMassesCalculatorImpl implements IonLadderMassesCalculator 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(IonLadderMassesCalculatorImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IonLadderMassesCalculatorImpl.class);
 
     @Override
     public double[] calculateBIonLadderMasses(final Peptide peptide, final int charge) throws UnknownAAException {

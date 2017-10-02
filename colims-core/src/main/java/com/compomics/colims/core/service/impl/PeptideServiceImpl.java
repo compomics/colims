@@ -7,7 +7,7 @@ import com.compomics.colims.repository.PeptideRepository;
 import com.compomics.colims.repository.SpectrumRepository;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.colims.repository.hibernate.PeptideMzTabDTO;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.hibernate.LazyInitializationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,20 +22,13 @@ import java.util.List;
 @Transactional
 public class PeptideServiceImpl implements PeptideService {
 
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(PeptideServiceImpl.class);
-
     private final PeptideRepository peptideRepository;
     private final ModificationRepository modificationRepository;
-    private final SpectrumRepository spectrumRepository;
 
     @Autowired
-    public PeptideServiceImpl(PeptideRepository peptideRepository, ModificationRepository modificationRepository, SpectrumRepository spectrumRepository) {
+    public PeptideServiceImpl(PeptideRepository peptideRepository, ModificationRepository modificationRepository) {
         this.peptideRepository = peptideRepository;
         this.modificationRepository = modificationRepository;
-        this.spectrumRepository = spectrumRepository;
     }
 
     @Override

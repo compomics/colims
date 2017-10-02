@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
+import static com.compomics.colims.model.enums.QuantificationMethod.SILAC;
+
 /**
  * MaxQuant integration test. This class tests the main MaxQuant parsing classes {@link MaxQuantMapper} and {@link
  * com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser}.
@@ -70,8 +72,8 @@ public class MaxQuantIT {
         fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.spHumanFastaDb.getId())));
         fastaDbIds.put(FastaDbType.CONTAMINANTS, new ArrayList<>(Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb.getId())));
 
-        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.mqparFile,
-                MaxQuantTestSuite.maxQuantCombinedDirectory, MaxQuantTestSuite.maxQuantCombinedDirectory, fastaDbIds, false, false, new ArrayList<>(), MaxQuantImport.SILAC);
+        MaxQuantImport maxQuantImport = new MaxQuantImport(MaxQuantTestSuite.mqparFile.toString(),
+                MaxQuantTestSuite.maxQuantCombinedDirectory.toString(), MaxQuantTestSuite.maxQuantCombinedDirectory.toString(), fastaDbIds, false, false, new ArrayList<>(), SILAC);
         maxQuantMapper.clear();
 
         Path experimentsDirectory = new ClassPathResource("data/maxquant/maxquant_SILAC_integration").getFile().toPath();

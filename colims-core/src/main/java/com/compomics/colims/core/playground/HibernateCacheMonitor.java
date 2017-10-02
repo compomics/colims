@@ -3,13 +3,14 @@ package com.compomics.colims.core.playground;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -22,7 +23,7 @@ public class HibernateCacheMonitor {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(HibernateCacheMonitor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HibernateCacheMonitor.class);
     private static final NumberFormat NF = new DecimalFormat("0.0###");
 
     private final SessionFactory sessionFactory;
