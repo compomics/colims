@@ -48,7 +48,7 @@ public class AccessionConverter {
     public static List<String> convertToUniProt(String accession, String databaseName) throws IOException {
         List<String> accessions = new ArrayList<>();
         StringBuilder url = new StringBuilder();
-        url.append("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=");
+        url.append("https://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=");
 
         // if database is defined, search using given database
         if (!databaseName.equals("CONTAMINANTS")) {
