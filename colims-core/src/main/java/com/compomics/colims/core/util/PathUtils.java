@@ -84,8 +84,6 @@ public final class PathUtils {
             throw new IllegalArgumentException("The given child path " + childPath.toString() + " doesn't contain the root path " + parentPath.toString());
         }
 
-        LOGGER.info(relativePath.toString());
-
         return relativePath;
     }
 

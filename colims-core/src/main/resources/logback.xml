@@ -7,9 +7,15 @@
         </encoder>
     </appender>    
 
-    <logger name="com.compomics.colims" level="ERROR"></logger>
-    <logger name="org.springframework" level="ERROR"></logger>
-    <logger name="org.hibernate" level="ERROR"></logger>
+    <logger name="com.compomics.colims" level="ERROR" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.springframework" level="ERROR" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    <logger name="org.hibernate" level="ERROR" additivity="false">
+        <appender-ref ref="STDOUT"/>
+    </logger>
 
     <root level="ERROR">
         <appender-ref ref="STDOUT" />

@@ -7,6 +7,7 @@ import com.compomics.colims.distributed.io.maxquant.TabularFileIterator;
 import com.compomics.colims.distributed.io.maxquant.headers.ProteinGroupsHeader;
 import com.compomics.colims.distributed.io.maxquant.headers.ProteinGroupsHeaders;
 import com.compomics.colims.model.*;
+import com.compomics.colims.model.enums.QuantificationMethod;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.math.NumberUtils;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+
+import static com.compomics.colims.model.enums.QuantificationMethod.LABEL_FREE;
 
 /**
  * Create grouped proteins from the protein groups file output by MaxQuant.
@@ -51,9 +54,9 @@ public class MaxQuantProteinGroupsParser {
      */
     private Map<String, String> proteinSequences = new HashMap<>();
     /**
-     * The quantification label.
+     * The quantification type.
      */
-    private String quantificationLabel;
+    private QuantificationMethod quantificationMethod;
     /**
      * The JSON mapper.
      */
@@ -102,14 +105,14 @@ public class MaxQuantProteinGroupsParser {
      *
      * @param proteinGroupsFile   MaxQuant protein groups file
      * @param fastaDbMap          the map of {@link FastaDb} instances
-     * @param quantificationLabel the quantification label
+     * @param quantificationMethod  the quantification type
      * @param includeContaminants whether or not to include contaminants
      * @param optionalHeaders     the list of optional headers
      * @throws IOException in case of an Input/Output related problem
      */
-    public void parse(Path proteinGroupsFile, LinkedHashMap<FastaDb, Path> fastaDbMap, String quantificationLabel, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
+    public void parse(Path proteinGroupsFile, LinkedHashMap<FastaDb, Path> fastaDbMap, QuantificationMethod quantificationMethod, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
         TabularFileIterator iterator = new TabularFileIterator(proteinGroupsFile, proteinGroupsHeaders.getMandatoryHeaders());
-        this.quantificationLabel = quantificationLabel;
+        this.quantificationMethod = quantificationMethod;
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
@@ -175,7 +178,7 @@ public class MaxQuantProteinGroupsParser {
                 String msmsCount = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.MSMS_COUNT), name.toLowerCase()));
 
                 Map<String, Double> labeledIntensities = null;
-                if (!quantificationLabel.equals(MaxQuantImport.LABEL_FREE)) {
+                if (!quantificationMethod.equals(LABEL_FREE)) {
                     labeledIntensities = parseLabeledQuantification(proteinGroupsEntry, name.toLowerCase(), optionalHeaders);
                 }
 
@@ -293,10 +296,10 @@ public class MaxQuantProteinGroupsParser {
      */
     private Map<String, Double> parseLabeledQuantification(Map<String, String> proteinGroupsEntry, String experimentName, List<String> optionalHeaders) {
         Map<String, Double> intensities = new LinkedHashMap<>();
-        switch (quantificationLabel) {
-            case MaxQuantImport.SILAC:
-            case MaxQuantImport.ITRAQ:
-            case MaxQuantImport.ICAT:
+        switch (quantificationMethod) {
+            case SILAC:
+            case ITRAQ:
+            case ICAT:
                 String intensityL = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_L), experimentName));
                 String intensityH = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_H), experimentName));
                 //in case of 2 label mods, we have a light and a heavy label (L, H).
@@ -327,7 +330,7 @@ public class MaxQuantProteinGroupsParser {
                 }
 
                 break;
-            case MaxQuantImport.TMT:
+            case TMT:
                 int reportersSize = calculateTmtReportersSize(maxQuantSearchSettingsParser.getIsobaricLabels().size());
                 for (int i = 0; i < reportersSize; i++) {
                     String reporterIntensityCorrected = proteinGroupsEntry.get(String.format(REPORTER_INTENSITY_CORRECTED, proteinGroupsHeaders.get(ProteinGroupsHeader.REPORTER_INTENSITY_CORRECTED), i, experimentName));
@@ -341,7 +344,7 @@ public class MaxQuantProteinGroupsParser {
                 }
                 break;
             default:
-                throw new IllegalArgumentException("Unexpected quantification label: " + quantificationLabel);
+                throw new IllegalArgumentException("Unexpected quantification label: " + quantificationMethod.toString());
         }
 
         //store the given optional header if it has a numeric value per run and protein group

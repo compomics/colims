@@ -24,11 +24,11 @@
         </encoder>
     </appender>
 
-    <logger name="org.hibernate" level="ERROR">
+    <logger name="org.hibernate" level="ERROR" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
-    <logger name="com.compomics.colims" level="INFO">
+    <logger name="com.compomics.colims" level="INFO" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>

@@ -24,11 +24,15 @@
         </encoder>
     </appender>
 
-    <logger name="org.hibernate" level="INFO">
+    <logger name="org.hibernate" level="WARN" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
-    <logger name="com.compomics.colims" level="INFO">
+    <logger name="org.springframework" level="WARN" additivity="false">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </logger>
+    <logger name="com.compomics.colims" level="INFO" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>

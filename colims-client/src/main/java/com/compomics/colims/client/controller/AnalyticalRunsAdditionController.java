@@ -20,6 +20,7 @@ import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.DefaultPermission;
+import com.compomics.colims.model.enums.QuantificationMethod;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.slf4j.Logger;
@@ -497,13 +498,18 @@ public class AnalyticalRunsAdditionController implements Controllable {
         this.instrument = instrument;
     }
 
-    public String getSelectedLabel() {
-        String selectedLabel = "";
+    /**
+     * Get the selected quantification method.
+     *
+     * @return the quantification method
+     */
+    public QuantificationMethod getSelectedQuantificationMethod() {
+        QuantificationMethod quantificationMethod = null;
         if (analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex() != -1) {
-            selectedLabel = labelBindingList.get(analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex());
+            quantificationMethod = QuantificationMethod.getByUserFriendlyName(labelBindingList.get(analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex()));
         }
 
-        return selectedLabel;
+        return quantificationMethod;
     }
 
 }
