@@ -37,7 +37,7 @@ public class OlsServiceImpl implements OlsService {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(OlsServiceImpl.class);
 
-    private static final String OLS_BASE_URL = "http://www.ebi.ac.uk/ols/api/ontologies";
+    private static final String OLS_BASE_URL = "https://www.ebi.ac.uk/ols/api/ontologies";
     private static final String OLS_BASE_SEARCH_URL = "http://www.ebi.ac.uk/ols/api/search?q=";
     private static final String PAGE_AND_SIZE = "?page=%1$d&size=%2$d";
     private static final String START_AND_ROWS = "&start={page}&rows={pageSize}";
