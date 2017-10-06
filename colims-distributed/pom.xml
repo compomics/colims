@@ -2,13 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>colims-distributed</artifactId>
-    <version>1.3.2-SNAPSHOT</version>
+    <version>1.3.2</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.compomics.colims</groupId>
         <artifactId>colims</artifactId>
-        <version>1.3.2-SNAPSHOT</version>
+        <version>1.3.2</version>
     </parent>
 
     <name>colims-distributed</name>
@@ -208,27 +208,27 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
 
-             Create javadoc on build 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>            
-            
-             Zip the jar file and the dependencies 
+            <!-- Create javadoc on build -->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-javadoc-plugin</artifactId>-->
+                <!--<version>3.0.0-M1</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>attach-javadocs</id>-->
+                        <!--<goals>-->
+                            <!--<goal>jar</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+
+            <!-- Zip the jar file and the dependencies -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.3</version>
+                <version>3.1.0</version>
                 <configuration>
                     <descriptors>
                         <descriptor>src/main/assembly/zip.xml</descriptor>
@@ -238,16 +238,17 @@
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                         this is used for inheritance merges 
+                        <!-- this is used for inheritance merges -->
                         <phase>package</phase>
-                         append to the packaging phase. 
+                        <!-- append to the packaging phase. -->
                         <goals>
                             <goal>single</goal>
-                             goals == mojos 
+                            <!-- goals == mojos -->
                         </goals>
                     </execution>
                 </executions>
-            </plugin>               -->
+            </plugin>
+
         </plugins>
     </build>
 
@@ -255,7 +256,7 @@
         <!-- colims dependencies -->
         <dependency>
             <groupId>com.compomics.colims</groupId>
-            <artifactId>colims-core</artifactId>           
+            <artifactId>colims-core</artifactId>
         </dependency>
 
         <!-- compomics dependencies -->
@@ -378,7 +379,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-        </dependency>        
+        </dependency>
 
         <dependency>
             <groupId>xmlpull</groupId>

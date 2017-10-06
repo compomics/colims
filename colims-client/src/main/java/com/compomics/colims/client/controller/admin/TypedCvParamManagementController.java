@@ -219,10 +219,11 @@ public class TypedCvParamManagementController implements Controllable {
     /**
      * Update the CV param list and set the current cvParamType.
      *
-     * @param cvParamParent                 the CV params' parent
-     * @param cvParamType                   the cvParamType of the CV params in the list
-     * @param preselectedOntologyNamespaces the list of preselected ontology namespaces
-     * @param cvParams                      the list of CV params
+     * @param cvParamParent the CV params' parent
+     * @param cvParamType the cvParamType of the CV params in the list
+     * @param preselectedOntologyNamespaces the list of preselected ontology
+     * namespaces
+     * @param cvParams the list of CV params
      */
     public void updateDialog(final String cvParamParent, final CvParamType cvParamType, final List<String> preselectedOntologyNamespaces, final List<AuditableTypedCvParam> cvParams) {
         this.cvParamType = cvParamType;
@@ -256,10 +257,10 @@ public class TypedCvParamManagementController implements Controllable {
     /**
      * Update the given CV param. Only the modified fields are set.
      *
-     * @param cvParam   the TypedCvParam
-     * @param label     the label
+     * @param cvParam the TypedCvParam
+     * @param label the label
      * @param accession the accession
-     * @param name      the name
+     * @param name the name
      */
     private void updateCvParam(final AuditableTypedCvParam cvParam, final String label, final String accession, final String name) {
 
@@ -286,7 +287,7 @@ public class TypedCvParamManagementController implements Controllable {
         OntologyTerm ontologyTerm = new OntologyTerm();
         olsController.showView(ontologyTerm, preselectedOntologyNamespaces);
 
-        if (!ontologyTerm.getIri().equals(OlsController.DEREFERENCE_IRI)) {
+        if (ontologyTerm.getIri() != null && !ontologyTerm.getIri().equals(OlsController.DEREFERENCE_IRI)) {
             //check whether a CV param has to be added or updated
             if (newCvParam) {
                 AuditableTypedCvParam cvParam = CvParamFactory.newAuditableTypedCvInstance(cvParamType, ontologyTerm.getOntologyNamespace(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
