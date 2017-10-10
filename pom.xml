@@ -392,41 +392,7 @@
             <dependency>
                 <groupId>com.compomics</groupId>
                 <artifactId>utilities</artifactId>
-                <version>4.11.19</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>commons-math</artifactId>
-                        <groupId>commons-math</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>servlet-api</artifactId>
-                        <groupId>javax.servlet</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>swingx</artifactId>
-                        <groupId>org.swinglabs</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <artifactId>swing-layout</artifactId>
-                        <groupId>org.swinglabs</groupId>
-                    </exclusion>
-                    <!--                    <exclusion>
-                        <artifactId>batik-all</artifactId>
-                        <groupId>batik</groupId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>batik</groupId>
-                        <artifactId>pdf-transcoder</artifactId>
-                    </exclusion>-->
-                    <exclusion>
-                        <groupId>umontreal.iro.lecuyer.gof</groupId>
-                        <artifactId>ssj</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>net.jimmc.jshortcut</groupId>
-                        <artifactId>0.4-oberzalek</artifactId>
-                    </exclusion>
-                </exclusions>
+                <version>4.11.19</version>                
             </dependency>
 
             <dependency>
@@ -542,6 +508,7 @@
                 <artifactId>cxf-rt-transports-http</artifactId>
                 <version>3.2.0</version>
             </dependency>
+            
         </dependencies>
     </dependencyManagement>
 

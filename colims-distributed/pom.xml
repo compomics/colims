@@ -265,28 +265,20 @@
             <artifactId>utilities</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>commons-codec</groupId>
-                    <artifactId>commons-codec</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.xml.bind</groupId>
-                    <artifactId>jaxb-xjc</artifactId>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>xpp3</groupId>
                     <artifactId>xpp3</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>psidev.psi.tools</groupId>
-                    <artifactId>xxindex</artifactId>
+                    <groupId>org.swinglabs</groupId>
+                    <artifactId>swingx</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.jgoodies</groupId>
-                    <artifactId>looks</artifactId>
+                    <groupId>no.uib</groupId>
+                    <artifactId>ols-dialog</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>uk.ac.ebi.pride.archive</groupId>
@@ -300,40 +292,20 @@
             <artifactId>PeptideShaker</artifactId>
             <exclusions>
                 <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>xpp3</groupId>
                     <artifactId>xpp3</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>com.sun.xml.bind</groupId>
-                    <artifactId>jaxb-impl</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
+                    <groupId>org.swinglabs</groupId>
+                    <artifactId>swingx</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>psidev.psi.tools</groupId>
                     <artifactId>xxindex</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-expression</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.jgoodies</groupId>
-                    <artifactId>looks</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-annotations</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -386,6 +358,20 @@
             <artifactId>xmlpull</artifactId>
             <version>1.1.3.4a</version>
         </dependency>
-
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.15</version>
+        </dependency>
+        <dependency>
+            <groupId>xpp3</groupId>
+            <artifactId>xpp3</artifactId>
+            <version>1.1.4c</version>
+        </dependency>
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
+            <version>1.6.1</version>
+        </dependency>
     </dependencies>
 </project>

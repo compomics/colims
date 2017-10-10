@@ -20,6 +20,7 @@ import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.enums.*;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
+import com.compomics.util.experiment.biology.NeutralLoss;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.ions.*;
@@ -1495,9 +1496,9 @@ public class MzIdentMlExporter {
                     }
 
                     //@todo add the neutral losses if jmzidentml supports mzIdentML 1.2.0
-//                    //add the CV term for the neutral losses
-//                    if (currentIon.getNeutralLosses() != null) {
-//                        for (NeutralLoss neutralLoss : currentIon.getNeutralLosses()) {
+                    //add the CV term for the neutral losses
+//                    if (ionMatch.ion.getNeutralLosses() != null) {
+//                        for (NeutralLoss neutralLoss : ionMatch.ion.getNeutralLosses()) {
 //                            CvParam neutralLossElement = getMzIdentMlElement("/Ion/Neutral loss", CvParam.class);
 //                            neutralLossElement.setValue(neutralLoss.name);
 //                            ionType.setCvParam(neutralLossElement);

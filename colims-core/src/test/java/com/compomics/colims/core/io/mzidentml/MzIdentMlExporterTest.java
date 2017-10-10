@@ -44,20 +44,23 @@ public class MzIdentMlExporterTest {
      * @throws IOException error thrown in case of a I/O related problem
      */
     @Test
-    @Ignore
     public void testExport() throws IOException {
         //get the run from the in memory database
         List<AnalyticalRun> analyticalRuns = new ArrayList<>();
         AnalyticalRun run = repository.findById(1L);
         analyticalRuns.add(run);
 
-//        File mzIdentMLFile = File.createTempFile("/home/niels/Desktop/testMzIdentMl", ".mzid");
-        File mzIdentMLFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
-//        File mgfFile = File.createTempFile("/home/niels/Desktop/testMgf", "mgf");
-        File mgfFile = new File("/home/niels/Desktop/testMgf.mgf");
+        File mzIdentMLFile = File.createTempFile("testMzIdentMl", ".mzid");
+//        File mzIdentMLFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
+        File mgfFile = File.createTempFile("testMgf", "mgf");
+//        File mgfFile = new File("/home/niels/Desktop/testMgf.mgf");
 
         MzIdentMlExport mzIdentMlExport = new MzIdentMlExport(new ClassPathResource("data").getFile().toPath(), mzIdentMLFile.toPath(), mgfFile.toPath(), analyticalRuns, userService.findById(1L));
         exporter.export(mzIdentMlExport);
+
+        //very basic tests for now, just check file size
+        Assert.assertFalse(mzIdentMLFile.length() == 0);
+        Assert.assertFalse(mgfFile.length() == 0);
     }
 
     @Test
