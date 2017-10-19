@@ -23,6 +23,7 @@
         <property name="password" value="${db.password}"/>
         <property name="initialSize" value="${db.initial_pool_size}"/>
         <property name="maxActive" value="${db.max_pool_size}"/>
+        <property name="validationQuery" value="SELECT 1"/>
     </bean>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
