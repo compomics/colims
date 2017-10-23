@@ -66,17 +66,17 @@ public class MaxQuantQuantificationSettingsParser {
     /**
      * Parse the quantification parameters for a MaxQuant experiment.
      *
-     * @param analyticalRuns     the list of analytical runs
-     * @param quantificationType the quantification type
-     * @param reagents           the list of reagents
+     * @param analyticalRuns           the list of analytical runs
+     * @param quantificationMethodEnum the quantification method
+     * @param reagents                 the list of reagents
      */
-    public void parse(List<AnalyticalRun> analyticalRuns, QuantificationMethod quantificationType, List<String> reagents) {
-        OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(quantificationType.toString());
+    public void parse(List<AnalyticalRun> analyticalRuns, QuantificationMethod quantificationMethodEnum, List<String> reagents) {
+        OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(quantificationMethodEnum.userFriendlyName());
 
         //create the quantification method
         com.compomics.colims.model.QuantificationMethod quantificationMethod =
                 new com.compomics.colims.model.QuantificationMethod(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
-        quantificationMethod.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethod, quantificationType, reagents));
+        quantificationMethod.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethod, quantificationMethodEnum, reagents));
         //check if the quantification method is already present in the db
         quantificationMethod = quantificationSettingsService.getQuantificationMethod(quantificationMethod);
         //create the quantification settings

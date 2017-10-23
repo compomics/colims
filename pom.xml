@@ -340,11 +340,23 @@
                 <version>${org.hibernate.version}</version>
             </dependency>
 
+            <!--<dependency>-->
+                <!--<groupId>org.hibernate</groupId>-->
+                <!--<artifactId>hibernate-hikaricp</artifactId>-->
+                <!--<version>${org.hibernate.version}</version>-->
+            <!--</dependency>-->
+
             <!--            <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-search-orm</artifactId>
                 <version>4.5.1.Final</version>
             </dependency>        -->
+
+            <dependency>
+                <groupId>org.mariadb.jdbc</groupId>
+                <artifactId>mariadb-java-client</artifactId>
+                <version>2.1.2</version>
+            </dependency>
 
             <dependency>
                 <groupId>javax.el</groupId>
@@ -368,25 +380,25 @@
             <dependency>
                 <groupId>com.compomics.colims</groupId>
                 <artifactId>colims-model</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.2</version>
             </dependency>
 
             <dependency>
                 <groupId>com.compomics.colims</groupId>
                 <artifactId>colims-repository</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.2</version>
             </dependency>
 
             <dependency>
                 <groupId>com.compomics.colims</groupId>
                 <artifactId>colims-core</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.2</version>
             </dependency>
 
             <dependency>
                 <groupId>com.compomics.colims</groupId>
                 <artifactId>colims-distributed</artifactId>
-                <version>1.3.2-SNAPSHOT</version>
+                <version>1.3.2</version>
             </dependency>
 
             <dependency>

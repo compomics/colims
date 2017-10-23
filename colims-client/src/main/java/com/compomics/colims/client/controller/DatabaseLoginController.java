@@ -154,7 +154,8 @@ public class DatabaseLoginController implements Controllable {
      * Test the datase connection and show a message dialog if unsuccessful.
      */
     private void onLogin() {
-        if (testConnection(propertiesConfiguration.getString("db.driver"), dbUrl, dbUserName, String.valueOf(dbPassword))) {
+//        if (testConnection(propertiesConfiguration.getString("db.driver"), dbUrl, dbUserName, String.valueOf(dbPassword))) {
+        if (testConnection("org.mariadb.jdbc.Driver", dbUrl, dbUserName, String.valueOf(dbPassword))) {
             checkForPropertiesUpdates();
             databaseLoginDialog.dispose();
         } else {
