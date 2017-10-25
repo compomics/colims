@@ -6,7 +6,8 @@ import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.service.DeleteService;
 import com.compomics.colims.distributed.producer.CompletedTaskProducer;
 import com.compomics.colims.distributed.producer.DbTaskErrorProducer;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class DeleteDbTaskHandler {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(DeleteDbTaskHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeleteDbTaskHandler.class);
 
     private final CompletedTaskProducer completedTaskProducer;
     private final DbTaskErrorProducer dbTaskErrorProducer;

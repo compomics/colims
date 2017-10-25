@@ -6,7 +6,7 @@ package com.compomics.colims.core.io.mzml;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.model.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +29,6 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-core-context.xml", "classpath:colims-core-test-context.xml"})
 public class MzMLParserTest {
-
-    private static final Logger LOGGER = Logger.getLogger(MzMLParserTest.class);
 
     @Autowired
     private MzMLParser mzMLParser;

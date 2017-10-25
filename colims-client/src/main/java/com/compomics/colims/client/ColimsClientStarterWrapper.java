@@ -4,7 +4,8 @@ import com.compomics.software.CompomicsWrapper;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -15,7 +16,7 @@ public class ColimsClientStarterWrapper extends CompomicsWrapper {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(ColimsClientStarterWrapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ColimsClientStarterWrapper.class);
 
     /**
      * Starts the launcher by calling the launch method. Use this as the main
@@ -34,7 +35,7 @@ public class ColimsClientStarterWrapper extends CompomicsWrapper {
             argsAddedTo[argsAddedTo.length - 1] = "";
             launchTool("Colims-client", jarFile, null, mainClass, argsAddedTo);
         } catch (URISyntaxException ex) {
-            LOGGER.error(ex);
+            LOGGER.error(ex.getMessage(), ex);
         }
     }
 

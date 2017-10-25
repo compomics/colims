@@ -17,9 +17,10 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.TaxonomyCvParam;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.eventbus.EventBus;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.*;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -43,7 +44,7 @@ public class FastaDbManagementController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(FastaDbManagementController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FastaDbManagementController.class);
 
     /**
      * The value used for the database name if it's not in the EMBL-EBI list.

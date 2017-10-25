@@ -8,12 +8,13 @@ import com.compomics.colims.client.view.admin.InstitutionManagementDialog;
 import com.compomics.colims.core.service.InstitutionService;
 import com.compomics.colims.model.Institution;
 import com.google.common.eventbus.EventBus;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jdesktop.beansbinding.*;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -36,7 +37,7 @@ public class InstitutionManagementController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(InstitutionManagementController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InstitutionManagementController.class);
 
     //model
     private BindingGroup bindingGroup;

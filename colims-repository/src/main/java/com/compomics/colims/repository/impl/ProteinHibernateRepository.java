@@ -24,9 +24,9 @@ public class ProteinHibernateRepository extends GenericHibernateRepository<Prote
     }
 
     @Override
-    public List<Long> getConstraintLessProteinIdsForRuns(List<Long> analyticalRunIds) {
-        SQLQuery sqlQuery = (SQLQuery) getCurrentSession().getNamedQuery("Protein.getConstraintLessProteinIdsForRuns");
-        sqlQuery.setParameterList("ids", analyticalRunIds);
+    public List<Long> getConstraintLessProteinIdsForProteinGroups(List<Long> proteinGroupIds) {
+        SQLQuery sqlQuery = (SQLQuery) getCurrentSession().getNamedQuery("Protein.getConstraintLessProteinIdsForProteinGroups");
+        sqlQuery.setParameterList("proteinGroupIds", proteinGroupIds);
         sqlQuery.addScalar("protein.id", LongType.INSTANCE);
 
         return sqlQuery.list();

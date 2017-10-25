@@ -20,15 +20,17 @@ import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.service.InstrumentService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.DefaultPermission;
+import com.compomics.colims.model.enums.QuantificationMethod;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
@@ -57,7 +59,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(AnalyticalRunsAdditionController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnalyticalRunsAdditionController.class);
 
     private static final String METADATA_SELECTION_CARD = "metadataSelectionPanel";
     private static final String PS_DATA_IMPORT_CARD = "peptideShakerDataImportPanel";
@@ -496,13 +498,18 @@ public class AnalyticalRunsAdditionController implements Controllable {
         this.instrument = instrument;
     }
 
-    public String getSelectedLabel() {
-        String selectedLabel = "";
+    /**
+     * Get the selected quantification method.
+     *
+     * @return the quantification method
+     */
+    public QuantificationMethod getSelectedQuantificationMethod() {
+        QuantificationMethod quantificationMethod = null;
         if (analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex() != -1) {
-            selectedLabel = labelBindingList.get(analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex());
+            quantificationMethod = QuantificationMethod.getByUserFriendlyName(labelBindingList.get(analyticalRunsAdditionDialog.getLabelComboBox().getSelectedIndex()));
         }
 
-        return selectedLabel;
+        return quantificationMethod;
     }
 
 }

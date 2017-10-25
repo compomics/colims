@@ -76,4 +76,12 @@ public interface ProteinGroupRepository extends GenericRepository<ProteinGroup, 
      * @return the found {@link ProteinGroupHasProtein} instance
      */
     ProteinGroupHasProtein getMainProteinGroupHasProtein(final Long proteinGroupId);
+
+    /**
+     * Get the IDs of the protein groups that are only related to the given runs.
+     *
+     * @param analyticalRunIds the list of analytical run IDs
+     * @return the list of protein group IDs
+     */
+    List<Long> getConstraintLessProteinGroupIdsForRuns(List<Long> analyticalRunIds);
 }

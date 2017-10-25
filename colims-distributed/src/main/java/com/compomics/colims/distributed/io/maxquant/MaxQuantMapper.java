@@ -6,14 +6,16 @@ import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.model.AnalyticalRun;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jdom2.JDOMException;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -28,7 +30,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MaxQuantMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantMapper.class);
     /**
      * The MaxQuant parent parser class.
      */
@@ -53,18 +55,18 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             maxQuantParser.clear();
             
             //make the MaxQuantImport resources (mqpar file and combined directory) absolute and check it they exist
-            Path relativeCombinedDirectory = maxQuantImport.getCombinedDirectory();
+            Path relativeCombinedDirectory = Paths.get(maxQuantImport.getCombinedDirectory());
             Path absoluteCombinedDirectory = experimentsDirectory.resolve(relativeCombinedDirectory);
             if (!Files.exists(absoluteCombinedDirectory)) {
                 throw new IllegalArgumentException("The combined directory " + absoluteCombinedDirectory.toString() + " doesn't exist.");
             }
-            maxQuantImport.setCombinedDirectory(absoluteCombinedDirectory);
-            Path relativeMqparFile = maxQuantImport.getMqParFile();
+            maxQuantImport.setCombinedDirectory(absoluteCombinedDirectory.toString());
+            Path relativeMqparFile = Paths.get(maxQuantImport.getMqParFile());
             Path absoluteMqparFile = experimentsDirectory.resolve(relativeMqparFile);
             if (!Files.exists(absoluteMqparFile)) {
                 throw new IllegalArgumentException("The mqpar directory " + relativeMqparFile.toString() + " doesn't exist.");
             }
-            maxQuantImport.setMqParFile(absoluteMqparFile);
+            maxQuantImport.setMqParFile(absoluteMqparFile.toString());
 
             //parse the MaxQuant files
             maxQuantParser.parse(maxQuantImport, fastasDirectory);

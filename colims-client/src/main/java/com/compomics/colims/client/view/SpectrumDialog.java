@@ -18,7 +18,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This dialog shows a peptide to spectrum match (PSM).
@@ -31,7 +32,7 @@ public class SpectrumDialog extends javax.swing.JDialog implements ActionListene
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(SpectrumDialog.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpectrumDialog.class);
 
     private static final String SUGGESTED_MGF_NAME = "spectrum_%s.mgf";
     /**

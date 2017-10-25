@@ -5,13 +5,13 @@
  */
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.OntologyTerm;
 import com.compomics.colims.core.service.QuantificationReagentService;
 import com.compomics.colims.core.service.QuantificationSettingsService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.QuantificationEngineType;
+import com.compomics.colims.model.enums.QuantificationMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -66,17 +66,17 @@ public class MaxQuantQuantificationSettingsParser {
     /**
      * Parse the quantification parameters for a MaxQuant experiment.
      *
-     * @param analyticalRuns      the list of analytical runs
-     * @param quantificationLabel the quantification label
-     * @param reagents            the list of reagents
+     * @param analyticalRuns           the list of analytical runs
+     * @param quantificationMethodEnum the quantification method
+     * @param reagents                 the list of reagents
      */
-    public void parse(List<AnalyticalRun> analyticalRuns, String quantificationLabel, List<String> reagents) {
-        OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(quantificationLabel);
+    public void parse(List<AnalyticalRun> analyticalRuns, QuantificationMethod quantificationMethodEnum, List<String> reagents) {
+        OntologyTerm ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationMethods().get(quantificationMethodEnum.userFriendlyName());
 
         //create the quantification method
-        QuantificationMethod quantificationMethod =
-                new QuantificationMethod(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
-        quantificationMethod.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethod, quantificationLabel, reagents));
+        com.compomics.colims.model.QuantificationMethod quantificationMethod =
+                new com.compomics.colims.model.QuantificationMethod(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
+        quantificationMethod.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethod, quantificationMethodEnum, reagents));
         //check if the quantification method is already present in the db
         quantificationMethod = quantificationSettingsService.getQuantificationMethod(quantificationMethod);
         //create the quantification settings
@@ -93,19 +93,19 @@ public class MaxQuantQuantificationSettingsParser {
     }
 
     /**
-     * This method creates {@link QuantificationReagent} instances and their link to {@link QuantificationMethod} instances.
+     * This method creates {@link QuantificationReagent} instances and their link to {@link com.compomics.colims.model.QuantificationMethod} instances.
      *
-     * @param quantificationMethod the {@link QuantificationMethod} instance
-     * @param quantificationLabel  the quantification label
+     * @param quantificationMethod the {@link com.compomics.colims.model.QuantificationMethod} instance
+     * @param quantificationType   the quantification type
      * @param reagents             the list of reagents
      * @return QuantificationMethodHasReagents list
      */
-    public List<QuantificationMethodHasReagent> createQuantificationReagent(QuantificationMethod quantificationMethod, String quantificationLabel, List<String> reagents) {
+    public List<QuantificationMethodHasReagent> createQuantificationReagent(com.compomics.colims.model.QuantificationMethod quantificationMethod, QuantificationMethod quantificationType, List<String> reagents) {
         List<QuantificationMethodHasReagent> quantificationMethodHasReagents = new ArrayList<>();
 
         reagents.forEach(reagent -> {
             OntologyTerm ontologyTerm;
-            if (quantificationLabel.equals(MaxQuantImport.SILAC) || quantificationLabel.equals(MaxQuantImport.ICAT)) {
+            if (quantificationType.equals(QuantificationMethod.SILAC) || quantificationType.equals(QuantificationMethod.ICAT)) {
                 ontologyTerm = ontologyMapper.getColimsMapping().getQuantificationReagents().get(reagent);
             } else {
                 ontologyTerm = ontologyMapper.getMaxQuantMapping().getQuantificationReagents().get(reagent);

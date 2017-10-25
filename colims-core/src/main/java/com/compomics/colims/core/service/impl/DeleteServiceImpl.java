@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class DeleteServiceImpl implements DeleteService {
 
+    private final ProteinGroupRepository proteinGroupRepository;
     private final ProteinRepository proteinRepository;
     private final ModificationRepository modificationRepository;
     private final SearchParametersRepository searchParametersRepository;
@@ -31,7 +32,8 @@ public class DeleteServiceImpl implements DeleteService {
     private final AnalyticalRunRepository analyticalRunRepository;
 
     @Autowired
-    public DeleteServiceImpl(ProteinRepository proteinRepository,
+    public DeleteServiceImpl(ProteinGroupRepository proteinGroupRepository,
+                             ProteinRepository proteinRepository,
                              ModificationRepository modificationRepository,
                              SearchParametersRepository searchParametersRepository,
                              SearchModificationRepository searchModificationRepository,
@@ -39,6 +41,7 @@ public class DeleteServiceImpl implements DeleteService {
                              ExperimentRepository experimentRepository,
                              SampleRepository sampleRepository,
                              AnalyticalRunRepository analyticalRunRepository) {
+        this.proteinGroupRepository = proteinGroupRepository;
         this.proteinRepository = proteinRepository;
         this.modificationRepository = modificationRepository;
         this.searchParametersRepository = searchParametersRepository;
@@ -62,12 +65,14 @@ public class DeleteServiceImpl implements DeleteService {
         //that can be deleted after the deletion of the analytical runs
         List<Long> runIds = analyticalRuns.stream().map(AnalyticalRun::getId).collect(Collectors.toList());
 
+        List<Long> proteinGroupIds = new ArrayList<>();
         List<Long> proteinIds = new ArrayList<>();
         List<Long> modificationIds = new ArrayList<>();
         List<Long> searchParametersIds = new ArrayList<>();
         List<Long> searchModificationIds = new ArrayList<>();
         if (!runIds.isEmpty()) {
-            proteinIds = proteinRepository.getConstraintLessProteinIdsForRuns(runIds);
+            proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
+            proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
             modificationIds = modificationRepository.getConstraintLessModificationIdsForRuns(runIds);
             searchParametersIds = searchParametersRepository.getConstraintLessSearchParameterIdsForRuns(runIds);
             if (!searchParametersIds.isEmpty()) {
@@ -78,6 +83,11 @@ public class DeleteServiceImpl implements DeleteService {
         //delete the analytical runs
         analyticalRuns.forEach(analyticalRunRepository::remove);
 
+        //delete the protein groups
+        for (Long proteinGroupId : proteinGroupIds) {
+            ProteinGroup proteinGroupToDelete = proteinGroupRepository.findById(proteinGroupId);
+            proteinGroupRepository.remove(proteinGroupToDelete);
+        }
         //delete the proteins
         for (Long proteinId : proteinIds) {
             Protein proteinToDelete = proteinRepository.findById(proteinId);

@@ -20,6 +20,7 @@ import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.enums.*;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
+import com.compomics.util.experiment.biology.NeutralLoss;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.ions.*;
@@ -34,7 +35,8 @@ import com.compomics.util.pride.CvTerm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -73,7 +75,7 @@ public class MzIdentMlExporter {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MzIdentMlExporter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MzIdentMlExporter.class);
 
     private static final String MODIFICATION_ACCESSION_DELIMITER = ":";
     private static final String SEARCH_DB_ID = "SEARCHDB-%d";
@@ -1494,9 +1496,9 @@ public class MzIdentMlExporter {
                     }
 
                     //@todo add the neutral losses if jmzidentml supports mzIdentML 1.2.0
-//                    //add the CV term for the neutral losses
-//                    if (currentIon.getNeutralLosses() != null) {
-//                        for (NeutralLoss neutralLoss : currentIon.getNeutralLosses()) {
+                    //add the CV term for the neutral losses
+//                    if (ionMatch.ion.getNeutralLosses() != null) {
+//                        for (NeutralLoss neutralLoss : ionMatch.ion.getNeutralLosses()) {
 //                            CvParam neutralLossElement = getMzIdentMlElement("/Ion/Neutral loss", CvParam.class);
 //                            neutralLossElement.setValue(neutralLoss.name);
 //                            ionType.setCvParam(neutralLossElement);

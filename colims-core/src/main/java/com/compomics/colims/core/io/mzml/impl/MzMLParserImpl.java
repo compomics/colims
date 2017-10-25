@@ -14,7 +14,8 @@ import com.compomics.util.experiment.massspectrometry.Charge;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import com.compomics.util.experiment.massspectrometry.Precursor;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import uk.ac.ebi.jmzml.model.mzml.*;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
@@ -30,7 +31,7 @@ import java.util.*;
 @Component("mzMLParser")
 public class MzMLParserImpl implements MzMLParser {
 
-    private static final Logger LOGGER = Logger.getLogger(MzMLParserImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MzMLParserImpl.class);
     private static final String DEFAULT_SAMPLE_ACCESSION = "default_sample";
     private final Map<String, MzMLUnmarshaller> mzMLUnmarshallers;
 

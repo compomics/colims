@@ -15,7 +15,8 @@ import com.compomics.colims.client.view.admin.OlsDialog;
 import com.compomics.colims.core.ontology.ols.*;
 import com.compomics.colims.core.service.OlsService;
 import com.google.common.eventbus.EventBus;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -48,7 +49,7 @@ public class OlsController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(OlsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OlsController.class);
 
     /**
      * The URL used for opening the ontology term in the browser.

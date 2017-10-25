@@ -30,7 +30,6 @@ public class AccessionConventerTest {
         List<String> uniProtAccessions = AccessionConverter.convertToUniProt(accession, database);
         assertThat(uniProtAccessions.get(0), is("B1ATJ5"));
         assertThat(uniProtAccessions.size(), is(1));
-
     }
 
 }

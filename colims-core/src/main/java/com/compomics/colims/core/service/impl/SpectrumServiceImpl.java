@@ -7,8 +7,9 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
-import org.apache.log4j.Logger;
 import org.hibernate.LazyInitializationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ public class SpectrumServiceImpl implements SpectrumService {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(SpectrumServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpectrumServiceImpl.class);
 
     /**
      * This constant defines the start tag for the ions.

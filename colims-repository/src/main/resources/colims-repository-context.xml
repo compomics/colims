@@ -16,14 +16,50 @@
     </bean>
 
     <!-- transaction beans -->
-    <bean id="colimsDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <!-- keep this the connection pool in comment in case it's ever needed -->
+    <!--<bean id="colimsDataSource" class="org.apache.commons.dbcp2.BasicDataSource">-->
+    <!--<property name="driverClassName" value="${db.driver}"/>-->
+    <!--<property name="url" value="${db.url}"/>-->
+    <!--<property name="username" value="${db.username}"/>-->
+    <!--<property name="password" value="${db.password}"/>-->
+    <!--<property name="initialSize" value="${db.initial_pool_size}"/>-->
+    <!--<property name="maxTotal" value="${db.max_pool_size}"/>-->
+    <!--<property name="validationQuery" value="SELECT 1"/>-->
+    <!--<property name="timeBetweenEvictionRunsMillis" value="1000"/>-->
+    <!--<property name="minEvictableIdleTimeMillis" value="2000"/>-->
+    <!--<property name="testWhileIdle" value="true"/>-->
+    <!--<property name="testOnBorrow" value="true"/>-->
+    <!--<property name="testOnCreate" value="true"/>-->
+    <!--</bean>-->
+
+    <!--<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">-->
+    <!--<property name="poolName" value="springHikariCP"/>-->
+    <!--<property name="dataSourceClassName" value="org.mariadb.jdbc.MariaDbDataSource"/>-->
+    <!--<property name="maximumPoolSize" value="2"/>-->
+    <!--<property name="idleTimeout" value="59000"/>-->
+    <!--<property name="maxLifetime" value="60000"/>-->
+
+    <!--<property name="dataSourceProperties">-->
+    <!--<props>-->
+    <!--<prop key="url">${db.url}</prop>-->
+    <!--<prop key="user">${db.username}</prop>-->
+    <!--<prop key="password">${db.password}</prop>-->
+    <!--</props>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="colimsDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">-->
+    <!--<constructor-arg ref="hikariConfig"/>-->
+    <!--</bean>-->
+
+    <bean id="colimsDataSource"
+          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="${db.driver}"/>
         <property name="url" value="${db.url}"/>
         <property name="username" value="${db.username}"/>
         <property name="password" value="${db.password}"/>
-        <property name="initialSize" value="${db.initial_pool_size}"/>
-        <property name="maxActive" value="${db.max_pool_size}"/>
     </bean>
+
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="colimsPersistenceUnit"/>

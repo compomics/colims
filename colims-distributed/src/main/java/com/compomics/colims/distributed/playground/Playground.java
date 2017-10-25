@@ -9,6 +9,7 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSpectraParser;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
+import com.compomics.colims.model.enums.QuantificationMethod;
 import org.jdom2.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -97,14 +98,14 @@ public class Playground {
         pIds.add(2L);
         fastaDbs.put(FastaDbType.CONTAMINANTS, cIds);
         MaxQuantImport maxQuantImport = new MaxQuantImport(
-                Paths.get("/home/niels/Desktop/experiments/maxquant_SILAC_integration/mqpar.xml"),
-                Paths.get("maxquant_SILAC_integration/combined"),
-                Paths.get("/home/niels/Desktop/experiments/maxquant_SILAC_integration/combined"),
+                "/home/niels/Desktop/experiments/maxquant_SILAC_integration/mqpar.xml",
+                "maxquant_SILAC_integration/combined",
+                "/home/niels/Desktop/experiments/maxquant_SILAC_integration/combined",
                 fastaDbs,
                 false,
                 false,
                 new ArrayList<>(),
-                "SILAC");
+                QuantificationMethod.SILAC);
         maxQuantMapper.mapData(maxQuantImport, Paths.get("/home/niels/Desktop/experiments"), Paths.get("/home/niels/Desktop/fastas"));
 
 

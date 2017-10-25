@@ -1,6 +1,7 @@
 package com.compomics.colims.distributed.consumer;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ErrorHandler;
 
@@ -15,7 +16,7 @@ public class DbTaskConsumerErrorHandler implements ErrorHandler {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(DbTaskConsumerErrorHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DbTaskConsumerErrorHandler.class);
 
     @Override
     public void handleError(final Throwable thrwbl) {

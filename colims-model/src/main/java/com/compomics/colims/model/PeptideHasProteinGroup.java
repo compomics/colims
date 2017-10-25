@@ -35,7 +35,7 @@ public class PeptideHasProteinGroup extends DatabaseEntity {
      * The ProteinGroup instance of this join entity.
      */
     @JoinColumn(name = "l_protein_group_id", referencedColumnName = "id")
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     private ProteinGroup proteinGroup;
 
     public Double getPeptideProbability() {

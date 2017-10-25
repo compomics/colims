@@ -3,7 +3,8 @@ package com.compomics.colims.core.io.colims_to_utilities;
 import com.compomics.colims.core.io.Mapper;
 import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.util.experiment.identification.matches.ModificationMatch;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,11 +18,6 @@ import java.util.List;
  */
 @Component("colimsModificationMapper")
 public class ColimsModificationMapper implements Mapper<List<PeptideHasModification>, ArrayList<ModificationMatch>> {
-
-    /**
-     * Logger instance
-     */
-    private static final Logger LOGGER = Logger.getLogger(ColimsModificationMapper.class);
 
     /**
      * Map the Colims PeptideHasModification instances onto the Utilities ModificationMatch instances.

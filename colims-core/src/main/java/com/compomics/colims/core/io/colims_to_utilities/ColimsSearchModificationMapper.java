@@ -6,7 +6,7 @@ import com.compomics.colims.model.enums.ModificationType;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,11 +19,6 @@ import java.util.List;
  */
 @Component("colimsSearchModificationMapper")
 public class ColimsSearchModificationMapper implements Mapper<List<SearchParametersHasModification>, PtmSettings> {
-
-    /**
-     * Logger instance
-     */
-    private static final Logger LOGGER = Logger.getLogger(ColimsSearchModificationMapper.class);
 
     /**
      * Map the Colims SearchParametersHasModification instances onto the Utilities PtmSettings instance.

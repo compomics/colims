@@ -4,7 +4,8 @@ import com.compomics.colims.core.distributed.model.DbTask;
 import com.compomics.colims.core.distributed.model.DbTaskError;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jms.support.converter.MessageConverter;
 
 import javax.jms.JMSException;
@@ -21,7 +22,7 @@ public class DbTaskErrorMessageConvertor implements MessageConverter {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MessageConverter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageConverter.class);
 
     /**
      * Mapper for converting a DbTask object to the matching JSON construct.

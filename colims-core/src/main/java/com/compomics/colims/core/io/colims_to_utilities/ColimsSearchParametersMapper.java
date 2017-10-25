@@ -5,7 +5,7 @@ import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.MassAccuracyType;
 import com.compomics.util.experiment.identification.identification_parameters.PtmSettings;
 import com.compomics.util.experiment.massspectrometry.Charge;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +23,6 @@ import java.util.stream.Collectors;
 @Component("colimsSearchParametersMapper")
 @Transactional
 public class ColimsSearchParametersMapper {
-
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(ColimsSearchParametersMapper.class);
 
     private final ColimsSearchModificationMapper colimsSearchModificationMapper;
     private final SearchParametersService searchParametersService;

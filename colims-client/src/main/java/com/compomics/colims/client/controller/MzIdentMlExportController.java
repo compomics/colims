@@ -12,13 +12,14 @@ import com.compomics.colims.model.User;
 import com.compomics.colims.model.UserBean;
 import com.google.common.eventbus.EventBus;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -47,7 +48,7 @@ public class MzIdentMlExportController implements Controllable {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(MzIdentMlExportController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MzIdentMlExportController.class);
 
     private static final String MZIDENTML_EXTENSION = ".mzid";
     private static final String MGF_EXTENSION = ".mgf";

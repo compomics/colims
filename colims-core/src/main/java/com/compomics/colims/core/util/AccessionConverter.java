@@ -18,14 +18,18 @@ import java.nio.CharBuffer;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.compomics.colims.core.io.mzml.impl.MzMLParserImpl;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author demet
  */
 public class AccessionConverter {
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MzMLParserImpl.class);
 
     /**
      * properties configuration to read properties file.
@@ -44,8 +48,8 @@ public class AccessionConverter {
     public static List<String> convertToUniProt(String accession, String databaseName) throws IOException {
         List<String> accessions = new ArrayList<>();
         StringBuilder url = new StringBuilder();
-        url.append("http://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=");
- 
+        url.append("https://www.ebi.ac.uk/Tools/picr/rest/getUPIForAccession?accession=");
+
         // if database is defined, search using given database
         if (!databaseName.equals("CONTAMINANTS")) {
             url.append(accession).append("&database=").append(databaseName);
@@ -62,23 +66,23 @@ public class AccessionConverter {
                     }
                 }
             }
-        // if protein is from contaminants fasta file, search using all database in the properties file
+            // if protein is from contaminants fasta file, search using all database in the properties file
         } else {
             if (accession.contains("CON")) {
                 accession = org.apache.commons.lang3.StringUtils.substringAfter(accession, "CON__");
             }
-            
+
             url.append(accession);
             // read the database properties file
             try {
                 config = PropertiesUtil.parsePropertiesFile("config/embl-ebi-database.properties");
             } catch (ConfigurationException ex) {
-                Logger.getLogger(AccessionConverter.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.error(ex.getMessage(), ex);
             }
             Iterator<String> keys = config.getKeys();
             while (keys.hasNext()) {
                 String key = keys.next();
-                if(config.getString(key).equals("1")){
+                if (config.getString(key).equals("1")) {
                     url.append("&database=").append(key);
                 }
             }
@@ -120,7 +124,7 @@ public class AccessionConverter {
                 input.append(buffer.flip());
                 buffer.clear();
             }
-        }catch(IOException e){
+        } catch (IOException e) {
             throw new IOException("EMBL-EBI server is not available at the moment, please try again later.");
         }
         htmlPage = input.toString();

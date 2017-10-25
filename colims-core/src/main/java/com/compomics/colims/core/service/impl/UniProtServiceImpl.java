@@ -6,7 +6,8 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.UniProtService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,6 @@ import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * Implementation of the UniProtService interface.
@@ -41,7 +41,7 @@ public class UniProtServiceImpl implements UniProtService {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(OlsServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OlsServiceImpl.class);
 
     private static final String UNIPROT_BASE_URL = "http://www.uniprot.org/uniprot";
 
@@ -74,27 +74,27 @@ public class UniProtServiceImpl implements UniProtService {
 
             Document document = builder.parse(is);
             document.getDocumentElement().normalize();
-            
+
             Element element;
-            
+
             NodeList nodeList = document.getElementsByTagName("recommendedName");
             Node node = nodeList.item(0);
-            if(node != null){
+            if (node != null) {
                 element = (Element) node;
                 if (element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")) {
                     uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
                 }
-            }else{
+            } else {
                 nodeList = document.getElementsByTagName("protein");
                 node = nodeList.item(0);
-                if(node != null){
+                if (node != null) {
                     element = (Element) node;
                     if (element.getElementsByTagName("fullName").item(0).getTextContent() != null && !element.getElementsByTagName("fullName").item(0).getTextContent().equals("")) {
                         uniProt.put("description", element.getElementsByTagName("fullName").item(0).getTextContent());
                     }
                 }
             }
-            
+
 
             nodeList = document.getElementsByTagName("organism");
             node = nodeList.item(0);
@@ -117,7 +117,7 @@ public class UniProtServiceImpl implements UniProtService {
                 throw ex;
             }
         } catch (ParserConfigurationException | SAXException ex) {
-            java.util.logging.Logger.getLogger(UniProtServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error(ex.getMessage(), ex);
         }
 
         return uniProt;

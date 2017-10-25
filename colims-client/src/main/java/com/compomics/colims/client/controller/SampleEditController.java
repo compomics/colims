@@ -21,7 +21,7 @@ import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.MaterialNameComparator;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BindingGroup;
 import org.jdesktop.observablecollections.ObservableCollections;
@@ -46,19 +46,12 @@ import java.util.stream.Collectors;
 @Lazy
 public class SampleEditController implements Controllable {
 
-    /**
-     * Logger instance.
-     */
-    private static final Logger LOGGER = Logger.getLogger(SampleEditController.class);
-
     //model
     private BindingGroup bindingGroup;
     private ObservableList<Protocol> protocolBindingList;
     private final EventList<AnalyticalRun> analyticalRuns = new BasicEventList<>();
     private Sample sampleToEdit;
     private List<Material> materials;
-    @Autowired
-    private UserBean userBean;
     //view
     private SampleEditDialog sampleEditDialog;
     private SampleBinaryFileDialog sampleBinaryFileDialog;
@@ -153,7 +146,7 @@ public class SampleEditController implements Controllable {
 
                     sampleEditDialog.getSaveOrUpdateButton().setText("update");
                 }
-                SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, sampleToEdit.getId());
+                SampleChangeEvent sampleChangeEvent = new SampleChangeEvent(type, projectManagementController.getSelectedProject().getId(), sampleToEdit.getId());
                 eventBus.post(sampleChangeEvent);
 
                 MessageEvent messageEvent = new MessageEvent("Sample store confirmation", "Sample " + sampleToEdit.getName() + " was stored successfully!", JOptionPane.INFORMATION_MESSAGE);
@@ -161,6 +154,8 @@ public class SampleEditController implements Controllable {
 
                 //refresh selection in sample table
                 projectManagementController.setSelectedSample(index);
+
+                sampleEditDialog.dispose();
             } else {
                 MessageEvent messageEvent = new MessageEvent("Validation failure", validationMessages, JOptionPane.WARNING_MESSAGE);
                 eventBus.post(messageEvent);

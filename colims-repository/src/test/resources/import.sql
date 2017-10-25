@@ -87,7 +87,7 @@ INSERT INTO search_modification (id, name, accession, utilities_name, average_ma
 INSERT INTO search_params_has_modification(id, l_search_parameters_id, l_search_modification_id) VALUES (1, 1, 1), (2, 1, 2), (3, 2, 1), (4, 3, 1);
 
 -- insert a test analytical run
-INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1), (2, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 2', '2012-11-08 16:51:13', 1, 1);
+INSERT INTO analytical_run (id, creation_date, modification_date, user_name, name, start_date, l_instrument_id, l_sample_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 1', '2012-11-08 16:51:13', 1, 1), (2, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 2', '2012-11-08 16:51:13', 1, 1), (3, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 'run 2', '2012-11-08 16:51:13', 1, 1);
 
 -- insert test search and val settings
 INSERT INTO search_and_validation_settings (id, creation_date, modification_date, user_name, l_analytical_run_id, l_search_engine_id, l_search_parameters_id) VALUES (1, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 1, 1, 1), (2, '2012-11-08 16:51:13', '2012-11-08 16:51:13', 'admin', 2, 1, 1);
@@ -98,12 +98,15 @@ INSERT INTO search_settings_has_fasta_db (id, l_search_and_val_settings_id, l_fa
 -- insert test spectra
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (1, 'MS:00000000', 1, 'CID', 100.5, 555.3, 24.3, 44, 3, 'Test Spectrum', 1);
 INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (2, 'MS:00000004', 3, 'CID', 600.3, 1300.1, 26, 45, 3, 'Test Spectrum 2', 1);
+INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (3, 'MS:00000004', 3, 'CID', 600.3, 1300.1, 26, 45, 3, 'Test Spectrum 2', 2);
+INSERT INTO spectrum (id, accession, charge, fragmentation_type, intensity, mz_ratio, retention_time, scan_number, scan_time, title, l_analytical_run_id) VALUES (4, 'MS:00000004', 3, 'CID', 600.3, 1300.1, 26, 45, 3, 'Test Spectrum 2', 3);
 
 -- insert test peptides
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (1, 1, 0.5, 0.5, 'LENNART', 1, 1);
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (2, 1, 0.5, 0.5, 'BLENNART', 1, 1);
 INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (3, 1, 0.5, 0.5, 'LENNART', 1, 1);
-INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (4, 1, 0.5, 0.5, 'LENNART', 1, NULL);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (4, 1, 0.5, 0.5, 'LENNART', 1, 3);
+INSERT INTO peptide (id, charge, psm_post_error_prob, psm_prob, peptide_sequence, theoretical_mass, l_spectrum_id) VALUES (5, 1, 0.5, 0.5, 'LENNART', 1, 4);
 
 --insert test peptide has modifications
 INSERT INTO peptide_has_modification (id, l_peptide_id, l_modification_id, prob_score, delta_score) VALUES (1, 1, 1, 0.3, 0.5);
@@ -132,3 +135,5 @@ INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_pr
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (2, 0.2, 0.8, 2, 2);
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (3, 0.3, 0.7, 3, 1);
 INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (4, 0.4, 0.6, 3, 2);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (5, 0.4, 0.6, 4, 3);
+INSERT INTO peptide_has_protein_group (id,  peptide_post_error_prob,  peptide_prob, l_peptide_id,  l_protein_group_id) VALUES (6, 0.4, 0.6, 5, 3);

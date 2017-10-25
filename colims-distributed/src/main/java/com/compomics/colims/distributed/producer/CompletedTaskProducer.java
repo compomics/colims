@@ -3,7 +3,8 @@ package com.compomics.colims.distributed.producer;
 import com.compomics.colims.core.distributed.model.CompletedDbTask;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class CompletedTaskProducer {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = Logger.getLogger(CompletedTaskProducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompletedTaskProducer.class);
 
     /**
      * Mapper for converting a CompletedDbTask object to the matching JSON construct.
