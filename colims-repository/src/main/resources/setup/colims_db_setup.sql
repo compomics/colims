@@ -891,5 +891,4 @@ INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (1,
 INSERT INTO quantification_engine (id, accession, label, name, type, version) VALUES (1,'N/A','N/A','PeptideShaker','PEPTIDESHAKER', '0.0.0'),(2,'MS:1001583','MS','MaxQuant','MAXQUANT', '1.5.4.1');
 
 -- insert search parameter cv params
-INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (1, 'MS:1001251', 'PSI-MS', 'Trypsin', 'SEARCH_PARAM_ENZYME');
-INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'SEARCH_TYPE');
+INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (1, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'SEARCH_TYPE');

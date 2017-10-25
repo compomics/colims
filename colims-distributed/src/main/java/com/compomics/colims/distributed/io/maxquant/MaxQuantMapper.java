@@ -6,6 +6,7 @@ import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.distributed.io.DataMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.model.AnalyticalRun;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.jdom2.JDOMException;
 import org.slf4j.LoggerFactory;
@@ -53,15 +54,18 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         List<AnalyticalRun> analyticalRuns;
         try {
             maxQuantParser.clear();
-            
+
             //make the MaxQuantImport resources (mqpar file and combined directory) absolute and check it they exist
-            Path relativeCombinedDirectory = Paths.get(maxQuantImport.getCombinedDirectory());
+            String relativeCombinedDirectoryString = FilenameUtils.separatorsToSystem(maxQuantImport.getCombinedDirectory());
+            Path relativeCombinedDirectory = Paths.get(relativeCombinedDirectoryString);
             Path absoluteCombinedDirectory = experimentsDirectory.resolve(relativeCombinedDirectory);
             if (!Files.exists(absoluteCombinedDirectory)) {
                 throw new IllegalArgumentException("The combined directory " + absoluteCombinedDirectory.toString() + " doesn't exist.");
             }
             maxQuantImport.setCombinedDirectory(absoluteCombinedDirectory.toString());
-            Path relativeMqparFile = Paths.get(maxQuantImport.getMqParFile());
+
+            String relativeMqParFileString = FilenameUtils.separatorsToSystem(maxQuantImport.getMqParFile());
+            Path relativeMqparFile = Paths.get(relativeMqParFileString);
             Path absoluteMqparFile = experimentsDirectory.resolve(relativeMqparFile);
             if (!Files.exists(absoluteMqparFile)) {
                 throw new IllegalArgumentException("The mqpar directory " + relativeMqparFile.toString() + " doesn't exist.");
@@ -73,7 +77,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
             analyticalRuns = maxQuantParser.getAnalyticalRuns();
             // set storage location.
-            analyticalRuns.forEach(run ->run.setStorageLocation(maxQuantImport.getFullCombinedDirectory().toString()));
+            analyticalRuns.forEach(run -> run.setStorageLocation(maxQuantImport.getFullCombinedDirectory().toString()));
         } catch (IOException | UnparseableException | JDOMException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your MaxQuant data, underlying exception: ", ex);
