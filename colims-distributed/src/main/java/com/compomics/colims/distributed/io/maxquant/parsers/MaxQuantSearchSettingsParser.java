@@ -417,12 +417,18 @@ public class MaxQuantSearchSettingsParser {
         Element analyticalRunNamesElement = getChildByName(root, EXPERIMENTS);
         counter = 0;
         for (Element analyticalRunNameElement : analyticalRunNamesElement.getChildren()) {
-            if (!analyticalRunNameElement.getContent().isEmpty()) {
-                maxQuantExperiments.put(counter, analyticalRunNameElement.getContent().get(0).getValue());
-                counter++;
-            } else {
-                throw new IllegalStateException("Experiment name in mqpar file is empty.");
+            if(rawFilePath.size() == 1){
+                maxQuantExperiments.put(counter, "");
+                break;
+            }else{
+                if (!analyticalRunNameElement.getContent().isEmpty()) {
+                    maxQuantExperiments.put(counter, analyticalRunNameElement.getContent().get(0).getValue());
+                    counter++;
+                } else {
+                    throw new IllegalStateException("Experiment name in mqpar file is empty.");
+                }
             }
+            
         }
 
         // keep each raw file group number in a map (key: int; value: group number).
