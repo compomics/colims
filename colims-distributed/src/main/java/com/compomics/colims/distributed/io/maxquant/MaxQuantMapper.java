@@ -76,7 +76,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
             maxQuantParser.parse(maxQuantImport, fastasDirectory);
 
             analyticalRuns = maxQuantParser.getAnalyticalRuns();
-            // set storage location.
+            //set storage location
             analyticalRuns.forEach(run -> run.setStorageLocation(maxQuantImport.getFullCombinedDirectory().toString()));
         } catch (IOException | UnparseableException | JDOMException ex) {
             LOGGER.error(ex.getMessage(), ex);

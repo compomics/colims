@@ -1,6 +1,7 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.core.io.MaxQuantImport;
+import com.compomics.colims.distributed.io.SearchModificationMapper;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.ProteinGroup;
@@ -12,8 +13,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -28,9 +32,8 @@ import static com.compomics.colims.model.enums.QuantificationMethod.TMT;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class MaxQuantProteinGroupsParserTest {
-
-    private Path proteinGroupsFile;
 
     private final LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
     private final EnumMap<FastaDbType, List<FastaDb>> fastaDbEnumMap = new EnumMap<>(FastaDbType.class);
@@ -40,7 +43,6 @@ public class MaxQuantProteinGroupsParserTest {
     private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
 
     public MaxQuantProteinGroupsParserTest() throws IOException {
-        //proteinGroupsFile = new ClassPathResource("data/maxquant/proteinGroups_subset.txt").getFile().toPath();
     }
 
     /**
@@ -145,27 +147,27 @@ public class MaxQuantProteinGroupsParserTest {
         Assert.assertTrue(foundLabel.isPresent());
     }
 
-    /**
-     * Test of parse method of class MaxQuantProteinGroupParser.
-     *
-     * @throws java.lang.Exception in case of an exception
-     */
-    @Test
-    public void testParse() throws Exception {
-        fastaDbs.put(MaxQuantTestSuite.spHumanFastaDb, MaxQuantTestSuite.spHumanFastaDbPath);
-        fastaDbs.put(MaxQuantTestSuite.contaminantsFastaDb, MaxQuantTestSuite.contaminantsFastaDbPath);
-        fastaDbEnumMap.put(FastaDbType.PRIMARY, Arrays.asList(MaxQuantTestSuite.spHumanFastaDb));
-        fastaDbEnumMap.put(FastaDbType.CONTAMINANTS, Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb));
-
-        maxQuantProteinGroupsParser.clear();
-        maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
-                fastaDbs, SILAC, true, new ArrayList<>());
-
-        Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
-
-        //number of entries in the proteinGroups.txt file - number of reverse proteins
-        Assert.assertEquals(672, result.size());
-    }
+//    /**
+//     * Test of parse method of class MaxQuantProteinGroupParser.
+//     *
+//     * @throws java.lang.Exception in case of an exception
+//     */
+//    @Test
+//    public void testParse() throws Exception {
+//        fastaDbs.put(MaxQuantTestSuite.spHumanFastaDb, MaxQuantTestSuite.spHumanFastaDbPath);
+//        fastaDbs.put(MaxQuantTestSuite.contaminantsFastaDb, MaxQuantTestSuite.contaminantsFastaDbPath);
+//        fastaDbEnumMap.put(FastaDbType.PRIMARY, Arrays.asList(MaxQuantTestSuite.spHumanFastaDb));
+//        fastaDbEnumMap.put(FastaDbType.CONTAMINANTS, Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb));
+//
+//        maxQuantProteinGroupsParser.clear();
+//        maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
+//                fastaDbs, SILAC, true, new ArrayList<>());
+//
+//        Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
+//
+//        //number of entries in the proteinGroups.txt file - number of reverse proteins
+//        Assert.assertEquals(672, result.size());
+//    }
 
     /**
      * Test of parse method of class MaxQuantProteinGroupParser.

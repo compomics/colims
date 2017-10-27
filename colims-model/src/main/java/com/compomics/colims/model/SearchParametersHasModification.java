@@ -30,7 +30,8 @@ public class SearchParametersHasModification extends DatabaseEntity {
      * The SearchModification instance of this join entity.
      */
     @JoinColumn(name = "l_search_modification_id", referencedColumnName = "id")
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private SearchModification searchModification;
 
     /**

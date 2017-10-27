@@ -32,4 +32,12 @@ public interface SearchParametersRepository extends GenericRepository<SearchPara
      */
     List<SearchParametersHasModification> fetchSearchModifications(Long searchParametersId);
 
+    /**
+     * Cascade save or update the given search parameters. We don't use the JPA merge method because
+     * it doesn't work well with detached child entities.
+     *
+     * @param searchParameters the search parameters to save or update
+     */
+    void saveOrUpdate(final SearchParameters searchParameters);
+
 }

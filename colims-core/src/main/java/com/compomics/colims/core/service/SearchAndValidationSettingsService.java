@@ -27,18 +27,19 @@ public interface SearchAndValidationSettingsService extends GenericService<Searc
 
     /**
      * Get the SearchParameters by example from the database. If nothing was found, store the given
-     * SearchParameterSettings and return them.
+     * SearchParameters and return them.
      *
      * @param searchParameters the SearchParameters to look for
      * @return the found SearchParameters
      */
     SearchParameters getSearchParameters(SearchParameters searchParameters);
-    
+
     void fetchSearchSettingsHasFastaDb(SearchAndValidationSettings searchAndValidationSettings);
-    
+
     /**
      * Get the SearchAndValidationSettings by analytical run instance from database.
-     * if nothing was found, send null value.
+     * if nothing was found, return null.
+     *
      * @param analyticalRun the {@link AnalyticalRun} instance
      * @return the found SearchAndValidationSettings
      */

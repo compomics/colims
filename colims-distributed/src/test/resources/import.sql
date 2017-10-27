@@ -1,5 +1,3 @@
-# noinspection SqlNoDataSourceInspectionForFile
-
 -- insert test institution
 INSERT INTO institution (id, creation_date, modification_date, user_name, abbreviation, city, country, name, number, postal_code, street) VALUES (1,'2012-06-27 14:42:16','2012-06-27 14:49:46','admin','CFO','Paris','France','Centre for Proteomics','8', '8520', 'Rue De Masspec');
 
