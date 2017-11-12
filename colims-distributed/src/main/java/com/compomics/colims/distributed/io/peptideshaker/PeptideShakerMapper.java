@@ -167,8 +167,6 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
             if (!Files.exists(absoluteFastaDbPath)) {
                 throw new IllegalArgumentException("The FASTA DB " + absoluteFastaDbPath.toString() + " doesn't exist.");
             }
-            //@todo remove this after testing
-//            File fastaDbFile = new File(FilenameUtils.separatorsToSystem(fastaDb.getFilePath()));
             File fastaDbFile = absoluteFastaDbPath.toFile();
 
             LOGGER.info("Start mapping search settings for PeptideShaker experiment " + msExperiment.getReference());

@@ -30,7 +30,7 @@ public interface SearchAndValidationSettingsService extends GenericService<Searc
      * SearchParameters and return them.
      *
      * @param searchParameters the SearchParameters to look for
-     * @return the found SearchParameters
+     * @return the found SearchParameters or the the newly persisted ones
      */
     SearchParameters getSearchParameters(SearchParameters searchParameters);
 

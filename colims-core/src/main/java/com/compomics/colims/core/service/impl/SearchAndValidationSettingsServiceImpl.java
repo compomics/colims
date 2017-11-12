@@ -93,7 +93,7 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
         if (!searchParameterses.isEmpty()) {
             return searchParameterses.get(0);
         } else {
-            //persist the given instance
+            //save or update the given instance
             searchParametersRepository.saveOrUpdate(searchParameters);
             return searchParameters;
         }
