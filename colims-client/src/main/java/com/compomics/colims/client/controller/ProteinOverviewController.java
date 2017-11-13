@@ -14,6 +14,8 @@ import com.compomics.colims.client.event.ExperimentChangeEvent;
 import com.compomics.colims.client.event.ProjectChangeEvent;
 import com.compomics.colims.client.event.SampleChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
+import com.compomics.colims.client.event.progress.ProgressEndEvent;
+import com.compomics.colims.client.event.progress.ProgressStartEvent;
 import com.compomics.colims.client.factory.SpectrumPanelGenerator;
 import com.compomics.colims.client.model.table.format.PeptideTableFormat;
 import com.compomics.colims.client.model.table.format.ProteinGroupTableFormat;
@@ -454,19 +456,14 @@ public class ProteinOverviewController implements Controllable {
             proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(true);
             proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(false);
         });
+        
+        proteinOverviewPanel.getFilterButton().addActionListener((ActionEvent e)-> {
+            String filterText = proteinOverviewPanel.getProteinGroupFilterTextField().getText();
 
-        proteinOverviewPanel.getProteinGroupFilterTextField().addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                super.keyReleased(e);
+            if (filterText.matches("^[a-zA-Z0-9]*$")) {
+                proteinGroupTableModel.setFilter(proteinOverviewPanel.getProteinGroupFilterTextField().getText());
 
-                String filterText = proteinOverviewPanel.getProteinGroupFilterTextField().getText();
-
-                if (filterText.matches("^[a-zA-Z0-9]*$")) {
-                    proteinGroupTableModel.setFilter(proteinOverviewPanel.getProteinGroupFilterTextField().getText());
-
-                    updateProteinGroupTable();
-                }
+                updateProteinGroupTable();
             }
         });
 
@@ -627,8 +624,14 @@ public class ProteinOverviewController implements Controllable {
         GlazedLists.replaceAll(proteinGroupDTOs, new ArrayList<>(), false);
         proteinOverviewPanel.getProteinGroupPageLabel().setText("");
         if (!selectedAnalyticalRuns.isEmpty()) {
+            ProgressStartEvent progressStartEvent = new ProgressStartEvent(mainController.getMainFrame(), true, 1, "Protein view progress. ");
+            eventBus.post(progressStartEvent);
+            
             GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(getSelectedAnalyticalRunIds()), false);
             proteinOverviewPanel.getProteinGroupPageLabel().setText(proteinGroupTableModel.getPageIndicator());
+
+            ProgressEndEvent progressEndEvent = new ProgressEndEvent();
+            eventBus.post(progressEndEvent);
         }
     }
 

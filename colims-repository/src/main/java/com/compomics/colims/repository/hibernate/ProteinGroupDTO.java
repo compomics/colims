@@ -29,6 +29,10 @@ public class ProteinGroupDTO {
      */
     private String mainAccession;
     /**
+     * The protein ID
+     */
+    private Long proteinId;
+    /**
      * the sequence of the main group protein.
      */
     private String mainSequence;
@@ -86,6 +90,14 @@ public class ProteinGroupDTO {
 
     public void setMainAccession(String mainAccession) {
         this.mainAccession = mainAccession;
+    }
+
+    public Long getProteinId() {
+        return proteinId;
+    }
+
+    public void setProteinId(Long proteinId) {
+        this.proteinId = proteinId;
     }
 
     public String getMainSequence() {

@@ -61,6 +61,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
     }
 
     public JTextField getProteinGroupFilterTextField() {
+        proteinGroupFilterTextField.setToolTipText("This process might take long time");
         return proteinGroupFilterTextField;
     }
 
@@ -82,6 +83,10 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
 
     public JScrollPane getProteinGroupTableScrollPane() {
         return proteinGroupTableScrollPane;
+    }
+
+    public JButton getFilterButton() {
+        return filterButton;
     }
 
     /**
@@ -111,6 +116,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
         exportProteinGroupsButton = new javax.swing.JButton();
         proteinGroupPageLabel = new javax.swing.JLabel();
         proteinGroupFilterLabel = new javax.swing.JLabel();
+        filterButton = new javax.swing.JButton();
         peptideTablePanel = new javax.swing.JPanel();
         peptideTableScrollPane = new javax.swing.JScrollPane();
         peptideTable = new javax.swing.JTable();
@@ -172,6 +178,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
         ));
         proteinGroupTableScrollPane.setViewportView(proteinGroupTable);
 
+        proteinGroupFilterTextField.setToolTipText("This process might take long time");
         proteinGroupFilterTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 proteinGroupFilterTextFieldActionPerformed(evt);
@@ -209,6 +216,13 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
 
         proteinGroupFilterLabel.setText("Filter on protein accession or sequence:");
 
+        filterButton.setText("Filter");
+        filterButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout proteinGroupTablePanelLayout = new javax.swing.GroupLayout(proteinGroupTablePanel);
         proteinGroupTablePanel.setLayout(proteinGroupTablePanelLayout);
         proteinGroupTablePanelLayout.setHorizontalGroup(
@@ -223,7 +237,9 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
                         .addComponent(proteinGroupFilterLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(proteinGroupFilterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 226, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(filterButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 179, Short.MAX_VALUE)
                         .addComponent(proteinGroupPageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(firstProteinGroupPageButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -239,7 +255,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
             proteinGroupTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(proteinGroupTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(proteinGroupTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                .addComponent(proteinGroupTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(proteinGroupTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(proteinGroupTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -251,7 +267,8 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, proteinGroupTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(exportProteinGroupsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(proteinGroupFilterTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(proteinGroupFilterLabel)))
+                            .addComponent(proteinGroupFilterLabel)
+                            .addComponent(filterButton)))
                     .addComponent(proteinGroupPageLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -304,7 +321,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
             peptideTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, peptideTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(peptideTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                .addComponent(peptideTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(exportPeptidesButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -358,7 +375,7 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
             psmTablePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(psmTablePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(psmTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
+                .addComponent(psmTableScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(exportPsmsButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -381,12 +398,17 @@ public class ProteinOverviewPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_proteinGroupFilterTextFieldActionPerformed
 
+    private void filterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filterButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JFileChooser exportFileChooser;
     private javax.swing.JButton exportPeptidesButton;
     private javax.swing.JButton exportProteinGroupsButton;
     private javax.swing.JButton exportPsmsButton;
+    private javax.swing.JButton filterButton;
     private javax.swing.JButton firstProteinGroupPageButton;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSplitPane jSplitPane1;
