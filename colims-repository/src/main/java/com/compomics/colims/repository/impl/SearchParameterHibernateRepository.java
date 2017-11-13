@@ -102,4 +102,9 @@ public class SearchParameterHibernateRepository extends GenericHibernateReposito
 
         return searchParameterses;
     }
+
+    @Override
+    public void saveOrUpdate(SearchParameters searchParameters) {
+        getCurrentSession().saveOrUpdate(searchParameters);
+    }
 }

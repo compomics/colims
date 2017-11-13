@@ -6,6 +6,7 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.UnparseableException;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.jdom2.JDOMException;
 import org.slf4j.LoggerFactory;
@@ -97,7 +98,7 @@ public class MaxQuantParser {
         });
 
         //parse the search settings
-        LOGGER.debug("parsing search settings");
+        LOGGER.info("parsing search settings");
         maxQuantSearchSettingsParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), Paths.get(maxQuantImport.getMqParFile()), fastaDbs);
 
         //populate the analytical runs map
@@ -110,7 +111,7 @@ public class MaxQuantParser {
         }
 
         //parse the protein groups file
-        LOGGER.debug("parsing proteinGroups.txt");
+        LOGGER.info("parsing proteinGroups.txt");
         //we want the FASTA DB files to be parsed in the order the FastaDbType enum values are declared
         //so use a LinkedHashMap to preserve the natural FastaDbType enum order
         //(iterating over an EnumMap maintains that order as well)
@@ -118,7 +119,8 @@ public class MaxQuantParser {
         fastaDbs.entrySet().forEach((entry) -> {
             entry.getValue().forEach(fastaDb -> {
                 //make the path absolute and check if it exists
-                Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDb.getFilePath());
+                String fastaDbFilePath = FilenameUtils.separatorsToSystem(fastaDb.getFilePath());
+                Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDbFilePath);
                 if (!Files.exists(absoluteFastaDbPath)) {
                     throw new IllegalArgumentException("The FASTA DB file " + absoluteFastaDbPath + " doesn't exist.");
                 }
@@ -133,10 +135,10 @@ public class MaxQuantParser {
         }
         maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbMap, maxQuantImport.getQuantificationMethod(), maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupsHeaders());
 
-        LOGGER.debug("parsing msms.txt");
+        LOGGER.info("parsing msms.txt");
         maxQuantSpectraParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
-        LOGGER.debug("parsing evidence.txt");
+        LOGGER.info("parsing evidence.txt");
         Path evidenceFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.EVIDENCE_FILE.value());
         if (!Files.exists(evidenceFile)) {
             throw new FileNotFoundException("The evidence.txt " + evidenceFile.toString() + " was not found.");

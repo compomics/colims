@@ -34,7 +34,6 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
         this.searchParametersRepository = searchParametersRepository;
     }
 
-
     @Override
     public SearchAndValidationSettings findById(final Long id) {
         return searchAndValidationSettingsRepository.findById(id);
@@ -94,8 +93,8 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
         if (!searchParameterses.isEmpty()) {
             return searchParameterses.get(0);
         } else {
-            //persist the given instance
-            searchParameters = searchParametersRepository.merge(searchParameters);
+            //save or update the given instance
+            searchParametersRepository.saveOrUpdate(searchParameters);
             return searchParameters;
         }
     }

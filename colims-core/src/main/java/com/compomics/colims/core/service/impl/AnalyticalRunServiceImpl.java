@@ -86,4 +86,9 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
             analyticalRun.setBinaryFiles(binaryFiles);
         }
     }
+
+    @Override
+    public void saveOrUpdate(AnalyticalRun analyticalRun) {
+        analyticalRunRepository.saveOrUpdate(analyticalRun);
+    }
 }

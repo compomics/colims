@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,6 +31,7 @@ import java.util.*;
 @ContextConfiguration(locations = {"classpath:colims-distributed-context.xml", "classpath:colims-distributed-test-context.xml"})
 @Transactional
 @Rollback
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class PeptideShakerMapperIT {
 
     @Autowired
@@ -164,7 +166,7 @@ public class PeptideShakerMapperIT {
             analyticalRun.setSample(sample);
             analyticalRun.setInstrument(instrumentService.findAll().get(0));
 
-            analyticalRunService.merge(analyticalRun);
+            analyticalRunService.saveOrUpdate(analyticalRun);
         });
     }
 }

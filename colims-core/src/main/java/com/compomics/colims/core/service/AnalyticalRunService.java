@@ -32,4 +32,11 @@ public interface AnalyticalRunService extends GenericService<AnalyticalRun, Long
      * @param analyticalRun the AnalyticalRun instance
      */
     void fetchBinaryFiles(AnalyticalRun analyticalRun);
+
+    /**
+     * Save or update the analytical run.
+     *
+     * @param analyticalRun the given analytical run
+     */
+    void saveOrUpdate(AnalyticalRun analyticalRun);
 }

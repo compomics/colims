@@ -103,11 +103,11 @@ public class MaxQuantProteinGroupsParser {
     /**
      * Parse the proteinGroups.txt file.
      *
-     * @param proteinGroupsFile   MaxQuant protein groups file
-     * @param fastaDbMap          the map of {@link FastaDb} instances
-     * @param quantificationMethod  the quantification type
-     * @param includeContaminants whether or not to include contaminants
-     * @param optionalHeaders     the list of optional headers
+     * @param proteinGroupsFile    MaxQuant protein groups file
+     * @param fastaDbMap           the map of {@link FastaDb} instances
+     * @param quantificationMethod the quantification type
+     * @param includeContaminants  whether or not to include contaminants
+     * @param optionalHeaders      the list of optional headers
      * @throws IOException in case of an Input/Output related problem
      */
     public void parse(Path proteinGroupsFile, LinkedHashMap<FastaDb, Path> fastaDbMap, QuantificationMethod quantificationMethod, boolean includeContaminants, List<String> optionalHeaders) throws IOException {

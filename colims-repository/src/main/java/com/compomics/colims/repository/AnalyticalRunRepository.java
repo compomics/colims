@@ -27,7 +27,6 @@ public interface AnalyticalRunRepository extends GenericRepository<AnalyticalRun
      * @param analyticalRun the AnalyticalRun instance to save or update
      */
     void saveOrUpdate(final AnalyticalRun analyticalRun);
-
     
     /**
      * Fetch the binary files for the given analyticalRun.
