@@ -179,6 +179,7 @@ public class MaxQuantSearchSettingsParser {
      * Clear data stored in parser.
      */
     public void clear() {
+        searchAndValidationSettingsService.clear();
         runSettings.clear();
         mqParParamsWithRawFile.clear();
         analyticalRuns.clear();
@@ -292,8 +293,6 @@ public class MaxQuantSearchSettingsParser {
         //set entity relations between SearchAndValidationSettings and SearchParameters
         searchAndValidationSettings.setSearchParameters(searchParameters);
 
-        // TODO: 6/13/2016 change!
-        //searchParameters.getSearchAndValidationSettingses().add(searchAndValidationSettings);
         return searchAndValidationSettings;
     }
 

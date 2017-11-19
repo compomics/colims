@@ -113,6 +113,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
         //call clear methods on child mappers
         utilitiesPeptideMapper.clear();
         utilitiesProteinGroupMapper.clear();
+        utilitiesSearchSettingsMapper.clear();
     }
 
     @Override

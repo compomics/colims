@@ -74,4 +74,11 @@ public class UtilitiesSearchSettingsMapper {
         return searchAndValidationSettings;
     }
 
+    /**
+     * Clear resources.
+     */
+    public void clear() {
+        searchAndValidationSettingsService.clear();
+    }
+
 }

@@ -201,7 +201,8 @@ public class MaxQuantParser {
                 } else if (maxQuantSearchSettingsParser.getLabelMods().size() == 2) {
                     silacReagents.addAll(Arrays.asList("SILAC light", "SILAC heavy"));
                     maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), silacReagents);
-                }   break;
+                }
+                break;
             case ICAT:
                 List<String> icatReagents = new ArrayList<>();
                 icatReagents.addAll(Arrays.asList("ICAT light reagent", "ICAT heavy reagent"));
