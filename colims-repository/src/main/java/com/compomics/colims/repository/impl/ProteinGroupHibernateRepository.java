@@ -1,10 +1,14 @@
 package com.compomics.colims.repository.impl;
 
+import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.ProteinGroup;
 import com.compomics.colims.model.ProteinGroupHasProtein;
 import com.compomics.colims.repository.ProteinGroupRepository;
+import com.compomics.colims.repository.ProteinRepository;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 import com.compomics.colims.repository.hibernate.SortDirection;
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -17,15 +21,20 @@ import org.hibernate.type.LongType;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Niels Hulstaert
  */
 @Repository("proteinGroupRepository")
 public class ProteinGroupHibernateRepository extends GenericHibernateRepository<ProteinGroup, Long> implements ProteinGroupRepository {
-
+    
+    @Autowired
+    private ProteinRepository proteinRepository;
+    
     @Override
     public List<ProteinGroupDTO> getPagedProteinGroups(List<Long> analyticalRunIds, int start, int length, String orderBy, SortDirection sortDirection, String filter) {
+        
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");
 
         //joins
@@ -33,7 +42,9 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         criteria.createAlias("peptideHasProteinGroup.peptide", "peptide");
         criteria.createAlias("proteinGroup.peptideHasProteinGroups", "peptideHasProteinGroup");
         criteria.createAlias("proteinGroup.proteinGroupHasProteins", "proteinGroupHasProtein");
-        criteria.createAlias("proteinGroupHasProtein.protein", "protein");
+        if (!filter.isEmpty()){
+            criteria.createAlias("proteinGroupHasProtein.protein", "protein");
+        }
 
         //restrictions
         criteria.add(Restrictions.in("spectrum.analyticalRun.id", analyticalRunIds));
@@ -47,7 +58,11 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         projectionList.add(Projections.property("proteinGroup.proteinProbability").as("proteinProbability"));
         projectionList.add(Projections.property("proteinGroup.proteinPostErrorProbability").as("proteinPostErrorProbability"));
         projectionList.add(Projections.property("proteinGroupHasProtein.proteinAccession").as("mainAccession"));
-        projectionList.add(Projections.property("protein.sequence").as("mainSequence"));
+        projectionList.add(Projections.property("proteinGroupHasProtein.protein.id").as("proteinId"));
+        if (!filter.isEmpty()) {
+            projectionList.add(Projections.property("protein.sequence").as("mainSequence"));
+        }
+
         criteria.setProjection(projectionList);
 
         //paging
@@ -58,7 +73,7 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
         criteria.setResultTransformer(Transformers.aliasToBean(ProteinGroupDTO.class));
 
         //order
-        if (!orderBy.isEmpty()) {
+        if (!orderBy.isEmpty() && !orderBy.equals("mainSequence")) {
             if (sortDirection.equals(SortDirection.ASCENDING)) {
                 criteria.addOrder(Order.asc(orderBy));
             } else {
@@ -66,16 +81,24 @@ public class ProteinGroupHibernateRepository extends GenericHibernateRepository<
             }
         }
 
-        //filter
+        //filter by only protein accession
+
         if (!filter.isEmpty()) {
             //filter restrictions
             filter = "%" + filter + "%";
             criteria.add(Restrictions.or(Restrictions.ilike("protein.sequence", filter), Restrictions.ilike("proteinGroupHasProtein.proteinAccession", filter)));
         }
 
-        return criteria.list();
+        List<ProteinGroupDTO> proteinGroupDTOs =  criteria.list();
+        if(filter.isEmpty()){
+            proteinGroupDTOs.forEach(proteinGroupDTO ->{
+                proteinGroupDTO.setMainSequence(proteinRepository.findById(proteinGroupDTO.getProteinId()).getSequence());
+            });
+        }
+        
+        return proteinGroupDTOs;
     }
-
+    
     @Override
     public long getProteinGroupCount(List<Long> analyticalRunIds, String filter) {
         Criteria criteria = getCurrentSession().createCriteria(ProteinGroup.class, "proteinGroup");

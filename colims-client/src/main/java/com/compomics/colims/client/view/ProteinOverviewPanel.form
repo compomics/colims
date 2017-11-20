@@ -129,7 +129,9 @@
                                   <Component id="proteinGroupFilterLabel" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="proteinGroupFilterTextField" min="-2" pref="162" max="-2" attributes="0"/>
-                                  <EmptySpace pref="226" max="32767" attributes="0"/>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="filterButton" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace pref="179" max="32767" attributes="0"/>
                                   <Component id="proteinGroupPageLabel" min="-2" pref="95" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="firstProteinGroupPageButton" min="-2" max="-2" attributes="0"/>
@@ -149,7 +151,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="proteinGroupTableScrollPane" pref="214" max="32767" attributes="0"/>
+                          <Component id="proteinGroupTableScrollPane" pref="213" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -163,6 +165,7 @@
                                       <Component id="exportProteinGroupsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="proteinGroupFilterTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="proteinGroupFilterLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="filterButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Component id="proteinGroupPageLabel" min="-2" pref="27" max="-2" attributes="0"/>
@@ -198,6 +201,9 @@
                   </SubComponents>
                 </Container>
                 <Component class="javax.swing.JTextField" name="proteinGroupFilterTextField">
+                  <Properties>
+                    <Property name="toolTipText" type="java.lang.String" value="This process might take long time"/>
+                  </Properties>
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="proteinGroupFilterTextFieldActionPerformed"/>
                   </Events>
@@ -288,6 +294,14 @@
                     <Property name="text" type="java.lang.String" value="Filter on protein accession or sequence:"/>
                   </Properties>
                 </Component>
+                <Component class="javax.swing.JButton" name="filterButton">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Filter"/>
+                  </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="filterButtonActionPerformed"/>
+                  </Events>
+                </Component>
               </SubComponents>
             </Container>
             <Container class="javax.swing.JPanel" name="peptideTablePanel">
@@ -325,7 +339,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="peptideTableScrollPane" pref="164" max="32767" attributes="0"/>
+                          <Component id="peptideTableScrollPane" pref="163" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="exportPeptidesButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -436,7 +450,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="psmTableScrollPane" pref="164" max="32767" attributes="0"/>
+                          <Component id="psmTableScrollPane" pref="163" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="exportPsmsButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
