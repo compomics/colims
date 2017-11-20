@@ -27,9 +27,8 @@ public class SearchParameters extends DatabaseEntity {
     /**
      * The type of search performed e.g. PMF, Tag searches, MS-MS.
      */
-    @ManyToOne
-    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @JoinColumn(name = "l_search_type_cv_id", referencedColumnName = "id", nullable = true)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private SearchCvParam searchType;
     /**
      * The cleavage enzyme(s), separated by semicolon.

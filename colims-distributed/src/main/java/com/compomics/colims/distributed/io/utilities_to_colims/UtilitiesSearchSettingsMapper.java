@@ -1,6 +1,7 @@
 package com.compomics.colims.distributed.io.utilities_to_colims;
 
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
+import com.compomics.colims.core.service.SearchParametersService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.ScoreType;
@@ -24,11 +25,13 @@ public class UtilitiesSearchSettingsMapper {
      */
     private final UtilitiesSearchParametersMapper utilitiesSearchParametersMapper;
     private final SearchAndValidationSettingsService searchAndValidationSettingsService;
+    private final SearchParametersService searchParametersService;
 
     @Autowired
-    public UtilitiesSearchSettingsMapper(UtilitiesSearchParametersMapper utilitiesSearchParametersMapper, SearchAndValidationSettingsService searchAndValidationSettingsService) {
+    public UtilitiesSearchSettingsMapper(UtilitiesSearchParametersMapper utilitiesSearchParametersMapper, SearchAndValidationSettingsService searchAndValidationSettingsService, SearchParametersService searchParametersService) {
         this.utilitiesSearchParametersMapper = utilitiesSearchParametersMapper;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
+        this.searchParametersService =searchParametersService;
     }
 
     /**
@@ -54,8 +57,10 @@ public class UtilitiesSearchSettingsMapper {
         searchParameters.setScoreType(proteinScoreType);
         searchParameters.setProteinThreshold(proteinThreshold);
 
+
         //look for the given search parameter settings in the database
-        searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
+        SearchParameters foundSearchParameters = searchParametersService.findByExample(searchParameters);
+        searchParameters = searchAndValidationSettingsService.getSearchParameters(foundSearchParameters, searchParameters);
         //set entity associations
         searchAndValidationSettings.setSearchParameters(searchParameters);
 

@@ -29,7 +29,8 @@ public class SearchAndValidationSettings extends AuditableDatabaseEntity {
      * The search parameters.
      */
     @JoinColumn(name = "l_search_parameters_id", referencedColumnName = "id")
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
+    @org.hibernate.annotations.Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private SearchParameters searchParameters;
     /**
      * The SearchSettingsHasFastaDb instances from the join table between the search and validation settings and FASTA

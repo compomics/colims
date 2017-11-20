@@ -29,11 +29,18 @@ public interface SearchAndValidationSettingsService extends GenericService<Searc
      * Get the SearchParameters by example from the database. If nothing was found, store the given
      * SearchParameters and return them.
      *
-     * @param searchParameters the SearchParameters to look for
+     * @param foundSearchParameters the identical search parameters that were found in the database.
+     *                              This object is null if nothing was found.
+     * @param searchParameters      the search parameters to look for
      * @return the found SearchParameters or the the newly persisted ones
      */
-    SearchParameters getSearchParameters(SearchParameters searchParameters);
+    SearchParameters getSearchParameters(SearchParameters foundSearchParameters, SearchParameters searchParameters);
 
+    /**
+     * Fetch the associated of the {@link com.compomics.colims.model.FastaDb} relations.
+     *
+     * @param searchAndValidationSettings the search and validations settings
+     */
     void fetchSearchSettingsHasFastaDb(SearchAndValidationSettings searchAndValidationSettings);
 
     /**
@@ -44,4 +51,9 @@ public interface SearchAndValidationSettingsService extends GenericService<Searc
      * @return the found SearchAndValidationSettings
      */
     SearchAndValidationSettings getByAnalyticalRun(AnalyticalRun analyticalRun);
+
+    /**
+     * Clear the resources used by this resource.
+     */
+    void clear();
 }

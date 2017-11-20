@@ -10,6 +10,7 @@ import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import com.compomics.colims.repository.ProteinGroupRepository;
+import com.compomics.colims.repository.SearchParametersRepository;
 import com.compomics.colims.repository.SpectrumRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,14 @@ public class PersistServiceImpl implements PersistService {
     private final AnalyticalRunRepository analyticalRunRepository;
     private final ProteinGroupRepository proteinGroupRepository;
     private final SpectrumRepository spectrumRepository;
+    private final SearchParametersRepository searchParametersRepository;
 
     @Autowired
-    public PersistServiceImpl(AnalyticalRunRepository analyticalRunRepository, ProteinGroupRepository proteinGroupRepository, SpectrumRepository spectrumRepository) {
+    public PersistServiceImpl(AnalyticalRunRepository analyticalRunRepository, ProteinGroupRepository proteinGroupRepository, SpectrumRepository spectrumRepository, SearchParametersRepository searchParametersRepository) {
         this.analyticalRunRepository = analyticalRunRepository;
         this.proteinGroupRepository = proteinGroupRepository;
         this.spectrumRepository = spectrumRepository;
+        this.searchParametersRepository = searchParametersRepository;
     }
 
     @Override

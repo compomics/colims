@@ -1,10 +1,7 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
-import com.compomics.colims.model.AnalyticalRun;
-import com.compomics.colims.model.SearchAndValidationSettings;
-import com.compomics.colims.model.SearchEngine;
-import com.compomics.colims.model.SearchParameters;
+import com.compomics.colims.model.*;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
 import com.compomics.colims.repository.SearchEngineRepository;
@@ -14,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Niels Hulstaert
@@ -22,6 +22,11 @@ import java.util.List;
 @Service("searchAndValidationSettingsService")
 @Transactional
 public class SearchAndValidationSettingsServiceImpl implements SearchAndValidationSettingsService {
+
+    /**
+     * The map of cached search parameters (key: ID, value: the search parameters).
+     */
+    private final Map<Long, SearchParameters> cachedSearchParameters = new HashMap<>();
 
     private final SearchAndValidationSettingsRepository searchAndValidationSettingsRepository;
     private final SearchEngineRepository searchEngineRepository;
@@ -87,14 +92,23 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
     }
 
     @Override
-    public SearchParameters getSearchParameters(SearchParameters searchParameters) {
-        //find SearchParameters by example
-        List<SearchParameters> searchParameterses = searchParametersRepository.findByExample(searchParameters);
-        if (!searchParameterses.isEmpty()) {
-            return searchParameterses.get(0);
+    public SearchParameters getSearchParameters(SearchParameters foundSearchParameters, SearchParameters searchParameters) {
+//        //find SearchParameters by example
+//        List<SearchParameters> searchParameterses = searchParametersRepository.findByExample(searchParameters);
+////        List<SearchParameters> searchParameterses = new ArrayList<>();
+        if (foundSearchParameters != null) {
+            //check the cache the avoid duplicate objects that refer to the same database entity
+            if (cachedSearchParameters.containsKey(foundSearchParameters.getId())) {
+                return cachedSearchParameters.get(foundSearchParameters.getId());
+            } else {
+                cachedSearchParameters.put(foundSearchParameters.getId(), foundSearchParameters);
+                return foundSearchParameters;
+            }
         } else {
             //save or update the given instance
             searchParametersRepository.saveOrUpdate(searchParameters);
+            //add to cache
+            cachedSearchParameters.put(searchParameters.getId(), searchParameters);
             return searchParameters;
         }
     }
@@ -114,6 +128,11 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
     @Override
     public SearchAndValidationSettings getByAnalyticalRun(AnalyticalRun analyticalRun) {
         return searchAndValidationSettingsRepository.findbyAnalyticalRunId(analyticalRun.getId());
+    }
+
+    @Override
+    public void clear() {
+        cachedSearchParameters.clear();
     }
 
 }

@@ -4,6 +4,7 @@ import com.compomics.colims.core.ontology.ModificationOntologyTerm;
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.OntologyTerm;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
+import com.compomics.colims.core.service.SearchParametersService;
 import com.compomics.colims.core.service.TypedCvParamService;
 import com.compomics.colims.distributed.io.SearchModificationMapper;
 import com.compomics.colims.distributed.io.maxquant.FixedTabularFileIterator;
@@ -105,6 +106,7 @@ public class MaxQuantSearchSettingsParser {
      * Beans.
      */
     private final SearchAndValidationSettingsService searchAndValidationSettingsService;
+    private final SearchParametersService searchParametersService;
     private final TypedCvParamService typedCvParamService;
     private final SearchModificationMapper searchModificationMapper;
 
@@ -112,15 +114,16 @@ public class MaxQuantSearchSettingsParser {
      * Constructor.
      *
      * @param searchAndValidationSettingsService the search and validation
-     * settings service
-     * @param typedCvParamService the type CV param service
-     * @param searchModificationMapper the search modification mapper
-     * @param ontologyMapper the ontology mapper
+     *                                           settings service
+     * @param typedCvParamService                the type CV param service
+     * @param searchModificationMapper           the search modification mapper
+     * @param ontologyMapper                     the ontology mapper
      * @throws IOException in case of an Input/Output related problem while
-     * parsing the headers.
+     *                     parsing the headers.
      */
-    public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, TypedCvParamService typedCvParamService, SearchModificationMapper searchModificationMapper, OntologyMapper ontologyMapper) throws IOException {
+    public MaxQuantSearchSettingsParser(SearchAndValidationSettingsService searchAndValidationSettingsService, SearchParametersService searchParametersService, TypedCvParamService typedCvParamService, SearchModificationMapper searchModificationMapper, OntologyMapper ontologyMapper) throws IOException {
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
+        this.searchParametersService = searchParametersService;
         this.typedCvParamService = typedCvParamService;
         this.searchModificationMapper = searchModificationMapper;
         //get the modification mappings from the OntologyMapper
@@ -193,9 +196,9 @@ public class MaxQuantSearchSettingsParser {
      * Parse the search parameters for a MaxQuant experiment.
      *
      * @param combinedFolderDirectory the MaxQuant combined folder directory
-     * path
-     * @param mqParFile the mqpar.xml parameter file
-     * @param fastaDbs the FASTA databases used in the experiment
+     *                                path
+     * @param mqParFile               the mqpar.xml parameter file
+     * @param fastaDbs                the FASTA databases used in the experiment
      * @throws IOException in case of of an I/O related problem
      */
     public void parse(Path combinedFolderDirectory, Path mqParFile, EnumMap<FastaDbType, List<FastaDb>> fastaDbs) throws IOException, JDOMException {
@@ -285,7 +288,8 @@ public class MaxQuantSearchSettingsParser {
         searchParameters.getSearchParametersHasModifications().addAll(createModifications(searchParameters, rawFileName));
 
         //look for the given search parameter settings in the database
-        searchParameters = searchAndValidationSettingsService.getSearchParameters(searchParameters);
+        SearchParameters foundSearchParameters = searchParametersService.findByExample(searchParameters);
+        searchParameters = searchAndValidationSettingsService.getSearchParameters(foundSearchParameters, searchParameters);
 
         //set the search engine
         searchAndValidationSettings.setSearchEngine(searchAndValidationSettingsService.getSearchEngine(SearchEngineType.MAXQUANT, version));
@@ -316,7 +320,7 @@ public class MaxQuantSearchSettingsParser {
      * linked to that parameter.
      *
      * @param searchParameters the search parameters
-     * @param rawFileName the RAW file name
+     * @param rawFileName      the RAW file name
      * @return list of SearchParametersHasModification objects
      */
     private List<SearchParametersHasModification> createModifications(SearchParameters searchParameters, String rawFileName) {
@@ -382,8 +386,8 @@ public class MaxQuantSearchSettingsParser {
      *
      * @param mqParFile the mqpar.xml file path
      * @throws JDOMException in case of an problem occurring in one of the JDOM
-     * classes
-     * @throws IOException in case of an problem with the mqpar.xml file
+     *                       classes
+     * @throws IOException   in case of an problem with the mqpar.xml file
      */
     private void parseMqParFile(Path mqParFile) throws JDOMException, IOException {
         //create a map to hold raw files for each run (key: group index; value: raw file).
@@ -416,10 +420,10 @@ public class MaxQuantSearchSettingsParser {
         Element analyticalRunNamesElement = getChildByName(root, EXPERIMENTS);
         counter = 0;
         for (Element analyticalRunNameElement : analyticalRunNamesElement.getChildren()) {
-            if(rawFilePath.size() == 1){
+            if (rawFilePath.size() == 1) {
                 maxQuantExperiments.put(counter, "");
                 break;
-            }else{
+            } else {
                 if (!analyticalRunNameElement.getContent().isEmpty()) {
                     maxQuantExperiments.put(counter, analyticalRunNameElement.getContent().get(0).getValue());
                     counter++;
@@ -427,7 +431,7 @@ public class MaxQuantSearchSettingsParser {
                     throw new IllegalStateException("Experiment name in mqpar file is empty.");
                 }
             }
-            
+
         }
 
         // keep each raw file group number in a map (key: int; value: group number).
@@ -520,7 +524,7 @@ public class MaxQuantSearchSettingsParser {
      * Find child element by name, case insensitive. Returns null if nothing was
      * found.
      *
-     * @param parent the parent element
+     * @param parent    the parent element
      * @param childName the child name
      * @return the found child element
      */

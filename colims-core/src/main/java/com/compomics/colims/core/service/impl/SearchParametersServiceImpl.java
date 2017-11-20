@@ -65,4 +65,14 @@ public class SearchParametersServiceImpl implements SearchParametersService {
     public void remove(SearchParameters entity) {
         searchParametersRepository.remove(entity);
     }
+
+    @Override
+    public SearchParameters findByExample(SearchParameters searchParameters) {
+        List<SearchParameters> searchParameterses = searchParametersRepository.findByExample(searchParameters);
+        if (!searchParameterses.isEmpty()) {
+            return searchParameterses.get(0);
+        } else {
+            return null;
+        }
+    }
 }

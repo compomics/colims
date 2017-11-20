@@ -16,4 +16,12 @@ public interface SearchParametersService extends GenericService<SearchParameters
      */
     void fetchSearchModifications(SearchParameters searchParameters);
 
+    /**
+     * Find the given {@link SearchParameters} by example;
+     *
+     * @param searchParameters the given search parameters
+     * @return the found search parameters, null of nothing was found
+     */
+    SearchParameters findByExample(SearchParameters searchParameters);
+
 }
