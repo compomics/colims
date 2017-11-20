@@ -36,6 +36,18 @@
         "affected_AAs": "STY",
         "utilities_name": "Phosphorylation of S"
       },
+      "Biotin (K)": {
+        "ontology_prefix": "UNIMOD",
+        "obo_id": "UNIMOD:3",
+        "label": "Biotin",
+        "affected_AAs": "K"
+      },
+      "Biotin (N-term)": {
+        "ontology_prefix": "UNIMOD",
+        "obo_id": "UNIMOD:3",
+        "label": "Biotin",
+        "affected_AAs": "-"
+      },
       "Arg6": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:188",
