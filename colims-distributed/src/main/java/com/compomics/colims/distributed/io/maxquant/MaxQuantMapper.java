@@ -77,7 +77,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
             analyticalRuns = maxQuantParser.getAnalyticalRuns();
             //set storage location
-            analyticalRuns.forEach(run -> run.setStorageLocation(maxQuantImport.getFullCombinedDirectory().toString()));
+            analyticalRuns.forEach(run -> run.setStorageLocation(maxQuantImport.getCombinedDirectory().toString()));
         } catch (IOException | UnparseableException | JDOMException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your MaxQuant data, underlying exception: ", ex);

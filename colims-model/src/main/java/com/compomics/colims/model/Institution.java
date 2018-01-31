@@ -25,7 +25,7 @@ public class Institution extends AuditableDatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert an institution name.")
-    @Length(min = 4, max = 30, message = "Institution name must be between {min} and {max} characters.")
+    @Length(min = 2, max = 50, message = "Institution name must be between {min} and {max} characters.")
     @Column(name = "name", nullable = false)
     private String name;
     /**
@@ -33,7 +33,7 @@ public class Institution extends AuditableDatabaseEntity {
      */
     @NotBlank(message = "Please insert an institution abbreviation.")
     @Basic(optional = false)
-    @Length(min = 2, max = 10, message = "Institution abbreviation must be between {min} and {max} characters.")
+    @Length(min = 2, max = 15, message = "Institution abbreviation must be between {min} and {max} characters.")
     @Column(name = "abbreviation", nullable = false)
     private String abbreviation;
     /**
@@ -41,7 +41,7 @@ public class Institution extends AuditableDatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a street name.")
-    @Length(min = 3, max = 20, message = "Street name must be between {min} and {max} characters.")
+    @Length(min = 2, max = 50, message = "Street name must be between {min} and {max} characters.")
     @Column(name = "street", nullable = false)
     private String street;
     /**
@@ -56,7 +56,7 @@ public class Institution extends AuditableDatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a city")
-    @Length(min = 3, max = 30, message = "City name must be between {min} and {max} characters.")
+    @Length(min = 2, max = 50, message = "City name must be between {min} and {max} characters.")
     @Column(name = "city", nullable = false)
     private String city;
     /**
@@ -71,7 +71,7 @@ public class Institution extends AuditableDatabaseEntity {
      */
     @Basic(optional = false)
     @NotBlank(message = "Please insert a country")
-    @Length(min = 3, max = 30, message = "Institution country name must be between {min} and {max} characters")
+    @Length(min = 2, max = 50, message = "Institution country name must be between {min} and {max} characters")
     @Column(name = "country", nullable = false)
     private String country;
     /**
