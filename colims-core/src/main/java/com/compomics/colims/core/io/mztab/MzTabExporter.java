@@ -60,6 +60,7 @@ public class MzTabExporter {
     private static final String COMMA_SEPARATOR = ", ";
     private static final String VERTICAL_BAR = "|";
     private static final String UNLABELED_SAMPLE = "unlabeled sample";
+    
     /**
      * Metadata section.
      */
@@ -109,10 +110,13 @@ public class MzTabExporter {
     /**
      * mztab Json mapping.
      */
-    private static final int PROTEIN_SEARCH_ENGINE_SCORE_ALIGNMENT = 0;
-    private static final int PEPTIDE_SEARCH_ENGINE_SCORE_ALIGNMENT = 1;
-    private static final int PSM_SEARCH_ENGINE_SCORE_ALIGNMENT = 2;
-    private static final int SOFTWARE_ALIGNMENT = 4;
+    private static final String MASS_SPEC_VOCABULARIES  = "mass spectrometry vocabularies";
+    private static final String QUANTIFICATION_UNIT = "quantification unit";
+    private static final String PROTEIN_SEARCH_ENGINE_SCORE_JSON = "protein search engine score";
+    private static final String PEPTIDE_SEARCH_ENGINE_SCORE_JSON = "peptide search engine score";
+    private static final String PSM_SEARCH_ENGINE_SCORE_JSON = "PSM search engine score";
+    private static final String SOFTWARE_JSON ="software";
+    private static final String PSM_CONFIDENCE_TYPE ="PSM confidence type";
     /**
      * Common headers for all sections.
      */
@@ -159,7 +163,7 @@ public class MzTabExporter {
      * JSON object mapper.
      */
     private final ObjectMapper mapper = new ObjectMapper();
-    private List<MzTabParam> mzTabParams = new ArrayList<>();
+    private Map<String, MzTabParam> mzTabParams = new HashMap<>();
     /**
      * assayReagentRef (key : assay, value : quantification reagent)
      */
@@ -201,8 +205,8 @@ public class MzTabExporter {
 
     @Autowired
     public MzTabExporter(ProteinGroupService proteinGroupService, SearchAndValidationSettingsService searchAndValidationSettingsService,
-                         FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
-                         UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
+            FastaDbService fastaDbService, UniProtService uniProtService, ProteinGroupQuantService proteinGroupQuantService, PeptideService peptideService, FastaDbParser fastaDbParser,
+            UniprotProteinUtils uniprotProteinUtils, QuantificationMethodService quantificationMethodService) {
         this.proteinGroupService = proteinGroupService;
         this.searchAndValidationSettingsService = searchAndValidationSettingsService;
         this.fastaDbService = fastaDbService;
@@ -238,9 +242,9 @@ public class MzTabExporter {
         this.mzTabExport = mzTabExport;
 
         try (FileOutputStream fos = new FileOutputStream(new File(mzTabExport.getExportDirectory(), mzTabExport.getFileName() + MZTAB_EXTENSION));
-             OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-             BufferedWriter bw = new BufferedWriter(osw);
-             PrintWriter pw = new PrintWriter(bw)) {
+                OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+                BufferedWriter bw = new BufferedWriter(osw);
+                PrintWriter pw = new PrintWriter(bw)) {
 
             switch (mzTabExport.getMzTabType()) {
                 case QUANTIFICATION:
@@ -291,11 +295,11 @@ public class MzTabExporter {
         if (type == 1 || type == 2) {
             //protein quantification unit (relative quantification unit from mztab.json)
             pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(PROTEIN_QUANTIFICATION_UNIT).append(COLUMN_DELIMITER).append(
-                    createOntology(mzTabParams.get(3).getMzTabParamOptions().get(1).getOntology(), mzTabParams.get(3).getMzTabParamOptions().get(1).getAccession(), mzTabParams.get(3).getMzTabParamOptions().get(1).getName())));
+                    createOntology(mzTabParams.get(QUANTIFICATION_UNIT).getMzTabParamOptions().get(1).getOntology(), mzTabParams.get(QUANTIFICATION_UNIT).getMzTabParamOptions().get(1).getAccession(), mzTabParams.get(QUANTIFICATION_UNIT).getMzTabParamOptions().get(1).getName())));
 
             //peptide quantification unit (relative quantification unit from mztab.json)(same with protein quant unit)
             pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(PEPTIDE_QUANTIFICATION_UNIT).append(COLUMN_DELIMITER).append(
-                    createOntology(mzTabParams.get(3).getMzTabParamOptions().get(1).getOntology(), mzTabParams.get(3).getMzTabParamOptions().get(1).getAccession(), mzTabParams.get(3).getMzTabParamOptions().get(1).getName())));
+                    createOntology(mzTabParams.get(QUANTIFICATION_UNIT).getMzTabParamOptions().get(1).getOntology(), mzTabParams.get(QUANTIFICATION_UNIT).getMzTabParamOptions().get(1).getAccession(), mzTabParams.get(QUANTIFICATION_UNIT).getMzTabParamOptions().get(1).getName())));
 
         }
 
@@ -308,13 +312,13 @@ public class MzTabExporter {
         }
 
         // protein search engine score
-        pw.println(new StringBuilder().append(getEngineScore(PROTEIN_SEARCH_ENGINE_SCORE, PROTEIN_SEARCH_ENGINE_SCORE_ALIGNMENT)));
+        pw.println(new StringBuilder().append(getEngineScore(PROTEIN_SEARCH_ENGINE_SCORE, PROTEIN_SEARCH_ENGINE_SCORE_JSON)));
 
         // peptide search engine score
-        pw.println(new StringBuilder().append(getEngineScore(PEPTIDE_SEARCH_ENGINE_SCORE, PEPTIDE_SEARCH_ENGINE_SCORE_ALIGNMENT)));
+        pw.println(new StringBuilder().append(getEngineScore(PEPTIDE_SEARCH_ENGINE_SCORE, PEPTIDE_SEARCH_ENGINE_SCORE_JSON)));
 
         // psm search engine score
-        pw.println(new StringBuilder().append(getEngineScore(PSM_SEARCH_ENGINE_SCORE, PSM_SEARCH_ENGINE_SCORE_ALIGNMENT)));
+        pw.println(new StringBuilder().append(getEngineScore(PSM_SEARCH_ENGINE_SCORE, PSM_SEARCH_ENGINE_SCORE_JSON)));
 
         // fixed modifications
         int counter = 1;
@@ -363,8 +367,8 @@ public class MzTabExporter {
                 if (quantificationMethodHasReagents.isEmpty()) {
                     int assayNumber = mzTabExport.getAnalyticalRunsAssaysRefs().get(mzTabExport.getRuns().get(i))[counter];
                     pw.println(new StringBuilder().append(METADATA_PREFIX).append(COLUMN_DELIMITER).append(String.format(ASSAY_QUANTIFICATION_REAGENT, assayNumber)).append(COLUMN_DELIMITER).
-                            append(createOntology(mzTabParams.get(5).getMzTabParamOptions().get(0).getOntology(), mzTabParams.get(5).getMzTabParamOptions().get(0).getAccession(), mzTabParams.get(5).getMzTabParamOptions().get(0).getName())));
-                    assayReagentRef.put(String.format(ASSAY, assayNumber), mzTabParams.get(5).getMzTabParamOptions().get(0).getName());
+                            append(createOntology(mzTabParams.get(MASS_SPEC_VOCABULARIES).getMzTabParamOptions().get(0).getOntology(), mzTabParams.get(MASS_SPEC_VOCABULARIES).getMzTabParamOptions().get(0).getAccession(), mzTabParams.get(MASS_SPEC_VOCABULARIES).getMzTabParamOptions().get(0).getName())));
+                    assayReagentRef.put(String.format(ASSAY, assayNumber), mzTabParams.get(MASS_SPEC_VOCABULARIES).getMzTabParamOptions().get(0).getName());
                 }
                 // labeled
                 for (QuantificationMethodHasReagent quantificationMethodHasReagent : quantificationMethodHasReagents) {
@@ -697,11 +701,11 @@ public class MzTabExporter {
      * instances.
      *
      * @param jsonNode the root JsonNode
-     * @return the list of MzTabParam instances
+     * @return the map of MzTabParam instances
      * @throws IOException thrown in case of an I/O related problem
      */
-    private List<MzTabParam> parseJsonNode(JsonNode jsonNode) throws IOException {
-        List<MzTabParam> mzTabParamList = new ArrayList<>();
+    private Map<String, MzTabParam> parseJsonNode(JsonNode jsonNode) throws IOException {
+        Map<String, MzTabParam> mzTabParamMap = new HashMap<>();
 
         Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
         while (fields.hasNext()) {
@@ -717,10 +721,10 @@ public class MzTabExporter {
                 MzTabParamOption mzTabParamOption = mapper.treeToValue(optionElements.next(), MzTabParamOption.class);
                 mzTabParam.addOption(mzTabParamOption);
             }
-            mzTabParamList.add(mzTabParam);
+            mzTabParamMap.put(mzTabParam.getUserFriendlyName(), mzTabParam);
         }
 
-        return mzTabParamList;
+        return mzTabParamMap;
     }
 
     /**
@@ -730,7 +734,7 @@ public class MzTabExporter {
      * @param alignment
      * @return
      */
-    private String getEngineScore(String field, int alignment) {
+    private String getEngineScore(String field, String alignment) {
         // TO DO working properly for search engine score??
         StringBuilder metadata = new StringBuilder();
         int counter = 1;
@@ -755,9 +759,9 @@ public class MzTabExporter {
         StringBuilder searchEngine = new StringBuilder();
 
         if (software.equals("PeptideShaker")) {
-            searchEngine.append(createOntology(mzTabParams.get(SOFTWARE_ALIGNMENT).getMzTabParamOptions().get(1).getOntology(), mzTabParams.get(SOFTWARE_ALIGNMENT).getMzTabParamOptions().get(1).getAccession(), mzTabParams.get(SOFTWARE_ALIGNMENT).getMzTabParamOptions().get(1).getName())).append(VERTICAL_BAR);
+            searchEngine.append(createOntology(mzTabParams.get(SOFTWARE_JSON).getMzTabParamOptions().get(1).getOntology(), mzTabParams.get(SOFTWARE_JSON).getMzTabParamOptions().get(1).getAccession(), mzTabParams.get(SOFTWARE_JSON).getMzTabParamOptions().get(1).getName())).append(VERTICAL_BAR);
         } else if (software.equals("MaxQuant")) {
-            searchEngine.append(createOntology(mzTabParams.get(SOFTWARE_ALIGNMENT).getMzTabParamOptions().get(0).getOntology(), mzTabParams.get(SOFTWARE_ALIGNMENT).getMzTabParamOptions().get(0).getAccession(), mzTabParams.get(SOFTWARE_ALIGNMENT).getMzTabParamOptions().get(0).getName())).append(VERTICAL_BAR);
+            searchEngine.append(createOntology(mzTabParams.get(SOFTWARE_JSON).getMzTabParamOptions().get(0).getOntology(), mzTabParams.get(SOFTWARE_JSON).getMzTabParamOptions().get(0).getAccession(), mzTabParams.get(SOFTWARE_JSON).getMzTabParamOptions().get(0).getName())).append(VERTICAL_BAR);
         }
 
         searchEngine = searchEngine.deleteCharAt(searchEngine.length() - 1);
@@ -850,7 +854,8 @@ public class MzTabExporter {
             //get the label from the user interface.
             String label = mzTabExport.getQuantificationReagentLabelMatch().get(assayReagentRef.get(assay));
             ProteinGroupQuant proteinGroupQuant = proteinGroupQuantService.getProteinGroupQuantForRunAndProteinGroup(analyticalRun.getId(), proteinGroup.getId());
-            if (proteinGroupQuant != null) {
+
+            if (proteinGroupQuant.getLabels() != null) {
                 //deserialize the intensities json string
                 Map<String, Double> intensities = mapper.readValue(proteinGroupQuant.getLabels(), new TypeReference<Map<String, Double>>() {
                 });
@@ -859,6 +864,7 @@ public class MzTabExporter {
                     proteinAbundance = intensities.get(foundLabel.get());
                 }
             }
+
         }
 
         return proteinAbundance;
@@ -884,11 +890,10 @@ public class MzTabExporter {
 //        }
 //        return databaseVersion;
 //    }
-
     /**
      * Create the spectra reference for the given spectrum and run.
      *
-     * @param spectrum        the spectrum
+     * @param spectrum the spectrum
      * @param analyticalRunId the analytical run ID
      * @return the spectrum reference
      */
@@ -900,7 +905,7 @@ public class MzTabExporter {
      * Check if given peptide is unique.
      *
      * @param peptideMzTabDTOS the list of {@link PeptideMzTabDTO} instances
-     * @param peptide          the {@link Peptide} instance
+     * @param peptide the {@link Peptide} instance
      * @return true or false
      */
     private boolean isPeptideUnique(List<PeptideMzTabDTO> peptideMzTabDTOS, Peptide peptide) {
@@ -924,9 +929,9 @@ public class MzTabExporter {
             }
             modifications.append(peptideHasModification.getLocation());
             if (software.equals("PeptideShaker")) {
-                modifications.append(createOntology(mzTabParams.get(5).getMzTabParamOptions().get(1).getOntology(), mzTabParams.get(5).getMzTabParamOptions().get(1).getAccession(), mzTabParams.get(5).getMzTabParamOptions().get(1).getName()));
+                modifications.append(createOntology(mzTabParams.get(PSM_CONFIDENCE_TYPE).getMzTabParamOptions().get(1).getOntology(), mzTabParams.get(PSM_CONFIDENCE_TYPE).getMzTabParamOptions().get(1).getAccession(), mzTabParams.get(PSM_CONFIDENCE_TYPE).getMzTabParamOptions().get(1).getName()));
             } else if (software.equals("MaxQuant")) {
-                modifications.append(createOntology(mzTabParams.get(5).getMzTabParamOptions().get(0).getOntology(), mzTabParams.get(5).getMzTabParamOptions().get(0).getAccession(), mzTabParams.get(5).getMzTabParamOptions().get(0).getName()));
+                modifications.append(createOntology(mzTabParams.get(PSM_CONFIDENCE_TYPE).getMzTabParamOptions().get(0).getOntology(), mzTabParams.get(PSM_CONFIDENCE_TYPE).getMzTabParamOptions().get(0).getAccession(), mzTabParams.get(PSM_CONFIDENCE_TYPE).getMzTabParamOptions().get(0).getName()));
             }
             modifications = modifications.deleteCharAt(modifications.length() - 1);
             modifications.append(peptideHasModification.getProbabilityScore()).append(CLOSE_BRACKET).append("-");
