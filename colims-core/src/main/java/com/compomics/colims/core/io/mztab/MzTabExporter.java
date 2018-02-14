@@ -849,7 +849,9 @@ public class MzTabExporter {
         double proteinAbundance = 0.0;
         AnalyticalRun analyticalRun = assayAnalyticalRunRef.get(assay);
         if (assayReagentRef.get(assay).equals(UNLABELED_SAMPLE)) {
-            proteinAbundance = proteinGroupQuantService.getProteinGroupQuantForRunAndProteinGroup(analyticalRun.getId(), proteinGroup.getId()).getIntensity();
+            if(proteinGroupQuantService.getProteinGroupQuantForRunAndProteinGroup(analyticalRun.getId(), proteinGroup.getId()).getIntensity() != null){
+                proteinAbundance = proteinGroupQuantService.getProteinGroupQuantForRunAndProteinGroup(analyticalRun.getId(), proteinGroup.getId()).getIntensity();
+            }
         } else {
             //get the label from the user interface.
             String label = mzTabExport.getQuantificationReagentLabelMatch().get(assayReagentRef.get(assay));

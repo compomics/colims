@@ -65,7 +65,7 @@ public enum ProteinGroupsIntensityHeadersEnum {
      */
     public static List<String> getHeaderValues() {
         List<String> headerValues = new ArrayList<>();
-        Arrays.asList(values()).forEach(value -> headerValues.add(value.getHeader()));
+        Arrays.asList(values()).forEach(value -> headerValues.add(value.getHeader().toLowerCase()));
 
         return headerValues;
     }

@@ -62,10 +62,35 @@ public class ProteinGroupsIntensityHeadersParser {
         ProteinGroupsIntensityHeadersEnum.getHeaderValues().stream().
                 filter(header
                         -> (headersInProteinGroupFile.stream())
-                        .anyMatch(proteinGroupsHeader -> proteinGroupsHeader.startsWith(header)))
+                        .anyMatch(proteinGroupsHeader -> isHeaderExist(header,proteinGroupsHeader)))
                 .forEach((header) -> proteinGroupsIntensityHeaders.add(header));
     }
 
+    /**
+     * Check if ProteinGroupsIntensityHeaders exist in the current protein group file
+     * Splitting header and checking is important because "startsWith" can also bring 
+     * headers like Intensity LSD1_1 as an Intensity L.
+     * @param header ProteinGroupsIntensityHeaders
+     * @param proteinGroupsHeader headers from protein groups file
+     * @return boolean value
+     */
+    private boolean isHeaderExist(String header, String proteinGroupsHeader){
+        boolean exist = false;
+        String subHeader = proteinGroupsHeader.split(" ")[0];
+        if(subHeader.equals(header)){
+            exist = true;
+        }else{
+            for(int i=1; i<proteinGroupsHeader.split(" ").length; i++){
+                subHeader = subHeader + " " + proteinGroupsHeader.split(" ")[i];
+                if(subHeader.equals(header)){
+                    exist = true;
+                    break;
+                }
+            }
+        }
+        return exist;
+    }
+    
     /**
      * Parse the header line of proteinGroups.txt file.
      *
