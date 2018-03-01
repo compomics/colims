@@ -72,6 +72,31 @@ public class Peptide extends DatabaseEntity {
     @Column(name = "fragment_masses", nullable = true, length = 1500)
     private String fragmentMasses;
     /**
+     * The intensity value.
+     */
+    @Column(name = "intensity")
+    private Double intensity;
+    /**
+     * The LFQ intensity value.
+     */
+    @Column(name = "lfq_intensity")
+    private Double lfqIntensity;
+    /**
+     * The iBAQ value.
+     */
+    @Column(name = "ibaq")
+    private Double ibaq;
+    /**
+     * The MSMS Count value.
+     */
+    @Column(name = "msms_count")
+    private Integer msmsCount;
+    /**
+     * The labels as a json String.
+     */
+    @Column(name = "labels", length = 750)
+    private String labels;
+    /**
      * The spectrum identified by this peptide.
      */
     @JoinColumn(name = "l_spectrum_id", referencedColumnName = "id")
@@ -166,6 +191,46 @@ public class Peptide extends DatabaseEntity {
 
     public void setFragmentMasses(String fragmentMasses) {
         this.fragmentMasses = fragmentMasses;
+    }
+
+    public Double getIntensity() {
+        return intensity;
+    }
+
+    public void setIntensity(Double intensity) {
+        this.intensity = intensity;
+    }
+
+    public Double getLfqIntensity() {
+        return lfqIntensity;
+    }
+
+    public void setLfqIntensity(Double lfqIntensity) {
+        this.lfqIntensity = lfqIntensity;
+    }
+
+    public Double getIbaq() {
+        return ibaq;
+    }
+
+    public void setIbaq(Double ibaq) {
+        this.ibaq = ibaq;
+    }
+
+    public Integer getMsmsCount() {
+        return msmsCount;
+    }
+
+    public void setMsmsCount(Integer msmsCount) {
+        this.msmsCount = msmsCount;
+    }
+
+    public String getLabels() {
+        return labels;
+    }
+
+    public void setLabels(String labels) {
+        this.labels = labels;
     }
 
     public List<PeptideHasModification> getPeptideHasModifications() {

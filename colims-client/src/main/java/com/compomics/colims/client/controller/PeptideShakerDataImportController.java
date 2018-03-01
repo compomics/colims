@@ -4,6 +4,7 @@ import com.compomics.colims.client.controller.admin.FastaDbManagementController;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.model.filter.CpsFileFilter;
 import com.compomics.colims.client.view.PeptideShakerDataImportPanel;
+import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.io.PeptideShakerImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.core.util.PathUtils;
@@ -171,7 +172,12 @@ public class PeptideShakerDataImportController implements Controllable {
         peptideShakerDataImportPanel.getMgfFileChooser().setCurrentDirectory(experimentsDirectory.toFile());
     }
 
-    public void showEditView(PeptideShakerImport peptideShakerImport) {
+    /**
+     * Show the view with the given {@link PeptideShakerImport} values filled in.
+     *
+     * @param peptideShakerImport the {@link PeptideShakerImport} instance
+     */
+    public void populateView(PeptideShakerImport peptideShakerImport) {
         showView();
         if (peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY) != null) {
             fastaDb = fastaDbService.findById(peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));

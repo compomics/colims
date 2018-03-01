@@ -222,7 +222,12 @@ public class MaxQuantDataImportController implements Controllable {
         maxQuantDataImportPanel.getCombinedFolderChooser().setCurrentDirectory(experimentsDirectory.toFile());
     }
 
-    public void showEditView(MaxQuantImport maxQuantImport) {
+    /**
+     * Show the view with the given {@link MaxQuantImport} values filled in.
+     *
+     * @param maxQuantImport the {@link MaxQuantImport} instance
+     */
+    public void populateView(MaxQuantImport maxQuantImport) {
         showView();
         maxQuantDataImportPanel.getMqparFileTextField().setText(maxQuantImport.getMqParFile().toString());
         maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(maxQuantImport.getCombinedDirectory().toString());

@@ -32,34 +32,32 @@
     <!--<property name="testOnCreate" value="true"/>-->
     <!--</bean>-->
 
-    <!--<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">-->
-    <!--<property name="poolName" value="springHikariCP"/>-->
-    <!--<property name="dataSourceClassName" value="org.mariadb.jdbc.MariaDbDataSource"/>-->
-    <!--<property name="maximumPoolSize" value="2"/>-->
-    <!--<property name="idleTimeout" value="59000"/>-->
-    <!--<property name="maxLifetime" value="60000"/>-->
-
-    <!--<property name="dataSourceProperties">-->
-    <!--<props>-->
-    <!--<prop key="url">${db.url}</prop>-->
-    <!--<prop key="user">${db.username}</prop>-->
-    <!--<prop key="password">${db.password}</prop>-->
-    <!--</props>-->
-    <!--</property>-->
-    <!--</bean>-->
-
-    <!--<bean id="colimsDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">-->
-    <!--<constructor-arg ref="hikariConfig"/>-->
-    <!--</bean>-->
-
-    <bean id="colimsDataSource"
-          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="${db.driver}"/>
-        <property name="url" value="${db.url}"/>
-        <property name="username" value="${db.username}"/>
-        <property name="password" value="${db.password}"/>
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="poolName" value="springHikariCP"/>
+        <property name="dataSourceClassName" value="org.mariadb.jdbc.MariaDbDataSource"/>
+        <property name="maximumPoolSize" value="3"/>
+        <!--<property name="idleTimeout" value="600000"/>-->
+        <!--<property name="maxLifetime" value="1800000"/>-->
+        <property name="dataSourceProperties">
+            <props>
+                <prop key="url">${db.url}</prop>
+                <prop key="user">${db.username}</prop>
+                <prop key="password">${db.password}</prop>
+            </props>
+        </property>
     </bean>
 
+    <bean id="colimsDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig"/>
+    </bean>
+
+    <!--<bean id="colimsDataSource"-->
+    <!--class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+    <!--<property name="driverClassName" value="${db.driver}"/>-->
+    <!--<property name="url" value="${db.url}"/>-->
+    <!--<property name="username" value="${db.username}"/>-->
+    <!--<property name="password" value="${db.password}"/>-->
+    <!--</bean>-->
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="colimsPersistenceUnit"/>

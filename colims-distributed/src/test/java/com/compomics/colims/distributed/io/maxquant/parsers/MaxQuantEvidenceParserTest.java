@@ -1,8 +1,9 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.model.Modification;
-import com.compomics.colims.model.Peptide;
-import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
+import com.compomics.colims.model.*;
+import com.compomics.colims.model.enums.FastaDbType;
+import com.compomics.colims.model.enums.QuantificationMethod;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,9 +14,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static com.compomics.colims.model.enums.QuantificationMethod.SILAC;
 
 /**
  * Created by Iain on 19/05/2015.
@@ -25,9 +26,13 @@ import java.util.Set;
 public class MaxQuantEvidenceParserTest {
 
     private final Path evidenceFile;
+    private final LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
+    private final EnumMap<FastaDbType, List<FastaDb>> fastaDbEnumMap = new EnumMap<>(FastaDbType.class);
 
     @Autowired
     private MaxQuantEvidenceParser maxQuantEvidenceParser;
+    @Autowired
+    private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
 
     public MaxQuantEvidenceParserTest() throws IOException {
         evidenceFile = new ClassPathResource("data/maxquant/evidence_unit_test_modifications.txt").getFile().toPath();
@@ -41,7 +46,7 @@ public class MaxQuantEvidenceParserTest {
         omittedProteinIds.add(0);
         omittedProteinIds.add(1);
 
-        maxQuantEvidenceParser.parse(evidenceFile, omittedProteinIds);
+        maxQuantEvidenceParser.parse(evidenceFile, omittedProteinIds, QuantificationMethod.SILAC, new ArrayList<>());
 
         //check the number of MBR identifications
         Assert.assertEquals(9, maxQuantEvidenceParser.getRunToMbrPeptides().size());
@@ -116,6 +121,38 @@ public class MaxQuantEvidenceParserTest {
         modification = peptideHasModification.getModification();
         Assert.assertNotNull(modification);
         Assert.assertEquals("UNIMOD:21", modification.getAccession());
+    }
+
+    /**
+     * SILAC quantification parsing test.
+     *
+     * @throws java.lang.Exception in case of an exception
+     */
+    @Test
+    public void testSilac() throws Exception {
+        Path evidenceFile = new ClassPathResource("data/maxquant/SILAC/combined/txt/evidence.txt").getFile().toPath();
+        Path combinedDirectory = new ClassPathResource("data/maxquant/SILAC/combined").getFile().toPath();
+        Path mqparFile = new ClassPathResource("data/maxquant/SILAC/mqpar.xml").getFile().toPath();
+
+        fastaDbs.put(MaxQuantTestSuite.spHuman_01_2017_FastaDb, MaxQuantTestSuite.spHuman_01_2017_FastaDbPath);
+        fastaDbs.put(MaxQuantTestSuite.lloFastaDb, MaxQuantTestSuite.lloFastaDbPath);
+        fastaDbs.put(MaxQuantTestSuite.contaminantsFastaDb, MaxQuantTestSuite.contaminantsFastaDbPath);
+
+        fastaDbEnumMap.put(FastaDbType.PRIMARY, Arrays.asList(MaxQuantTestSuite.oryzaFastaDb));
+        fastaDbEnumMap.put(FastaDbType.ADDITIONAL, Arrays.asList(MaxQuantTestSuite.lloFastaDb));
+        fastaDbEnumMap.put(FastaDbType.CONTAMINANTS, Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb));
+
+        maxQuantSearchSettingsParser.clear();
+        maxQuantSearchSettingsParser.parse(combinedDirectory, mqparFile, fastaDbEnumMap);
+
+        maxQuantEvidenceParser.clear();
+        maxQuantEvidenceParser.parse(evidenceFile, new HashSet<>(), SILAC, new ArrayList<>());
+
+        Peptide peptide = maxQuantEvidenceParser.getPeptides().get(26).get(0);
+
+        Assert.assertEquals("{\"none\":1689100.0,\"Arg6;Lys4\":1056500.0}", peptide.getLabels());
+        Assert.assertEquals(2745500.0, peptide.getIntensity(), 0.001);
+        Assert.assertEquals(Integer.valueOf(1), peptide.getMsmsCount());
     }
 
 }

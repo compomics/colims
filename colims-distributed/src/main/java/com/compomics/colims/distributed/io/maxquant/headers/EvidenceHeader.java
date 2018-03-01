@@ -18,5 +18,13 @@ public enum EvidenceHeader {
     MODIFIED_SEQUENCE,
     RAW_FILE,
     ID,
-    MASS_ERROR
+    MASS_ERROR,
+    IBAQ,
+    LFQ_INTENSITY,
+    INTENSITY,
+    MSMS_COUNT,
+    REPORTER_INTENSITY_CORRECTED,
+    INTENSITY_L,
+    INTENSITY_M,
+    INTENSITY_H
 }

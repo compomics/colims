@@ -143,7 +143,7 @@ public class MaxQuantParser {
         if (!Files.exists(evidenceFile)) {
             throw new FileNotFoundException("The evidence.txt " + evidenceFile.toString() + " was not found.");
         }
-        maxQuantEvidenceParser.parse(evidenceFile, maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
+        maxQuantEvidenceParser.parse(evidenceFile, maxQuantProteinGroupsParser.getOmittedProteinGroupIds(), maxQuantImport.getQuantificationMethod(), maxQuantImport.getSelectedProteinGroupsHeaders());
 
         //add the identified spectra for each run and set the entity relations
         analyticalRuns.forEach((runName, run) -> {

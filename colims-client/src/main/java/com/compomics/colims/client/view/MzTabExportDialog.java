@@ -23,7 +23,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     /**
      * The export directory chooser.
      */
-    private final JFileChooser exportDirectoryChooser = new JFileChooser();
+    private final JFileChooser mzTabExportChooser = new JFileChooser();
 
     /**
      * Creates new form MzTabExportDialog.
@@ -119,20 +119,8 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         return studyVariableTree;
     }
 
-    public JButton getExportDirectoryBrowseButton() {
-        return exportDirectoryBrowseButton;
-    }
-
-    public JTextField getExportDirectoryTextField() {
-        return exportDirectoryTextField;
-    }
-
-    public JTextField getFileNameTextField() {
-        return fileNameTextField;
-    }
-
-    public JFileChooser getExportDirectoryChooser() {
-        return exportDirectoryChooser;
+    public JFileChooser getMzTabExportChooser() {
+        return mzTabExportChooser;
     }
 
     public JTree getAssayWithRunsTree() {
@@ -154,6 +142,14 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     public JButton getRemoveReagentAndLabelButton() {
         return removeReagentAndLabelButton;
     }
+
+    public JButton getBrowseMzTabButton() {
+        return browseMzTabButton;
+    }
+
+    public JTextField getMzTabTextField() {
+        return mzTabTextField;
+    }        
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -211,11 +207,9 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         addAssaysToSVButton = new javax.swing.JButton();
         removeAssaysToSVButton = new javax.swing.JButton();
         lastPanel = new javax.swing.JPanel();
-        fileNameLabel = new javax.swing.JLabel();
-        fileNameTextField = new javax.swing.JTextField();
-        exportDirectoryLabel = new javax.swing.JLabel();
-        exportDirectoryBrowseButton = new javax.swing.JButton();
-        exportDirectoryTextField = new javax.swing.JTextField();
+        mzTabLabel = new javax.swing.JLabel();
+        mzTabTextField = new javax.swing.JTextField();
+        browseMzTabButton = new javax.swing.JButton();
         bottomPanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
         proceedButton = new javax.swing.JButton();
@@ -627,14 +621,12 @@ public class MzTabExportDialog extends javax.swing.JDialog {
         lastPanel.setName("lastPanel"); // NOI18N
         lastPanel.setOpaque(false);
 
-        fileNameLabel.setText("File name*:");
+        mzTabLabel.setText("MzTab file*:");
 
-        exportDirectoryLabel.setText("Export directory*:");
-
-        exportDirectoryBrowseButton.setText("browse");
-        exportDirectoryBrowseButton.setMaximumSize(new java.awt.Dimension(80, 25));
-        exportDirectoryBrowseButton.setMinimumSize(new java.awt.Dimension(80, 25));
-        exportDirectoryBrowseButton.setPreferredSize(new java.awt.Dimension(80, 25));
+        browseMzTabButton.setText("browse");
+        browseMzTabButton.setMaximumSize(new java.awt.Dimension(80, 25));
+        browseMzTabButton.setMinimumSize(new java.awt.Dimension(80, 25));
+        browseMzTabButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
         javax.swing.GroupLayout lastPanelLayout = new javax.swing.GroupLayout(lastPanel);
         lastPanel.setLayout(lastPanelLayout);
@@ -642,30 +634,22 @@ public class MzTabExportDialog extends javax.swing.JDialog {
             lastPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lastPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(lastPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fileNameLabel)
-                    .addComponent(fileNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(exportDirectoryLabel)
-                    .addGroup(lastPanelLayout.createSequentialGroup()
-                        .addComponent(exportDirectoryBrowseButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(exportDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(mzTabLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(mzTabTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(browseMzTabButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(613, Short.MAX_VALUE))
         );
         lastPanelLayout.setVerticalGroup(
             lastPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(lastPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(fileNameLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fileNameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(exportDirectoryLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(lastPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(exportDirectoryBrowseButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(exportDirectoryTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(191, Short.MAX_VALUE))
+                    .addComponent(mzTabLabel)
+                    .addComponent(mzTabTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(browseMzTabButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(281, Short.MAX_VALUE))
         );
 
         topPanel.add(lastPanel, "lastPanel");
@@ -775,6 +759,7 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     private javax.swing.JPanel assaysToSVPanel;
     private javax.swing.JButton backButton;
     private javax.swing.JPanel bottomPanel;
+    private javax.swing.JButton browseMzTabButton;
     private javax.swing.JButton closeButton;
     private javax.swing.JRadioButton completeRadioButton;
     private javax.swing.JButton deleteStudyVariableButton;
@@ -783,11 +768,6 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane descriptionScrollPane;
     private javax.swing.JTextArea descriptionTextArea;
     private javax.swing.JLabel explanationLabel;
-    private javax.swing.JButton exportDirectoryBrowseButton;
-    private javax.swing.JLabel exportDirectoryLabel;
-    private javax.swing.JTextField exportDirectoryTextField;
-    private javax.swing.JLabel fileNameLabel;
-    private javax.swing.JTextField fileNameTextField;
     private javax.swing.JButton finishButton;
     private javax.swing.JPanel firstPanel;
     private javax.swing.JRadioButton identificationRadioButton;
@@ -798,6 +778,8 @@ public class MzTabExportDialog extends javax.swing.JDialog {
     private javax.swing.ButtonGroup modeButtonGroup;
     private javax.swing.JPanel modePanel;
     private javax.swing.JLabel modeSelectionLabel;
+    private javax.swing.JLabel mzTabLabel;
+    private javax.swing.JTextField mzTabTextField;
     private javax.swing.JPanel numberOfAssaysPanel;
     private javax.swing.JPanel parentPanel;
     private javax.swing.JButton proceedButton;
