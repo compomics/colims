@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -54,10 +52,10 @@ public class DbTaskProducerIT {
         persistMetadata.setStartDate(new Date());
         persistDbTask.setPersistMetadata(persistMetadata);
 
-        List<Path> mgfFiles = Arrays.asList(Paths.get("maxquant_test1"), Paths.get("test2"));
+        List<String> mgfFiles = Arrays.asList("maxquant_test1", "test2");
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(1L)));
-        DataImport dataImport = new PeptideShakerImport(Paths.get("testFile"), fastaDbIds, mgfFiles);
+        DataImport dataImport = new PeptideShakerImport("testFile", fastaDbIds, mgfFiles);
         persistDbTask.setDataImport(dataImport);
 
         List<PersistDbTask> messages = queueManager.monitorQueue(dbTaskQueueName, PersistDbTask.class);

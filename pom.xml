@@ -404,7 +404,7 @@
             <dependency>
                 <groupId>com.compomics</groupId>
                 <artifactId>utilities</artifactId>
-                <version>4.11.19</version>                
+                <version>4.11.19</version>
             </dependency>
 
             <dependency>

@@ -193,8 +193,8 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
 
             //iterate over the protein matches
             ProteinMatchesIterator proteinMatchesIterator = identification.getProteinMatchesIterator(parameters, true, parameters, true, parameters, null);
-            while (proteinMatchesIterator.hasNext()) {
-                ProteinMatch proteinMatch = proteinMatchesIterator.next();
+            ProteinMatch proteinMatch;
+            while ((proteinMatch = proteinMatchesIterator.next()) != null) {
                 String proteinMatchKey = proteinMatch.getKey();
 
                 PSParameter proteinGroupScore = new PSParameter();
@@ -212,8 +212,8 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
 
                     //iterate over the peptide matches
                     PeptideMatchesIterator peptideMatchesIterator = identification.getPeptideMatchesIterator(proteinMatch.getPeptideMatchesKeys(), parameters, false, parameters, null);
-                    while (peptideMatchesIterator.hasNext()) {
-                        PeptideMatch peptideMatch = peptideMatchesIterator.next();
+                    PeptideMatch peptideMatch;
+                    while ((peptideMatch = peptideMatchesIterator.next()) != null) {
                         String peptideMatchKey = peptideMatch.getKey();
 
                         PSParameter peptideScore = new PSParameter();
@@ -221,8 +221,8 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
 
                         //iterate over the spectrum matches
                         PsmIterator psmIterator = identification.getPsmIterator(peptideMatch.getSpectrumMatchesKeys(), parameters, true, null);
-                        while (psmIterator.hasNext()) {
-                            SpectrumMatch spectrumMatch = psmIterator.next();
+                        SpectrumMatch spectrumMatch;
+                        while ((spectrumMatch = psmIterator.next()) != null) {
                             String spectrumMatchKey = spectrumMatch.getKey();
 
                             PSParameter spectrumScore = new PSParameter();

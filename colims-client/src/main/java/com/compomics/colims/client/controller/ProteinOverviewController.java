@@ -40,18 +40,25 @@ import com.google.common.eventbus.Subscribe;
 import no.uib.jsparklines.renderers.JSparklinesBarChartTableCellRenderer;
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
 import no.uib.jsparklines.renderers.JSparklinesMultiIntervalChartTableCellRenderer;
-import org.slf4j.Logger;
+import org.apache.commons.math.MathException;
 import org.jfree.chart.plot.PlotOrientation;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
 import javax.swing.table.TableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -60,9 +67,6 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 
 /**
  * The protein(group) overview controller.
@@ -239,10 +243,10 @@ public class ProteinOverviewController implements Controllable {
                     } else if (node.getUserObject() instanceof Sample) {
                         Sample selectedSample = (Sample) node.getUserObject();
                         selectedAnalyticalRuns.removeAll(selectedSample.getAnalyticalRuns());
-                    }   
-                } 
+                    }
+                }
             }
-            
+
             for (int i = 0; i < treePaths.length; i++) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePaths[i].getLastPathComponent();
                 //check whether the path was added or removed
@@ -456,8 +460,8 @@ public class ProteinOverviewController implements Controllable {
             proteinOverviewPanel.getFirstProteinGroupPageButton().setEnabled(true);
             proteinOverviewPanel.getLastProteinGroupPageButton().setEnabled(false);
         });
-        
-        proteinOverviewPanel.getFilterButton().addActionListener((ActionEvent e)-> {
+
+        proteinOverviewPanel.getFilterButton().addActionListener((ActionEvent e) -> {
             String filterText = proteinOverviewPanel.getProteinGroupFilterTextField().getText();
 
             if (filterText.matches("^[a-zA-Z0-9]*$")) {
@@ -626,7 +630,7 @@ public class ProteinOverviewController implements Controllable {
         if (!selectedAnalyticalRuns.isEmpty()) {
             ProgressStartEvent progressStartEvent = new ProgressStartEvent(mainController.getMainFrame(), true, 1, "Protein view progress. ");
             eventBus.post(progressStartEvent);
-            
+
             GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(getSelectedAnalyticalRunIds()), false);
             proteinOverviewPanel.getProteinGroupPageLabel().setText(proteinGroupTableModel.getPageIndicator());
 
@@ -650,7 +654,7 @@ public class ProteinOverviewController implements Controllable {
             } else {
                 eventBus.post(new MessageEvent("Spectrum dialog", "The selected PSM is a matching-between-runs identification.", JOptionPane.WARNING_MESSAGE));
             }
-        } catch (MappingException | InterruptedException | SQLException | IOException | ClassNotFoundException e) {
+        } catch (MappingException | InterruptedException | SQLException | IOException | ClassNotFoundException | MathException e) {
             LOGGER.error(e.getMessage(), e);
             eventBus.post(new MessageEvent("Spectrum dialog problem", "The spectrum cannot be shown", JOptionPane.INFORMATION_MESSAGE));
         }
@@ -659,9 +663,9 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename File to be saved as [filename].tsv
+     * @param filename   File to be saved as [filename].tsv
      * @param tableModel A table model to retrieve data from
-     * @param <T> Class extending TableModel
+     * @param <T>        Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel) {
         exportTable(filename, tableModel, new HashMap<>());
@@ -670,10 +674,10 @@ public class ProteinOverviewController implements Controllable {
     /**
      * Save the contents of a data table to a tab delimited file.
      *
-     * @param filename File to be saved as [filename].tsv
-     * @param tableModel A table model to retrieve data from
+     * @param filename      File to be saved as [filename].tsv
+     * @param tableModel    A table model to retrieve data from
      * @param columnFilters Patterns to match and filter values
-     * @param <T> Class extending TableModel
+     * @param <T>           Class extending TableModel
      */
     private <T extends TableModel> void exportTable(File filename, T tableModel, Map<Integer, Pattern> columnFilters) {
         try (FileWriter fileWriter = new FileWriter(filename + ".tsv")) {

@@ -20,7 +20,6 @@ import com.compomics.colims.model.SearchModification;
 import com.compomics.colims.model.enums.*;
 import com.compomics.colims.repository.hibernate.PeptideDTO;
 import com.compomics.util.experiment.biology.AminoAcidPattern;
-import com.compomics.util.experiment.biology.NeutralLoss;
 import com.compomics.util.experiment.biology.PTM;
 import com.compomics.util.experiment.biology.PTMFactory;
 import com.compomics.util.experiment.biology.ions.*;
@@ -35,6 +34,8 @@ import com.compomics.util.pride.CvTerm;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import org.apache.commons.math.util.FastMath;
+import org.apache.commons.math.util.MathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +60,6 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.apache.commons.math.util.FastMath;
-import org.apache.commons.math.util.MathUtils;
 
 /**
  * MzIdentML exporter class, populates models from the jmzidml library then uses
@@ -1484,6 +1482,9 @@ public class MzIdentMlExporter {
                     } else if (ionMatch.ion instanceof ImmoniumIon) {
                         //get the indexes of the corresponding residues
                         char residue = ImmoniumIon.getResidue(ionMatch.ion.getSubType());
+                        //keep this commented for an PeptideShaker
+                        //ImmoniumIon immoniumIon = ImmoniumIon.getImmoniumIon(ionMatch.ion.getSubType());
+                        //char residue = immoniumIon.aa;
                         char[] peptideAsArray = peptideSequence.toCharArray();
                         for (int i = 0; i < peptideAsArray.length; i++) {
                             if (peptideAsArray[i] == residue) {

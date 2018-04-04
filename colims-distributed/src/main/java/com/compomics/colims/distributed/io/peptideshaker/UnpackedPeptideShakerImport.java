@@ -86,18 +86,18 @@ public class UnpackedPeptideShakerImport extends DataImport {
      * @param mgfResourceName the mgf resource name
      * @return the found mgf resource
      */
-    public Path getMgfFileByName(final String mgfResourceName) {
-        Path foundMgfFile = null;
-        if (mgfFiles != null) {
-            for (Path mgfFile : mgfFiles) {
-                if (mgfFile.getFileName().toString().toLowerCase().equals(mgfResourceName.toLowerCase())) {
-                    foundMgfFile = mgfFile;
-                    break;
-                }
-            }
-        }
-
-        return foundMgfFile;
-    }
+//    public Path getMgfFileByName(final String mgfResourceName) {
+//        Path foundMgfFile = null;
+//        if (mgfFiles != null) {
+//            for (Path mgfFile : mgfFiles) {
+//                if (mgfFile.getFileName().toString().toLowerCase().equals(mgfResourceName.toLowerCase())) {
+//                    foundMgfFile = mgfFile;
+//                    break;
+//                }
+//            }
+//        }
+//
+//        return foundMgfFile;
+//    }
 
 }

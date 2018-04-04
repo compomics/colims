@@ -25,6 +25,7 @@ import com.compomics.util.preferences.UtilitiesUserPreferences;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import no.uib.jsparklines.renderers.JSparklinesIntervalChartTableCellRenderer;
+import org.apache.commons.math.MathException;
 import org.slf4j.Logger;
 import org.jfree.chart.plot.PlotOrientation;
 import org.slf4j.LoggerFactory;
@@ -465,7 +466,7 @@ public class ProjectOverviewController implements Controllable {
 
                 GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), spectrumDialog);
                 spectrumDialog.setVisible(true);
-            } catch (MappingException | InterruptedException | SQLException | ClassNotFoundException | IOException e) {
+            } catch (MappingException | InterruptedException | SQLException | ClassNotFoundException | IOException | MathException e) {
                 LOGGER.error(e.getMessage(), e);
             }
 

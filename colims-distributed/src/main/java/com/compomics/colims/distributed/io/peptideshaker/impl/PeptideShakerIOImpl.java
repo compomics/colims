@@ -6,6 +6,7 @@ import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerIm
 import com.google.common.io.Files;
 import eu.isas.peptideshaker.utils.CpsParent;
 import org.apache.commons.compress.archivers.ArchiveException;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,9 +60,10 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
 
     @Override
     public UnpackedPeptideShakerImport unpackPeptideShakerImport(PeptideShakerImport peptideShakerDataImport, Path experimentsDirectory) throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
-        Path relativePeptideShakerCpsxArchivePath = peptideShakerDataImport.getPeptideShakerCpsxArchive();
-        //make the relative path absolute
-        Path absolutePeptideShakerCpsxArchivePath = experimentsDirectory.resolve(relativePeptideShakerCpsxArchivePath);
+        //make the archive path absolute and check it they exist
+        String relativePeptideShakerCpsxArchiveString = FilenameUtils.separatorsToSystem(peptideShakerDataImport.getPeptideShakerCpsxArchive());
+        Path relativePeptideShakerCpsxArchive = Paths.get(relativePeptideShakerCpsxArchiveString);
+        Path absolutePeptideShakerCpsxArchivePath = experimentsDirectory.resolve(relativePeptideShakerCpsxArchive);
         //check if the path exists
         if (!java.nio.file.Files.exists(absolutePeptideShakerCpsxArchivePath)) {
             throw new IllegalArgumentException("The PeptideShaker file " + absolutePeptideShakerCpsxArchivePath.toString() + " doesn't exist.");
