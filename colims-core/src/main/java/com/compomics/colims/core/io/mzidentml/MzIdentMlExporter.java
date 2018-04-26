@@ -1366,8 +1366,8 @@ public class MzIdentMlExporter {
         spectrumIdentificationItem.setPassThreshold(true);
         spectrumIdentificationItem.setRank(1);
 
-        //add the scores and get the fragement ion annotations
-        ArrayList<IonMatch> annotations = new ArrayList<>();
+        //add the scores and get the fragment ion annotations
+        ArrayList<IonMatch> annotations;
         switch (searchEngine.getSearchEngineType()) {
             case PEPTIDESHAKER:
                 if (peptide.getPsmProbability() != null) {
@@ -1482,7 +1482,7 @@ public class MzIdentMlExporter {
                     } else if (ionMatch.ion instanceof ImmoniumIon) {
                         //get the indexes of the corresponding residues
                         char residue = ImmoniumIon.getResidue(ionMatch.ion.getSubType());
-                        //keep this commented for an PeptideShaker
+                        //keep this commented for an PeptideShaker version upgrade in the future
                         //ImmoniumIon immoniumIon = ImmoniumIon.getImmoniumIon(ionMatch.ion.getSubType());
                         //char residue = immoniumIon.aa;
                         char[] peptideAsArray = peptideSequence.toCharArray();
