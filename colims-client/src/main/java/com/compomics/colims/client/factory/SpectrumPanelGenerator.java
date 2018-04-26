@@ -27,7 +27,7 @@ import com.compomics.util.gui.spectrum.SequenceFragmentationPanel;
 import com.compomics.util.gui.spectrum.SpectrumPanel;
 import com.compomics.util.preferences.SequenceMatchingPreferences;
 import com.compomics.util.preferences.UtilitiesUserPreferences;
-import org.slf4j.Logger;
+import org.apache.commons.math.MathException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -113,8 +113,9 @@ public class SpectrumPanelGenerator {
      * @throws InterruptedException
      * @throws SQLException
      * @throws IOException
+     * @throws MathException
      */
-    public SpectrumDialog generateSpectrumDialog(JFrame parent, Peptide peptide) throws MappingException, ClassNotFoundException, InterruptedException, SQLException, IOException {
+    public SpectrumDialog generateSpectrumDialog(JFrame parent, Peptide peptide) throws MappingException, ClassNotFoundException, InterruptedException, SQLException, IOException, MathException {
         SpectrumDialog spectrumDialog = new SpectrumDialog(parent, false, peptide);
 
         JPanel spectrumJPanel = spectrumDialog.getSpectrumPanel();
@@ -136,8 +137,9 @@ public class SpectrumPanelGenerator {
      * @throws java.lang.ClassNotFoundException
      * @throws java.sql.SQLException
      * @throws java.io.IOException
+     * @throws MathException
      */
-    private void addPsm(Peptide peptide, JPanel spectrumParentPanel, JPanel secondarySpectrumPlotsParentPanel) throws MappingException, InterruptedException, ClassNotFoundException, SQLException, IOException {
+    private void addPsm(Peptide peptide, JPanel spectrumParentPanel, JPanel secondarySpectrumPlotsParentPanel) throws MappingException, InterruptedException, ClassNotFoundException, SQLException, IOException, MathException {
         Spectrum spectrum = peptide.getSpectrum();
 
         //fetch the spectrum files associated with this spectrum
@@ -228,7 +230,7 @@ public class SpectrumPanelGenerator {
 
             secondarySpectrumPlotsParentPanel.removeAll();
             secondarySpectrumPlotsParentPanel.add(sequenceFragmentationPanel);
-            secondarySpectrumPlotsParentPanel.add(new IntensityHistogram(annotations, msnSpectrum, 0.75));
+            secondarySpectrumPlotsParentPanel.add(new IntensityHistogram(annotations, msnSpectrum,0.75));
 
             MassErrorPlot massErrorPlot = new MassErrorPlot(annotations, msnSpectrum, annotationSettings.getFragmentIonAccuracy(), false);
 

@@ -49,7 +49,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
     @Override
     public MappedData mapData(MaxQuantImport maxQuantImport, Path experimentsDirectory, Path fastasDirectory) throws MappingException {
-        LOGGER.info("started mapping folder: " + maxQuantImport.getMqParFile().toString());
+        LOGGER.info("started mapping folder: " + maxQuantImport.getMqParFile());
 
         List<AnalyticalRun> analyticalRuns;
         try {
@@ -77,7 +77,7 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
 
             analyticalRuns = maxQuantParser.getAnalyticalRuns();
             //set storage location
-            analyticalRuns.forEach(run -> run.setStorageLocation(maxQuantImport.getCombinedDirectory().toString()));
+            analyticalRuns.forEach(run -> run.setStorageLocation(maxQuantImport.getCombinedDirectory()));
         } catch (IOException | UnparseableException | JDOMException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("there was a problem storing your MaxQuant data, underlying exception: ", ex);

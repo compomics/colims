@@ -1,5 +1,6 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
+import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.ontology.ModificationOntologyTerm;
 import com.compomics.colims.core.ontology.OntologyMapper;
 import com.compomics.colims.core.ontology.OntologyTerm;
@@ -10,7 +11,13 @@ import com.compomics.colims.distributed.io.maxquant.headers.EvidenceHeaders;
 import com.compomics.colims.model.Modification;
 import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.PeptideHasModification;
+import com.compomics.colims.model.enums.QuantificationMethod;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +28,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.compomics.colims.model.enums.QuantificationMethod.LABEL_FREE;
+
 /**
  * Parser class for the MaxQuant evidence file.
  * <p/>
@@ -28,6 +37,8 @@ import java.util.stream.Collectors;
  */
 @Component("maxQuantEvidenceParser")
 public class MaxQuantEvidenceParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantEvidenceParser.class);
 
     private static final String PROTEIN_GROUP_ID_DELIMITER = ";";
     private static final String MODIFICATION_DELIMITER = ",";
@@ -38,6 +49,7 @@ public class MaxQuantEvidenceParser {
     private static final String MODIFICATION_PROBABILITIES = " probabilities";
     private static final String MODIFICATION_SCORE_DIFFS = " score diffs";
     private static final String MODIFIED_SEQUENCE_FIX = "_";
+    private static final String REPORTER_INTENSITY_CORRECTED = "%1$s %2$d";
     static final String N_TERMINAL_MODIFICATION = "Protein N-term";
     static final String C_TERMINAL_MODIFICATION = "Protein C-term";
 
@@ -62,6 +74,14 @@ public class MaxQuantEvidenceParser {
      */
     private final Map<String, Set<Integer>> runToMbrPeptides = new HashMap<>();
     /**
+     * The quantification method.
+     */
+    private QuantificationMethod quantificationMethod;
+    /**
+     * The JSON mapper.
+     */
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    /**
      * The MaxQuant to UNIMOD modification mappings.
      */
     private final Map<String, OntologyTerm> modificationMappings;
@@ -73,18 +93,21 @@ public class MaxQuantEvidenceParser {
      * Beans.
      */
     private final ModificationMapper modificationMapper;
+    private final MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
 
     /**
      * No-arg constructor.
      *
-     * @param modificationMapper the modification mapper
-     * @param ontologyMapper the ontology mapper
+     * @param modificationMapper           the modification mapper
+     * @param ontologyMapper               the ontology mapper
+     * @param maxQuantSearchSettingsParser the MaxQuant search setting parser
      * @throws IOException in case of an Input/Output related problem while
-     * parsing the headers.
+     *                     parsing the headers.
      */
     @Autowired
-    public MaxQuantEvidenceParser(ModificationMapper modificationMapper, OntologyMapper ontologyMapper) throws IOException {
+    public MaxQuantEvidenceParser(ModificationMapper modificationMapper, OntologyMapper ontologyMapper, MaxQuantSearchSettingsParser maxQuantSearchSettingsParser) throws IOException {
         this.modificationMapper = modificationMapper;
+        this.maxQuantSearchSettingsParser = maxQuantSearchSettingsParser;
         //get the modification mappings from the OntologyMapper
         modificationMappings = ontologyMapper.getMaxQuantMapping().getModifications();
         evidenceHeaders = new EvidenceHeaders();
@@ -109,12 +132,15 @@ public class MaxQuantEvidenceParser {
     /**
      * This method parses an evidence file.
      *
-     * @param evidenceFilePath the MaxQuant evidence file path
+     * @param evidenceFilePath       the MaxQuant evidence file path
      * @param omittedProteinGroupIds removed protein group IDs
+     * @param quantificationMethod   the quantification method
+     * @param optionalHeaders        the list of optional headers
      * @throws IOException in case of an I/O related problem
      */
-    public void parse(Path evidenceFilePath, Set<Integer> omittedProteinGroupIds) throws IOException {
+    public void parse(Path evidenceFilePath, Set<Integer> omittedProteinGroupIds, QuantificationMethod quantificationMethod, List<String> optionalHeaders) throws IOException {
         TabularFileIterator evidenceIterator = new TabularFileIterator(evidenceFilePath, evidenceHeaders.getMandatoryHeaders());
+        this.quantificationMethod = quantificationMethod;
 
         Map<String, String> evidenceEntry;
         while (evidenceIterator.hasNext()) {
@@ -135,7 +161,7 @@ public class MaxQuantEvidenceParser {
                     //get the evidence ID
                     Integer evidenceId = Integer.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.ID)));
                     //create the peptide
-                    createPeptide(evidenceId, evidenceEntry, includedProteinIds);
+                    createPeptide(evidenceId, evidenceEntry, includedProteinIds, optionalHeaders);
                     //check if the peptide has a spectrum (PSM)
                     if (!msmsIdString.isEmpty()) {
                         Integer msmsId = Integer.parseInt(msmsIdString);
@@ -166,12 +192,13 @@ public class MaxQuantEvidenceParser {
     /**
      * Create a Peptide from a row entry in the evidence file.
      *
-     * @param evidenceId the evidence ID
-     * @param evidenceEntry key-value pairs from an evidence entry
+     * @param evidenceId                 the evidence ID
+     * @param evidenceEntry              key-value pairs from an evidence entry
      * @param nonOmittedProteinGroupsIds the set of non omitted protein group
-     * IDs for the given evidence entry
+     *                                   IDs for the given evidence entry
+     * @param optionalHeaders            the optional proteinGroups.txt entries
      */
-    private void createPeptide(Integer evidenceId, Map<String, String> evidenceEntry, Set<Integer> nonOmittedProteinGroupsIds) {
+    private void createPeptide(Integer evidenceId, Map<String, String> evidenceEntry, Set<Integer> nonOmittedProteinGroupsIds, List<String> optionalHeaders) {
         Peptide peptide = new Peptide();
 
         if (!evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.SCORE)).equalsIgnoreCase(NAN)) {
@@ -185,6 +212,7 @@ public class MaxQuantEvidenceParser {
         }
 
         peptide.setCharge(Integer.parseInt(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.CHARGE))));
+        String sequence = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE));
         peptide.setSequence(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE)));
         peptide.setTheoreticalMass(Double.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS))));
         if (!evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS_ERROR)).equalsIgnoreCase(NAN)) {
@@ -202,14 +230,51 @@ public class MaxQuantEvidenceParser {
             associatedPeptides.add(peptide);
             peptides.put(evidenceId, associatedPeptides);
         }
+
+        //handle quantification related entries
+        String intensity = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.INTENSITY));
+        String lfqIntensity = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.LFQ_INTENSITY));
+        String ibaq = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.IBAQ));
+        String msmsCount = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MSMS_COUNT));
+
+        Map<String, Double> labeledIntensities = null;
+        if (!quantificationMethod.equals(LABEL_FREE)) {
+            labeledIntensities = parseLabeledQuantification(evidenceEntry, optionalHeaders);
+        }
+        //set the intensity
+        if (intensity != null && !intensity.isEmpty()) {
+            peptide.setIntensity(Double.parseDouble(intensity));
+        }
+        //set the LFQ intensity
+        if (lfqIntensity != null && !lfqIntensity.isEmpty()) {
+            peptide.setLfqIntensity(Double.parseDouble(lfqIntensity));
+        }
+        //set the iBAQ intensity
+        if (ibaq != null && !ibaq.isEmpty()) {
+            peptide.setIbaq(Double.parseDouble(ibaq));
+        }
+        //set the MSMS count
+        if (msmsCount != null && !msmsCount.isEmpty()){
+            peptide.setMsmsCount(Integer.parseInt(msmsCount));
+        }
+        //set the labeled intensities as a JSON string
+        if (labeledIntensities != null && !labeledIntensities.isEmpty()) {
+            try {
+                peptide.setLabels(objectMapper.writeValueAsString(labeledIntensities));
+            } catch (JsonProcessingException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+
     }
 
     /**
      * Clear run data from parser.
      */
     public void clear() {
-        peptideToProteinGroups.clear();
+        peptides.clear();
         spectrumToPeptides.clear();
+        peptideToProteinGroups.clear();
         runToMbrPeptides.clear();
     }
 
@@ -217,7 +282,7 @@ public class MaxQuantEvidenceParser {
      * Create modifications for the given peptide.
      *
      * @param peptide Peptide to associate with modifications
-     * @param values Row of data from evidence file
+     * @param values  Row of data from evidence file
      * @return List of PeptideHasModification objects
      */
     private List<PeptideHasModification> createModifications(Peptide peptide, Map<String, String> values) {
@@ -329,10 +394,10 @@ public class MaxQuantEvidenceParser {
     /**
      * Create a PeptideHasModification instance for the given peptide.
      *
-     * @param location the modification location
+     * @param location    the modification location
      * @param probability the probability score
-     * @param deltaScore the delta score value
-     * @param peptide the Peptide instance
+     * @param deltaScore  the delta score value
+     * @param peptide     the Peptide instance
      * @return the PeptideHasModification instance
      */
     private PeptideHasModification createPeptideHasModification(Integer location, Double probability, Double deltaScore, Peptide peptide) {
@@ -344,6 +409,102 @@ public class MaxQuantEvidenceParser {
         peptideHasModification.setPeptide(peptide);
 
         return peptideHasModification;
+    }
+
+    /**
+     * Parse labeled quantifications for the given run and protein group where
+     * the quantification names come from mqpar file. If the value is null or
+     * not numeric, it is not stored.
+     *
+     * @param evidenceEntry key-value pairs from an evidence entry
+     * @return the map of labeled intensities
+     */
+    private Map<String, Double> parseLabeledQuantification(Map<String, String> evidenceEntry, List<String> optionalHeaders) {
+        Map<String, Double> intensities = new LinkedHashMap<>();
+        switch (quantificationMethod) {
+            case SILAC:
+            case ITRAQ:
+            case ICAT:
+                String intensityL = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.INTENSITY_L));
+                String intensityH = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.INTENSITY_H));
+                //in case of 2 label mods, we have a light and a heavy label (L, H).
+                //if there are 3 label mods, we have light, medium and heavy labels (L, M, H).
+                if (intensityL != null && NumberUtils.isNumber(intensityL)) {
+                    if (maxQuantSearchSettingsParser.getLabelMods().get(0) != null) {
+                        intensities.put(maxQuantSearchSettingsParser.getLabelMods().get(0), Double.valueOf(intensityL));
+                    } else {
+                        intensities.put(MaxQuantImport.NO_LABEL, Double.valueOf(intensityL));
+                    }
+                }
+                if (intensityH != null && NumberUtils.isNumber(intensityH)) {
+                    if (maxQuantSearchSettingsParser.getLabelMods().get(maxQuantSearchSettingsParser.getLabelMods().size() - 1) != null) {
+                        intensities.put(maxQuantSearchSettingsParser.getLabelMods().get(maxQuantSearchSettingsParser.getLabelMods().size() - 1), Double.valueOf(intensityH));
+                    } else {
+                        intensities.put(MaxQuantImport.NO_LABEL, Double.valueOf(intensityH));
+                    }
+                }
+                if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) { //parse the medium label as well
+                    String intensityM = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.INTENSITY_M));
+                    if (intensityM != null && NumberUtils.isNumber(intensityM)) {
+                        if (maxQuantSearchSettingsParser.getLabelMods().get(1) != null) {
+                            intensities.put(maxQuantSearchSettingsParser.getLabelMods().get(1), Double.valueOf(intensityM));
+                        } else {
+                            intensities.put(MaxQuantImport.NO_LABEL, Double.valueOf(intensityM));
+                        }
+                    }
+                }
+                break;
+            case TMT:
+                int reportersSize = calculateTmtReportersSize(maxQuantSearchSettingsParser.getIsobaricLabels().size());
+                for (int i = 0; i < reportersSize; i++) {
+                    String reporterIntensityCorrected = evidenceEntry.get(String.format(REPORTER_INTENSITY_CORRECTED, evidenceHeaders.get(EvidenceHeader.REPORTER_INTENSITY_CORRECTED), i));
+                    if (reporterIntensityCorrected != null && NumberUtils.isNumber(reporterIntensityCorrected) && maxQuantSearchSettingsParser.getIsobaricLabels().size() >= i + 1) {
+                        if (maxQuantSearchSettingsParser.getIsobaricLabels().get(i) != null) {
+                            intensities.put(maxQuantSearchSettingsParser.getIsobaricLabels().get(i), Double.valueOf(reporterIntensityCorrected));
+                        } else {
+                            intensities.put(EvidenceHeader.REPORTER_INTENSITY_CORRECTED + " " + i, Double.valueOf(reporterIntensityCorrected));
+                        }
+                    }
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected quantification label: " + quantificationMethod.toString());
+        }
+
+        //store the given optional header if it has a numeric value per run and protein group
+        optionalHeaders.forEach((optionalHeader) -> {
+//            String experimentOptionalHeader = optionalHeader.toLowerCase() + " " + experimentName;
+            String experimentOptionalHeader = optionalHeader.toLowerCase();
+            if (evidenceEntry.containsKey(experimentOptionalHeader) && NumberUtils.isNumber(evidenceEntry.get(experimentOptionalHeader))) {
+                intensities.put(optionalHeader, Double.valueOf(evidenceEntry.get(experimentOptionalHeader)));
+            }
+        });
+
+        return intensities;
+    }
+
+    /**
+     * Calculates the label size for the TMT reporters because it's possible
+     * that for example for TMT10plex MaxQuant list 20 labels instead of 10.
+     *
+     * @param isobaricLabelsSize the number of isobaric labels
+     * @return the number of reporters
+     */
+    private int calculateTmtReportersSize(int isobaricLabelsSize) {
+        int labelSize;
+        if (isobaricLabelsSize % 6 == 0) {
+            labelSize = 6;
+        } else if (isobaricLabelsSize % 10 == 0) {
+            labelSize = 10;
+        } else if (isobaricLabelsSize % 11 == 0) {
+            labelSize = 11;
+        } else if (isobaricLabelsSize % 2 == 0) {
+            labelSize = 2;
+        } else {
+            labelSize = isobaricLabelsSize;
+        }
+
+        return labelSize;
     }
 
 }

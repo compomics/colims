@@ -27,8 +27,9 @@ import java.util.TreeMap;
 public class ColimsPeptideMapper {
 
     private static final String FRAGMENTS_DELIMITER = ";";
+    private static final String STAR_SUFFIX = "*";
     private static final char NEUTRAL_LOSSES_PREFIX = '-';
-    private static final char CHARGE_PREFIX = '(';
+    private static final char CHARGE_PREFIX = '(';    
 
     private final PeptideService peptideService;
     private final SpectrumService spectrumService;
@@ -117,6 +118,9 @@ public class ColimsPeptideMapper {
         Peak closestPeak = findClosestPeak(sortedSpectrumPeaks, fragmentMass);
 
         String fragmentIon = fragmentIonString;
+        if(fragmentIon.endsWith(STAR_SUFFIX)){
+            fragmentIon = fragmentIon.substring(0, fragmentIon.length() - 1);
+        }
         String neutralLossString = null;
         String charge = "1";
         int neutralLossesStartIndex = fragmentIonString.indexOf(NEUTRAL_LOSSES_PREFIX);

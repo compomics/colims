@@ -1,7 +1,5 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
-import com.compomics.colims.core.io.MaxQuantImport;
-import com.compomics.colims.distributed.io.SearchModificationMapper;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
 import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.ProteinGroup;
@@ -14,18 +12,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
-import static com.compomics.colims.model.enums.QuantificationMethod.ICAT;
-import static com.compomics.colims.model.enums.QuantificationMethod.SILAC;
-import static com.compomics.colims.model.enums.QuantificationMethod.TMT;
+import static com.compomics.colims.model.enums.QuantificationMethod.*;
 
 /**
  * @author Davy
@@ -41,9 +34,6 @@ public class MaxQuantProteinGroupsParserTest {
     private MaxQuantProteinGroupsParser maxQuantProteinGroupsParser;
     @Autowired
     private MaxQuantSearchSettingsParser maxQuantSearchSettingsParser;
-
-    public MaxQuantProteinGroupsParserTest() throws IOException {
-    }
 
     /**
      * SILAC quantification parsing test.
@@ -146,28 +136,6 @@ public class MaxQuantProteinGroupsParserTest {
         Optional<String> foundLabel = intensities.keySet().stream().filter(label -> label.startsWith("ibaq")).findFirst();
         Assert.assertTrue(foundLabel.isPresent());
     }
-
-//    /**
-//     * Test of parse method of class MaxQuantProteinGroupParser.
-//     *
-//     * @throws java.lang.Exception in case of an exception
-//     */
-//    @Test
-//    public void testParse() throws Exception {
-//        fastaDbs.put(MaxQuantTestSuite.spHumanFastaDb, MaxQuantTestSuite.spHumanFastaDbPath);
-//        fastaDbs.put(MaxQuantTestSuite.contaminantsFastaDb, MaxQuantTestSuite.contaminantsFastaDbPath);
-//        fastaDbEnumMap.put(FastaDbType.PRIMARY, Arrays.asList(MaxQuantTestSuite.spHumanFastaDb));
-//        fastaDbEnumMap.put(FastaDbType.CONTAMINANTS, Arrays.asList(MaxQuantTestSuite.contaminantsFastaDb));
-//
-//        maxQuantProteinGroupsParser.clear();
-//        maxQuantProteinGroupsParser.parse(MaxQuantTestSuite.proteinGroupsFile,
-//                fastaDbs, SILAC, true, new ArrayList<>());
-//
-//        Map<Integer, ProteinGroup> result = maxQuantProteinGroupsParser.getProteinGroups();
-//
-//        //number of entries in the proteinGroups.txt file - number of reverse proteins
-//        Assert.assertEquals(672, result.size());
-//    }
 
     /**
      * Test of parse method of class MaxQuantProteinGroupParser.

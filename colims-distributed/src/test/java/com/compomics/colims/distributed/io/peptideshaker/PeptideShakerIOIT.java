@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,13 +70,13 @@ public class PeptideShakerIOIT {
      */
     @Test
     public void testUnpackPeptideShakerDataImport() throws IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
-        Path peptideShakerCpsFile = Paths.get("colims_test_ps_file.cpsx");
+        String peptideShakerCpsFile = "colims_test_ps_file.cpsx";
 
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(5L)));
 
-        List<Path> mgfFiles = new ArrayList<>();
-        mgfFiles.add(Paths.get("qExactive01819.mgf"));
+        List<String> mgfFiles = new ArrayList<>();
+        mgfFiles.add("qExactive01819.mgf");
 
         Path experimentsDirectory = new ClassPathResource("data/peptideshaker").getFile().toPath();
         PeptideShakerImport peptideShakerImport = new PeptideShakerImport(peptideShakerCpsFile, fastaDbIds, mgfFiles);
@@ -93,7 +92,7 @@ public class PeptideShakerIOIT {
         Assert.assertNotNull(msExperiment);
 
         Assert.assertEquals(5L, unpackedPsDataImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0).longValue());
-        Assert.assertEquals(mgfFiles.get(0).getFileName(), unpackedPsDataImport.getMgfFiles().get(0).getFileName());
+        Assert.assertEquals(mgfFiles.get(0), unpackedPsDataImport.getMgfFiles().get(0).getFileName());
 
         //delete directory
         FileUtils.deleteDirectory(directory);

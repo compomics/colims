@@ -33,15 +33,11 @@ public class MzTabExport {
      */
     private String description;
     /**
-     * The mzTab file name.
+     * The mzTab export file.
      */
-    private String fileName;
+    private File mzTabFile;
     /**
-     * The mzTab export directory.
-     */
-    private File exportDirectory;
-    /**
-     * The fasta files directory.
+     * The FASTA files directory.
      */
     private Path fastaDirectory;
     /**
@@ -61,7 +57,8 @@ public class MzTabExport {
      */
     private Map<AnalyticalRun, int[]> analyticalRunsAssaysRefs = new HashMap<>();
     /**
-     * Match between quantification labels and Reagents (key: reagent, value: label)
+     * Match between quantification labels and Reagents (key: reagent, value:
+     * label)
      */
     private Map<String, String> quantificationReagentLabelMatch = new HashMap<>();
 
@@ -89,21 +86,13 @@ public class MzTabExport {
         this.description = description;
     }
 
-    public String getFileName() {
-        return fileName;
+    public File getMzTabFile() {
+        return mzTabFile;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public File getExportDirectory() {
-        return exportDirectory;
-    }
-
-    public void setExportDirectory(File exportDirectory) {
-        this.exportDirectory = exportDirectory;
-    }
+    public void setMzTabFile(File mzTabFile) {
+        this.mzTabFile = mzTabFile;
+    }    
 
     public Path getFastaDirectory() {
         return fastaDirectory;

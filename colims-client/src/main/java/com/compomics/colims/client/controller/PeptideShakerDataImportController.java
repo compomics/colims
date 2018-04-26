@@ -11,8 +11,6 @@ import com.compomics.colims.model.FastaDb;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.util.io.filefilters.MgfFileFilter;
 import com.google.common.eventbus.EventBus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -171,7 +169,12 @@ public class PeptideShakerDataImportController implements Controllable {
         peptideShakerDataImportPanel.getMgfFileChooser().setCurrentDirectory(experimentsDirectory.toFile());
     }
 
-    public void showEditView(PeptideShakerImport peptideShakerImport) {
+    /**
+     * Show the view with the given {@link PeptideShakerImport} values filled in.
+     *
+     * @param peptideShakerImport the {@link PeptideShakerImport} instance
+     */
+    public void populateView(PeptideShakerImport peptideShakerImport) {
         showView();
         if (peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY) != null) {
             fastaDb = fastaDbService.findById(peptideShakerImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
@@ -182,7 +185,7 @@ public class PeptideShakerDataImportController implements Controllable {
         }
         peptideShakerDataImportPanel.getCpsTextField().setText(peptideShakerImport.getPeptideShakerCpsxArchive().toString());
 
-        peptideShakerImport.getMgfFiles().forEach(mgfFileListModel::addElement);
+        peptideShakerImport.getMgfFiles().forEach(mgfFileString -> mgfFileListModel.addElement(Paths.get(mgfFileString)));
     }
 
     /**
@@ -213,15 +216,15 @@ public class PeptideShakerDataImportController implements Controllable {
      * @return the PeptideShakerImport
      */
     public PeptideShakerImport getDataImport() {
-        List<Path> mgfFiles = new ArrayList<>();
+        List<String> mgfFiles = new ArrayList<>();
         for (int i = 0; i < mgfFileListModel.size(); i++) {
-            mgfFiles.add(mgfFileListModel.get(i));
+            mgfFiles.add(mgfFileListModel.get(i).toString());
         }
 
         EnumMap<FastaDbType, List<Long>> fastaDbIds = new EnumMap<>(FastaDbType.class);
         fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Collections.singletonList(fastaDb.getId())));
 
-        return new PeptideShakerImport(cpsxArchive, fastaDbIds, mgfFiles);
+        return new PeptideShakerImport(cpsxArchive.toString(), fastaDbIds, mgfFiles);
     }
 
 }

@@ -30,7 +30,6 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
@@ -51,9 +50,9 @@ public class MzTabExportController implements Controllable {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(MzTabExportController.class);
 
+    private static final String MZTAB_EXTENSION = ".mzTab";
     private static final String FIRST_PANEL = "firstPanel";
     private static final String SECOND_PANEL = "secondPanel";
-    private static final String THIRD_PANEL = "thirdPanel";
     private static final String LAST_PANEL = "lastPanel";
     private static final String ASSAY = "assay ";
 
@@ -91,7 +90,7 @@ public class MzTabExportController implements Controllable {
 
     @Autowired
     public MzTabExportController(MzTabExporter mzTabExporter, EventBus eventBus, MainController mainController,
-                                 ProteinGroupQuantService proteinGroupQuantLabeledService, QuantificationMethodService quantificationMethodService) {
+            ProteinGroupQuantService proteinGroupQuantLabeledService, QuantificationMethodService quantificationMethodService) {
         this.mzTabExporter = mzTabExporter;
         this.eventBus = eventBus;
         this.mainController = mainController;
@@ -143,8 +142,8 @@ public class MzTabExportController implements Controllable {
         mzTabExportDialog.getQuantificationReagentTree().setModel(quantificationReagentTreeModel);
 
         //configure export directory chooser
-        mzTabExportDialog.getExportDirectoryChooser().setMultiSelectionEnabled(false);
-        mzTabExportDialog.getExportDirectoryChooser().setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        mzTabExportDialog.getMzTabExportChooser().setMultiSelectionEnabled(false);
+        mzTabExportDialog.getMzTabExportChooser().setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         //add action listeners
         mzTabExportDialog.getProceedButton().addActionListener(e -> {
@@ -213,8 +212,7 @@ public class MzTabExportController implements Controllable {
         mzTabExportDialog.getFinishButton().addActionListener(e -> {
             List<String> lastPanelValidationMessages = validateLastPanel();
             if (lastPanelValidationMessages.isEmpty()) {
-                mzTabExport.setFileName(mzTabExportDialog.getFileNameTextField().getText());
-                mzTabExport.setExportDirectory(mzTabExportDialog.getExportDirectoryChooser().getSelectedFile());
+                mzTabExport.setMzTabFile(new File(mzTabExportDialog.getMzTabTextField().getText()));
                 MzTabExporterWorker mzTabExporterWorker = new MzTabExporterWorker();
                 ProgressStartEvent progressStartEvent = new ProgressStartEvent(mainController.getMainFrame(), true, 1, "MzTab export progress. ");
                 eventBus.post(progressStartEvent);
@@ -346,14 +344,15 @@ public class MzTabExportController implements Controllable {
             }
         });
 
-        mzTabExportDialog.getExportDirectoryBrowseButton().addActionListener(e -> {
+        mzTabExportDialog.getBrowseMzTabButton().addActionListener(e -> {
             //in response to the button click, show open dialog
-            int returnVal = mzTabExportDialog.getExportDirectoryChooser().showOpenDialog(mzTabExportDialog);
+            int returnVal = mzTabExportDialog.getMzTabExportChooser().showOpenDialog(mzTabExportDialog);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File exportDirectory = mzTabExportDialog.getExportDirectoryChooser().getSelectedFile();
+                File mzTabFile = mzTabExportDialog.getMzTabExportChooser().getSelectedFile();
 
                 //show directory path in textfield
-                mzTabExportDialog.getExportDirectoryTextField().setText(exportDirectory.getAbsolutePath());
+                String mzTabFilePath = mzTabFile.getAbsolutePath().endsWith(MZTAB_EXTENSION) ? mzTabFile.getAbsolutePath() : mzTabFile.getAbsolutePath() + MZTAB_EXTENSION;
+                mzTabExportDialog.getMzTabTextField().setText(mzTabFilePath);
             }
         });
     }
@@ -404,8 +403,7 @@ public class MzTabExportController implements Controllable {
         mzTabExportDialog.getStudyVariableTextField().setText("");
 
         //reset last panel text fields
-        mzTabExportDialog.getFileNameTextField().setText("");
-        mzTabExportDialog.getExportDirectoryTextField().setText("");
+        mzTabExportDialog.getMzTabTextField().setText("");
 
         GuiUtils.centerDialogOnComponent(mainController.getMainFrame(), mzTabExportDialog);
         mzTabExportDialog.setVisible(true);
@@ -471,7 +469,7 @@ public class MzTabExportController implements Controllable {
         MzTabType selectedMzTabType = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getTypeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -556,11 +554,8 @@ public class MzTabExportController implements Controllable {
     private List<String> validateLastPanel() {
         List<String> validationMessages = new ArrayList<>();
 
-        if (mzTabExportDialog.getFileNameTextField().getText().isEmpty()) {
-            validationMessages.add("Please provide a file name.");
-        }
-        if (mzTabExportDialog.getExportDirectoryTextField().getText().isEmpty()) {
-            validationMessages.add("Please provide an export directory.");
+        if (mzTabExportDialog.getMzTabTextField().getText().isEmpty()) {
+            validationMessages.add("Please choose an export directory and provide a file name.");
         }
 
         return validationMessages;
@@ -575,7 +570,7 @@ public class MzTabExportController implements Controllable {
         MzTabMode selectedMzTabMode = null;
 
         //iterate over the radio buttons in the group
-        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+        for (Enumeration<AbstractButton> buttons = mzTabExportDialog.getModeButtonGroup().getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
@@ -591,7 +586,7 @@ public class MzTabExportController implements Controllable {
      * tree. Returns false if nothing or another path level (assay, root path)
      * is selected.
      *
-     * @param tree  the JTree instance
+     * @param tree the JTree instance
      * @param level the level of the node (0 for root node)
      * @return the boolean result
      */
@@ -616,7 +611,7 @@ public class MzTabExportController implements Controllable {
      * nothing or another path level (study variable or assay, root path) is
      * selected.
      *
-     * @param tree  the JTree instance
+     * @param tree the JTree instance
      * @param level the level of the node(s) (0 for root node) nodes nodes
      * @return the boolean result
      */
@@ -661,8 +656,8 @@ public class MzTabExportController implements Controllable {
     /**
      * Remove all assays from the given tree.
      *
-     * @param treeModel        the JTree model instance
-     * @param rootNode         the tree root node
+     * @param treeModel the JTree model instance
+     * @param rootNode the tree root node
      * @param assayParentLevel the level of the assay parent node
      */
     private void removeAllAssaysFromTree(DefaultTreeModel treeModel, DefaultMutableTreeNode rootNode, int assayParentLevel) {
@@ -808,14 +803,14 @@ public class MzTabExportController implements Controllable {
         @Override
         protected Void doInBackground() throws Exception {
 
-            LOGGER.info("Exporting mzTab file " + mzTabExport.getFileName() + " to directory " + mzTabExport.getExportDirectory());
+            LOGGER.info("Exporting mzTab file " + mzTabExport.getMzTabFile().getAbsolutePath());
             try {
                 mzTabExport.setFastaDirectory(Paths.get(fastasPath));
                 mzTabExporter.export(mzTabExport);
                 ProgressEndEvent progressEndEvent = new ProgressEndEvent();
                 eventBus.post(progressEndEvent);
                 eventBus.post(new MessageEvent("Info", "Exporting mzTab file has finished", JOptionPane.INFORMATION_MESSAGE));
-                LOGGER.info("Finished exporting mzTab file " + mzTabExport.getFileName());
+                LOGGER.info("Finished exporting mzTab file " + mzTabExport.getMzTabFile().getAbsolutePath());
             } catch (Exception e) {
                 eventBus.post(new MessageEvent("Error", e.getMessage(), JOptionPane.ERROR_MESSAGE));
             }

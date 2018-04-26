@@ -2,7 +2,6 @@ package com.compomics.colims.core.io;
 
 import com.compomics.colims.model.enums.FastaDbType;
 
-import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -19,11 +18,11 @@ public class PeptideShakerImport extends DataImport {
     /**
      * The PeptideShaker .cpsx file.
      */
-    private Path peptideShakerCpsxArchive;
+    private String peptideShakerCpsxArchive;
     /**
      * The list of mgf files.
      */
-    private List<Path> mgfFiles;
+    private List<String> mgfFiles;
 
     /**
      * No-arg constructor.
@@ -38,26 +37,18 @@ public class PeptideShakerImport extends DataImport {
      * @param fastaDbIds               the FASTA database IDs map
      * @param mgfFiles                 the list of MGF files
      */
-    public PeptideShakerImport(final Path peptideShakerCpsxArchive, final EnumMap<FastaDbType, List<Long>> fastaDbIds, final List<Path> mgfFiles) {
+    public PeptideShakerImport(final String peptideShakerCpsxArchive, final EnumMap<FastaDbType, List<Long>> fastaDbIds, final List<String> mgfFiles) {
         super(fastaDbIds);
         this.peptideShakerCpsxArchive = peptideShakerCpsxArchive;
         this.mgfFiles = mgfFiles;
     }
 
-    public Path getPeptideShakerCpsxArchive() {
+    public String getPeptideShakerCpsxArchive() {
         return peptideShakerCpsxArchive;
     }
 
-    public void setPeptideShakerCpsxArchive(Path peptideShakerCpsxArchive) {
-        this.peptideShakerCpsxArchive = peptideShakerCpsxArchive;
-    }
-
-    public List<Path> getMgfFiles() {
+    public List<String> getMgfFiles() {
         return mgfFiles;
-    }
-
-    public void setMgfFiles(List<Path> mgfFiles) {
-        this.mgfFiles = mgfFiles;
     }
 
     @Override

@@ -563,11 +563,6 @@
                   </Layout>
                   <SubComponents>
                     <Container class="javax.swing.JScrollPane" name="studyVariableTreeScrollPane">
-                      <Properties>
-                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                          <Border info="null"/>
-                        </Property>
-                      </Properties>
                       <AuxValues>
                         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
                       </AuxValues>
@@ -629,9 +624,6 @@
                 </Container>
                 <Container class="javax.swing.JPanel" name="assaysToSVPanel">
                   <Properties>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="null"/>
-                    </Property>
                     <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                   <Constraints>
@@ -663,11 +655,6 @@
                   </Layout>
                   <SubComponents>
                     <Container class="javax.swing.JScrollPane" name="assaysToSVListScrollPane">
-                      <Properties>
-                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                          <Border info="null"/>
-                        </Property>
-                      </Properties>
                       <AuxValues>
                         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
                       </AuxValues>
@@ -790,17 +777,12 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="fileNameLabel" min="-2" max="-2" attributes="0"/>
-                              <Component id="fileNameTextField" min="-2" pref="200" max="-2" attributes="0"/>
-                              <Component id="exportDirectoryLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="exportDirectoryBrowseButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="exportDirectoryTextField" min="-2" pref="300" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="mzTabLabel" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="mzTabTextField" min="-2" pref="300" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="browseMzTabButton" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="613" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -808,35 +790,25 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="fileNameLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="fileNameTextField" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="exportDirectoryLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="exportDirectoryBrowseButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="exportDirectoryTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="mzTabLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="mzTabTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="browseMzTabButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="191" max="32767" attributes="0"/>
+                          <EmptySpace pref="281" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="fileNameLabel">
+                <Component class="javax.swing.JLabel" name="mzTabLabel">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="File name*:"/>
+                    <Property name="text" type="java.lang.String" value="MzTab file*:"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JTextField" name="fileNameTextField">
+                <Component class="javax.swing.JTextField" name="mzTabTextField">
                 </Component>
-                <Component class="javax.swing.JLabel" name="exportDirectoryLabel">
-                  <Properties>
-                    <Property name="text" type="java.lang.String" value="Export directory*:"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JButton" name="exportDirectoryBrowseButton">
+                <Component class="javax.swing.JButton" name="browseMzTabButton">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="browse"/>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -849,8 +821,6 @@
                       <Dimension value="[80, 25]"/>
                     </Property>
                   </Properties>
-                </Component>
-                <Component class="javax.swing.JTextField" name="exportDirectoryTextField">
                 </Component>
               </SubComponents>
             </Container>

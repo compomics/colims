@@ -241,7 +241,7 @@ public class MzTabExporter {
     public void export(MzTabExport mzTabExport) throws IOException {
         this.mzTabExport = mzTabExport;
 
-        try (FileOutputStream fos = new FileOutputStream(new File(mzTabExport.getExportDirectory(), mzTabExport.getFileName() + MZTAB_EXTENSION));
+        try (FileOutputStream fos = new FileOutputStream(mzTabExport.getMzTabFile());
                 OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
                 BufferedWriter bw = new BufferedWriter(osw);
                 PrintWriter pw = new PrintWriter(bw)) {

@@ -13,8 +13,6 @@ import com.compomics.util.pride.CvTerm;
 import eu.isas.peptideshaker.parameters.PSParameter;
 import eu.isas.peptideshaker.parameters.PSPtmScores;
 import eu.isas.peptideshaker.scoring.PtmScoring;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,8 +42,9 @@ public class UtilitiesPeptideMapper {
      * @param spectrumMatch the Utilities SpectrumMatch instance
      * @param spectrumScore the Utilities PSParameter instance with the spectrum scores
      * @param targetPeptide the Colims Peptide instance
+     * @throws InterruptedException if a thread is interrupted
      */
-    public void map(final SpectrumMatch spectrumMatch, final PSParameter spectrumScore, final Peptide targetPeptide) {
+    public void map(final SpectrumMatch spectrumMatch, final PSParameter spectrumScore, final Peptide targetPeptide) throws InterruptedException {
         PeptideAssumption peptideAssumption = spectrumMatch.getBestPeptideAssumption();
         com.compomics.util.experiment.biology.Peptide sourcePeptide = peptideAssumption.getPeptide();
 

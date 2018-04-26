@@ -134,7 +134,7 @@ public class MzIdentMlExportDialog extends javax.swing.JDialog {
         closeButton.setMinimumSize(new java.awt.Dimension(80, 25));
         closeButton.setPreferredSize(new java.awt.Dimension(80, 25));
 
-        mzIdentMlLabel.setText("MzIdentML file:");
+        mzIdentMlLabel.setText("MzIdentML file*:");
 
         exportSpectraCheckBox.setText("export spectra as MGF");
 
@@ -160,24 +160,21 @@ public class MzIdentMlExportDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
-                        .addComponent(mzIdentMlLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(mzIdentMlTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 379, Short.MAX_VALUE))
-                    .addComponent(exportSpectraCheckBox)
-                    .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(exportButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
-                        .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(userLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(mgfLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(mgfLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                            .addComponent(userLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(12, 12, 12)
                         .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(mgfTextField))
-                            .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
-                                .addGap(12, 12, 12)
-                                .addComponent(userComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                            .addComponent(mgfTextField)
+                            .addComponent(userComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(mzIdentMlExportPanelLayout.createSequentialGroup()
+                        .addComponent(exportSpectraCheckBox)
+                        .addGap(0, 324, Short.MAX_VALUE))
+                    .addComponent(exportButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mzIdentMlExportPanelLayout.createSequentialGroup()
+                        .addComponent(mzIdentMlLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(mzIdentMlTextField)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mzIdentMlExportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(browseMgfButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)

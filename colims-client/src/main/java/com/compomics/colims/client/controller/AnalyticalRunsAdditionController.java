@@ -288,10 +288,14 @@ public class AnalyticalRunsAdditionController implements Controllable {
                 analyticalRunsAdditionDialog.getDateTimePicker().setDate(persistMetaData.getStartDate());
                 if (dataImport instanceof MaxQuantImport) {
                     analyticalRunsAdditionDialog.getMaxQuantRadioButton().setSelected(true);
-                    maxQuantDataImportController.showEditView((MaxQuantImport) dataImport);
+                    if(!analyticalRunsAdditionDialog.getLabelComboBox().isVisible()){
+                        analyticalRunsAdditionDialog.getLabelComboBox().setVisible(true);
+                        analyticalRunsAdditionDialog.getLabelSelectionLabel().setVisible(true);
+                    }
+                    maxQuantDataImportController.populateView((MaxQuantImport) dataImport);
                 } else if (dataImport instanceof PeptideShakerImport) {
                     analyticalRunsAdditionDialog.getPeptideShakerRadioButton().setSelected(true);
-                    peptideShakerDataImportController.showEditView((PeptideShakerImport) dataImport);
+                    peptideShakerDataImportController.populateView((PeptideShakerImport) dataImport);
                 }
 
                 //show first card

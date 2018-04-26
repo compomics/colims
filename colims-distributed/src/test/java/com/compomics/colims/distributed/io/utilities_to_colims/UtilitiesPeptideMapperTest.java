@@ -45,7 +45,7 @@ public class UtilitiesPeptideMapperTest {
      * @throws IOException
      */
     @Test
-    public void testMapPeptide() throws MappingException, IOException {
+    public void testMapPeptide() throws MappingException, IOException, InterruptedException {
         //create the necessary Utilities objects
         com.compomics.util.experiment.biology.Peptide sourcePeptide = new com.compomics.util.experiment.biology.Peptide("YKENNAMRT", new ArrayList<>());
         sourcePeptide.setParentProteins(new ArrayList<>());

@@ -54,7 +54,7 @@ public class MaxQuantProteinGroupsParser {
      */
     private Map<String, String> proteinSequences = new HashMap<>();
     /**
-     * The quantification type.
+     * The quantification method.
      */
     private QuantificationMethod quantificationMethod;
     /**
@@ -113,6 +113,7 @@ public class MaxQuantProteinGroupsParser {
     public void parse(Path proteinGroupsFile, LinkedHashMap<FastaDb, Path> fastaDbMap, QuantificationMethod quantificationMethod, boolean includeContaminants, List<String> optionalHeaders) throws IOException {
         TabularFileIterator iterator = new TabularFileIterator(proteinGroupsFile, proteinGroupsHeaders.getMandatoryHeaders());
         this.quantificationMethod = quantificationMethod;
+
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
@@ -129,7 +130,9 @@ public class MaxQuantProteinGroupsParser {
      * Construct a {@link ProteinGroup} instance from a proteinGroups file
      * entry.
      *
-     * @param proteinGroupsEntry key-value pairs from an proteinGroups entry
+     * @param proteinGroupsEntry  key-value pairs from an proteinGroups entry
+     * @param includeContaminants whether or not to include the contaminants
+     * @param optionalHeaders     the optional evidence.txt entries
      * @return the {@link ProteinGroup} object
      */
     private ProteinGroup parseProteinGroup(Map<String, String> proteinGroupsEntry, boolean includeContaminants, List<String> optionalHeaders) {
@@ -290,7 +293,7 @@ public class MaxQuantProteinGroupsParser {
      * the quantification names come from mqpar file. If the value is null or
      * not numeric, it is not stored.
      *
-     * @param proteinGroupsEntry key-value pairs from an evidence entry
+     * @param proteinGroupsEntry key-value pairs from an protein groups entry
      * @param experimentName     the experiment name
      * @return the map of labeled intensities
      */
