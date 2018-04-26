@@ -50,7 +50,7 @@ public class FastaDbParser {
                 Path fastaPath = entry.getValue();
                 //check if the FASTA has an associated header parse rule and parse accordingly
                 //otherwise, use the Compomics Utilities library
-                if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
+                if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("") || fastaDb.getHeaderParseRule().equals("none")) {
                     parseWithoutRule(proteinSequences, fastaPath);
                 } else {
                     parseWithRule(proteinSequences, fastaDb, fastaPath);
@@ -88,7 +88,7 @@ public class FastaDbParser {
                 switch (searchEngineType) {
                     //check if the FASTA has an associated header parse rule and parse accordingly
                     case MAXQUANT:
-                        if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("")) {
+                        if (fastaDb.getHeaderParseRule() == null || fastaDb.getHeaderParseRule().equals("") || fastaDb.getHeaderParseRule().equals("none")) {
                             accessions = parseAccessionsWithoutRule(fastaPath);
                         } else {
                             accessions = parseAccessionsWithRule(fastaDb, fastaPath);
@@ -129,7 +129,7 @@ public class FastaDbParser {
         try {
             //check if the FASTA has an associated header parse rule and parse accordingly
             //otherwise, use the Compomics Utilities library
-            if (parseRule == null || parseRule.equals("")) {
+            if (parseRule == null || parseRule.equals("")|| parseRule.equals("none")) {
                 headers = testParseWithoutRule(fastaPath, numberOfHeaders);
             } else {
                 headers = testParseWithRule(fastaPath, parseRule, numberOfHeaders);
@@ -170,7 +170,7 @@ public class FastaDbParser {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
                     //add limiting check for protein store to avoid growing
                     if (sequenceBuilder.length() > 0) {
-                        Matcher matcher = pattern.matcher(fastaHeader.substring(1).split(SPLITTER)[0]);
+                        Matcher matcher = pattern.matcher(fastaHeader.substring(1));
                         if (matcher.find()) {
                             proteinSequences.putIfAbsent(matcher.group(1), sequenceBuilder.toString().trim());
                         } else {
@@ -251,7 +251,7 @@ public class FastaDbParser {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
-                    Matcher matcher = pattern.matcher(line.substring(1).split(SPLITTER)[0]);
+                    Matcher matcher = pattern.matcher(line.substring(1));
                     if (matcher.find()) {
                         accessions.add(matcher.group(1));
                     } else {
@@ -332,7 +332,7 @@ public class FastaDbParser {
             String line;
             while ((line = bufferedReader.readLine()) != null && headers.size() < numberOfHeaders) {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
-                    Matcher matcher = pattern.matcher(line.substring(1).split(SPLITTER)[0]);
+                    Matcher matcher = pattern.matcher(line.substring(1));
                     if (matcher.find()) {
                         headers.put(matcher.group(1), line);
                     } else {
