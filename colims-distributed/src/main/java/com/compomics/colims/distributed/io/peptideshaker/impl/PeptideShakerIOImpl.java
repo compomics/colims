@@ -74,14 +74,17 @@ public class PeptideShakerIOImpl implements PeptideShakerIO {
         //set FASTA DB ids and MGF files
         unpackedPeptideShakerImport.setFastaDbIds(peptideShakerDataImport.getFastaDbIds());
         //make the relative MGF file paths absolute
-        List<Path> absoluteMgfFiles = peptideShakerDataImport.getMgfFiles().stream().map(experimentsDirectory::resolve).collect(Collectors.toList());
-        //check if all the MFG files exist
-        absoluteMgfFiles.forEach(mgfPath -> {
-            if (!java.nio.file.Files.exists(mgfPath)) {
-                throw new IllegalArgumentException("The MGF file " + mgfPath.toString() + " doesn't exist.");
-            }
-        });
-
+        List<Path> absoluteMgfFiles = peptideShakerDataImport.getMgfFiles().stream().map(mgfFile ->
+                {
+                    //make the path absolute and check if it exists
+                    String mgfFilePath = FilenameUtils.separatorsToSystem(mgfFile);
+                    Path absoluteMgfFilePath = experimentsDirectory.resolve(mgfFilePath);
+                    if (!java.nio.file.Files.exists(absoluteMgfFilePath)) {
+                        throw new IllegalArgumentException("The MGF file " + absoluteMgfFilePath.toString() + " doesn't exist.");
+                    }
+                    return absoluteMgfFilePath;
+                }
+        ).collect(Collectors.toList());
         unpackedPeptideShakerImport.setMgfFiles(absoluteMgfFiles);
 
         return unpackedPeptideShakerImport;
