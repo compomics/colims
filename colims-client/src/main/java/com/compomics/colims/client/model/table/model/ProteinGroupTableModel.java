@@ -24,9 +24,9 @@ public class ProteinGroupTableModel extends AdvancedPagingTableModel {
     /**
      * Constructor.
      *
-     * @param source the EventList that holds the table data
-     * @param tableFormat the TableFormat instance of the table
-     * @param perPage the number of rows per page
+     * @param source                 the EventList that holds the table data
+     * @param tableFormat            the TableFormat instance of the table
+     * @param perPage                the number of rows per page
      * @param defaultSortColumnIndex the default sort column
      */
     public ProteinGroupTableModel(EventList source, TableFormat tableFormat, int perPage, int defaultSortColumnIndex) {
@@ -59,7 +59,7 @@ public class ProteinGroupTableModel extends AdvancedPagingTableModel {
      * search criteria.
      *
      * @param analyticalRunIds the run IDs where the protein groups are
-     * associated with
+     *                         associated with
      * @return the list of ProteinGroup instances
      */
     public List<ProteinGroupDTO> getRows(List<Long> analyticalRunIds) {
@@ -77,7 +77,7 @@ public class ProteinGroupTableModel extends AdvancedPagingTableModel {
      * specified analytical run.
      *
      * @param analyticalRunIds the run IDs where the protein groups are
-     * associated with
+     *                         associated with
      */
     public void reset(final List<Long> analyticalRunIds) {
         if (analyticalRunIds.size() > 0) {

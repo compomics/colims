@@ -2,6 +2,7 @@ package com.compomics.colims.client.model.table.format;
 
 import ca.odell.glazedlists.GlazedLists;
 import ca.odell.glazedlists.gui.AdvancedTableFormat;
+import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.repository.hibernate.ProteinGroupDTO;
 
 import java.util.Comparator;
@@ -21,6 +22,20 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
     public static final int NUMBER_OF_DISTINCT_PEPTIDE_SEQUENCES = 3;
     public static final int NUMBER_OF_SPECTRA = 4;
     public static final int CONFIDENCE = 5;
+
+    /**
+     * The search engine type.
+     */
+    private SearchEngineType searchEngineType;
+
+    /**
+     * Set the search engine type.
+     *
+     * @param searchEngineType
+     */
+    public void setSearchEngineType(SearchEngineType searchEngineType) {
+        this.searchEngineType = searchEngineType;
+    }
 
     @Override
     public Class getColumnClass(int column) {
@@ -71,6 +86,19 @@ public class ProteinGroupTableFormat implements AdvancedTableFormat<ProteinGroup
             case NUMBER_OF_SPECTRA:
                 return proteinGroupDTO.getSpectrumCount();
             case CONFIDENCE:
+                switch (searchEngineType) {
+                    case PEPTIDESHAKER:
+                        proteinGroupDTO.getProteinConfidence();
+                        break;
+                    case MAXQUANT:
+                        if (proteinGroupDTO.getProteinPostErrorProbability() != null) {
+                            return proteinGroupDTO.getProteinPostErrorProbability();
+                        } else {
+                            return 0.0;
+                        }
+                    default:
+                        break;
+                }
                 return proteinGroupDTO.getProteinConfidence();
             default:
                 throw new IllegalArgumentException("Unexpected column number " + column);

@@ -83,6 +83,7 @@ public class ProteinOverviewController implements Controllable {
     private static final Pattern HTML_TAGS = Pattern.compile("<[a-z/]{1,5}>");
 
     private DefaultTreeModel projectTreeModel;
+    private ProteinGroupTableFormat proteinGroupTableFormat;
     private ProteinGroupTableModel proteinGroupTableModel;
     private AdvancedTableModel peptideTableModel;
     private AdvancedTableModel psmTableModel;
@@ -146,8 +147,8 @@ public class ProteinOverviewController implements Controllable {
 
         //init protein group table
         SortedList<ProteinGroupDTO> sortedProteinGroups = new SortedList<>(proteinGroupDTOs, null);
-
-        proteinGroupTableModel = new ProteinGroupTableModel(sortedProteinGroups, new ProteinGroupTableFormat(), 20, ProteinGroupTableFormat.ID);
+        proteinGroupTableFormat = new ProteinGroupTableFormat();
+        proteinGroupTableModel = new ProteinGroupTableModel(sortedProteinGroups, proteinGroupTableFormat, 20, ProteinGroupTableFormat.ID);
         proteinOverviewPanel.getProteinGroupTable().setModel(proteinGroupTableModel);
         proteinGroupSelectionModel = new DefaultEventSelectionModel<>(sortedProteinGroups);
         proteinGroupSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -631,6 +632,7 @@ public class ProteinOverviewController implements Controllable {
             ProgressStartEvent progressStartEvent = new ProgressStartEvent(mainController.getMainFrame(), true, 1, "Protein view progress. ");
             eventBus.post(progressStartEvent);
 
+            proteinGroupTableFormat.setSearchEngineType(selectedAnalyticalRuns.get(0).getSearchAndValidationSettings().getSearchEngine().getSearchEngineType());
             GlazedLists.replaceAll(proteinGroupDTOs, proteinGroupTableModel.getRows(getSelectedAnalyticalRunIds()), false);
             proteinOverviewPanel.getProteinGroupPageLabel().setText(proteinGroupTableModel.getPageIndicator());
 
