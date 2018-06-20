@@ -20,7 +20,7 @@ public class TabularFileIteratorTest {
     }
 
     @Test
-    public void testTabularFileIterator() throws IOException, UnparseableException {
+    public void testTabularFileIterator() throws IOException {
         File evidenceSubsetFile = new ClassPathResource("data/maxquant/evidence_unit_test_1.txt").getFile();
         TabularFileIterator iterator = new TabularFileIterator(evidenceSubsetFile.toPath(), evidenceHeaders.getMandatoryHeaders());
 

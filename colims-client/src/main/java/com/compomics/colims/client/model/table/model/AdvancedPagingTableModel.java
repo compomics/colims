@@ -44,9 +44,9 @@ public abstract class AdvancedPagingTableModel extends DefaultEventTableModel {
     /**
      * Constructor.
      *
-     * @param source the source event list
-     * @param tableFormat the table format
-     * @param perPage the number of rows per page
+     * @param source                 the source event list
+     * @param tableFormat            the table format
+     * @param perPage                the number of rows per page
      * @param defaultSortColumnIndex the default sort column
      */
     public AdvancedPagingTableModel(EventList source, TableFormat tableFormat, int perPage, int defaultSortColumnIndex) {

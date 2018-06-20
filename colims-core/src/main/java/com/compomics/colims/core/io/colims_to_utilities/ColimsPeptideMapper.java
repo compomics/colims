@@ -29,7 +29,7 @@ public class ColimsPeptideMapper {
     private static final String FRAGMENTS_DELIMITER = ";";
     private static final String STAR_SUFFIX = "*";
     private static final char NEUTRAL_LOSSES_PREFIX = '-';
-    private static final char CHARGE_PREFIX = '(';    
+    private static final char CHARGE_PREFIX = '(';
 
     private final PeptideService peptideService;
     private final SpectrumService spectrumService;
@@ -72,9 +72,12 @@ public class ColimsPeptideMapper {
             for (int i = 0; i < fragmentIons.length; i++) {
                 String fragmentIon = fragmentIons[i];
                 String fragmentMass = fragmentMasses[i];
-                IonMatch ionMatch = mapFragmentIon(fragmentIon, fragmentMass, peptide);
-
-                ionMatches.add(ionMatch);
+                try {
+                    IonMatch ionMatch = mapFragmentIon(fragmentIon, fragmentMass, peptide);
+                    ionMatches.add(ionMatch);
+                } catch (NumberFormatException e) {
+                    //do nothing
+                }
             }
         }
 
@@ -106,9 +109,10 @@ public class ColimsPeptideMapper {
      * @param fragmentMassString the fragment mass String
      * @param peptide            the {@link Peptide} instance
      * @return the {@link IonMatch} instance
-     * @throws IOException in case of an spectrum file read related error
+     * @throws IOException           in case of an spectrum file read related error
+     * @throws NumberFormatException in case of an empty or incorrect input
      */
-    private IonMatch mapFragmentIon(String fragmentIonString, String fragmentMassString, Peptide peptide) throws IOException {
+    private IonMatch mapFragmentIon(String fragmentIonString, String fragmentMassString, Peptide peptide) throws IOException, NumberFormatException {
         //fetch the spectrum files
         spectrumService.fetchSpectrumFiles(peptide.getSpectrum());
 
@@ -118,7 +122,7 @@ public class ColimsPeptideMapper {
         Peak closestPeak = findClosestPeak(sortedSpectrumPeaks, fragmentMass);
 
         String fragmentIon = fragmentIonString;
-        if(fragmentIon.endsWith(STAR_SUFFIX)){
+        if (fragmentIon.endsWith(STAR_SUFFIX)) {
             fragmentIon = fragmentIon.substring(0, fragmentIon.length() - 1);
         }
         String neutralLossString = null;
@@ -132,8 +136,7 @@ public class ColimsPeptideMapper {
                 neutralLossString = fragmentIon.substring(neutralLossesStartIndex + 1, fragmentIonString.length());
             }
             fragmentIon = fragmentIonString.substring(0, neutralLossesStartIndex);
-        }
-        else if(chargeStartIndex > -1){
+        } else if (chargeStartIndex > -1) {
             charge = fragmentIonString.substring(chargeStartIndex + 1, fragmentIonString.length() - 2);
             fragmentIon = fragmentIonString.substring(0, chargeStartIndex);
         }
@@ -147,8 +150,7 @@ public class ColimsPeptideMapper {
             NeutralLoss neutralLoss = NeutralLoss.getNeutralLoss(neutralLossString);
             neutralLosses = new NeutralLoss[1];
             neutralLosses[0] = neutralLoss;
-        }
-        else{
+        } else {
             neutralLosses = new NeutralLoss[]{};
         }
 
@@ -166,7 +168,7 @@ public class ColimsPeptideMapper {
      */
     private Peak findClosestPeak(TreeMap<Double, Double> peakMap, Double fragmentMass) {
         Peak peak = null;
-        
+
         Map.Entry<Double, Double> low = peakMap.floorEntry(fragmentMass);
         Map.Entry<Double, Double> high = peakMap.ceilingEntry(fragmentMass);
         Map.Entry<Double, Double> peakEntry;
@@ -177,9 +179,9 @@ public class ColimsPeptideMapper {
             peak = new Peak(peakEntry.getKey(), peakEntry.getValue());
         } else if (low != null || high != null) {
             peakEntry = low != null ? low : high;
-            peak =new Peak(peakEntry.getKey(), peakEntry.getValue());
+            peak = new Peak(peakEntry.getKey(), peakEntry.getValue());
         }
-        
+
         return peak;
     }
 }

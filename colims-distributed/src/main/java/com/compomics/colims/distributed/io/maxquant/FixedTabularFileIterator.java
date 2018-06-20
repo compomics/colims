@@ -16,6 +16,7 @@ import java.util.*;
  * Convert a tabular file into an {@link Iterable} that returns {@link Map}<String, String> instances per line that use
  * the values on the first line as keys and the values per line as value. Using this approach one does not have to read
  * the entire file into memory first, providing some much needed relief when parsing large MaxQuant files.
+ *
  * @param <T> the header enum
  */
 public class FixedTabularFileIterator<T extends Enum<T>> implements Iterable<Map<T, String>>, Iterator<Map<T, String>> {
@@ -32,7 +33,7 @@ public class FixedTabularFileIterator<T extends Enum<T>> implements Iterable<Map
     private final LineReader lineReader;
     private String[] nextLine;
     /**
-     * The header values array. All values are lowercase.
+     * The header values map.
      */
     private final EnumMap<T, Integer> headerIndexes;
 

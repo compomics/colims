@@ -6,6 +6,8 @@ import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.model.enums.FragmentationType;
 import com.compomics.util.experiment.massspectrometry.MSnSpectrum;
 import com.compomics.util.experiment.massspectrometry.Precursor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,8 @@ public class UtilitiesSpectrumMapper {
     private static final Logger LOGGER = LoggerFactory.getLogger(UtilitiesSpectrumMapper.class);
 
     private static final String SCAN_NUMBER = "scan=";
+    private static final String SCAN_NUMBER_SEPARATOR = "-";
+
     /**
      * Map the utilities spectrum onto the Colims spectrum.
      *
@@ -53,11 +57,7 @@ public class UtilitiesSpectrumMapper {
         //@todo is spectrum key the correct accession property?
         targetSpectrum.setAccession(sourceSpectrum.getSpectrumKey());
         targetSpectrum.setTitle(sourceSpectrum.getSpectrumTitle());
-        if (sourceSpectrum.getScanNumber() != null && !sourceSpectrum.getScanNumber().isEmpty()) {
-            targetSpectrum.setScanNumber(Long.valueOf(sourceSpectrum.getScanNumber()));
-        }else{
-            targetSpectrum.setScanNumber(Long.valueOf(org.apache.commons.lang3.StringUtils.substringAfter(sourceSpectrum.getSpectrumTitle(), SCAN_NUMBER).replace("\"", "").trim()));
-        }
+        setScanNumber(sourceSpectrum, targetSpectrum);
         targetSpectrum.setScanTime(sourceSpectrum.getScanStartTime());
         targetSpectrum.setMzRatio(precursor.getMz());
         targetSpectrum.setIntensity(precursor.getIntensity());
@@ -102,5 +102,27 @@ public class UtilitiesSpectrumMapper {
         targetSpectrum.getSpectrumFiles().add(spectrumFile);
 
         LOGGER.debug("Finished mapping MSnSpectrum with title" + sourceSpectrum.getSpectrumTitle());
+    }
+
+    /**
+     * Parse the scan number from the source spectrum and set it in the target spectrum.
+     *
+     * @param sourceSpectrum the source spectrum
+     * @param targetSpectrum the target spectrum
+     */
+    private void setScanNumber(com.compomics.util.experiment.massspectrometry.Spectrum sourceSpectrum, Spectrum targetSpectrum) {
+        if (sourceSpectrum.getScanNumber() != null && !sourceSpectrum.getScanNumber().isEmpty()) {
+            if (NumberUtils.isCreatable(sourceSpectrum.getScanNumber())) {
+                targetSpectrum.setScanNumber(Long.valueOf(sourceSpectrum.getScanNumber()));
+            } else if (sourceSpectrum.getScanNumber().contains(SCAN_NUMBER_SEPARATOR)) {
+                //if the scan number has the format number-number, only take the first number
+                String firstScanNumber = StringUtils.substringBefore(sourceSpectrum.getScanNumber(), SCAN_NUMBER_SEPARATOR);
+                if (NumberUtils.isCreatable(firstScanNumber)) {
+                    targetSpectrum.setScanNumber(Long.valueOf(firstScanNumber));
+                }
+            }
+        } else if (sourceSpectrum.getSpectrumTitle().contains(SCAN_NUMBER)) {
+            targetSpectrum.setScanNumber(Long.valueOf(StringUtils.substringAfter(sourceSpectrum.getSpectrumTitle(), SCAN_NUMBER).replace("\"", "").trim()));
+        }
     }
 }

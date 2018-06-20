@@ -122,7 +122,7 @@ public class MzIdentMlExporter {
      */
     private Inputs inputs;
     /**
-     * The CVs used in the MzIdentML file (key: CV reference; value: {@link Cv}
+     * The CVs used in the MzIdentML file (key: CV reference in upper case; value: {@link Cv}
      * instance).
      */
     private final Map<String, Cv> cvs = new HashMap<>();
@@ -502,7 +502,7 @@ public class MzIdentMlExporter {
     private boolean updateCvList(String cvRef) throws IOException {
         boolean present = true;
 
-        if (!cvs.containsKey(cvRef)) {
+        if (!cvs.containsKey(cvRef.toUpperCase())) {
             Cv cv = getMzIdentMlElement("/CvList/" + cvRef, Cv.class);
 
             if (cv == null) {
@@ -521,7 +521,7 @@ public class MzIdentMlExporter {
 
             if (cv != null) {
                 //add it to the used CVs
-                cvs.put(cvRef, cv);
+                cvs.put(cvRef.toUpperCase(), cv);
             } else {
                 present = false;
             }
@@ -780,7 +780,7 @@ public class MzIdentMlExporter {
             instrumentTypeCvParam.setAccession(instrumentType.getAccession());
             instrumentTypeCvParam.setName(instrumentType.getName());
             updateCvList(instrumentType.getLabel());
-            instrumentTypeCvParam.setCv(cvs.get(instrumentType.getLabel()));
+            instrumentTypeCvParam.setCv(cvs.get(instrumentType.getLabel().toUpperCase()));
 
             additionalSearchParams.getCvParam().add(instrumentTypeCvParam);
         }
@@ -1052,7 +1052,7 @@ public class MzIdentMlExporter {
                             peptideHypothesis.getSpectrumIdentificationItemRef().add(spectrumIdentificationItemRef);
                         }
                     } catch (IllegalStateException ex) {
-                        LOGGER.info(ex.getMessage(), ex);
+                        LOGGER.debug(ex.getMessage(), ex);
                     }
                 }
 

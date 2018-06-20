@@ -1,14 +1,16 @@
 package com.compomics.colims.core.playground;
 
-import org.apache.commons.lang.StringUtils;
+import com.compomics.colims.core.config.ApplicationContextProvider;
+import com.compomics.colims.core.io.fasta.FastaDbParser;
+import com.compomics.colims.model.FastaDb;
+import org.springframework.context.ApplicationContext;
 
-import java.awt.*;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author Niels Hulstaert
@@ -16,8 +18,8 @@ import java.util.stream.Collectors;
 public class Playground {
 
     public static void main(final String[] args) throws IOException, ClassNotFoundException, SQLException {
-//        ApplicationContextProvider.getInstance().setDefaultApplicationContext();
-//        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
+        ApplicationContextProvider.getInstance().setDefaultApplicationContext();
+        ApplicationContext applicationContext = ApplicationContextProvider.getInstance().getApplicationContext();
         //
         //        SchemaExport schemaExport = new SchemaExport(sessionFactoryBean.getConfiguration());
         //        schemaExport.setOutputFile("C:\\Users\\niels\\Desktop\\testing.txt");
@@ -44,5 +46,19 @@ public class Playground {
 //        Map termMetadata = olsClient.getTermMetadata("MOD:00935", "MOD");
 //        
 //        List<DataHolder> termsByAnnotationData = olsClient.getTermsByAnnotationData("MOD", "DiffMono", null, 15.894915000000001, 16.094915);
+
+        FastaDbParser fastaDbParser = (FastaDbParser) applicationContext.getBean("fastaDbParser");
+        FastaDb testFastaDb = new FastaDb();
+        testFastaDb.setName("test fasta");
+        testFastaDb.setFileName("SP_human.fasta");
+        testFastaDb.setFilePath(Paths.get("/home/niels/Downloads/ecoli_up000000625_7_06_2018.fasta").toString());
+        testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
+        testFastaDb.setVersion("N/A");
+        testFastaDb.setDatabaseName("test db");
+        LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
+        fastaDbs.put(testFastaDb, Paths.get(testFastaDb.getFilePath()));
+        Map<String, String> parse = fastaDbParser.parse(fastaDbs);
+        System.out.println("=---------------");
+
     }
 }

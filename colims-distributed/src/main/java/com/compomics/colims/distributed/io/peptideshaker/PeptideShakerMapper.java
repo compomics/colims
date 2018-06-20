@@ -30,6 +30,7 @@ import eu.isas.peptideshaker.scoring.maps.ProteinMap;
 import eu.isas.peptideshaker.scoring.targetdecoy.TargetDecoyMap;
 import eu.isas.peptideshaker.scoring.targetdecoy.TargetDecoyResults;
 import eu.isas.peptideshaker.utils.CpsParent;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,7 +164,8 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
             //load the (primary, there's only one) FASTA DB file
             FastaDb fastaDb = fastaDbService.findById(dataImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
             //get the fasta file and make the path absolute
-            Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDb.getFilePath());
+            String fastaDbFilePath = FilenameUtils.separatorsToSystem(fastaDb.getFilePath());
+            Path absoluteFastaDbPath = fastasDirectory.resolve(fastaDbFilePath);
             //check if the Path exists
             if (!Files.exists(absoluteFastaDbPath)) {
                 throw new IllegalArgumentException("The FASTA DB " + absoluteFastaDbPath.toString() + " doesn't exist.");
@@ -175,7 +177,7 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
             LOGGER.info("Finished mapping search settings for PeptideShaker experiment " + msExperiment.getReference());
 
             LOGGER.info("Start mapping PeptideShaker experiment " + msExperiment.getReference());
-            cpsParent.loadFastaFile(fastaDbFile, null);
+            cpsParent.loadFastaFile(fastaDbFile.getParentFile(), null);
 
             //load the spectrum files, peptide en protein matches
             cpsParent.loadSpectrumFiles(null);
@@ -201,67 +203,72 @@ public class PeptideShakerMapper implements DataMapper<UnpackedPeptideShakerImpo
                 proteinGroupScore = (PSParameter) (identification.getProteinMatchParameter(proteinMatchKey, proteinGroupScore));
 
                 //only consider non decoy and validated proteins
-                if (!ProteinMatch.isDecoy(proteinMatchKey) && proteinGroupScore.getMatchValidationLevel().isValidated()) {
-                    ProteinGroup proteinGroup = new ProteinGroup();
+                try {
+                    if (!ProteinMatch.isDecoy(proteinMatchKey) && proteinGroupScore.getMatchValidationLevel().isValidated()) {
+                        ProteinGroup proteinGroup = new ProteinGroup();
 
-                    //map the Utilities ProteinMatch instance onto the ProteinGroup instance
-                    utilitiesProteinGroupMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
+                        //map the Utilities ProteinMatch instance onto the ProteinGroup instance
+                        utilitiesProteinGroupMapper.map(proteinMatch, proteinGroupScore, proteinGroup);
 
-                    //add the protein group to the map
-                    proteinGroups.add(proteinGroup);
+                        //add the protein group to the map
+                        proteinGroups.add(proteinGroup);
 
-                    //iterate over the peptide matches
-                    PeptideMatchesIterator peptideMatchesIterator = identification.getPeptideMatchesIterator(proteinMatch.getPeptideMatchesKeys(), parameters, false, parameters, null);
-                    PeptideMatch peptideMatch;
-                    while ((peptideMatch = peptideMatchesIterator.next()) != null) {
-                        String peptideMatchKey = peptideMatch.getKey();
+                        //iterate over the peptide matches
+                        PeptideMatchesIterator peptideMatchesIterator = identification.getPeptideMatchesIterator(proteinMatch.getPeptideMatchesKeys(), parameters, false, parameters, null);
+                        PeptideMatch peptideMatch;
+                        while ((peptideMatch = peptideMatchesIterator.next()) != null) {
+                            String peptideMatchKey = peptideMatch.getKey();
 
-                        PSParameter peptideScore = new PSParameter();
-                        peptideScore = (PSParameter) identification.getPeptideMatchParameter(peptideMatchKey, peptideScore);
+                            PSParameter peptideScore = new PSParameter();
+                            peptideScore = (PSParameter) identification.getPeptideMatchParameter(peptideMatchKey, peptideScore);
 
-                        //iterate over the spectrum matches
-                        PsmIterator psmIterator = identification.getPsmIterator(peptideMatch.getSpectrumMatchesKeys(), parameters, true, null);
-                        SpectrumMatch spectrumMatch;
-                        while ((spectrumMatch = psmIterator.next()) != null) {
-                            String spectrumMatchKey = spectrumMatch.getKey();
+                            //iterate over the spectrum matches
+                            PsmIterator psmIterator = identification.getPsmIterator(peptideMatch.getSpectrumMatchesKeys(), parameters, true, null);
+                            SpectrumMatch spectrumMatch;
+                            while ((spectrumMatch = psmIterator.next()) != null) {
+                                String spectrumMatchKey = spectrumMatch.getKey();
 
-                            PSParameter spectrumScore = new PSParameter();
-                            spectrumScore = (PSParameter) identification.getSpectrumMatchParameter(spectrumMatchKey, spectrumScore);
+                                PSParameter spectrumScore = new PSParameter();
+                                spectrumScore = (PSParameter) identification.getSpectrumMatchParameter(spectrumMatchKey, spectrumScore);
 
-                            //only consider validated PSMs
-                            if (spectrumScore.getMatchValidationLevel().isValidated()) {
-                                PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
-                                //set peptide scores in PeptideHasProteinGroup entity
-                                peptideHasProteinGroup.setPeptideProbability(peptideScore.getPeptideProbabilityScore());
-                                peptideHasProteinGroup.setPeptidePostErrorProbability(peptideScore.getPeptideProbability());
+                                //only consider validated PSMs
+                                if (spectrumScore.getMatchValidationLevel().isValidated()) {
+                                    PeptideHasProteinGroup peptideHasProteinGroup = new PeptideHasProteinGroup();
+                                    //set peptide scores in PeptideHasProteinGroup entity
+                                    peptideHasProteinGroup.setPeptideProbability(peptideScore.getPeptideProbabilityScore());
+                                    peptideHasProteinGroup.setPeptidePostErrorProbability(peptideScore.getPeptideProbability());
 
-                                //set entity associations between PeptideHasProteinGroup and ProteinGroup entities
-                                peptideHasProteinGroup.setProteinGroup(proteinGroup);
-                                proteinGroup.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+                                    //set entity associations between PeptideHasProteinGroup and ProteinGroup entities
+                                    peptideHasProteinGroup.setProteinGroup(proteinGroup);
+                                    proteinGroup.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
 
-                                //map spectrum
-                                Spectrum targetSpectrum = new Spectrum();
-                                //@todo get fragmentation type from PeptideShaker
-                                utilitiesSpectrumMapper.map((MSnSpectrum) spectrumFactory.getSpectrum(spectrumMatchKey), null, targetSpectrum);
+                                    //map spectrum
+                                    Spectrum targetSpectrum = new Spectrum();
+                                    //@todo get fragmentation type from PeptideShaker
+                                    utilitiesSpectrumMapper.map((MSnSpectrum) spectrumFactory.getSpectrum(spectrumMatchKey), null, targetSpectrum);
 
-                                //map peptide
-                                Peptide targetPeptide = new Peptide();
-                                utilitiesPeptideMapper.map(spectrumMatch, spectrumScore, targetPeptide);
+                                    //map peptide
+                                    Peptide targetPeptide = new Peptide();
+                                    utilitiesPeptideMapper.map(spectrumMatch, spectrumScore, targetPeptide);
 
-                                //set entity associations between AnalyticalRun and Spectrum entities
-                                analyticalRun.getSpectrums().add(targetSpectrum);
-                                targetSpectrum.setAnalyticalRun(analyticalRun);
+                                    //set entity associations between AnalyticalRun and Spectrum entities
+                                    analyticalRun.getSpectrums().add(targetSpectrum);
+                                    targetSpectrum.setAnalyticalRun(analyticalRun);
 
-                                //set entity associations between Spectrum and Peptide entities
-                                targetSpectrum.getPeptides().add(targetPeptide);
-                                targetPeptide.setSpectrum(targetSpectrum);
+                                    //set entity associations between Spectrum and Peptide entities
+                                    targetSpectrum.getPeptides().add(targetPeptide);
+                                    targetPeptide.setSpectrum(targetSpectrum);
 
-                                //set entity associations between Peptide and PeptideHasProteinGroup entities
-                                targetPeptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
-                                peptideHasProteinGroup.setPeptide(targetPeptide);
+                                    //set entity associations between Peptide and PeptideHasProteinGroup entities
+                                    targetPeptide.getPeptideHasProteinGroups().add(peptideHasProteinGroup);
+                                    peptideHasProteinGroup.setPeptide(targetPeptide);
+                                }
                             }
                         }
                     }
+                }
+                catch (NullPointerException e){
+                    System.out.println("-------");
                 }
             }
             analyticalRuns.add(analyticalRun);
