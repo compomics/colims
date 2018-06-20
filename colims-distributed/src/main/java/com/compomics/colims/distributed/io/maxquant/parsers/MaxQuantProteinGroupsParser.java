@@ -52,7 +52,7 @@ public class MaxQuantProteinGroupsParser {
      * The map of parsed protein sequences (key: protein accession; value:
      * protein sequence).
      */
-    private Map<String, String> proteinSequences = new HashMap<>();
+    private Map<String, Protein> proteinSequences = new HashMap<>();
     /**
      * The quantification method.
      */
@@ -165,8 +165,8 @@ public class MaxQuantProteinGroupsParser {
                     strippedAccession = org.apache.commons.lang3.StringUtils.substringAfter(strippedAccession, ProteinGroupHasProtein.CONTAMINANT_PREFIX);
                 }
                 //get the protein sequence by it's accession
-                String sequence = getProteinSequence(strippedAccession);
-                proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(sequence, accession, isMainGroup, proteinGroup));
+                Protein protein = getProteinSequence(strippedAccession);
+                proteinGroup.getProteinGroupHasProteins().add(createProteinGroupHasProtein(protein, accession, isMainGroup, proteinGroup));
 
                 if (isMainGroup) {
                     isMainGroup = false;
@@ -208,7 +208,7 @@ public class MaxQuantProteinGroupsParser {
      * @return sequence the found sequence
      * @throws IllegalArgumentException if the accession key is not found
      */
-    private String getProteinSequence(String accession) {
+    private Protein getProteinSequence(String accession) {
         if (proteinSequences.containsKey(accession)) {
             return proteinSequences.get(accession);
         } else {
@@ -224,12 +224,13 @@ public class MaxQuantProteinGroupsParser {
      * @param mainGroup whether this is the main protein of the group
      * @return a ProteinGroupHasProtein object
      */
-    private ProteinGroupHasProtein createProteinGroupHasProtein(String sequence, String accession, boolean mainGroup, ProteinGroup proteinGroup) {
+    private ProteinGroupHasProtein createProteinGroupHasProtein(Protein pr, String accession, boolean mainGroup, ProteinGroup proteinGroup) {
         ProteinGroupHasProtein proteinGroupHasProtein = new ProteinGroupHasProtein();
         proteinGroupHasProtein.setIsMainGroupProtein(mainGroup);
 
         //get protein
-        Protein protein = proteinService.getProtein(sequence);
+        Protein protein = proteinService.getProtein(pr.getSequence(), pr.getDescription());
+        protein.setDescription(pr.getDescription());
 
         //set protein accession
         proteinGroupHasProtein.setProteinAccession(accession);
@@ -262,15 +263,15 @@ public class MaxQuantProteinGroupsParser {
         //set the analytical run
         proteinGroupQuant.setAnalyticalRun(analyticalRun);
         //set the intensity
-        if (intensity != null) {
+        if (intensity != null && !Double.isNaN(Double.parseDouble(intensity))) {
             proteinGroupQuant.setIntensity(Double.parseDouble(intensity));
         }
         //set the LFQ intensity
-        if (lfqIntensity != null) {
+        if (lfqIntensity != null && !Double.isNaN(Double.parseDouble(lfqIntensity))) {
             proteinGroupQuant.setLfqIntensity(Double.parseDouble(lfqIntensity));
         }
         //set the iBAQ
-        if (ibaq != null) {
+        if (ibaq != null && !Double.isNaN(Double.parseDouble(ibaq))) {
             proteinGroupQuant.setIbaq(Double.parseDouble(ibaq));
         }
         //set the MSMS Count

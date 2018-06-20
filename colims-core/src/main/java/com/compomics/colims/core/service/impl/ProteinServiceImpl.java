@@ -67,12 +67,13 @@ public class ProteinServiceImpl implements ProteinService {
     }
 
     @Override
-    public Protein getProtein(String sequence) {
+    public Protein getProtein(String sequence, String description) {
         Protein targetProtein;
 
         //first, look in the newly added proteins map
         //@todo configure hibernate cache and check performance
         targetProtein = cachedProteins.get(sequence);
+        
         if (targetProtein == null) {
             //check if the protein is found in the db
             targetProtein = findBySequence(sequence);
@@ -82,8 +83,13 @@ public class ProteinServiceImpl implements ProteinService {
                 targetProtein = new Protein(sequence);
 
             }
+            if(targetProtein.getDescription() == null && description != null){
+                targetProtein.setDescription(description);
+            }
             //add to cached proteins
             cachedProteins.put(sequence, targetProtein);
+        }else if(targetProtein.getDescription() == null && description != null){
+            targetProtein.setDescription(description);
         }
         return targetProtein;
     }

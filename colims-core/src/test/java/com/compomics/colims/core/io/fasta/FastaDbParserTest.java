@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.fasta;
 
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.enums.SearchEngineType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -52,7 +53,7 @@ public class FastaDbParserTest {
         fastaDbs.put(testFastaDb, Paths.get(testFastaDb.getFilePath()));
         fastaDbs.put(contaminantsFastaDb, Paths.get(contaminantsFastaDb.getFilePath()));
 
-        Map<String, String> parsedFastas = fastaDbParser.parse(fastaDbs);
+        Map<String, Protein> parsedFastas = fastaDbParser.parse(fastaDbs);
 
         Assert.assertFalse(parsedFastas.containsKey(null));
         Assert.assertEquals(20381, parsedFastas.size());
@@ -64,7 +65,8 @@ public class FastaDbParserTest {
         Assert.assertTrue(parsedFastas.containsKey("Q2KJ03"));
         Assert.assertEquals("MEEKTTQSVEGLKQYCLVPEREMKHIERHIHQTGKAGEFKNKPFRQVLQPPNETKLP" +
                 "KIMPEGHGIQNAQRRKQVNEREQMQTKDHQERMIRGRELAEQRLKERILRRSQSQLLTYEKHERVKEIK" +
-                "EFERVIAYLLFQPCSRSRIKVSILMDKSQNGEKVNTIVKPYQRKFLAMPPFLRSQIGKIRD", parsedFastas.get("Q2KJ03"));
+                "EFERVIAYLLFQPCSRSRIKVSILMDKSQNGEKVNTIVKPYQRKFLAMPPFLRSQIGKIRD", parsedFastas.get("Q2KJ03").getSequence());
+        Assert.assertEquals("Putative uncharacterized protein ZNRD1-AS1", parsedFastas.get("Q2KJ03").getDescription());
         //look for 3 contaminants proteins
         Assert.assertTrue(parsedFastas.containsKey("P00761"));
         Assert.assertTrue(parsedFastas.containsKey("Q9TRI1"));
@@ -81,7 +83,9 @@ public class FastaDbParserTest {
                 "DLDSIIAEVRAQYEEIAQRSKAEAEALYQTKVQQLQISVDQHGDNLKNTKSEIAELNRMIQRLRAEIE" +
                 "NIKKQCQTLQVSVADAEQRGENALKDAHSKRVELEAALQQAKEELARMLREYQELMSVKLALDIEIAT" +
                 "YRKLLEGEEYRMSGECQSAVSISVVSGSTSTGGISGGLGSGSGFGLSSGFGSGSGSGFGFGGSVSGSS" +
-                "SSKIISTTTLNKRR", parsedFastas.get("P19013"));
+                "SSKIISTTTLNKRR", parsedFastas.get("P19013").getSequence());
+        Assert.assertEquals("Keratin, type II cytoskeletal 4", parsedFastas.get("P19013").getDescription());
+        
     }
 
     @Test

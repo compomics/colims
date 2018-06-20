@@ -246,6 +246,7 @@ create table project_has_user (
 create table protein (
     id bigint not null auto_increment,
     protein_sequence longtext not null,
+    description varchar(200),
     primary key (id)
 );
 
