@@ -31,7 +31,7 @@ public class TabularFileIterator implements Iterable<Map<String, String>>, Itera
     /**
      * The header values array. All values are lowercase.
      */
-    private String[] headerValues = new String[0];
+    private String[] headerValues;
 
     /**
      * Initialize an iterator for the data file. When iterating of the rows, the columns with the given headerValues are

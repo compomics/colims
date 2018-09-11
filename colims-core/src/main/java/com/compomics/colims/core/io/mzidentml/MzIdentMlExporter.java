@@ -62,7 +62,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * MzIdentML exporter class, populates models from the jmzidml library then uses
+ * MzIdentML exporter class, populates models from the jmzIdentML library then uses
  * the MzIdentMLMarshaller to marshal them into valid XML.
  *
  * @author Iain

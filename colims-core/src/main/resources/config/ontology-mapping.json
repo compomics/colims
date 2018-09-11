@@ -12,7 +12,7 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1",
         "label": "Acetyl",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "Acetylation of peptide N-term"
       },
       "Carbamidomethyl (C)": {
@@ -46,7 +46,7 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:3",
         "label": "Biotin",
-        "affected_AAs": "-"
+        "affected_AAs": "."
       },
       "Arg6": {
         "ontology_prefix": "UNIMOD",
@@ -157,7 +157,7 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:199",
         "label": "Dimethyl:2H(4)",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "Dimethylation of peptide N-term 2H(4)"
       },
       "DimethLys8": {
@@ -171,14 +171,14 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:330",
         "label": "Dimethyl:2H(6)13C(2)",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "Dimethylation of peptide N-term 2H(6) 13C(2)"
       },
       "18O": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:258",
         "label": "Label:18O(1)",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "18O(1) of peptide C-term"
       },
       "ICAT-0": {
@@ -213,7 +213,7 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:687",
         "label": "ICPL:2H(4)",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "ICPL4 of peptide N-term"
       },
       "ICPL-Lys6": {
@@ -227,7 +227,7 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:364",
         "label": "ICPL:13C(6)",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "ICPL6 of peptide N-term"
       },
       "ICPL-Lys10": {
@@ -241,7 +241,7 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:866",
         "label": "ICPL:13C(6)2H(4)",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "ICPL10 of peptide N-term"
       },
       "mTRAQ-Lys0": {
@@ -255,7 +255,7 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:888",
         "label": "mTRAQ",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "mTRAQ of peptide N-term light"
       },
       "mTRAQ-Lys4": {
@@ -269,7 +269,7 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:889",
         "label": "mTRAQ:13C(3)15N(1)",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "mTRAQ of peptide N-term 13C(3) 15N"
       },
       "mTRAQ-Lys8": {
@@ -283,7 +283,7 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1302",
         "label": "mTRAQ:13C(6)15N(2)",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "mTRAQ of peptide N-term 13C(6) 15N(2)"
       },
       "DimethLys6": {
@@ -297,7 +297,7 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:1291",
         "label": "Dimethyl:2H(6)",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "Dimethylation of peptide N-term 2H(4)"
       },
       "Deamidation (N)": {
@@ -318,28 +318,28 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 4-plex of peptide N-term"
       },
       "iTRAQ4plex-Nter115": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 4-plex of peptide N-term"
       },
       "iTRAQ4plex-Nter116": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 4-plex of peptide N-term"
       },
       "iTRAQ4plex-Nter117": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:214",
         "label": "iTRAQ4plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 4-plex of peptide N-term"
       },
       "iTRAQ4plex-Lys114": {
@@ -374,56 +374,56 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 8-plex of peptide N-term"
       },
       "iTRAQ8plex-Nter114": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 8-plex of peptide N-term"
       },
       "iTRAQ8plex-Nter115": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 8-plex of peptide N-term"
       },
       "iTRAQ8plex-Nter116": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 8-plex of peptide N-term"
       },
       "iTRAQ8plex-Nter117": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 8-plex of peptide N-term"
       },
       "iTRAQ8plex-Nter118": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 8-plex of peptide N-term"
       },
       "iTRAQ8plex-Nter119": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 8-plex of peptide N-term"
       },
       "iTRAQ8plex-Nter121": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:730",
         "label": "iTRAQ8plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "iTRAQ 8-plex of peptide N-term"
       },
       "iTRAQ8plex-Lys113": {
@@ -485,14 +485,14 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:738",
         "label": "TMT2plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "TMT 2-plex of peptide N-term"
       },
       "TMT2plex-Nter127": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:738",
         "label": "TMT2plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "TMT 2-plex of peptide N-term"
       },
       "TMT2plex-Lys126": {
@@ -513,42 +513,42 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "TMT 6-plex of peptide N-term"
       },
       "TMT6plex-Nter127": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "TMT 6-plex of peptide N-term"
       },
       "TMT6plex-Nter128": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "TMT 6-plex of peptide N-term"
       },
       "TMT6plex-Nter129": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "TMT 6-plex of peptide N-term"
       },
       "TMT6plex-Nter130": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "TMT 6-plex of peptide N-term"
       },
       "TMT6plex-Nter131": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "TMT 6-plex of peptide N-term"
       },
       "TMT6plex-Lys126": {
@@ -597,14 +597,14 @@
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "TMT 6-plex of peptide N-term"
       },
       "TMT10plex-Nter130": {
         "ontology_prefix": "UNIMOD",
         "obo_id": "UNIMOD:737",
         "label": "TMT6plex",
-        "affected_AAs": "-",
+        "affected_AAs": ".",
         "utilities_name": "TMT 6-plex of peptide N-term"
       },
       "TMT10plex-Lys128": {

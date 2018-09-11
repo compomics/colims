@@ -95,7 +95,7 @@ public class FastaDbParser {
                         }
                         break;
                     case PEPTIDESHAKER:
-                        accessions = parseAccessionsWithoutUtilities(fastaPath);
+                        accessions = parseAccessionsWithUtilities(fastaPath);
                         break;
                     default:
                         accessions = new HashSet<>();
@@ -293,7 +293,7 @@ public class FastaDbParser {
      * @return the set of parsed protein accessions
      * @throws IOException in case of file reading related problem
      */
-    private Set<String> parseAccessionsWithoutUtilities(Path fastaPath) throws IOException {
+    private Set<String> parseAccessionsWithUtilities(Path fastaPath) throws IOException {
         Set<String> accessions = new HashSet<>();
         try (BufferedReader bufferedReader = Files.newBufferedReader(fastaPath)) {
             //start reading the file
