@@ -1,6 +1,7 @@
 package com.compomics.colims.core.io.fasta;
 
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.Protein;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.util.protein.Header;
 import org.slf4j.Logger;
@@ -42,8 +43,8 @@ public class FastaDbParser {
      * @return the protein sequences map (key: protein accession; value: protein sequence)
      * @throws IOException thrown in case of an input/output related problem
      */
-    public Map<String, String> parse(LinkedHashMap<FastaDb, Path> fastaDbs) throws IOException {
-        Map<String, String> proteinSequences = new HashMap<>();
+    public Map<String, Protein> parse(LinkedHashMap<FastaDb, Path> fastaDbs) throws IOException {
+        Map<String, Protein> proteinSequences = new HashMap<>();
         try {
             for (Map.Entry<FastaDb, Path> entry : fastaDbs.entrySet()) {
                 FastaDb fastaDb = entry.getKey();
@@ -153,7 +154,7 @@ public class FastaDbParser {
      * @param fastaPath        the FASTA path
      * @throws IOException in case of file reading related problem
      */
-    private void parseWithRule(Map<String, String> proteinSequences, FastaDb fastaDb, Path fastaPath) throws IOException {
+    private void parseWithRule(Map<String, Protein> proteinSequences, FastaDb fastaDb, Path fastaPath) throws IOException {
         try (BufferedReader bufferedReader = Files.newBufferedReader(fastaPath)) {
             //compile the pattern
             Pattern pattern;
@@ -170,11 +171,23 @@ public class FastaDbParser {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
                     //add limiting check for protein store to avoid growing
                     if (sequenceBuilder.length() > 0) {
+                        Protein protein = new Protein();
+                        protein.setSequence(sequenceBuilder.toString().trim());
+                        String regex = "(?<!\\\\)" + Pattern.quote("|");
+                        if(fastaHeader.substring(1).split(regex).length > 2){
+                            if(fastaHeader.substring(1).split(regex)[2].split(SPLITTER).length >1){
+                                String description =String.join(SPLITTER, Arrays.copyOfRange(fastaHeader.substring(1).split(regex)[2].split(SPLITTER), 1, fastaHeader.substring(1).split(regex)[2].split(SPLITTER).length));
+                                if(description.contains(" OS=")){
+                                    protein.setDescription(description.substring(0, description.indexOf(" OS=")));
+                                }
+                            }
+                            
+                        } 
                         Matcher matcher = pattern.matcher(fastaHeader.substring(1));
                         if (matcher.find()) {
-                            proteinSequences.putIfAbsent(matcher.group(1), sequenceBuilder.toString().trim());
+                            proteinSequences.putIfAbsent(matcher.group(1), protein);
                         } else {
-                            proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                            proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], protein);
                         }
                         sequenceBuilder.setLength(0);
                     }
@@ -185,11 +198,19 @@ public class FastaDbParser {
             }
             //last line
             if (sequenceBuilder.length() > 0) {
+                Protein protein = new Protein();
+                protein.setSequence(sequenceBuilder.toString().trim());
+                if(fastaHeader.substring(1).split("|").length > 2 && fastaHeader.substring(1).split("|")[2].split(SPLITTER).length >1){
+                    String description = fastaHeader.substring(1).split("|")[2].split(SPLITTER)[1];
+                    if(description.contains(" OS=")){
+                        protein.setDescription(description.substring(0, description.indexOf("OS=")));
+                    } 
+                } 
                 Matcher matcher = pattern.matcher(fastaHeader.substring(1).split(SPLITTER)[0]);
                 if (matcher.find()) {
-                    proteinSequences.putIfAbsent(matcher.group(1), sequenceBuilder.toString().trim());
+                    proteinSequences.putIfAbsent(matcher.group(1), protein);
                 } else {
-                    proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                    proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], protein);
                 }
                 sequenceBuilder.setLength(0);
             }
@@ -203,7 +224,7 @@ public class FastaDbParser {
      * @param fastaPath        the FASTA path
      * @throws IOException in case of file reading related problem
      */
-    private void parseWithoutRule(Map<String, String> proteinSequences, Path fastaPath) throws IOException {
+    private void parseWithoutRule(Map<String, Protein> proteinSequences, Path fastaPath) throws IOException {
         try (BufferedReader bufferedReader = Files.newBufferedReader(fastaPath)) {
             //start reading the file
             final StringBuilder sequenceBuilder = new StringBuilder();
@@ -213,7 +234,10 @@ public class FastaDbParser {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
                     //add limiting check for protein store to avoid growing
                     if (sequenceBuilder.length() > 0) {
-                        proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                        Protein protein = new Protein();
+                        protein.setSequence(sequenceBuilder.toString().trim());
+                      //  protein.setDescription(fastaHeader.substring(1).split(SPLITTER)[1]);
+                        proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], protein);
                         sequenceBuilder.setLength(0);
                     }
                     fastaHeader = line;
@@ -223,7 +247,9 @@ public class FastaDbParser {
             }
             //last line
             if (sequenceBuilder.length() > 0) {
-                proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], sequenceBuilder.toString().trim());
+                Protein protein = new Protein();
+                protein.setSequence(sequenceBuilder.toString().trim());
+                proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], protein);
                 sequenceBuilder.setLength(0);
             }
         }

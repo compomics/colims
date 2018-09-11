@@ -28,12 +28,16 @@ public class Protein extends DatabaseEntity {
     @Column(name = "protein_sequence", nullable = false)
 //    @Field(index=Index.YES, analyze=Analyze.NO, store=Store.NO)
     private String sequence;
+
+    @Basic(optional = true)
+    @Column(name = "description", nullable = true)
+    private String description;
     /**
-     * The ProteinGroupHasProtein instances from the join table between the protein group and protein tables.
+     * The ProteinGroupHasProtein instances from the join table between the
+     * protein group and protein tables.
      */
     @OneToMany(mappedBy = "protein")
     private List<ProteinGroupHasProtein> proteinGroupHasProteins = new ArrayList<>();
-
 
     /**
      * No-arg constructor.
@@ -58,6 +62,14 @@ public class Protein extends DatabaseEntity {
         this.sequence = sequence;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<ProteinGroupHasProtein> getProteinGroupHasProteins() {
         return proteinGroupHasProteins;
     }
@@ -66,11 +78,14 @@ public class Protein extends DatabaseEntity {
         this.proteinGroupHasProteins = proteinGroupHasProteins;
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         Protein protein = (Protein) o;
 

@@ -67,7 +67,7 @@ public class UtilitiesProteinGroupMapper {
                 //get the utilities Protein from SequenceFactory
                 com.compomics.util.experiment.biology.Protein sourceProtein = SequenceFactory.getInstance().getProtein(proteinAccession);
                 //get protein
-                Protein matchedProtein = proteinService.getProtein(sourceProtein.getSequence());
+                Protein matchedProtein = proteinService.getProtein(sourceProtein.getSequence(), null);
 
                 if (proteinAccession.equals(proteinMatch.getMainMatch())) {
                     //set the is main protein group flag to true

@@ -22,9 +22,10 @@ public interface ProteinService extends GenericService<Protein, Long> {
      * looks for the protein in the cache first before querying the database.
      *
      * @param sequence the protein sequence
+     * @param description the protein description
      * @return the found Protein instance
      */
-    Protein getProtein(String sequence);
+    Protein getProtein(String sequence, String description);
 
     /**
      * Clear the resources used by this resource.

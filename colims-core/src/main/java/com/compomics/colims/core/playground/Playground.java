@@ -57,7 +57,7 @@ public class Playground {
         testFastaDb.setDatabaseName("test db");
         LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
         fastaDbs.put(testFastaDb, Paths.get(testFastaDb.getFilePath()));
-        Map<String, String> parse = fastaDbParser.parse(fastaDbs);
+  //      Map<String, String> parse = fastaDbParser.parse(fastaDbs);
         System.out.println("=---------------");
 
     }
