@@ -41,9 +41,9 @@ public class UniProtServiceImpl implements UniProtService {
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(OlsServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UniProtServiceImpl.class);
 
-    private static final String UNIPROT_BASE_URL = "http://www.uniprot.org/uniprot";
+    private static final String UNIPROT_BASE_URL = "https://www.uniprot.org/uniprot";
 
     /**
      * The Spring RestTemplate instance for accessing the OLS rest API.
@@ -58,7 +58,6 @@ public class UniProtServiceImpl implements UniProtService {
     @Override
     public Map<String, String> getUniProtByAccession(String accession) throws RestClientException, IOException {
         Map<String, String> uniProt = new HashMap<>();
-
         try {
             // Set XML content type explicitly to force response in XML (If not spring gets response in JSON)
             HttpHeaders headers = new HttpHeaders();

@@ -63,6 +63,7 @@ public class FastaDbParserTest {
         Assert.assertTrue(parsedFastas.containsKey("O00571"));
         //look for the last protein and check if the last line of the file was parsed correctly
         Assert.assertTrue(parsedFastas.containsKey("Q2KJ03"));
+        Protein q2KJ03 = parsedFastas.get("Q2KJ03");
         Assert.assertEquals("MEEKTTQSVEGLKQYCLVPEREMKHIERHIHQTGKAGEFKNKPFRQVLQPPNETKLP" +
                 "KIMPEGHGIQNAQRRKQVNEREQMQTKDHQERMIRGRELAEQRLKERILRRSQSQLLTYEKHERVKEIK" +
                 "EFERVIAYLLFQPCSRSRIKVSILMDKSQNGEKVNTIVKPYQRKFLAMPPFLRSQIGKIRD", parsedFastas.get("Q2KJ03").getSequence());

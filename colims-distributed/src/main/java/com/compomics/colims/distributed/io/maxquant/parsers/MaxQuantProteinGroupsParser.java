@@ -114,11 +114,12 @@ public class MaxQuantProteinGroupsParser {
         TabularFileIterator iterator = new TabularFileIterator(proteinGroupsFile, proteinGroupsHeaders.getMandatoryHeaders());
         this.quantificationMethod = quantificationMethod;
 
+        //parse the FASTA files
+        proteinSequences = fastaDbParser.parse(fastaDbMap);
+
         while (iterator.hasNext()) {
             Map<String, String> values = iterator.next();
 
-            //parse the FASTA files
-            proteinSequences = fastaDbParser.parse(fastaDbMap);
             ProteinGroup proteinGroup = parseProteinGroup(values, includeContaminants, optionalHeaders);
             if (proteinGroup.getMainProtein() != null) {
                 proteinGroups.put(Integer.parseInt(values.get(proteinGroupsHeaders.get(ProteinGroupsHeader.ID))), proteinGroup);
