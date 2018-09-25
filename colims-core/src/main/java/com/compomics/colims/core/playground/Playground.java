@@ -3,6 +3,7 @@ package com.compomics.colims.core.playground;
 import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.io.fasta.FastaDbParser;
 import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.Protein;
 import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
@@ -51,13 +52,14 @@ public class Playground {
         FastaDb testFastaDb = new FastaDb();
         testFastaDb.setName("test fasta");
         testFastaDb.setFileName("SP_human.fasta");
-        testFastaDb.setFilePath(Paths.get("/home/niels/Downloads/ecoli_up000000625_7_06_2018.fasta").toString());
+        testFastaDb.setFilePath(Paths.get("/home/niels/Desktop/fastas/SP_human.fasta").toString());
         testFastaDb.setHeaderParseRule("&gt;.*\\|(.*)\\|");
         testFastaDb.setVersion("N/A");
         testFastaDb.setDatabaseName("test db");
         LinkedHashMap<FastaDb, Path> fastaDbs = new LinkedHashMap<>();
         fastaDbs.put(testFastaDb, Paths.get(testFastaDb.getFilePath()));
-  //      Map<String, String> parse = fastaDbParser.parse(fastaDbs);
+        Map<String, Protein> parse = fastaDbParser.parse(fastaDbs);
+        Protein protein = parse.get("Q5VTE0");
         System.out.println("=---------------");
 
     }

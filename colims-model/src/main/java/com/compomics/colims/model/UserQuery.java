@@ -1,7 +1,5 @@
 package com.compomics.colims.model;
 
-import org.hibernate.validator.constraints.Length;
-
 import javax.persistence.*;
 
 /**
@@ -19,8 +17,7 @@ public class UserQuery extends AuditableDatabaseEntity {
      * The query String.
      */
     @Basic(optional = false)
-    @Length(max = 500, message = "Description must be less than {max} characters.")
-    @Column(name = "query_string", nullable = false)
+    @Column(name = "query_string", columnDefinition = "TEXT", nullable = false)
     private String queryString;
     /**
      * The first name.

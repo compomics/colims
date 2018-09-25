@@ -220,18 +220,18 @@ public class MaxQuantProteinGroupsParser {
     /**
      * Create a protein and it's relation to a protein group.
      *
-     * @param sequence  the sequence of the protein
+     * @param prot      the protein object
      * @param accession the accession of the protein
      * @param mainGroup whether this is the main protein of the group
      * @return a ProteinGroupHasProtein object
      */
-    private ProteinGroupHasProtein createProteinGroupHasProtein(Protein pr, String accession, boolean mainGroup, ProteinGroup proteinGroup) {
+    private ProteinGroupHasProtein createProteinGroupHasProtein(Protein prot, String accession, boolean mainGroup, ProteinGroup proteinGroup) {
         ProteinGroupHasProtein proteinGroupHasProtein = new ProteinGroupHasProtein();
         proteinGroupHasProtein.setIsMainGroupProtein(mainGroup);
 
         //get protein
-        Protein protein = proteinService.getProtein(pr.getSequence(), pr.getDescription());
-        protein.setDescription(pr.getDescription());
+        Protein protein = proteinService.getProtein(prot.getSequence(), prot.getDescription());
+        protein.setDescription(prot.getDescription());
 
         //set protein accession
         proteinGroupHasProtein.setProteinAccession(accession);

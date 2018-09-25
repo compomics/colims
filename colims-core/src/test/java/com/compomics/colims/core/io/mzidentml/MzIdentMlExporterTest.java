@@ -4,7 +4,6 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.AnalyticalRun;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class MzIdentMlExporterTest {
         analyticalRuns.add(run);
 
         File mzIdentMLFile = File.createTempFile("testMzIdentMl", ".mzid");
-//        File mzIdentMLFile = new File("/home/niels/Desktop/testMzIdentMl.mzid");
+//        File mzIdentMLFile = new File("/home/user/Desktop/testMzIdentMl.mzid");
         File mgfFile = File.createTempFile("testMgf", "mgf");
 //        File mgfFile = new File("/home/niels/Desktop/testMgf.mgf");
 

@@ -23,9 +23,9 @@ public class Protein extends DatabaseEntity {
     /**
      * The protein sequence.
      */
-    @Lob
+    //@Lob
     @Basic(optional = false)
-    @Column(name = "protein_sequence", nullable = false)
+    @Column(name = "protein_sequence", columnDefinition = "TEXT", nullable = false)
 //    @Field(index=Index.YES, analyze=Analyze.NO, store=Store.NO)
     private String sequence;
 

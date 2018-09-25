@@ -217,6 +217,7 @@ public class FastaDbParser {
             if (matcher.find()) {
                 proteinSequences.putIfAbsent(matcher.group(1), protein);
             } else {
+                //otherwise split on space
                 proteinSequences.putIfAbsent(fastaHeader.split(SPLITTER)[0], protein);
             }
             sequenceBuilder.setLength(0);
@@ -242,8 +243,7 @@ public class FastaDbParser {
                     if (sequenceBuilder.length() > 0) {
                         Protein protein = new Protein();
                         protein.setSequence(sequenceBuilder.toString().trim());
-                        //  protein.setDescription(fastaHeader.substring(1).split(SPLITTER)[1]);
-                        proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], protein);
+                        proteinSequences.putIfAbsent(fastaHeader.substring(1).replaceAll("\\s",""), protein);
                         sequenceBuilder.setLength(0);
                     }
                     fastaHeader = line;
@@ -255,7 +255,7 @@ public class FastaDbParser {
             if (sequenceBuilder.length() > 0) {
                 Protein protein = new Protein();
                 protein.setSequence(sequenceBuilder.toString().trim());
-                proteinSequences.putIfAbsent(fastaHeader.substring(1).split(SPLITTER)[0], protein);
+                proteinSequences.putIfAbsent(fastaHeader.substring(1).replaceAll("\\s",""), protein);
                 sequenceBuilder.setLength(0);
             }
         }
@@ -310,7 +310,7 @@ public class FastaDbParser {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
-                    accessions.add(line.substring(1).split(SPLITTER)[0]);
+                    accessions.add(line.substring(1).replaceAll("\\s",""));
                 }
             }
         }
@@ -393,8 +393,10 @@ public class FastaDbParser {
             while ((line = bufferedReader.readLine()) != null && headers.size() < numberOfHeaders) {
                 if (line.startsWith(BLOCK_SEPARATOR)) {
                     //@TODO return the unparsed header or let compomics utilities try to parse it?
-                    Header header = Header.parseFromFASTA(line);
-                    headers.put(header.getAccessionOrRest(), line);
+                    //Header header = Header.parseFromFASTA(line);
+                    //headers.put(header.getAccessionOrRest(), line);
+                    //for the moment, just take the string starting from the second character
+                    headers.put(line.substring(1).replaceAll("\\s",""), line);
                 }
             }
         }

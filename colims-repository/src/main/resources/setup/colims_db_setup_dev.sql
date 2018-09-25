@@ -2,6 +2,7 @@
 
 use colims;
 
+
 create table analytical_run (
     id bigint not null auto_increment,
     creation_date datetime not null,
@@ -245,7 +246,7 @@ create table project_has_user (
 create table protein (
     id bigint not null auto_increment,
     description varchar(255),
-    protein_sequence longtext not null,
+    protein_sequence TEXT not null,
     primary key (id)
 );
 
@@ -522,7 +523,7 @@ create table user_query (
     creation_date datetime not null,
     modification_date datetime not null,
     user_name varchar(255) not null,
-    query_string varchar(500) not null,
+    query_string TEXT not null,
     usage_count integer,
     l_user_query_user_id bigint not null,
     primary key (id)

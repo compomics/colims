@@ -108,6 +108,7 @@ public class MaxQuantTestSuite {
             contaminantsFastaDb.setName("test contaminants fasta");
             contaminantsFastaDb.setFileName("contaminants.fasta");
             contaminantsFastaDb.setFilePath("contaminants.fasta");
+            contaminantsFastaDb.setHeaderParseRule("&gt;([^ ]*)");
             contaminantsFastaDb.setVersion("N/A");
             contaminantsFastaDb.setDatabaseName("N/A");
         } catch (IOException e) {

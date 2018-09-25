@@ -83,7 +83,7 @@ INSERT INTO search_engine (id, accession, label, name, type, version) VALUES (2,
 INSERT INTO taxonomy_cv_param (id, accession, label, name) VALUES (1,'NCBITaxon:9606','NCBITaxon','Homo sapiens');
 
 -- insert test fasta db
-INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_taxonomy_cv_id, database_name, header_parse_rule) VALUES (1, 'SP_human.fasta', 'SP_human.fasta', null, 'test fasta', '1.2.3', 1, 'UNIPROT', '&gt;.*\|(.*)\|'), (2, 'contaminants.fasta', 'contaminants.fasta', null, 'contaminants test fasta', null, null, 'CONTAMINANTS', null);
+INSERT INTO fasta_db (id, file_name, file_path, md5_checksum, name, version, l_taxonomy_cv_id, database_name, header_parse_rule) VALUES (1, 'SP_human.fasta', 'SP_human.fasta', null, 'test fasta', '1.2.3', 1, 'UNIPROT', '&gt;.*\|(.*)\|'), (2, 'contaminants.fasta', 'contaminants.fasta', null, 'contaminants test fasta', null, null, 'CONTAMINANTS', '&gt;([^ ]*)');
 
 -- insert test search parameter cv params
 INSERT INTO search_cv_param (id, accession, label, name, cv_property) VALUES (2, 'MS:1001083', 'PSI-MS', 'ms-ms search', 'SEARCH_TYPE');

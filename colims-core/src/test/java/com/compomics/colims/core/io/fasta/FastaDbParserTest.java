@@ -141,3 +141,4 @@ public class FastaDbParserTest {
         Assert.assertEquals("P13717", headerKeys.get(9));
     }
 }
+
