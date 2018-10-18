@@ -212,7 +212,6 @@ public class MaxQuantEvidenceParser {
         }
 
         peptide.setCharge(Integer.parseInt(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.CHARGE))));
-        String sequence = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE));
         peptide.setSequence(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.SEQUENCE)));
         peptide.setTheoreticalMass(Double.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS))));
         if (!evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MASS_ERROR)).equalsIgnoreCase(NAN)) {
@@ -254,7 +253,7 @@ public class MaxQuantEvidenceParser {
             peptide.setIbaq(Double.parseDouble(ibaq));
         }
         //set the MSMS count
-        if (msmsCount != null && !msmsCount.isEmpty()){
+        if (msmsCount != null && !msmsCount.isEmpty()) {
             peptide.setMsmsCount(Integer.parseInt(msmsCount));
         }
         //set the labeled intensities as a JSON string

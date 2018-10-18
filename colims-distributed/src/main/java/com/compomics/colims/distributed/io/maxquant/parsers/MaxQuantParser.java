@@ -187,7 +187,13 @@ public class MaxQuantParser {
         });
 
         //add the unidentified spectra for each run
-        maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra().forEach((runName, spectrum) -> analyticalRuns.get(runName).getSpectrums().addAll(spectrum));
+        maxQuantSpectraParser.getMaxQuantSpectra().getUnidentifiedSpectra().forEach((runName, spectra) -> {
+            AnalyticalRun run = analyticalRuns.get(runName);
+
+            //set the entity relations between run and spectrum
+            run.getSpectrums().addAll(spectra);
+            spectra.forEach(spectrum -> spectrum.setAnalyticalRun(run));
+        });
 
         //parse the quantification settings
         //for a SILAC or ICAT experiments, we don't have any reagent name from maxquant.

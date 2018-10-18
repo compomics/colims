@@ -1,7 +1,10 @@
 package com.compomics.colims.distributed.io.maxquant.parsers;
 
 import com.compomics.colims.distributed.io.maxquant.MaxQuantTestSuite;
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.FastaDb;
+import com.compomics.colims.model.Modification;
+import com.compomics.colims.model.Peptide;
+import com.compomics.colims.model.PeptideHasModification;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.QuantificationMethod;
 import org.junit.Assert;
