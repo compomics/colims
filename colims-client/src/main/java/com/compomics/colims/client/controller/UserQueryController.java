@@ -11,7 +11,7 @@ import com.compomics.colims.core.service.UserQueryService;
 import com.compomics.colims.model.UserBean;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.google.common.eventbus.EventBus;
-import org.slf4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.engine.jdbc.internal.Formatter;
 import org.hibernate.exception.GenericJDBCException;
 import org.hibernate.exception.SQLGrammarException;
@@ -21,19 +21,16 @@ import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.PersistenceException;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +39,6 @@ import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import org.hibernate.HibernateException;
 
 /**
  * The user query view controller.
@@ -159,6 +155,13 @@ public class UserQueryController implements Controllable {
                     } catch (HibernateException hibernateException) {
                         LOGGER.error(hibernateException.getMessage(), hibernateException);
                         eventBus.post(new MessageEvent("Syntax problem", "There was a problem with your query: " + queryString + System.lineSeparator() + hibernateException.getMessage(), JOptionPane.ERROR_MESSAGE));
+                    } catch (PersistenceException persistenceException) {
+                        LOGGER.error(persistenceException.getMessage(), persistenceException);
+                        if (persistenceException.getCause() instanceof SQLGrammarException) {
+                            eventBus.post(new MessageEvent("Syntax problem", "There was a problem with your query: " + queryString + System.lineSeparator() + persistenceException.getCause().getMessage(), JOptionPane.ERROR_MESSAGE));
+                        } else {
+                            eventBus.post(new MessageEvent("Permission problem", "Cannot execute any commands that are not selects.", JOptionPane.ERROR_MESSAGE));
+                        }
                     }
                 } else {
                     eventBus.post(new MessageEvent("Permission problem", "Your user doesn't have rights to execute this query.", JOptionPane.ERROR_MESSAGE));
@@ -268,9 +271,9 @@ public class UserQueryController implements Controllable {
 
             LOGGER.info("Exporting results to file " + resultsExportFile.getName());
             try (FileOutputStream fos = new FileOutputStream(resultsExportFile);
-                    OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
-                    BufferedWriter bw = new BufferedWriter(osw);
-                    PrintWriter pw = new PrintWriter(bw)) {
+                 OutputStreamWriter osw = new OutputStreamWriter(fos, Charset.forName("UTF-8").newEncoder());
+                 BufferedWriter bw = new BufferedWriter(osw);
+                 PrintWriter pw = new PrintWriter(bw)) {
 
                 //write column headers
                 pw.println(Arrays.stream(model.getColumnNames()).map(Functions.replaceNullWithEmptyString).collect(Collectors.joining(EXPORT_DELIMITER)));
