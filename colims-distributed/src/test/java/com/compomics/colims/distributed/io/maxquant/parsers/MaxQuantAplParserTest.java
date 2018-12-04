@@ -61,7 +61,7 @@ public class MaxQuantAplParserTest {
         AnnotatedSpectrum annotatedSpectrum2 = new AnnotatedSpectrum(spectrum2, "y2;y3", "1234.334424242;3445.556664");
         maxQuantSpectra.getSpectra().put(spectrumKey2, annotatedSpectrum2);
 
-        maxQuantAplParser.parseAplFile(testAplFile, maxQuantSpectra, false);
+        maxQuantAplParser.parseAplFile(testAplFile, null, maxQuantSpectra, false);
         //check the sizes
         //2 identified spectra
         Assert.assertEquals(2, maxQuantSpectra.getSpectra().size());
@@ -110,7 +110,7 @@ public class MaxQuantAplParserTest {
         maxQuantSpectra.getOmittedSpectrumKeys().add("RawFile: 20130607_FI_Ubiquitin_7 Index: 1966");
         maxQuantSpectra.getOmittedSpectrumKeys().add("RawFile: 20130607_FI_Ubiquitin_9 Index: 3841");
 
-        maxQuantAplParser.parseAplFile(testAplFile, maxQuantSpectra, true);
+        maxQuantAplParser.parseAplFile(testAplFile, null, maxQuantSpectra, true);
 
         //check the sizes
         //one identified

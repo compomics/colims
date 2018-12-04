@@ -42,6 +42,12 @@ public class MaxQuantParser {
      */
     private final Map<String, AnalyticalRun> analyticalRuns = new HashMap<>();
     /**
+     * We want the FASTA DB files to be parsed in the order the FastaDbType enum values are declared
+     * so use a LinkedHashMap to preserve the natural FastaDbType enum order.
+     * (iterating over an EnumMap maintains that order as well)
+     */
+    LinkedHashMap<FastaDb, Path> fastaDbMap = new LinkedHashMap<>();
+    /**
      * The child parsers.
      */
     private final MaxQuantSpectraParser maxQuantSpectraParser;
@@ -70,25 +76,32 @@ public class MaxQuantParser {
      * Clear the parser's resources.
      */
     public void clear() {
-        maxQuantEvidenceParser.clear();
-        maxQuantSpectraParser.clear();
-        maxQuantProteinGroupsParser.clear();
+        clearForSingleRun();
         maxQuantSearchSettingsParser.clear();
-        maxQuantQuantificationSettingsParser.clear();
         analyticalRuns.clear();
+        fastaDbMap.clear();
     }
 
     /**
-     * Parse the MaxQuant output folder and map the content of the different
-     * files to Colims entities.
+     * Clear the parser's resources for a single run.
+     */
+    public void clearForSingleRun() {
+        maxQuantEvidenceParser.clear();
+        maxQuantSpectraParser.clear();
+        maxQuantProteinGroupsParser.clear();
+        maxQuantQuantificationSettingsParser.clear();
+    }
+
+    /**
+     * Parse the search and quantification settings.
      *
      * @param maxQuantImport  the {@link MaxQuantImport} instance
-     * @param fastasDirectory the FASTA DBs directory
-     * @throws IOException          in case of an input/output related problem
-     * @throws UnparseableException in case of a problem occured while parsing
-     * @throws JDOMException        in case of an XML parsing related problem
+     * @param fastasDirectory the fasta directory path
+     * @return the set of MaxQuant run names
+     * @throws IOException   in case of an input/output related problem
+     * @throws JDOMException in case of an XML parsing related problem
      */
-    public void parse(MaxQuantImport maxQuantImport, Path fastasDirectory) throws IOException, UnparseableException, JDOMException {
+    public Set<String> parseSearchAndQuantSettings(MaxQuantImport maxQuantImport, Path fastasDirectory) throws IOException, JDOMException {
         EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
         //get the FASTA db entities from the database
         maxQuantImport.getFastaDbIds().forEach((FastaDbType fastaDbType, List<Long> fastaDbIds) -> {
@@ -97,25 +110,6 @@ public class MaxQuantParser {
             fastaDbs.put(fastaDbType, fastaDbList);
         });
 
-        //parse the search settings
-        LOGGER.info("parsing search settings");
-        maxQuantSearchSettingsParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), Paths.get(maxQuantImport.getMqParFile()), fastaDbs);
-
-        //populate the analytical runs map
-        maxQuantSearchSettingsParser.getAnalyticalRuns().keySet().forEach((run -> analyticalRuns.put(run.getName(), run)));
-
-        //look for the MaxQuant txt directory
-        Path txtDirectory = Paths.get(maxQuantImport.getCombinedDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
-        if (!Files.exists(txtDirectory)) {
-            throw new FileNotFoundException("The MaxQuant txt file " + txtDirectory.toString() + " was not found.");
-        }
-
-        //parse the protein groups file
-        LOGGER.info("parsing proteinGroups.txt");
-        //we want the FASTA DB files to be parsed in the order the FastaDbType enum values are declared
-        //so use a LinkedHashMap to preserve the natural FastaDbType enum order
-        //(iterating over an EnumMap maintains that order as well)
-        LinkedHashMap<FastaDb, Path> fastaDbMap = new LinkedHashMap<>();
         fastaDbs.entrySet().forEach((entry) -> {
             entry.getValue().forEach(fastaDb -> {
                 //make the path absolute and check if it exists
@@ -128,7 +122,61 @@ public class MaxQuantParser {
             });
         });
 
-        //look for the proteinGroups.txt file
+        //parse the search settings
+        LOGGER.info("parsing search settings");
+        maxQuantSearchSettingsParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), Paths.get(maxQuantImport.getMqParFile()), fastaDbs);
+
+        //populate the analytical runs map
+        maxQuantSearchSettingsParser.getAnalyticalRuns().keySet().forEach((run -> analyticalRuns.put(run.getName(), run)));
+
+        //parse the quantification settings
+        //for SILAC or ICAT experiments, we don't have any reagent name from MaxQuant.
+        //Colims gives reagent names according to the number of samples.
+        switch (maxQuantImport.getQuantificationMethod()) {
+            case SILAC:
+                List<String> silacReagents = new ArrayList<>();
+                if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
+                    silacReagents.addAll(Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
+                    maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), silacReagents);
+                } else if (maxQuantSearchSettingsParser.getLabelMods().size() == 2) {
+                    silacReagents.addAll(Arrays.asList("SILAC light", "SILAC heavy"));
+                    maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), silacReagents);
+                }
+                break;
+            case ICAT:
+                List<String> icatReagents = new ArrayList<>();
+                icatReagents.addAll(Arrays.asList("ICAT light reagent", "ICAT heavy reagent"));
+                maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), icatReagents);
+                break;
+            default:
+                List<String> reagents = new ArrayList<>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
+                maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), reagents);
+                break;
+        }
+        //link the quantification settings to each analytical run
+        analyticalRuns.values().forEach(analyticalRun -> analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun)));
+
+        return maxQuantSearchSettingsParser.getRunSettings().keySet();
+    }
+
+    /**
+     * Parse the MaxQuant output folder and map the content of the different
+     * files to Colims entities. If the given raw file name is null, all runs are parsed.
+     *
+     * @param maxQuantImport the {@link MaxQuantImport} instance
+     * @param rawFileName    the raw file name
+     * @throws IOException          in case of an input/output related problem
+     * @throws UnparseableException in case of a problem occurred while parsing
+     */
+    public void parse(MaxQuantImport maxQuantImport, String rawFileName) throws IOException, UnparseableException {
+        //look for the MaxQuant txt directory
+        Path txtDirectory = Paths.get(maxQuantImport.getCombinedDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
+        if (!Files.exists(txtDirectory)) {
+            throw new FileNotFoundException("The MaxQuant txt file " + txtDirectory.toString() + " was not found.");
+        }
+
+        //parse the protein groups file
+        LOGGER.info("parsing proteinGroups.txt");
         Path proteinGroupsFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value());
         if (!Files.exists(proteinGroupsFile)) {
             throw new FileNotFoundException("The proteinGroups.txt " + proteinGroupsFile.toString() + " was not found.");
@@ -136,35 +184,25 @@ public class MaxQuantParser {
         maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbMap, maxQuantImport.getQuantificationMethod(), maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupsHeaders());
 
         LOGGER.info("parsing msms.txt");
-        maxQuantSpectraParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
+        maxQuantSpectraParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), rawFileName, maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
         LOGGER.info("parsing evidence.txt");
         Path evidenceFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.EVIDENCE_FILE.value());
         if (!Files.exists(evidenceFile)) {
             throw new FileNotFoundException("The evidence.txt " + evidenceFile.toString() + " was not found.");
         }
-        maxQuantEvidenceParser.parse(evidenceFile, maxQuantProteinGroupsParser.getOmittedProteinGroupIds(), maxQuantImport.getQuantificationMethod(), maxQuantImport.getSelectedProteinGroupsHeaders());
+        maxQuantEvidenceParser.parse(evidenceFile, rawFileName, maxQuantProteinGroupsParser.getOmittedProteinGroupIds(), maxQuantImport.getQuantificationMethod(), maxQuantImport.getSelectedProteinGroupsHeaders());
 
-        //add the identified spectra for each run and set the entity relations
-        analyticalRuns.forEach((runName, run) -> {
-
-            //set analytical run for search settings
-            run.getSearchAndValidationSettings().setAnalyticalRun(run);
-
-            //get the spectrum apl keys for each run
-            Set<String> aplKeys = maxQuantSpectraParser.getMaxQuantSpectra().getRunToSpectrums().get(runName);
-            aplKeys.forEach(aplKey -> {
-                //get the spectrum by it's key
-                AnnotatedSpectrum annotatedSpectrum = maxQuantSpectraParser.getMaxQuantSpectra().getSpectra().get(aplKey);
-
-                //set the entity relations between run and spectrum
-                run.getSpectrums().add(annotatedSpectrum.getSpectrum());
-                annotatedSpectrum.getSpectrum().setAnalyticalRun(run);
-
-                //set the child entity relations for the spectrum
-                setSpectrumRelations(aplKey, annotatedSpectrum);
+        if (rawFileName == null) {
+            //add the identified spectra for each run and set the entity relations
+            analyticalRuns.forEach((runName, run) -> {
+                setRunEntityRelations(runName, run);
             });
-        });
+        } else {
+            AnalyticalRun run = analyticalRuns.get(rawFileName);
+
+            setRunEntityRelations(rawFileName, run);
+        }
 
         //add the matching between runs peptides for each run
         Map<String, Set<Integer>> runToMbrPeptides = maxQuantEvidenceParser.getRunToMbrPeptides();
@@ -195,36 +233,37 @@ public class MaxQuantParser {
             spectra.forEach(spectrum -> spectrum.setAnalyticalRun(run));
         });
 
-        //parse the quantification settings
-        //for a SILAC or ICAT experiments, we don't have any reagent name from maxquant.
-        //Colims gives reagent names according to the number of samples.
-        switch (maxQuantImport.getQuantificationMethod()) {
-            case SILAC:
-                List<String> silacReagents = new ArrayList<>();
-                if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
-                    silacReagents.addAll(Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
-                    maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), silacReagents);
-                } else if (maxQuantSearchSettingsParser.getLabelMods().size() == 2) {
-                    silacReagents.addAll(Arrays.asList("SILAC light", "SILAC heavy"));
-                    maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), silacReagents);
-                }
-                break;
-            case ICAT:
-                List<String> icatReagents = new ArrayList<>();
-                icatReagents.addAll(Arrays.asList("ICAT light reagent", "ICAT heavy reagent"));
-                maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), icatReagents);
-                break;
-            default:
-                List<String> reagents = new ArrayList<>(maxQuantSearchSettingsParser.getIsobaricLabels().values());
-                maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), reagents);
-                break;
-        }
-        //link the quantification settings to each analytical run
-        analyticalRuns.values().forEach(analyticalRun -> analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun)));
-
         if (getSpectrumToPsms().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || maxQuantProteinGroupsParser.getProteinGroups().isEmpty()) {
             throw new UnparseableException("One of the parsed files could not be read properly.");
         }
+    }
+
+    /**
+     * Set the entity relations for the given run.
+     *
+     * @param runName       the MaxQuant run identifier
+     * @param analyticalRun the {@link AnalyticalRun} instance
+     */
+    private void setRunEntityRelations(String runName, AnalyticalRun analyticalRun) {
+        //set the entity relation between run and search settings
+        analyticalRun.getSearchAndValidationSettings().setAnalyticalRun(analyticalRun);
+
+        //set the entity relation between run and quantification settings
+        analyticalRun.getQuantificationSettings().setAnalyticalRun(analyticalRun);
+
+        //get the spectrum apl keys for each run
+        Set<String> aplKeys = maxQuantSpectraParser.getMaxQuantSpectra().getRunToSpectrums().get(runName);
+        aplKeys.forEach(aplKey -> {
+            //get the spectrum by it's key
+            AnnotatedSpectrum annotatedSpectrum = maxQuantSpectraParser.getMaxQuantSpectra().getSpectra().get(aplKey);
+
+            //set the entity relations between run and spectrum
+            analyticalRun.getSpectrums().add(annotatedSpectrum.getSpectrum());
+            annotatedSpectrum.getSpectrum().setAnalyticalRun(analyticalRun);
+
+            //set the child entity relations for the spectrum
+            setSpectrumRelations(aplKey, annotatedSpectrum);
+        });
     }
 
     /**

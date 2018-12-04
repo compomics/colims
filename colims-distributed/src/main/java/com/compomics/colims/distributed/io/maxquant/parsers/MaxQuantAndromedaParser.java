@@ -138,16 +138,17 @@ public class MaxQuantAndromedaParser {
      * Parse the spectrum files and map them onto {@link SpectrumFile}
      * instances. Parse also unidentified spectra if specified.
      *
-     * @param maxQuantSpectra            MaxQuantSpectra object.
+     * @param rawFileRunName             the raw file name of the run
+     * @param maxQuantSpectra            MaxQuantSpectra object
      * @param includeUnidentifiedSpectra whether or not to include the unidentified spectra
      * @throws java.io.IOException in case of an Input/Output related problem
      */
-    public void parseSpectra(MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
+    public void parseSpectra(String rawFileRunName, MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
         for (Path aplFilePath : aplFilePaths.keySet()) {
             if (!Files.exists(aplFilePath)) {
                 throw new FileNotFoundException("The apl spectrum file " + aplFilePath.toString() + " could not be found.");
             }
-            maxQuantAplParser.parseAplFile(aplFilePath, maxQuantSpectra, includeUnidentifiedSpectra);
+            maxQuantAplParser.parseAplFile(aplFilePath, rawFileRunName, maxQuantSpectra, includeUnidentifiedSpectra);
         }
     }
 

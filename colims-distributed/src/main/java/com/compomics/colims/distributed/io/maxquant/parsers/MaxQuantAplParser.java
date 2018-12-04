@@ -51,11 +51,12 @@ public class MaxQuantAplParser {
      * Parse the give MaqQuant .apl spectrum file and update the given {@link MaxQuantSpectra} instance.
      *
      * @param aplFilePath                the MaqQuant .apl spectrum file path
+     * @param rawFileName                the raw file name of the given run
      * @param maxQuantSpectra            the {@link MaxQuantSpectra} instance
      * @param includeUnidentifiedSpectra whether or not to include unidentified
      *                                   spectra
      */
-    public void parseAplFile(Path aplFilePath, MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
+    public void parseAplFile(Path aplFilePath, String rawFileName, MaxQuantSpectra maxQuantSpectra, boolean includeUnidentifiedSpectra) throws IOException {
         try (BufferedReader bufferedReader = Files.newBufferedReader(aplFilePath)) {
             String line;
 
@@ -75,10 +76,13 @@ public class MaxQuantAplParser {
                     //" Precursor: 0 _multi_" is removed before looking up the key in the spectra map
                     String header = org.apache.commons.lang3.StringUtils.substringBefore(headers.get(APL_HEADER), APL_PRECURSOR);
                     Spectrum spectrum = null;
+
+                    //get the RAW file name from the header
+                    String headerRawFileName = org.apache.commons.lang3.StringUtils.substringBetween(header, HEADER_RAW_FILE, HEADER_INDEX);
                     //check if the spectrum was identified and therefore can be found in the spectra map
                     if (maxQuantSpectra.getSpectra().containsKey(header)) {
                         spectrum = maxQuantSpectra.getSpectra().get(header).getSpectrum();
-                    } else if (spectrum == null && includeUnidentifiedSpectra && !maxQuantSpectra.getOmittedSpectrumKeys().contains(header)) {
+                    } else if ((rawFileName == null || rawFileName.equals(headerRawFileName)) && includeUnidentifiedSpectra && !maxQuantSpectra.getOmittedSpectrumKeys().contains(header)) {
                         //make new Spectrum instance and add it to the unidentified ones
                         spectrum = new Spectrum();
                         spectrum.setAccession(header);
@@ -87,8 +91,6 @@ public class MaxQuantAplParser {
                         spectrum.setCharge(Integer.valueOf(headers.get(APL_CHARGE)));
                         spectrum.setScanIndex(Long.valueOf(org.apache.commons.lang3.StringUtils.substringAfter(header, APL_INDEX)));
 
-                        //get the RAW file name from the header
-                        String rawFileName = org.apache.commons.lang3.StringUtils.substringBetween(header, HEADER_RAW_FILE, HEADER_INDEX);
                         if (!maxQuantSpectra.getUnidentifiedSpectra().containsKey(rawFileName)) {
                             List<Spectrum> spectra = new ArrayList<>();
                             spectra.add(spectrum);
@@ -148,6 +150,7 @@ public class MaxQuantAplParser {
                             spectrum.getSpectrumFiles().add(spectrumFile);
                         }
                     }
+
                     //clear headers map
                     headers.clear();
                 }

@@ -130,15 +130,17 @@ public class MaxQuantEvidenceParser {
     }
 
     /**
-     * This method parses an evidence file.
+     * This method parses an evidence file. If the given raw file name is not null, it only parses the entries
+     * linked to the given raw file.
      *
      * @param evidenceFilePath       the MaxQuant evidence file path
+     * @param rawFileName            the raw file name of the run
      * @param omittedProteinGroupIds removed protein group IDs
      * @param quantificationMethod   the quantification method
      * @param optionalHeaders        the list of optional headers
      * @throws IOException in case of an I/O related problem
      */
-    public void parse(Path evidenceFilePath, Set<Integer> omittedProteinGroupIds, QuantificationMethod quantificationMethod, List<String> optionalHeaders) throws IOException {
+    public void parse(Path evidenceFilePath, String rawFileName, Set<Integer> omittedProteinGroupIds, QuantificationMethod quantificationMethod, List<String> optionalHeaders) throws IOException {
         TabularFileIterator evidenceIterator = new TabularFileIterator(evidenceFilePath, evidenceHeaders.getMandatoryHeaders());
         this.quantificationMethod = quantificationMethod;
 
@@ -146,43 +148,62 @@ public class MaxQuantEvidenceParser {
         while (evidenceIterator.hasNext()) {
             evidenceEntry = evidenceIterator.next();
 
-            String[] proteinGroupIds = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.PROTEIN_GROUP_IDS)).split(PROTEIN_GROUP_ID_DELIMITER);
+            if (rawFileName == null) {
+                rawFileName = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.RAW_FILE));
+                parseEvidenceEntry(evidenceEntry, rawFileName, omittedProteinGroupIds, quantificationMethod, optionalHeaders);
+            } else if (rawFileName.equals(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.RAW_FILE)))) {
+                parseEvidenceEntry(evidenceEntry, rawFileName, omittedProteinGroupIds, quantificationMethod, optionalHeaders);
+            } else {
+                //do nothing
+            }
+        }
+    }
 
-            //check for spectrumToPeptides coming from omitted protein groups
-            //if one of the protein groups is not in the omitted list, include the peptide
-            Set<Integer> includedProteinIds = Arrays.stream(proteinGroupIds)
-                    .map(Integer::valueOf)
-                    .filter(proteinGroupsId -> !omittedProteinGroupIds.contains(proteinGroupsId))
-                    .collect(Collectors.toSet());
+    /**
+     * Parse the given evidence entry.
+     *
+     * @param evidenceEntry          the map of entries (key: column header; value: column value)
+     * @param rawFileName            the raw file name of the run
+     * @param omittedProteinGroupIds removed protein group IDs
+     * @param quantificationMethod   the quantification method
+     * @param optionalHeaders        the list of optional headers
+     */
+    private void parseEvidenceEntry(Map<String, String> evidenceEntry, String rawFileName, Set<Integer> omittedProteinGroupIds, QuantificationMethod quantificationMethod, List<String> optionalHeaders) {
+        String[] proteinGroupIds = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.PROTEIN_GROUP_IDS)).split(PROTEIN_GROUP_ID_DELIMITER);
 
-            if (!includedProteinIds.isEmpty()) {
-                String[] msmsIds = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MS_MS_IDS)).split(MS_MS_IDS_DELIMITER);
-                for (String msmsIdString : msmsIds) {
-                    //get the evidence ID
-                    Integer evidenceId = Integer.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.ID)));
-                    //create the peptide
-                    createPeptide(evidenceId, evidenceEntry, includedProteinIds, optionalHeaders);
-                    //check if the peptide has a spectrum (PSM)
-                    if (!msmsIdString.isEmpty()) {
-                        Integer msmsId = Integer.parseInt(msmsIdString);
-                        if (!spectrumToPeptides.containsKey(msmsId)) {
-                            Set<Integer> evidenceIds = new HashSet<>();
-                            evidenceIds.add(evidenceId);
-                            spectrumToPeptides.put(msmsId, evidenceIds);
-                        } else {
-                            spectrumToPeptides.get(msmsId).add(evidenceId);
-                        }
+        //check for spectrumToPeptides coming from omitted protein groups
+        //if one of the protein groups is not in the omitted list, include the peptide
+        Set<Integer> includedProteinIds = Arrays.stream(proteinGroupIds)
+                .map(Integer::valueOf)
+                .filter(proteinGroupsId -> !omittedProteinGroupIds.contains(proteinGroupsId))
+                .collect(Collectors.toSet());
 
-                    } //otherwise it's a matching between runs (MBR) peptide
-                    else {
-                        String rawFile = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.RAW_FILE));
-                        if (!runToMbrPeptides.containsKey(rawFile)) {
-                            Set<Integer> evidenceIds = new HashSet<>();
-                            evidenceIds.add(evidenceId);
-                            runToMbrPeptides.put(rawFile, evidenceIds);
-                        } else {
-                            runToMbrPeptides.get(rawFile).add(evidenceId);
-                        }
+        if (!includedProteinIds.isEmpty()) {
+            String[] msmsIds = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.MS_MS_IDS)).split(MS_MS_IDS_DELIMITER);
+            for (String msmsIdString : msmsIds) {
+                //get the evidence ID
+                Integer evidenceId = Integer.valueOf(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.ID)));
+                //create the peptide
+                createPeptide(evidenceId, evidenceEntry, includedProteinIds, optionalHeaders);
+                //check if the peptide has a spectrum (PSM)
+                if (!msmsIdString.isEmpty()) {
+                    Integer msmsId = Integer.parseInt(msmsIdString);
+                    if (!spectrumToPeptides.containsKey(msmsId)) {
+                        Set<Integer> evidenceIds = new HashSet<>();
+                        evidenceIds.add(evidenceId);
+                        spectrumToPeptides.put(msmsId, evidenceIds);
+                    } else {
+                        spectrumToPeptides.get(msmsId).add(evidenceId);
+                    }
+
+                } //otherwise it's a matching between runs (MBR) peptide
+                else {
+                    if (!runToMbrPeptides.containsKey(rawFileName)) {
+                        Set<Integer> evidenceIds = new HashSet<>();
+                        evidenceIds.add(evidenceId);
+                        runToMbrPeptides.put(rawFileName, evidenceIds);
+                    } else {
+                        runToMbrPeptides.get(rawFileName).add(evidenceId);
                     }
                 }
             }

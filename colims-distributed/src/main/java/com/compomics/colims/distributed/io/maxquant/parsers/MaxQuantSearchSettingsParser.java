@@ -135,7 +135,7 @@ public class MaxQuantSearchSettingsParser {
     /**
      * Get the version of MaxQuant used.
      *
-     * @return Version number string
+     * @return the version number string
      */
     public String getVersion() {
         return this.version;
@@ -221,9 +221,8 @@ public class MaxQuantSearchSettingsParser {
                 runSettings.put(summaryEntry.get(SummaryHeader.RAW_FILE), searchAndValidationSettings);
             }
         }
-        // match analytical run and related search setting by using run settings map
-        matchAnalyticalRunSearchSettings();
 
+        analyticalRuns.keySet().forEach((run) -> run.setSearchAndValidationSettings(runSettings.get(run.getName())));
     }
 
     /**
@@ -511,13 +510,6 @@ public class MaxQuantSearchSettingsParser {
             analyticalRun.setName(value);
             analyticalRuns.put(analyticalRun, maxQuantExperiments.get(key));
         });
-    }
-
-    /**
-     * Match analytical run and related search and validation settings
-     */
-    private void matchAnalyticalRunSearchSettings() {
-        analyticalRuns.keySet().forEach((run) -> run.setSearchAndValidationSettings(runSettings.get(run.getName())));
     }
 
     /**

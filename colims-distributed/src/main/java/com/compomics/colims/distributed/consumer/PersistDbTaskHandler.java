@@ -13,6 +13,7 @@ import com.compomics.colims.core.service.PersistService;
 import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantMapper;
+import com.compomics.colims.distributed.io.maxquant.MaxQuantSequentialRunsMapper;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerIO;
 import com.compomics.colims.distributed.io.peptideshaker.PeptideShakerMapper;
 import com.compomics.colims.distributed.io.peptideshaker.UnpackedPeptideShakerImport;
@@ -24,6 +25,8 @@ import com.compomics.colims.model.Instrument;
 import com.compomics.colims.model.Sample;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.jdom2.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +38,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.Set;
 
 /**
  * This class handles a PersistDbTask: map the DataImport en store it in the
@@ -88,6 +92,11 @@ public class PersistDbTaskHandler {
     @Autowired
     private final MaxQuantMapper maxQuantMapper;
     /**
+     * The MaxQuant data mapper that maps on run at a time.
+     */
+    @Autowired
+    private final MaxQuantSequentialRunsMapper maxQuantSequentialRunsMapper;
+    /**
      * The user entity service.
      */
     @Autowired
@@ -119,6 +128,7 @@ public class PersistDbTaskHandler {
                                 PeptideShakerIO peptideShakerIO,
                                 PeptideShakerMapper peptideShakerMapper,
                                 MaxQuantMapper maxQuantMapper,
+                                MaxQuantSequentialRunsMapper maxQuantSequentialRunsMapper,
                                 UserService userService,
                                 SampleService sampleService,
                                 InstrumentService instrumentService,
@@ -129,6 +139,7 @@ public class PersistDbTaskHandler {
         this.peptideShakerIO = peptideShakerIO;
         this.peptideShakerMapper = peptideShakerMapper;
         this.maxQuantMapper = maxQuantMapper;
+        this.maxQuantSequentialRunsMapper = maxQuantSequentialRunsMapper;
         this.userService = userService;
         this.sampleService = sampleService;
         this.instrumentService = instrumentService;
@@ -170,10 +181,7 @@ public class PersistDbTaskHandler {
                 throw new IllegalArgumentException("The user with ID " + persistDbTask.getUserId() + " was not found in the database.");
             }
 
-            //map the task
-            MappedData mappedData = mapDataImport(persistDbTask);
-            notificationProducer.sendNotification(new Notification(DB_STARTED_MESSAGE, ""));
-            persistService.persist(mappedData, sample, instrument, userName, persistDbTask.getPersistMetadata().getStartDate());
+            mapAndPersistDataImport(persistDbTask, sample, instrument, userName);
 
             //wrap the PersistDbTask in a CompletedTask and send it to the completed task queue
             completedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), persistDbTask));
@@ -189,19 +197,19 @@ public class PersistDbTaskHandler {
     }
 
     /**
-     * Map the persist db task.
+     * Map and persist the persist db task.
      *
      * @param persistDbTask the persist task containing the DataImport object
-     * @return the MappedDataImport instance
-     * @throws MappingException                                       thrown in case of a mapping exception
-     * @throws java.io.IOException                                    thrown in case of an IO related problem
-     * @throws org.apache.commons.compress.archivers.ArchiveException thrown in case of an Archiver exception
-     * @throws java.lang.ClassNotFoundException                       thrown in case of a failure to load a class by
-     *                                                                it's string name
-     * @throws java.sql.SQLException                                  thrown in case of an SQL related problem
-     * @throws InterruptedException                                   thrown in case a thread is interrupted
+     * @throws MappingException                 thrown in case of a mapping exception
+     * @throws java.io.IOException              thrown in case of an IO related problem
+     * @throws ArchiveException                 thrown in case of an Archiver exception
+     * @throws java.lang.ClassNotFoundException thrown in case of a failure to load a class by
+     *                                          it's string name
+     * @throws java.sql.SQLException            thrown in case of an SQL related problem
+     * @throws InterruptedException             thrown in case a thread is interrupted
+     * @throws JDOMException                    thrown in case of an XML parsing related problem
      */
-    private MappedData mapDataImport(PersistDbTask persistDbTask) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException {
+    private void mapAndPersistDataImport(PersistDbTask persistDbTask, Sample sample, Instrument instrument, String userName) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException, JDOMException {
         MappedData mappedData = null;
 
         notificationProducer.sendNotification(new Notification(STARTED_MESSAGE, ""));
@@ -225,6 +233,10 @@ public class PersistDbTaskHandler {
 
                 mappedData = peptideShakerMapper.mapData(unpackedPeptideShakerImport, experimentsDirectory, fastasDirectory);
 
+                //save to database
+                notificationProducer.sendNotification(new Notification(DB_STARTED_MESSAGE, ""));
+                persistService.persist(mappedData, sample, instrument, userName, persistDbTask.getPersistMetadata().getStartDate());
+
                 //clear resources after mapping
                 peptideShakerMapper.clear();
 
@@ -237,18 +249,55 @@ public class PersistDbTaskHandler {
 //                if (unpackedPeptideShakerImport.getUnpackedDirectory().exists()) {
 //                    LOGGER.warn("The directory " + unpackedPeptideShakerImport.getDbDirectory() + " could not be deleted.");
 //                }
+
                 break;
             case MAX_QUANT:
-                mappedData = maxQuantMapper.mapData((MaxQuantImport) (persistDbTask.getDataImport()), experimentsDirectory, fastasDirectory);
+                MaxQuantImport maxQuantImport = (MaxQuantImport) (persistDbTask.getDataImport());
 
-                //clear resources after mapping
-                maxQuantMapper.clear();
+                //make the MaxQuantImport resources (mqpar file and combined directory) absolute and check it they exist
+                String relativeCombinedDirectoryString = FilenameUtils.separatorsToSystem(maxQuantImport.getCombinedDirectory());
+                Path relativeCombinedDirectory = Paths.get(relativeCombinedDirectoryString);
+                Path absoluteCombinedDirectory = experimentsDirectory.resolve(relativeCombinedDirectory);
+                if (!Files.exists(absoluteCombinedDirectory)) {
+                    throw new IllegalArgumentException("The combined directory " + absoluteCombinedDirectory.toString() + " doesn't exist.");
+                }
+                maxQuantImport.setCombinedDirectory(absoluteCombinedDirectory.toString());
 
+                String relativeMqParFileString = FilenameUtils.separatorsToSystem(maxQuantImport.getMqParFile());
+                Path relativeMqparFile = Paths.get(relativeMqParFileString);
+                Path absoluteMqparFile = experimentsDirectory.resolve(relativeMqparFile);
+                if (!Files.exists(absoluteMqparFile)) {
+                    throw new IllegalArgumentException("The mqpar directory " + relativeMqparFile.toString() + " doesn't exist.");
+                }
+                maxQuantImport.setMqParFile(absoluteMqparFile.toString());
+
+                if (!maxQuantImport.isStoreRunsSequentially()) {
+                    mappedData = maxQuantMapper.mapData(maxQuantImport, experimentsDirectory, fastasDirectory);
+
+                    persistService.persist(mappedData, sample, instrument, userName, persistDbTask.getPersistMetadata().getStartDate());
+
+                    //clear resources after mapping
+                    maxQuantMapper.clear();
+                } else {
+                    //get the runs
+                    Set<String> runNames = maxQuantSequentialRunsMapper.getRunNames(maxQuantImport, fastasDirectory);
+
+                    for (String runName : runNames) {
+                        maxQuantSequentialRunsMapper.clearForSingleRun();
+
+                        mappedData = maxQuantSequentialRunsMapper.mapData(runName);
+
+                        persistService.persist(mappedData, sample, instrument, userName, persistDbTask.getPersistMetadata().getStartDate());
+                    }
+
+                    //clear resources after mapping
+                    maxQuantSequentialRunsMapper.clear();
+                }
                 break;
             default:
                 break;
         }
+
         notificationProducer.sendNotification(new Notification(FINISHED_MESSAGE, ""));
-        return mappedData;
     }
 }

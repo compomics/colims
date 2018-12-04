@@ -1,13 +1,19 @@
 
 package com.compomics.colims.distributed.playground;
 
+import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.distributed.model.PersistMetadata;
+import com.compomics.colims.core.distributed.model.enums.PersistType;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
 import com.compomics.colims.core.service.FastaDbService;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.distributed.consumer.PersistDbTaskHandler;
 import com.compomics.colims.distributed.io.maxquant.MaxQuantMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantSpectraParser;
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.User;
+import com.compomics.colims.model.UserBean;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.compomics.colims.model.enums.QuantificationMethod;
 import org.jdom2.JDOMException;
@@ -16,8 +22,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.List;
 
 /**
  * @author Niels Hulstaert
@@ -26,10 +34,10 @@ public class Playground {
 
     @Autowired
     static MaxQuantMapper maxQuantMapper;
-    
+
     @Autowired
     static MaxQuantSpectraParser maxQuantSpectraParser;
-    
+
     @Autowired
     static AnnotatedSpectraParser annotatedSpectraParser;
 
@@ -37,6 +45,7 @@ public class Playground {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("colims-distributed-context.xml");
 
         MaxQuantMapper maxQuantMapper = applicationContext.getBean("maxQuantMapper", MaxQuantMapper.class);
+        PersistDbTaskHandler persistDbTaskHandler = applicationContext.getBean("persistDbTaskHandler", PersistDbTaskHandler.class);
         MaxQuantSpectraParser maxQuantSpectraParser = applicationContext.getBean("maxQuantSpectraParser", MaxQuantSpectraParser.class);
         AnnotatedSpectraParser annotatedSpectraParser = applicationContext.getBean("annotatedSpectraParser", AnnotatedSpectraParser.class);
         UserBean userBean = applicationContext.getBean("userBean", UserBean.class);
@@ -95,7 +104,7 @@ public class Playground {
         pIds.add(1L);
         fastaDbs.put(FastaDbType.PRIMARY, pIds);
         List<Long> cIds = new ArrayList<>();
-        pIds.add(2L);
+        cIds.add(2L);
         fastaDbs.put(FastaDbType.CONTAMINANTS, cIds);
         MaxQuantImport maxQuantImport = new MaxQuantImport(
                 "/home/niels/Desktop/experiments/maxquant_SILAC_integration/mqpar.xml",
@@ -104,11 +113,13 @@ public class Playground {
                 fastaDbs,
                 false,
                 false,
+                true,
                 new ArrayList<>(),
                 QuantificationMethod.SILAC);
-        maxQuantMapper.mapData(maxQuantImport, Paths.get("/home/niels/Desktop/experiments"), Paths.get("/home/niels/Desktop/fastas"));
-
-
+        PersistMetadata persistMetadata = new PersistMetadata(PersistType.MAX_QUANT, "didid", new Date(), 1L);
+        PersistDbTask persistDbTask = new PersistDbTask(AnalyticalRun.class, 2L, 1L, persistMetadata, maxQuantImport);
+        persistDbTaskHandler.handlePersistDbTask(persistDbTask);
+        //maxQuantMapper.mapData(maxQuantImport, Paths.get("/home/niels/Desktop/experiments"), Paths.get("/home/niels/Desktop/fastas"));
     }
 
 }

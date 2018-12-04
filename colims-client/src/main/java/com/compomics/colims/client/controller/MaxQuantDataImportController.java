@@ -300,7 +300,7 @@ public class MaxQuantDataImportController implements Controllable {
         fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDbIDs);
 
         return new MaxQuantImport(mqparFile.toString(), combinedDirectory.toString(), fullCombinedDirectory.toString(), fastaDbIds, includeContaminants,
-                includeUnidentifiedSpectra, selectedProteinGroupHeaders, analyticalRunsAdditionController.getSelectedQuantificationMethod());
+                includeUnidentifiedSpectra, false, selectedProteinGroupHeaders, analyticalRunsAdditionController.getSelectedQuantificationMethod());
     }
 
 }

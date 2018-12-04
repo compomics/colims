@@ -49,7 +49,7 @@ public class MaxQuantEvidenceParserTest {
         omittedProteinIds.add(0);
         omittedProteinIds.add(1);
 
-        maxQuantEvidenceParser.parse(evidenceFile, omittedProteinIds, QuantificationMethod.SILAC, new ArrayList<>());
+        maxQuantEvidenceParser.parse(evidenceFile, null, omittedProteinIds, QuantificationMethod.SILAC, new ArrayList<>());
 
         //check the number of MBR identifications
         Assert.assertEquals(9, maxQuantEvidenceParser.getRunToMbrPeptides().size());
@@ -149,7 +149,7 @@ public class MaxQuantEvidenceParserTest {
         maxQuantSearchSettingsParser.parse(combinedDirectory, mqparFile, fastaDbEnumMap);
 
         maxQuantEvidenceParser.clear();
-        maxQuantEvidenceParser.parse(evidenceFile, new HashSet<>(), SILAC, new ArrayList<>());
+        maxQuantEvidenceParser.parse(evidenceFile, null, new HashSet<>(), SILAC, new ArrayList<>());
 
         Peptide peptide = maxQuantEvidenceParser.getPeptides().get(26).get(0);
 

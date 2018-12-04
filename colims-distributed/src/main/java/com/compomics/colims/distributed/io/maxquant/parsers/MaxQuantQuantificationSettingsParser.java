@@ -77,15 +77,18 @@ public class MaxQuantQuantificationSettingsParser {
         com.compomics.colims.model.QuantificationMethod quantificationMethod =
                 new com.compomics.colims.model.QuantificationMethod(ontologyTerm.getOntologyPrefix(), ontologyTerm.getOboId(), ontologyTerm.getLabel());
         quantificationMethod.getQuantificationMethodHasReagents().addAll(createQuantificationReagent(quantificationMethod, quantificationMethodEnum, reagents));
+
         //check if the quantification method is already present in the db
         quantificationMethod = quantificationSettingsService.getQuantificationMethod(quantificationMethod);
+
         //create the quantification settings
         QuantificationSettings quantificationSettings = new QuantificationSettings();
         quantificationSettings.setQuantificationMethod(quantificationMethod);
         quantificationSettings.setQuantificationEngine(quantificationSettingsService.getQuantificationEngine(QuantificationEngineType.MAXQUANT, maxQuantSearchSettingsParser.getVersion()));
+
         analyticalRuns.forEach(analyticalRun -> {
             QuantificationSettings quantSettings = new QuantificationSettings();
-            quantSettings.setAnalyticalRun(analyticalRun);
+
             quantSettings.setQuantificationMethod(quantificationSettings.getQuantificationMethod());
             quantSettings.setQuantificationEngine(quantificationSettings.getQuantificationEngine());
             runsAndQuantificationSettings.put(analyticalRun, quantSettings);

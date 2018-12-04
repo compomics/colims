@@ -3,7 +3,7 @@ package com.compomics.colims.distributed.io.maxquant;
 import com.compomics.colims.core.io.MappedData;
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.core.io.MaxQuantImport;
-import com.compomics.colims.distributed.io.DataMapper;
+import com.compomics.colims.distributed.io.SequentialRunsDataMapper;
 import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantParser;
 import com.compomics.colims.model.AnalyticalRun;
 import org.jdom2.JDOMException;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The DataMapper implementation for MaxQuant projects.
@@ -22,20 +23,22 @@ import java.util.List;
  * @author Davy
  * @author Iain
  */
-@Component("maxQuantMapper")
-public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
+@Component("maxQuantSequentialRunsMapper")
+public class MaxQuantSequentialRunsMapper implements SequentialRunsDataMapper<MaxQuantImport> {
 
     /**
      * Logger instance.
      */
-    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantMapper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantSequentialRunsMapper.class);
     /**
      * The MaxQuant parent parser class.
      */
     private final MaxQuantParser maxQuantParser;
 
+    private MaxQuantImport maxQuantImport;
+
     @Autowired
-    public MaxQuantMapper(MaxQuantParser maxQuantParser) {
+    public MaxQuantSequentialRunsMapper(MaxQuantParser maxQuantParser) {
         this.maxQuantParser = maxQuantParser;
     }
 
@@ -45,24 +48,33 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
     }
 
     @Override
-    public MappedData mapData(MaxQuantImport maxQuantImport, Path experimentsDirectory, Path fastasDirectory) throws MappingException {
+    public void clearForSingleRun() {
+        maxQuantParser.clearForSingleRun();
+    }
+
+    @Override
+    public Set<String> getRunNames(MaxQuantImport dataImport, Path fastasDirectory) throws IOException, JDOMException {
+        this.maxQuantImport = dataImport;
+
+        return maxQuantParser.parseSearchAndQuantSettings(dataImport, fastasDirectory);
+    }
+
+    @Override
+    public MappedData mapData(String analyticalRun) throws MappingException {
         LOGGER.info("started mapping folder: " + maxQuantImport.getMqParFile());
 
         List<AnalyticalRun> analyticalRuns;
         try {
-            maxQuantParser.clear();
-
-            //parse the search settings
-            maxQuantParser.parseSearchAndQuantSettings(maxQuantImport, fastasDirectory);
+            maxQuantParser.clearForSingleRun();
 
             //parse the MaxQuant files
-            maxQuantParser.parse(maxQuantImport, null);
+            maxQuantParser.parse(maxQuantImport, analyticalRun);
 
             analyticalRuns = maxQuantParser.getAnalyticalRuns();
 
-            //set the storage location
+            //set storage location
             analyticalRuns.forEach(run -> run.setStorageLocation(maxQuantImport.getCombinedDirectory()));
-        } catch (IOException | UnparseableException | JDOMException ex) {
+        } catch (IOException | UnparseableException ex) {
             LOGGER.error(ex.getMessage(), ex);
             throw new MappingException("There was a problem storing your MaxQuant data, underlying exception: ", ex);
         }

@@ -38,6 +38,10 @@ public class MaxQuantImport extends DataImport {
      */
     private boolean includeUnidentifiedSpectra;
     /**
+     * Store the runs sequentially for big experiments to avoid memory issues (takes longer).
+     */
+    private boolean storeRunsSequentially;
+    /**
      * The list of selected protein group headers.
      */
     private List<String> selectedProteinGroupsHeaders;
@@ -61,9 +65,11 @@ public class MaxQuantImport extends DataImport {
      * @param fastaDbIds                   the FASTA database map (key: FastaDb type; value: the FastaDb instance ID)
      * @param includeContaminants          whether to import proteins from contaminants file.
      * @param includeUnidentifiedSpectra   whether to import unidentified spectra from APL files.
+     * @param storeRunsSequentially        whether to store the runs sequentially for big experiments to avoid
+     *                                     memory issues (takes longer)
      * @param selectedProteinGroupsHeaders list of optional headers to store in protein group quantification labeled
      *                                     table.
-     * @param quantificationMethod           the quantification type
+     * @param quantificationMethod         the quantification type
      */
     public MaxQuantImport(final String mqParFile,
                           final String combinedDirectory,
@@ -71,6 +77,7 @@ public class MaxQuantImport extends DataImport {
                           final EnumMap<FastaDbType, List<Long>> fastaDbIds,
                           boolean includeContaminants,
                           boolean includeUnidentifiedSpectra,
+                          boolean storeRunsSequentially,
                           List<String> selectedProteinGroupsHeaders,
                           QuantificationMethod quantificationMethod) {
         super(fastaDbIds);
@@ -79,6 +86,7 @@ public class MaxQuantImport extends DataImport {
         this.fullCombinedDirectory = fullCombinedDirectory;
         this.includeContaminants = includeContaminants;
         this.includeUnidentifiedSpectra = includeUnidentifiedSpectra;
+        this.storeRunsSequentially = storeRunsSequentially;
         this.selectedProteinGroupsHeaders = selectedProteinGroupsHeaders;
         this.quantificationMethod = quantificationMethod;
     }
@@ -97,6 +105,10 @@ public class MaxQuantImport extends DataImport {
 
     public boolean isIncludeUnidentifiedSpectra() {
         return includeUnidentifiedSpectra;
+    }
+
+    public boolean isStoreRunsSequentially() {
+        return storeRunsSequentially;
     }
 
     public List<String> getSelectedProteinGroupsHeaders() {
@@ -127,6 +139,7 @@ public class MaxQuantImport extends DataImport {
         hash = 97 * hash + Objects.hashCode(this.fullCombinedDirectory);
         hash = 97 * hash + (this.includeContaminants ? 1 : 0);
         hash = 97 * hash + (this.includeUnidentifiedSpectra ? 1 : 0);
+        hash = 97 * hash + (this.storeRunsSequentially ? 1 : 0);
         hash = 97 * hash + Objects.hashCode(this.selectedProteinGroupsHeaders);
         hash = 97 * hash + Objects.hashCode(this.quantificationMethod);
         return hash;
@@ -147,6 +160,12 @@ public class MaxQuantImport extends DataImport {
         if (this.includeUnidentifiedSpectra != other.includeUnidentifiedSpectra) {
             return false;
         }
+        if (this.includeContaminants != other.includeContaminants) {
+            return false;
+        }
+        if (this.storeRunsSequentially != other.storeRunsSequentially) {
+            return false;
+        }
         if (!Objects.equals(this.quantificationMethod, other.quantificationMethod)) {
             return false;
         }
@@ -154,6 +173,9 @@ public class MaxQuantImport extends DataImport {
             return false;
         }
         if (!Objects.equals(this.fullCombinedDirectory, other.fullCombinedDirectory)) {
+            return false;
+        }
+        if (!Objects.equals(this.combinedDirectory, other.combinedDirectory)) {
             return false;
         }
         return Objects.equals(this.selectedProteinGroupsHeaders, other.selectedProteinGroupsHeaders);
