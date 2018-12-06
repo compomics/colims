@@ -205,15 +205,15 @@ public class MaxQuantSearchSettingsParser {
         runSettings.clear();
 
         Path txtDirectory = Paths.get(combinedFolderDirectory + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
-        //parse the mxpar.xml file
+        //parseSpectraAndPSMs the mxpar.xml file
         parseMqParFile(mqParFile);
 
-        //parse the summary.txt file
+        //parseSpectraAndPSMs the summary.txt file
         FixedTabularFileIterator<SummaryHeader> summaryIterator = new FixedTabularFileIterator<>(Paths.get(txtDirectory.toString(), MaxQuantConstants.SUMMARY_FILE.value()), summaryHeaders);
         EnumMap<SummaryHeader, String> summaryEntry;
         while (summaryIterator.hasNext()) {
             summaryEntry = summaryIterator.next();
-            //parse the search settings
+            //parseSpectraAndPSMs the search settings
             if (mqParParamsWithRawFile.containsKey(summaryEntry.get(SummaryHeader.RAW_FILE))) {
                 SearchAndValidationSettings searchAndValidationSettings
                         = parseSearchSettings(fastaDbs, summaryEntry.get(SummaryHeader.RAW_FILE));

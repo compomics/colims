@@ -138,7 +138,7 @@ public class MaxQuantProteinGroupsParserTest {
     }
 
     /**
-     * Test of parse method of class MaxQuantProteinGroupParser.
+     * Test of parseSpectraAndPSMs method of class MaxQuantProteinGroupParser.
      *
      * @throws java.lang.Exception in case of an exception
      */

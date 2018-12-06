@@ -52,11 +52,11 @@ public class MaxQuantMapper implements DataMapper<MaxQuantImport> {
         try {
             maxQuantParser.clear();
 
-            //parse the search settings
-            maxQuantParser.parseSearchAndQuantSettings(maxQuantImport, fastasDirectory);
+            //parseSpectraAndPSMs the search settings
+            maxQuantParser.parseSettingsAndProteins(maxQuantImport, fastasDirectory);
 
-            //parse the MaxQuant files
-            maxQuantParser.parse(maxQuantImport, null);
+            //parseSpectraAndPSMs the MaxQuant files
+            maxQuantParser.parseSpectraAndPSMs(maxQuantImport, null);
 
             analyticalRuns = maxQuantParser.getAnalyticalRuns();
 

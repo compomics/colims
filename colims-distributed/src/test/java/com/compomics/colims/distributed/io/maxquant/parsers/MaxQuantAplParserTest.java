@@ -36,7 +36,7 @@ public class MaxQuantAplParserTest {
     }
 
     /**
-     * Test the parse method for identified spectra.
+     * Test the parseSpectraAndPSMs method for identified spectra.
      *
      * @throws java.io.IOException
      */
@@ -77,7 +77,7 @@ public class MaxQuantAplParserTest {
             Map<String, String> headers = new HashMap<>();
             //go to the next line
             br.readLine();
-            //parse spectrum header part
+            //parseSpectraAndPSMs spectrum header part
             while ((line = br.readLine()) != null && !Character.isDigit(line.charAt(0))) {
                 String[] split = line.split(APL_HEADER_DELIMITER);
                 headers.put(split[0], split[1]);
@@ -91,7 +91,7 @@ public class MaxQuantAplParserTest {
     }
 
     /**
-     * Test the parse method for unidentified spectra.
+     * Test the parseSpectraAndPSMs method for unidentified spectra.
      *
      * @throws java.io.IOException
      */
@@ -135,7 +135,7 @@ public class MaxQuantAplParserTest {
             Map<String, String> headers = new HashMap<>();
             //go to the next line
             br.readLine();
-            //parse spectrum header part
+            //parseSpectraAndPSMs spectrum header part
             while ((line = br.readLine()) != null && !Character.isDigit(line.charAt(0))) {
                 String[] split = line.split(APL_HEADER_DELIMITER);
                 headers.put(split[0], split[1]);

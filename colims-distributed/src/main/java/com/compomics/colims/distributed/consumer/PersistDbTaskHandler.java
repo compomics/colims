@@ -155,6 +155,11 @@ public class PersistDbTaskHandler {
         return fastasPath;
     }
 
+    /**
+     * Process the incoming persist db task.
+     *
+     * @param persistDbTask the {@link PersistDbTask} instance
+     */
     public void handlePersistDbTask(PersistDbTask persistDbTask) {
         Long started = System.currentTimeMillis();
         try {
@@ -210,7 +215,7 @@ public class PersistDbTaskHandler {
      * @throws JDOMException                    thrown in case of an XML parsing related problem
      */
     private void mapAndPersistDataImport(PersistDbTask persistDbTask, Sample sample, Instrument instrument, String userName) throws MappingException, IOException, ArchiveException, ClassNotFoundException, SQLException, InterruptedException, JDOMException {
-        MappedData mappedData = null;
+        MappedData mappedData;
 
         notificationProducer.sendNotification(new Notification(STARTED_MESSAGE, ""));
 

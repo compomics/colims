@@ -97,7 +97,7 @@ public class AnnotatedSpectraParser {
      * Parse msms file only for given ID numbers.
      *
      * @param msmsFile the msms.txt file
-     * @param msmsIDs the list of msms IDs to parse
+     * @param msmsIDs the list of msms IDs to parseSpectraAndPSMs
      */
     private void parseMSMS(Path msmsFile, List<String> msmsIDs) throws IOException {
         TabularFileIterator valuesIterator = new TabularFileIterator(msmsFile, msmsHeaders.getMandatoryHeaders());
@@ -200,7 +200,7 @@ public class AnnotatedSpectraParser {
                     if (line.startsWith(APL_SPECTUM_START)) {
                         //go to the next line
                         line = bufferedReader.readLine();
-                        //parse spectrum header part                       
+                        //parseSpectraAndPSMs spectrum header part
                         while (!Character.isDigit(line.charAt(0))) {
                             String[] split = line.split(APL_HEADER_DELIMITER);
                             headers.put(split[0], split[1]);

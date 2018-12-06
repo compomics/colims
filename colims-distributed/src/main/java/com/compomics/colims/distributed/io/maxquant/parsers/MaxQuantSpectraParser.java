@@ -99,13 +99,13 @@ public class MaxQuantSpectraParser {
             throw new FileNotFoundException("The msms.txt file " + msmsFile.toString() + " was not found.");
         }
 
-        //parse the parameter files in the andromeda directory
+        //parseSpectraAndPSMs the parameter files in the andromeda directory
         maxQuantAndromedaParser.parseParameters(andromedaDirectory);
 
-        //parse the msms.txt file
+        //parseSpectraAndPSMs the msms.txt file
         parse(msmsFile, rawFileRunName, omittedProteinGroupIds);
 
-        //parse the apl files containing the spectrum peak lists
+        //parseSpectraAndPSMs the apl files containing the spectrum peak lists
         maxQuantAndromedaParser.parseSpectra(rawFileRunName, maxQuantSpectra, includeUnidentifiedSpectra);
     }
 
@@ -125,8 +125,7 @@ public class MaxQuantSpectraParser {
             msmsEntry = valuesIterator.next();
 
             if (rawFileRunName == null) {
-                rawFileRunName = msmsEntry.get(MsmsHeader.RAW_FILE);
-                parseMsmsEntry(msmsEntry, rawFileRunName, omittedProteinGroupIds);
+                parseMsmsEntry(msmsEntry, msmsEntry.get(MsmsHeader.RAW_FILE), omittedProteinGroupIds);
             } else if (rawFileRunName.equals(msmsEntry.get(MsmsHeader.RAW_FILE))) {
                 parseMsmsEntry(msmsEntry, rawFileRunName, omittedProteinGroupIds);
             } else {

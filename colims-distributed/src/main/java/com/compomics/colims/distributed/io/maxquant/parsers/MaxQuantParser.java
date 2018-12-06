@@ -48,6 +48,10 @@ public class MaxQuantParser {
      */
     LinkedHashMap<FastaDb, Path> fastaDbMap = new LinkedHashMap<>();
     /**
+     * The path of the MaxQuant txt directory.
+     */
+    Path txtDirectory;
+    /**
      * The child parsers.
      */
     private final MaxQuantSpectraParser maxQuantSpectraParser;
@@ -78,6 +82,7 @@ public class MaxQuantParser {
     public void clear() {
         clearForSingleRun();
         maxQuantSearchSettingsParser.clear();
+        maxQuantProteinGroupsParser.clear();
         analyticalRuns.clear();
         fastaDbMap.clear();
     }
@@ -88,12 +93,11 @@ public class MaxQuantParser {
     public void clearForSingleRun() {
         maxQuantEvidenceParser.clear();
         maxQuantSpectraParser.clear();
-        maxQuantProteinGroupsParser.clear();
         maxQuantQuantificationSettingsParser.clear();
     }
 
     /**
-     * Parse the search and quantification settings.
+     * Parse search and quantification settings and the protein groups.
      *
      * @param maxQuantImport  the {@link MaxQuantImport} instance
      * @param fastasDirectory the fasta directory path
@@ -101,7 +105,7 @@ public class MaxQuantParser {
      * @throws IOException   in case of an input/output related problem
      * @throws JDOMException in case of an XML parsing related problem
      */
-    public Set<String> parseSearchAndQuantSettings(MaxQuantImport maxQuantImport, Path fastasDirectory) throws IOException, JDOMException {
+    public Set<String> parseSettingsAndProteins(MaxQuantImport maxQuantImport, Path fastasDirectory) throws IOException, JDOMException {
         EnumMap<FastaDbType, List<FastaDb>> fastaDbs = new EnumMap<>(FastaDbType.class);
         //get the FASTA db entities from the database
         maxQuantImport.getFastaDbIds().forEach((FastaDbType fastaDbType, List<Long> fastaDbIds) -> {
@@ -129,7 +133,7 @@ public class MaxQuantParser {
         //populate the analytical runs map
         maxQuantSearchSettingsParser.getAnalyticalRuns().keySet().forEach((run -> analyticalRuns.put(run.getName(), run)));
 
-        //parse the quantification settings
+        //parseSpectraAndPSMs the quantification settings
         //for SILAC or ICAT experiments, we don't have any reagent name from MaxQuant.
         //Colims gives reagent names according to the number of samples.
         switch (maxQuantImport.getQuantificationMethod()) {
@@ -156,26 +160,13 @@ public class MaxQuantParser {
         //link the quantification settings to each analytical run
         analyticalRuns.values().forEach(analyticalRun -> analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun)));
 
-        return maxQuantSearchSettingsParser.getRunSettings().keySet();
-    }
-
-    /**
-     * Parse the MaxQuant output folder and map the content of the different
-     * files to Colims entities. If the given raw file name is null, all runs are parsed.
-     *
-     * @param maxQuantImport the {@link MaxQuantImport} instance
-     * @param rawFileName    the raw file name
-     * @throws IOException          in case of an input/output related problem
-     * @throws UnparseableException in case of a problem occurred while parsing
-     */
-    public void parse(MaxQuantImport maxQuantImport, String rawFileName) throws IOException, UnparseableException {
         //look for the MaxQuant txt directory
-        Path txtDirectory = Paths.get(maxQuantImport.getCombinedDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
+        txtDirectory = Paths.get(maxQuantImport.getCombinedDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
         if (!Files.exists(txtDirectory)) {
             throw new FileNotFoundException("The MaxQuant txt file " + txtDirectory.toString() + " was not found.");
         }
 
-        //parse the protein groups file
+        //parseSpectraAndPSMs the protein groups file
         LOGGER.info("parsing proteinGroups.txt");
         Path proteinGroupsFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value());
         if (!Files.exists(proteinGroupsFile)) {
@@ -183,6 +174,19 @@ public class MaxQuantParser {
         }
         maxQuantProteinGroupsParser.parse(proteinGroupsFile, fastaDbMap, maxQuantImport.getQuantificationMethod(), maxQuantImport.isIncludeContaminants(), maxQuantImport.getSelectedProteinGroupsHeaders());
 
+        return maxQuantSearchSettingsParser.getRunSettings().keySet();
+    }
+
+    /**
+     * Parse the evidence, msms and apl files files to Colims entities.
+     * If the given raw file name is null, data from all runs is parsed.
+     *
+     * @param maxQuantImport the {@link MaxQuantImport} instance
+     * @param rawFileName    the raw file name
+     * @throws IOException          in case of an input/output related problem
+     * @throws UnparseableException in case of a problem occurred while parsing
+     */
+    public void parseSpectraAndPSMs(MaxQuantImport maxQuantImport, String rawFileName) throws IOException, UnparseableException {
         LOGGER.info("parsing msms.txt");
         maxQuantSpectraParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), rawFileName, maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 

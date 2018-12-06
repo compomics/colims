@@ -56,7 +56,7 @@ public class MaxQuantSequentialRunsMapper implements SequentialRunsDataMapper<Ma
     public Set<String> getRunNames(MaxQuantImport dataImport, Path fastasDirectory) throws IOException, JDOMException {
         this.maxQuantImport = dataImport;
 
-        return maxQuantParser.parseSearchAndQuantSettings(dataImport, fastasDirectory);
+        return maxQuantParser.parseSettingsAndProteins(dataImport, fastasDirectory);
     }
 
     @Override
@@ -67,8 +67,8 @@ public class MaxQuantSequentialRunsMapper implements SequentialRunsDataMapper<Ma
         try {
             maxQuantParser.clearForSingleRun();
 
-            //parse the MaxQuant files
-            maxQuantParser.parse(maxQuantImport, analyticalRun);
+            //parseSpectraAndPSMs the MaxQuant files
+            maxQuantParser.parseSpectraAndPSMs(maxQuantImport, analyticalRun);
 
             analyticalRuns = maxQuantParser.getAnalyticalRuns();
 

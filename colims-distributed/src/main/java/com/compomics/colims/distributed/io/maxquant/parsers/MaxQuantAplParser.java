@@ -66,7 +66,7 @@ public class MaxQuantAplParser {
                 if (line.startsWith(APL_SPECTRUM_START)) {
                     //go to the next line
                     line = bufferedReader.readLine();
-                    //parse spectrum header part
+                    //parseSpectraAndPSMs spectrum header part
                     while (!Character.isDigit(line.charAt(0))) {
                         String[] split = line.split(APL_HEADER_DELIMITER);
                         headers.put(split[0], split[1]);

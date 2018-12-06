@@ -149,8 +149,7 @@ public class MaxQuantEvidenceParser {
             evidenceEntry = evidenceIterator.next();
 
             if (rawFileName == null) {
-                rawFileName = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.RAW_FILE));
-                parseEvidenceEntry(evidenceEntry, rawFileName, omittedProteinGroupIds, quantificationMethod, optionalHeaders);
+                parseEvidenceEntry(evidenceEntry, evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.RAW_FILE)), omittedProteinGroupIds, quantificationMethod, optionalHeaders);
             } else if (rawFileName.equals(evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.RAW_FILE)))) {
                 parseEvidenceEntry(evidenceEntry, rawFileName, omittedProteinGroupIds, quantificationMethod, optionalHeaders);
             } else {
@@ -350,7 +349,7 @@ public class MaxQuantEvidenceParser {
                     //(Element 0: the probability score; element 1: the delta score; element 2: the affected amino acid location starting from 1)
                     List<Object[]> scoresAndLocations = new ArrayList<>();
                     if (probabilitiesString != null && deltasString != null && !probabilitiesString.isEmpty() && !deltasString.isEmpty()) {
-                        //first, parse the modification probability scores and delta scores between brackets
+                        //first, parseSpectraAndPSMs the modification probability scores and delta scores between brackets
                         Matcher probabilities = MODIFICATION_PATTERN.matcher(probabilitiesString);
                         Matcher deltas = MODIFICATION_PATTERN.matcher(deltasString);
                         //keep track of the overhead from the scores in the sequence to get the right affected amino acid location
@@ -373,7 +372,7 @@ public class MaxQuantEvidenceParser {
                             scoresAndLocations.sort(((o1, o2) -> ((Double) o2[0]).compareTo((Double) o1[0])));
                         }
                     } else {
-                        //parse the modified sequence
+                        //parseSpectraAndPSMs the modified sequence
                         String modifiedSequenceString = values.get(evidenceHeaders.get(EvidenceHeader.MODIFIED_SEQUENCE));
                         //trim underscores
                         modifiedSequenceString = StringUtils.strip(modifiedSequenceString, MODIFIED_SEQUENCE_FIX);
@@ -463,7 +462,7 @@ public class MaxQuantEvidenceParser {
                         intensities.put(MaxQuantImport.NO_LABEL, Double.valueOf(intensityH));
                     }
                 }
-                if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) { //parse the medium label as well
+                if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) { //parseSpectraAndPSMs the medium label as well
                     String intensityM = evidenceEntry.get(evidenceHeaders.get(EvidenceHeader.INTENSITY_M));
                     if (intensityM != null && NumberUtils.isNumber(intensityM)) {
                         if (maxQuantSearchSettingsParser.getLabelMods().get(1) != null) {
