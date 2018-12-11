@@ -43,29 +43,33 @@ public class PersistServiceImpl implements PersistService {
     @Override
     public void persist(MappedData mappedData, Sample sample, Instrument instrument, String userName, Date startDate) {
         // first, cascade save or update the analytical run
-        mappedData.getAnalyticalRuns().stream().forEach(analyticalRun -> {
+        mappedData.getAnalyticalRuns().stream().filter(analyticalRun -> analyticalRun.getId() == null)
+                .forEach(analyticalRun -> {
+                    SearchAndValidationSettings searchAndValidationSettings = analyticalRun.getSearchAndValidationSettings();
+                    if (searchAndValidationSettings != null) {
+                        //set the audit user name for the SearchAndValidationSettings
+                        searchAndValidationSettings.setUserName(userName);
+                    }
 
-            SearchAndValidationSettings searchAndValidationSettings = analyticalRun.getSearchAndValidationSettings();
-            if (searchAndValidationSettings != null) {
-                //set the audit user name for the SearchAndValidationSettings
-                searchAndValidationSettings.setUserName(userName);
-            }
-
-            QuantificationSettings quantificationSettings = analyticalRun.getQuantificationSettings();
-            if (quantificationSettings != null) {
-                //set the audit user name for the QuantificationSettings
-                quantificationSettings.setUserName(userName);
-            }
-            //second,  cascade save or update the analytical run
-            analyticalRun.setUserName(userName);
-            analyticalRun.setStartDate(startDate);
-            analyticalRun.setSample(sample);
-            analyticalRun.setInstrument(instrument);
-            analyticalRunRepository.saveOrUpdate(analyticalRun);
-        });
+                    QuantificationSettings quantificationSettings = analyticalRun.getQuantificationSettings();
+                    if (quantificationSettings != null) {
+                        //set the audit user name for the QuantificationSettings
+                        quantificationSettings.setUserName(userName);
+                    }
+                    //second,  cascade save or update the analytical run
+                    analyticalRun.setUserName(userName);
+                    analyticalRun.setStartDate(startDate);
+                    analyticalRun.setSample(sample);
+                    analyticalRun.setInstrument(instrument);
+                    analyticalRunRepository.saveOrUpdate(analyticalRun);
+                });
 
         //cascade save or update the protein groups
-        mappedData.getProteinGroups().stream().forEach(proteinGroupRepository::saveOrUpdate);
+        mappedData.getProteinGroups().stream().forEach(proteinGroup -> {
+            if (proteinGroup.getId() == null) {
+                proteinGroupRepository.saveOrUpdate(proteinGroup);
+            }
+        });
 
         //cascade save or update the spectra
         mappedData.getAnalyticalRuns().stream().forEach(analyticalRun -> analyticalRun.getSpectrums().stream().forEach(spectrumRepository::saveOrUpdate));

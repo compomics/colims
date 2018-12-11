@@ -92,7 +92,7 @@ public class PeptideShakerIOIT {
         Assert.assertNotNull(msExperiment);
 
         Assert.assertEquals(5L, unpackedPsDataImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0).longValue());
-        Assert.assertEquals(mgfFiles.get(0), unpackedPsDataImport.getMgfFiles().get(0).getFileName());
+        Assert.assertEquals(mgfFiles.get(0), unpackedPsDataImport.getMgfFiles().get(0).getFileName().toString());
 
         //delete directory
         FileUtils.deleteDirectory(directory);

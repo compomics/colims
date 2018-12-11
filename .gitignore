@@ -12,6 +12,7 @@ pom.xml~
 .gitignore~
 desktop.ini
 *.log
+.attach*
 
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm

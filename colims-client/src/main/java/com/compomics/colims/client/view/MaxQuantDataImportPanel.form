@@ -68,8 +68,9 @@
                               <Component id="maxQuantDirectorySelectionLabel" min="-2" max="-2" attributes="0"/>
                               <Component id="contaminantsCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="unidentifiedSpectraCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="storeRunsSequentiallyCheckBox" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="160" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="81" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -97,7 +98,9 @@
                   <Component id="contaminantsCheckBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="unidentifiedSpectraCheckBox" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="76" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="storeRunsSequentiallyCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="50" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -161,6 +164,12 @@
             <Property name="text" type="java.lang.String" value="Import unidentified spectra"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JCheckBox" name="storeRunsSequentiallyCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Store runs sequentially (less memory but takes longer)"/>
+            <Property name="toolTipText" type="java.lang.String" value="Normally, data from all runs is parsed first and stored afterwards. This may cause memory issues for big MaxQuant experiments. Storing the runs sequentially takes longer but consumes less memory."/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Component class="javax.swing.JSeparator" name="separator">
@@ -217,7 +226,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="additionalFastaFileSelectionLabel" min="-2" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
-                          <Component id="additionalFastaDbScrollPane" pref="419" max="32767" attributes="0"/>
+                          <Component id="additionalFastaDbScrollPane" pref="400" max="32767" attributes="0"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="selectAdditionalFastaDbButton" min="-2" pref="92" max="-2" attributes="0"/>

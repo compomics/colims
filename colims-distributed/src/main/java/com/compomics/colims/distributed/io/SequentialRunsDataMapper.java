@@ -45,6 +45,6 @@ public interface SequentialRunsDataMapper<T extends DataImport> {
      *
      * @throws Exception in case of an exception
      */
-    void clearForSingleRun() throws Exception;
+    void clearAfterSingleRun(String runName) throws Exception;
 
 }

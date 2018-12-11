@@ -80,8 +80,11 @@ public class MaxQuantParser {
      * Clear the parser's resources.
      */
     public void clear() {
-        clearForSingleRun();
+        //clearAfterSingleRun();
+        maxQuantEvidenceParser.clear();
+        maxQuantSpectraParser.clear();
         maxQuantSearchSettingsParser.clear();
+        maxQuantQuantificationSettingsParser.clear();
         maxQuantProteinGroupsParser.clear();
         analyticalRuns.clear();
         fastaDbMap.clear();
@@ -90,10 +93,13 @@ public class MaxQuantParser {
     /**
      * Clear the parser's resources for a single run.
      */
-    public void clearForSingleRun() {
+    public void clearAfterSingleRun(String runName) {
+        AnalyticalRun analyticalRun = analyticalRuns.get(runName);
+        analyticalRun.getSpectrums().clear();
+        analyticalRun.getProteinGroupQuants().clear();
         maxQuantEvidenceParser.clear();
         maxQuantSpectraParser.clear();
-        maxQuantQuantificationSettingsParser.clear();
+        maxQuantProteinGroupsParser.clearAfterSingleRun();
     }
 
     /**
@@ -187,10 +193,20 @@ public class MaxQuantParser {
      * @throws UnparseableException in case of a problem occurred while parsing
      */
     public void parseSpectraAndPSMs(MaxQuantImport maxQuantImport, String rawFileName) throws IOException, UnparseableException {
-        LOGGER.info("parsing msms.txt");
+        if(rawFileName == null){
+            LOGGER.info("parsing msms.txt and spectra");
+        }
+        else{
+            LOGGER.info("parsing msms.txt and spectra for run " + rawFileName);
+        }
         maxQuantSpectraParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), rawFileName, maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
-        LOGGER.info("parsing evidence.txt");
+        if(rawFileName == null){
+            LOGGER.info("parsing evidence.txt");
+        }
+        else{
+            LOGGER.info("parsing evidence.txt for run " + rawFileName);
+        }
         Path evidenceFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.EVIDENCE_FILE.value());
         if (!Files.exists(evidenceFile)) {
             throw new FileNotFoundException("The evidence.txt " + evidenceFile.toString() + " was not found.");
@@ -200,12 +216,12 @@ public class MaxQuantParser {
         if (rawFileName == null) {
             //add the identified spectra for each run and set the entity relations
             analyticalRuns.forEach((runName, run) -> {
-                setRunEntityRelations(runName, run);
+                setRunRelations(runName, run);
             });
         } else {
             AnalyticalRun run = analyticalRuns.get(rawFileName);
 
-            setRunEntityRelations(rawFileName, run);
+            setRunRelations(rawFileName, run);
         }
 
         //add the matching between runs peptides for each run
@@ -248,7 +264,7 @@ public class MaxQuantParser {
      * @param runName       the MaxQuant run identifier
      * @param analyticalRun the {@link AnalyticalRun} instance
      */
-    private void setRunEntityRelations(String runName, AnalyticalRun analyticalRun) {
+    private void setRunRelations(String runName, AnalyticalRun analyticalRun) {
         //set the entity relation between run and search settings
         analyticalRun.getSearchAndValidationSettings().setAnalyticalRun(analyticalRun);
 

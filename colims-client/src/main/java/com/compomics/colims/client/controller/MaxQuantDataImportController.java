@@ -60,6 +60,7 @@ public class MaxQuantDataImportController implements Controllable {
     private FastaDb contaminantsFastaDb;
     private boolean includeContaminants;
     private boolean includeUnidentifiedSpectra;
+    private boolean storeRunsSequentially;
     private List<String> selectedProteinGroupHeaders;
     private ObservableList<FastaDb> additionalFastaDbBindingList;
     private BindingGroup bindingGroup;
@@ -197,6 +198,8 @@ public class MaxQuantDataImportController implements Controllable {
         maxQuantDataImportPanel.getContaminantsCheckBox().addActionListener(e -> includeContaminants = true);
 
         maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().addActionListener(e -> includeUnidentifiedSpectra = true);
+
+        maxQuantDataImportPanel.getStoreRunsSequentiallyCheckBox().addActionListener(e -> storeRunsSequentially = true);
     }
 
     @Override
@@ -206,6 +209,7 @@ public class MaxQuantDataImportController implements Controllable {
         contaminantsFastaDb = null;
         includeContaminants = false;
         includeUnidentifiedSpectra = false;
+        storeRunsSequentially = false;
         selectedProteinGroupHeaders = new ArrayList<>();
         additionalFastaDbBindingList.clear();
         //reset the input fields
@@ -300,7 +304,7 @@ public class MaxQuantDataImportController implements Controllable {
         fastaDbIds.put(FastaDbType.ADDITIONAL, additionalFastaDbIDs);
 
         return new MaxQuantImport(mqparFile.toString(), combinedDirectory.toString(), fullCombinedDirectory.toString(), fastaDbIds, includeContaminants,
-                includeUnidentifiedSpectra, false, selectedProteinGroupHeaders, analyticalRunsAdditionController.getSelectedQuantificationMethod());
+                includeUnidentifiedSpectra, storeRunsSequentially, selectedProteinGroupHeaders, analyticalRunsAdditionController.getSelectedQuantificationMethod());
     }
 
 }
@@ -324,7 +328,6 @@ class AdditionalFastaDbListCellRenderer extends DefaultListCellRenderer {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
         FastaDb fastaDb = (FastaDb) list.getModel().getElementAt(index);
-
 
         String labelText = "";
 

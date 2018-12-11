@@ -48,8 +48,8 @@ public class MaxQuantSequentialRunsMapper implements SequentialRunsDataMapper<Ma
     }
 
     @Override
-    public void clearForSingleRun() {
-        maxQuantParser.clearForSingleRun();
+    public void clearAfterSingleRun(String runName) {
+        maxQuantParser.clearAfterSingleRun(runName);
     }
 
     @Override
@@ -61,12 +61,10 @@ public class MaxQuantSequentialRunsMapper implements SequentialRunsDataMapper<Ma
 
     @Override
     public MappedData mapData(String analyticalRun) throws MappingException {
-        LOGGER.info("started mapping folder: " + maxQuantImport.getMqParFile());
+        LOGGER.info("started mapping folder: " + maxQuantImport.getMqParFile() + " for run " + analyticalRun);
 
         List<AnalyticalRun> analyticalRuns;
         try {
-            maxQuantParser.clearForSingleRun();
-
             //parseSpectraAndPSMs the MaxQuant files
             maxQuantParser.parseSpectraAndPSMs(maxQuantImport, analyticalRun);
 

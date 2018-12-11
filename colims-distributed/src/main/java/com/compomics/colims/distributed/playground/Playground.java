@@ -107,17 +107,17 @@ public class Playground {
         cIds.add(2L);
         fastaDbs.put(FastaDbType.CONTAMINANTS, cIds);
         MaxQuantImport maxQuantImport = new MaxQuantImport(
-                "/home/niels/Desktop/experiments/maxquant_SILAC_integration/mqpar.xml",
-                "maxquant_SILAC_integration/combined",
-                "/home/niels/Desktop/experiments/maxquant_SILAC_integration/combined",
+                "/home/niels/Desktop/experiments/PRC-1660/mqpar.xml",
+                "PRC-1660/combined",
+                "/home/niels/Desktop/experiments/PRC-1660/combined",
                 fastaDbs,
                 false,
                 false,
                 true,
                 new ArrayList<>(),
-                QuantificationMethod.SILAC);
+                QuantificationMethod.LABEL_FREE);
         PersistMetadata persistMetadata = new PersistMetadata(PersistType.MAX_QUANT, "didid", new Date(), 1L);
-        PersistDbTask persistDbTask = new PersistDbTask(AnalyticalRun.class, 1L, 1L, persistMetadata, maxQuantImport);
+        PersistDbTask persistDbTask = new PersistDbTask(AnalyticalRun.class, 2L, 1L, persistMetadata, maxQuantImport);
         persistDbTaskHandler.handlePersistDbTask(persistDbTask);
         //maxQuantMapper.mapData(maxQuantImport, Paths.get("/home/niels/Desktop/experiments"), Paths.get("/home/niels/Desktop/fastas"));
     }

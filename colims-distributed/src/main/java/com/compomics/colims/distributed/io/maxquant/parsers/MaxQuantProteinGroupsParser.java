@@ -101,6 +101,16 @@ public class MaxQuantProteinGroupsParser {
     }
 
     /**
+     * Clear resources.
+     */
+    public void clearAfterSingleRun() {
+        proteinGroups.values().forEach(proteinGroup -> {
+            proteinGroup.getPeptideHasProteinGroups().clear();
+            proteinGroup.getProteinGroupQuants().clear();
+        });
+    }
+
+    /**
      * Parse the proteinGroups.txt file.
      *
      * @param proteinGroupsFile    MaxQuant protein groups file

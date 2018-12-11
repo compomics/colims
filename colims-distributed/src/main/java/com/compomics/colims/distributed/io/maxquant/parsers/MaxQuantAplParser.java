@@ -91,12 +91,12 @@ public class MaxQuantAplParser {
                         spectrum.setCharge(Integer.valueOf(headers.get(APL_CHARGE)));
                         spectrum.setScanIndex(Long.valueOf(org.apache.commons.lang3.StringUtils.substringAfter(header, APL_INDEX)));
 
-                        if (!maxQuantSpectra.getUnidentifiedSpectra().containsKey(rawFileName)) {
+                        if (!maxQuantSpectra.getUnidentifiedSpectra().containsKey(headerRawFileName)) {
                             List<Spectrum> spectra = new ArrayList<>();
                             spectra.add(spectrum);
-                            maxQuantSpectra.getUnidentifiedSpectra().put(rawFileName, spectra);
+                            maxQuantSpectra.getUnidentifiedSpectra().put(headerRawFileName, spectra);
                         } else {
-                            maxQuantSpectra.getUnidentifiedSpectra().get(rawFileName).add(spectrum);
+                            maxQuantSpectra.getUnidentifiedSpectra().get(headerRawFileName).add(spectrum);
                         }
                     }
 

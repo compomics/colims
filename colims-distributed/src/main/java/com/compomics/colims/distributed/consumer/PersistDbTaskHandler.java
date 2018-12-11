@@ -288,11 +288,11 @@ public class PersistDbTaskHandler {
                     Set<String> runNames = maxQuantSequentialRunsMapper.getRunNames(maxQuantImport, fastasDirectory);
 
                     for (String runName : runNames) {
-                        maxQuantSequentialRunsMapper.clearForSingleRun();
-
                         mappedData = maxQuantSequentialRunsMapper.mapData(runName);
 
                         persistService.persist(mappedData, sample, instrument, userName, persistDbTask.getPersistMetadata().getStartDate());
+
+                        maxQuantSequentialRunsMapper.clearAfterSingleRun(runName);
                     }
 
                     //clear resources after mapping

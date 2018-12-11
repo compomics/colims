@@ -77,6 +77,10 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         return selectContaminantsFastaDbButton;
     }
 
+    public JCheckBox getStoreRunsSequentiallyCheckBox() {
+        return storeRunsSequentiallyCheckBox;
+    }        
+
     public JButton getSelectMqparFileButton() {
         return selectMqparFileButton;
     }
@@ -119,6 +123,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
         mqparFileTextField = new javax.swing.JTextField();
         contaminantsCheckBox = new javax.swing.JCheckBox();
         unidentifiedSpectraCheckBox = new javax.swing.JCheckBox();
+        storeRunsSequentiallyCheckBox = new javax.swing.JCheckBox();
         separator = new javax.swing.JSeparator();
         rightPanel = new javax.swing.JPanel();
         selectPrimaryFastaDbButton = new javax.swing.JButton();
@@ -164,6 +169,9 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
 
         unidentifiedSpectraCheckBox.setText("Import unidentified spectra");
 
+        storeRunsSequentiallyCheckBox.setText("Store runs sequentially (less memory but takes longer)");
+        storeRunsSequentiallyCheckBox.setToolTipText("Normally, data from all runs is parsed first and stored afterwards. This may cause memory issues for big MaxQuant experiments. Storing the runs sequentially takes longer but consumes less memory.");
+
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
         leftPanelLayout.setHorizontalGroup(
@@ -184,8 +192,9 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                             .addComponent(combinedFolderDirectorySelectionLabel)
                             .addComponent(maxQuantDirectorySelectionLabel)
                             .addComponent(contaminantsCheckBox)
-                            .addComponent(unidentifiedSpectraCheckBox))
-                        .addGap(0, 160, Short.MAX_VALUE)))
+                            .addComponent(unidentifiedSpectraCheckBox)
+                            .addComponent(storeRunsSequentiallyCheckBox))
+                        .addGap(0, 81, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         leftPanelLayout.setVerticalGroup(
@@ -207,7 +216,9 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addComponent(contaminantsCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(unidentifiedSpectraCheckBox)
-                .addContainerGap(76, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(storeRunsSequentiallyCheckBox)
+                .addContainerGap(50, Short.MAX_VALUE))
         );
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -292,7 +303,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
                 .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(additionalFastaFileSelectionLabel)
                     .addGroup(rightPanelLayout.createSequentialGroup()
-                        .addComponent(additionalFastaDbScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+                        .addComponent(additionalFastaDbScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(rightPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(selectAdditionalFastaDbButton, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -362,6 +373,7 @@ public class MaxQuantDataImportPanel extends javax.swing.JPanel {
     private javax.swing.JButton selectMqparFileButton;
     private javax.swing.JButton selectPrimaryFastaDbButton;
     private javax.swing.JSeparator separator;
+    private javax.swing.JCheckBox storeRunsSequentiallyCheckBox;
     private javax.swing.JCheckBox unidentifiedSpectraCheckBox;
     // End of variables declaration//GEN-END:variables
 }
