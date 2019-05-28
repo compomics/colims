@@ -6,7 +6,7 @@ import com.compomics.colims.model.AnalyticalRunBinaryFile;
 import com.compomics.colims.model.Instrument;
 import com.compomics.colims.repository.AnalyticalRunRepository;
 import com.compomics.colims.repository.InstrumentRepository;
-import org.hibernate.LazyInitializationException;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,21 +66,25 @@ public class AnalyticalRunServiceImpl implements AnalyticalRunService {
 
     @Override
     public void fetchInstrument(AnalyticalRun analyticalRun) {
-        try {
-            analyticalRun.getInstrument().getId();
-        } catch (LazyInitializationException e) {
+        if (!Hibernate.isInitialized(analyticalRun.getInstrument())) {
             Instrument instrument = instrumentRepository.findByAnalyticalRunId(analyticalRun.getId());
             if (instrument != null) {
                 analyticalRun.setInstrument(instrument);
             }
         }
+//        try {
+//            analyticalRun.getInstrument().getId();
+//        } catch (LazyInitializationException e) {
+//            Instrument instrument = instrumentRepository.findByAnalyticalRunId(analyticalRun.getId());
+//            if (instrument != null) {
+//                analyticalRun.setInstrument(instrument);
+//            }
+//        }
     }
 
     @Override
     public void fetchBinaryFiles(AnalyticalRun analyticalRun) {
-        try {
-            analyticalRun.getBinaryFiles().size();
-        } catch (LazyInitializationException e) {
+        if (!Hibernate.isInitialized(analyticalRun.getBinaryFiles())) {
             //fetch the binary files
             List<AnalyticalRunBinaryFile> binaryFiles = analyticalRunRepository.fetchBinaryFiles(analyticalRun.getId());
             analyticalRun.setBinaryFiles(binaryFiles);

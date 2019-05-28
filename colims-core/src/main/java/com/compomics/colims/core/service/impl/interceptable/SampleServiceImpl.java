@@ -6,7 +6,7 @@ import com.compomics.colims.model.Protocol;
 import com.compomics.colims.model.Sample;
 import com.compomics.colims.model.SampleBinaryFile;
 import com.compomics.colims.repository.SampleRepository;
-import org.hibernate.LazyInitializationException;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,16 +59,12 @@ public class SampleServiceImpl implements SampleService {
 
     @Override
     public void fetchMaterialsAndBinaryFiles(final Sample sample) {
-        try {
-            sample.getMaterials().size();
-        } catch (LazyInitializationException e) {
+        if (!Hibernate.isInitialized(sample.getMaterials())) {
             //fetch the materials
             List<Material> materials = sampleRepository.fetchMaterials(sample.getId());
             sample.setMaterials(materials);
         }
-        try {
-            sample.getBinaryFiles().size();
-        } catch (LazyInitializationException e) {
+        if (!Hibernate.isInitialized(sample.getBinaryFiles())) {
             //fetch the binary files
             List<SampleBinaryFile> binaryFiles = sampleRepository.fetchBinaryFiles(sample.getId());
             sample.setBinaryFiles(binaryFiles);

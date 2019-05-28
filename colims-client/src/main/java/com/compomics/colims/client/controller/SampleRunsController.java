@@ -14,8 +14,6 @@ import ca.odell.glazedlists.swing.DefaultEventSelectionModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
 import com.compomics.colims.client.distributed.QueueManager;
 import com.compomics.colims.client.distributed.producer.DbTaskProducer;
-import com.compomics.colims.client.event.AnalyticalRunChangeEvent;
-import com.compomics.colims.client.event.EntityChangeEvent;
 import com.compomics.colims.client.event.message.MessageEvent;
 import com.compomics.colims.client.event.message.StorageQueuesConnectionErrorMessageEvent;
 import com.compomics.colims.client.event.message.UnexpectedErrorMessageEvent;
@@ -24,26 +22,23 @@ import com.compomics.colims.client.util.GuiUtils;
 import com.compomics.colims.client.view.SampleRunsDialog;
 import com.compomics.colims.core.distributed.model.DeleteDbTask;
 import com.compomics.colims.core.service.AnalyticalRunService;
-import com.compomics.colims.core.service.BinaryFileService;
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
 import com.compomics.colims.model.*;
 import com.compomics.colims.model.comparator.IdComparator;
 import com.compomics.colims.model.enums.DefaultPermission;
 import com.compomics.colims.model.enums.FastaDbType;
 import com.google.common.eventbus.EventBus;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
-import javax.swing.JOptionPane;
-import javax.swing.ListSelectionModel;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.swing.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller for viewing and editing sample runs.
@@ -269,6 +264,7 @@ public class SampleRunsController implements Controllable {
         if (analyticalRun != null) {
             // fetch all needed fields
             fetchAnalyticalRun(analyticalRun);
+
             sampleRunsDialog.getNameTextField().setText(analyticalRun.getName());
             sampleRunsDialog.getStartDateTextField().setText(analyticalRun.getStartDate().toString());
 

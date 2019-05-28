@@ -1,17 +1,19 @@
 package com.compomics.colims.core.service.impl;
 
 import com.compomics.colims.core.service.SearchAndValidationSettingsService;
-import com.compomics.colims.model.*;
+import com.compomics.colims.model.AnalyticalRun;
+import com.compomics.colims.model.SearchAndValidationSettings;
+import com.compomics.colims.model.SearchEngine;
+import com.compomics.colims.model.SearchParameters;
 import com.compomics.colims.model.enums.SearchEngineType;
 import com.compomics.colims.repository.SearchAndValidationSettingsRepository;
 import com.compomics.colims.repository.SearchEngineRepository;
 import com.compomics.colims.repository.SearchParametersRepository;
-import org.hibernate.LazyInitializationException;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,12 +117,10 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
 
     @Override
     public void fetchSearchSettingsHasFastaDb(SearchAndValidationSettings searchAndValidationSettings) {
-        try {
-            searchAndValidationSettings.getSearchSettingsHasFastaDbs().size();
-        } catch (LazyInitializationException e) {
+        if (!Hibernate.isInitialized(searchAndValidationSettings.getSearchSettingsHasFastaDbs())) {
             // merge the searchAndValidationSettings
             SearchAndValidationSettings merge = searchAndValidationSettingsRepository.merge(searchAndValidationSettings);
-            merge.getSearchSettingsHasFastaDbs().size();
+            Hibernate.initialize(merge.getSearchSettingsHasFastaDbs());
             searchAndValidationSettings.setSearchSettingsHasFastaDbs(merge.getSearchSettingsHasFastaDbs());
         }
     }

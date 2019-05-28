@@ -23,4 +23,12 @@ public interface QuantificationMethodRepository extends GenericRepository<Quanti
      * @return list of QuantificationMethodHasReagent
      */
     List<QuantificationMethodHasReagent> fetchQuantificationMethodHasReagents(Long quantificationMethodId);
+
+    /**
+     * Get the IDs of the quantification methods that are only related to the given runs..
+     *
+     * @param analyticalRunIds the list of analytical run IDs
+     * @return the list of quantification methods IDs
+     */
+    List<Long> getConstraintLessQuantMethodIdsForRuns(List<Long> analyticalRunIds);
 }

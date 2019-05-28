@@ -169,9 +169,9 @@ public class PersistDbTaskHandler {
             }
 
             //get the sample
-            Sample sample = sampleService.findById(persistDbTask.getEnitityId());
+            Sample sample = sampleService.findById(persistDbTask.getEntityId());
             if (sample == null) {
-                throw new IllegalArgumentException("The sample entity with ID " + persistDbTask.getEnitityId() + " was not found in the database.");
+                throw new IllegalArgumentException("The sample entity with ID " + persistDbTask.getEntityId() + " was not found in the database.");
             }
 
             //get the instrument

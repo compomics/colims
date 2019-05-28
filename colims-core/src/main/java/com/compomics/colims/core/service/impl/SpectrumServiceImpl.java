@@ -7,7 +7,7 @@ import com.compomics.colims.model.Peptide;
 import com.compomics.colims.model.Spectrum;
 import com.compomics.colims.model.SpectrumFile;
 import com.compomics.colims.repository.SpectrumRepository;
-import org.hibernate.LazyInitializationException;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,9 +84,9 @@ public class SpectrumServiceImpl implements SpectrumService {
     /**
      * Populate the given map with the spectrum peaks.
      *
-     * @param bytes the unzipped MGF byte array
+     * @param bytes     the unzipped MGF byte array
      * @param accession the spectrum accession for logging purposes
-     * @param peakMap the map of spectrum peaks
+     * @param peakMap   the map of spectrum peaks
      * @throws IOException in case of a spectrum file read problem
      */
     private void populatePeakMap(byte[] bytes, String accession, Map<Double, Double> peakMap) throws IOException {
@@ -178,9 +178,7 @@ public class SpectrumServiceImpl implements SpectrumService {
 
     @Override
     public void fetchSpectrumFiles(Spectrum spectrum) {
-        try {
-            spectrum.getSpectrumFiles().size();
-        } catch (LazyInitializationException e) {
+        if (!Hibernate.isInitialized(spectrum.getSpectrumFiles())) {
             //fetch the spectrum files
             List<SpectrumFile> spectrumFiles = spectrumRepository.fetchSpectrumFiles(spectrum.getId());
             spectrum.setSpectrumFiles(spectrumFiles);

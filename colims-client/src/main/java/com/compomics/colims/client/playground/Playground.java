@@ -1,13 +1,12 @@
 package com.compomics.colims.client.playground;
 
 import com.compomics.colims.core.io.MappingException;
-
+import org.hibernate.boot.archive.spi.ArchiveException;
+import org.xmlpull.v1.XmlPullParserException;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import org.hibernate.boot.archive.spi.ArchiveException;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * @author Niels Hulstaert
@@ -21,7 +20,7 @@ public class Playground {
 //        final PersistDbTask persistDbTask = new PersistDbTask();
 //        persistDbTask.setDbEntityClass(AnalyticalRun.class);
 //        persistDbTask.setMessageId("1234567");
-//        persistDbTask.setEnitityId(1L);
+//        persistDbTask.setEntityId(1L);
 //        persistDbTask.setSubmissionTimestamp(Long.MIN_VALUE);
 //        persistDbTask.setSubmissionTimestamp(System.currentTimeMillis());
 //
@@ -43,10 +42,6 @@ public class Playground {
 //        String s = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(dbTask);
 //
 //        PersistDbTask persistDbTask1 = objectMapper.readValue(s, PersistDbTask.class);
-
-        String test = "blbaljjs";
-        String[] split = test.split(";");
-
-        System.out.println("s");
+        
     }
 }

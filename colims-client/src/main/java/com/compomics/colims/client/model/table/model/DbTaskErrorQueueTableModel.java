@@ -4,7 +4,9 @@ import com.compomics.colims.core.config.ApplicationContextProvider;
 import com.compomics.colims.core.distributed.model.DbTask;
 import com.compomics.colims.core.distributed.model.DbTaskError;
 import com.compomics.colims.core.distributed.model.PersistDbTask;
+import com.compomics.colims.core.service.SampleService;
 import com.compomics.colims.core.service.UserService;
+import com.compomics.colims.model.Sample;
 
 import javax.swing.table.AbstractTableModel;
 import java.text.SimpleDateFormat;
@@ -19,22 +21,25 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
 
     private static final String NOT_APPLICABLE = "N/A";
     private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
-    private final String[] columnNames = {"index", "ID", "type", "submitted on", "description", "user", "error"};
+    private final String[] columnNames = {"index", "ID", "type", "submitted on", "sample (id)", "description", "user", "error"};
     private static final String PERSIST = "store ";
     private static final String DELETE = "delete ";
     public static final int QUEUE_INDEX = 0;
     public static final int ID = 1;
     public static final int TYPE_INDEX = 2;
     public static final int SUBMITTED_INDEX = 3;
-    public static final int DESCRIPTION_INDEX = 4;
-    public static final int USER_INDEX = 5;
-    public static final int ERROR_INDEX = 6;
+    public static final int SAMPLE_INDEX = 4;
+    public static final int DESCRIPTION_INDEX = 5;
+    public static final int USER_INDEX = 6;
+    public static final int ERROR_INDEX = 7;
     private List<DbTaskError> messages;
     private UserService userService;
+    private SampleService sampleService;
 
     public DbTaskErrorQueueTableModel() {
         messages = new ArrayList<>();
         userService = ApplicationContextProvider.getInstance().getBean("userService");
+        sampleService = ApplicationContextProvider.getInstance().getBean("sampleService");
     }
 
     public DbTaskErrorQueueTableModel(List<DbTaskError> messages) {
@@ -101,6 +106,18 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
                 }
             case SUBMITTED_INDEX:
                 return new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date(dbTask.getSubmissionTimestamp()));
+            case SAMPLE_INDEX:
+                if (dbTask instanceof PersistDbTask) {
+                    Sample sample = sampleService.findById(dbTask.getEntityId());
+                    if(sample != null) {
+                        return String.format("%s (%d)", sample.getName(), sample.getId());
+                    }
+                    else{
+                        return "sample not found";
+                    }
+                } else {
+                    return NOT_APPLICABLE;
+                }
             case DESCRIPTION_INDEX:
                 if (dbTask instanceof PersistDbTask) {
                     return ((PersistDbTask) dbTask).getPersistMetadata().getDescription();

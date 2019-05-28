@@ -196,7 +196,7 @@
         WHERE protein_group_has_protein.l_protein_id IS NULL
     </sql-query>
 
-    <sql-query name="SearchModification.getConstraintLessSearchModificationIdsForRuns">
+    <sql-query name="SearchModification.getConstraintLessSearchModificationIdsForSearchParams">
         SELECT
         DISTINCT search_modification.id
         FROM search_modification
@@ -231,5 +231,42 @@
         )
         )
         WHERE search_and_validation_settings.l_search_parameters_id IS NULL
+    </sql-query>
+
+    <sql-query name="QuantificationMethod.getConstraintLessSearchParameterIdsForRuns">
+        SELECT
+        DISTINCT quantification_method.id
+        FROM quantification_method
+        LEFT JOIN quantification_settings ON
+        (
+        quantification_settings.l_quant_method_id =
+        quantification_method.id
+        AND quantification_settings.id NOT IN
+        (
+        SELECT
+        q_s.id
+        FROM quantification_settings q_s
+        WHERE q_s.l_analytical_run_id IN (:ids)
+        )
+        )
+        WHERE quantification_settings.l_quant_method_id IS NULL
+    </sql-query>
+
+    <sql-query name="QuantificationReagent.getConstraintLessQuantReagentIdsForQuantMethods">
+        SELECT
+        DISTINCT quantification_reagent.id
+        FROM quantification_reagent
+        LEFT JOIN quantification_method_has_reagent ON
+        (
+        quantification_method_has_reagent.l_quantification_reagent_id = quantification_reagent.id
+        AND quantification_method_has_reagent.id NOT IN
+        (
+        SELECT
+        q_m_has_reagent.id
+        FROM quantification_method_has_reagent q_m_has_reagent
+        WHERE q_m_has_reagent.l_quantification_method_id IN (:ids)
+        )
+        )
+        WHERE quantification_method_has_reagent.l_quantification_reagent_id IS NULL
     </sql-query>
 </hibernate-mapping>

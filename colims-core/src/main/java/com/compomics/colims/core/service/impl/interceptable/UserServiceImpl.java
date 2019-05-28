@@ -8,7 +8,7 @@ import com.compomics.colims.core.service.UserService;
 import com.compomics.colims.model.User;
 import com.compomics.colims.model.enums.DefaultUser;
 import com.compomics.colims.repository.UserRepository;
-import org.hibernate.LazyInitializationException;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,9 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void fetchAuthenticationRelations(final User user) {
-        try {
-            user.getGroups().size();
-        } catch (LazyInitializationException e) {
+        if (!Hibernate.isInitialized(user.getGroups())) {
             //merge the user
             User merge = userRepository.merge(user);
             merge.getGroups().size();
@@ -128,16 +126,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void fetchInstitution(User user) {
-        try {
-            if (user.getInstitution() != null) {
-                user.getInstitution().getId();
-            }
-        } catch (LazyInitializationException e) {
+        if (!Hibernate.isInitialized(user.getInstitution())) {
             //merge the user
             User merge = userRepository.merge(user);
-            merge.getInstitution().getId();
+            Hibernate.initialize(merge.getInstitution());
             user.setInstitution(merge.getInstitution());
         }
+//        try {
+//            user.getInstitution().getId();
+//        } catch (LazyInitializationException e) {
+//            //merge the user
+//            User merge = userRepository.merge(user);
+//            merge.getInstitution().getId();
+//            user.setInstitution(merge.getInstitution());
+//        }
     }
 
 }

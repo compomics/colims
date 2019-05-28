@@ -118,5 +118,11 @@
     "values": [
       "Intensity H"
     ]
+  },
+  "REPORTER_INTENSITY_CORRECTED": {
+    "mandatory": false,
+    "values": [
+      "Reporter intensity corrected"
+    ]
   }
 }

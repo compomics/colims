@@ -32,13 +32,13 @@ public class PersistDbTask extends DbTask {
      * Constructor.
      *
      * @param dbEntityClass   the database entity class
-     * @param enitityId       the ID of the entity to persist
+     * @param entityId       the ID of the entity to persist
      * @param userId          the ID of the user
      * @param persistMetadata the persist
      * @param dataImport      the DataImport
      */
-    public PersistDbTask(Class dbEntityClass, Long enitityId, Long userId, PersistMetadata persistMetadata, DataImport dataImport) {
-        super(dbEntityClass, enitityId, userId);
+    public PersistDbTask(Class dbEntityClass, Long entityId, Long userId, PersistMetadata persistMetadata, DataImport dataImport) {
+        super(dbEntityClass, entityId, userId);
         this.persistMetadata = persistMetadata;
         this.dataImport = dataImport;
     }

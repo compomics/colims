@@ -6,14 +6,15 @@ package com.compomics.colims.core.io.mzml;
 
 import com.compomics.colims.core.io.MappingException;
 import com.compomics.colims.model.*;
-import org.slf4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshaller;
 import uk.ac.ebi.jmzml.xml.io.MzMLUnmarshallerException;
 
 import java.io.File;
@@ -44,14 +45,20 @@ public class MzMLParserTest {
     @Test(expected = IllegalArgumentException.class)
     public void testIllegalArgumentException() throws IOException, MzMLUnmarshallerException, MappingException {
         //import test mzML file
-        List<File> mzMLFiles = new ArrayList<>();
-        File mzMLFile = new ClassPathResource("data/test_mzML_1.mzML").getFile();
-        mzMLFiles.add(mzMLFile);
+//        List<File> mzMLFiles = new ArrayList<>();
+//        File mzMLFile = new ClassPathResource("data/test_mzML_1.mzML").getFile();
+//        mzMLFiles.add(mzMLFile);
+//
+//        mzMLParser.importMzMLFiles(mzMLFiles);
+//
+//        //try to parse unknown mzML file, should throw IllegalArgumentArgumentException
+//        Experiment experiment = mzMLParser.parseMzMlFile("unknown_MzML_file");
 
-        mzMLParser.importMzMLFiles(mzMLFiles);
-
-        //try to parse unknown mzML file, should throw IllegalArgumentArgumentException
-        Experiment experiment = mzMLParser.parseMzMlFile("unknown_MzML_file");
+        File mzMLFile = new FileSystemResource("/home/niels/Desktop/raw/test/small.mzML").getFile();
+        MzMLUnmarshaller mzMlUnmarshaller = new MzMLUnmarshaller(mzMLFile);
+        System.out.println(mzMlUnmarshaller.isIndexedmzML());
+        System.out.println(mzMlUnmarshaller.isOkFileChecksum());
+        //System.out.println(mzMlUnmarshaller.getMzMLVersion());
     }
 
     @Ignore

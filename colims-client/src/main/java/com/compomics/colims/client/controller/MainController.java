@@ -291,11 +291,11 @@ public class MainController implements Controllable, ActionListener {
                         + "If you notice any strange behaviour, please restart the client.", JOptionPane.INFORMATION_MESSAGE));
 
                 PersistDbTask persistDbTask = (PersistDbTask) completedDbTask.getDbTask();
-                java.util.List<AnalyticalRun> analyticalRuns = analyticalRunService.findBySampleId(persistDbTask.getEnitityId());
+                java.util.List<AnalyticalRun> analyticalRuns = analyticalRunService.findBySampleId(persistDbTask.getEntityId());
 
                 //find the sample in the projects list
-                Sample sample = findSampleById(persistDbTask.getEnitityId());
-                Object[] parentIds = sampleService.getParentIds(persistDbTask.getEnitityId());
+                Sample sample = findSampleById(persistDbTask.getEntityId());
+                Object[] parentIds = sampleService.getParentIds(persistDbTask.getEntityId());
                 //first check if the project is present in this client
                 Long projectId = (Long) parentIds[0];
                 if (sample != null) {
@@ -317,7 +317,7 @@ public class MainController implements Controllable, ActionListener {
                             Optional<Experiment> foundExperiment = project.getExperiments().stream().filter(experiment -> experiment.getId().equals(experimentId)).findFirst();
                             if (foundExperiment.isPresent()) {
                                 //get the sample and add the runs
-                                sample = sampleService.findById(persistDbTask.getEnitityId());
+                                sample = sampleService.findById(persistDbTask.getEntityId());
                                 sample.setAnalyticalRuns(analyticalRuns);
 
                                 //add the sample to it's experiment
@@ -551,15 +551,15 @@ public class MainController implements Controllable, ActionListener {
      */
     private void removeFromProjects(DeleteDbTask deleteDbTask) {
         if (deleteDbTask.getDbEntityClass().equals(Project.class)) {
-            boolean removed = projects.removeIf(project -> project.getId().equals(deleteDbTask.getEnitityId()));
+            boolean removed = projects.removeIf(project -> project.getId().equals(deleteDbTask.getEntityId()));
             if (removed) {
-                eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
+                eventBus.post(new ProjectChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEntityId()));
             }
         } else if (deleteDbTask.getDbEntityClass().equals(Experiment.class)) {
             for (Project project : projects) {
-                boolean removed = project.getExperiments().removeIf(experiment -> experiment.getId().equals(deleteDbTask.getEnitityId()));
+                boolean removed = project.getExperiments().removeIf(experiment -> experiment.getId().equals(deleteDbTask.getEntityId()));
                 if (removed) {
-                    eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId()));
+                    eventBus.post(new ExperimentChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEntityId()));
                     break;
                 }
             }
@@ -567,9 +567,9 @@ public class MainController implements Controllable, ActionListener {
             outerloop:
             for (Project project : projects) {
                 for (Experiment experiment : project.getExperiments()) {
-                    boolean removed = experiment.getSamples().removeIf(sample -> sample.getId().equals(deleteDbTask.getEnitityId()));
+                    boolean removed = experiment.getSamples().removeIf(sample -> sample.getId().equals(deleteDbTask.getEntityId()));
                     if (removed) {
-                        eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, project.getId(), deleteDbTask.getEnitityId()));
+                        eventBus.post(new SampleChangeEvent(EntityChangeEvent.Type.DELETED, project.getId(), deleteDbTask.getEntityId()));
                         break outerloop;
                     }
                 }
@@ -579,9 +579,9 @@ public class MainController implements Controllable, ActionListener {
             for (Project project : projects) {
                 for (Experiment experiment : project.getExperiments()) {
                     for (Sample sample : experiment.getSamples()) {
-                        boolean removed = sample.getAnalyticalRuns().removeIf(analyticalRun -> analyticalRun.getId().equals(deleteDbTask.getEnitityId()));
+                        boolean removed = sample.getAnalyticalRuns().removeIf(analyticalRun -> analyticalRun.getId().equals(deleteDbTask.getEntityId()));
                         if (removed) {
-                            eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEnitityId(), sample.getId()));
+                            eventBus.post(new AnalyticalRunChangeEvent(EntityChangeEvent.Type.DELETED, deleteDbTask.getEntityId(), sample.getId()));
                             break outerloop;
                         }
                     }

@@ -54,6 +54,7 @@ public class UserManagementController implements Controllable {
      * Logger instance.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
+    private Institution dummyInstitution = new Institution();
 
     //model
     private ObservableList<User> userBindingList;
@@ -106,6 +107,9 @@ public class UserManagementController implements Controllable {
         userManagementDialog = userManagementParentController.getUserManagementDialog();
 
         institutionBindingList = ObservableCollections.observableList(institutionService.findAll());
+        dummyInstitution.setName("N/A");
+        dummyInstitution.setAbbreviation("N/A");
+        institutionBindingList.add(0, dummyInstitution);
 
         //init child controller
         institutionManagementController.init();
@@ -183,6 +187,10 @@ public class UserManagementController implements Controllable {
                         userService.fetchInstitution(selectedUser);
                         userManagementDialog.getInstitutionComboBox().getModel()
                                 .setSelectedItem(selectedUser.getInstitution());
+                    }
+                    else {
+                        userManagementDialog.getInstitutionComboBox().getModel()
+                                .setSelectedItem(dummyInstitution);
                     }
 
                     //check if the user is has an ID.
@@ -279,13 +287,13 @@ public class UserManagementController implements Controllable {
                 UserChangeEvent.Type type;
                 if (selectedUser.getId() != null) {
                     type = EntityChangeEvent.Type.UPDATED;
-                    if (selectedInstitution != null && !selectedInstitution.equals(selectedUser.getInstitution())) {
+                    if (!selectedInstitution.equals(dummyInstitution) && !selectedInstitution.equals(selectedUser.getInstitution())) {
                         selectedUser.setInstitution(selectedInstitution);
                     }
                     selectedUser = userService.merge(selectedUser);
                 } else {
                     type = EntityChangeEvent.Type.CREATED;
-                    if (selectedInstitution != null) {
+                    if (!selectedInstitution.equals(dummyInstitution)) {
                         selectedUser.setInstitution(selectedInstitution);
                     }
                     userService.persist(selectedUser);

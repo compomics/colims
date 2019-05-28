@@ -8,7 +8,7 @@ import com.compomics.colims.core.service.ProjectService;
 import com.compomics.colims.model.Project;
 import com.compomics.colims.model.User;
 import com.compomics.colims.repository.ProjectRepository;
-import org.hibernate.LazyInitializationException;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -91,9 +91,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void fetchUsers(Project project) {
-        try {
-            project.getUsers().size();
-        } catch (LazyInitializationException e) {
+        if (!Hibernate.isInitialized(project.getUsers())) {
             //fetch the users
             List<User> users = projectRepository.fetchUsers(project.getId());
             project.setUsers(users);

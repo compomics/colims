@@ -41,7 +41,7 @@ public class DbTaskProducerIT {
     @Test
     public void testSendDbTask() throws Exception {
         final PersistDbTask persistDbTask = new PersistDbTask();
-        persistDbTask.setEnitityId(1L);
+        persistDbTask.setEntityId(1L);
         persistDbTask.setSubmissionTimestamp(Long.MIN_VALUE);
         persistDbTask.setSubmissionTimestamp(System.currentTimeMillis());
 

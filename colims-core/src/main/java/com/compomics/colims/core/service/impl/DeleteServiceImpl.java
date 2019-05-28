@@ -26,6 +26,8 @@ public class DeleteServiceImpl implements DeleteService {
     private final ModificationRepository modificationRepository;
     private final SearchParametersRepository searchParametersRepository;
     private final SearchModificationRepository searchModificationRepository;
+    private final QuantificationMethodRepository quantificationMethodRepository;
+    private final QuantificationReagentRepository quantificationReagentRepository;
     private final ProjectRepository projectRepository;
     private final ExperimentRepository experimentRepository;
     private final SampleRepository sampleRepository;
@@ -37,6 +39,8 @@ public class DeleteServiceImpl implements DeleteService {
                              ModificationRepository modificationRepository,
                              SearchParametersRepository searchParametersRepository,
                              SearchModificationRepository searchModificationRepository,
+                             QuantificationMethodRepository quantificationMethodRepository,
+                             QuantificationReagentRepository quantificationReagentRepository,
                              ProjectRepository projectRepository,
                              ExperimentRepository experimentRepository,
                              SampleRepository sampleRepository,
@@ -45,6 +49,8 @@ public class DeleteServiceImpl implements DeleteService {
         this.proteinRepository = proteinRepository;
         this.modificationRepository = modificationRepository;
         this.searchParametersRepository = searchParametersRepository;
+        this.quantificationMethodRepository = quantificationMethodRepository;
+        this.quantificationReagentRepository = quantificationReagentRepository;
         this.searchModificationRepository = searchModificationRepository;
         this.projectRepository = projectRepository;
         this.experimentRepository = experimentRepository;
@@ -55,13 +61,9 @@ public class DeleteServiceImpl implements DeleteService {
     @Override
     public void delete(DeleteDbTask deleteDbTask) {
         //fetch the analytical runs of the entity to delete
-        List<AnalyticalRun> analyticalRuns = fetchAnalyticalRuns(deleteDbTask.getDbEntityClass(), deleteDbTask.getEnitityId());
-        //cascade delete the entity up onto the analytical run level
-        if (!deleteDbTask.getDbEntityClass().equals(AnalyticalRun.class)) {
-            deleteEntity(deleteDbTask.getDbEntityClass(), deleteDbTask.getEnitityId());
-        }
+        List<AnalyticalRun> analyticalRuns = fetchAnalyticalRuns(deleteDbTask.getDbEntityClass(), deleteDbTask.getEntityId());
 
-        //collect the IDs of the constraint less proteins, modifications, search parameters and search parameters
+        //collect the IDs of the constraint less proteins, modifications, search parameters
         //that can be deleted after the deletion of the analytical runs
         List<Long> runIds = analyticalRuns.stream().map(AnalyticalRun::getId).collect(Collectors.toList());
 
@@ -70,6 +72,8 @@ public class DeleteServiceImpl implements DeleteService {
         List<Long> modificationIds = new ArrayList<>();
         List<Long> searchParametersIds = new ArrayList<>();
         List<Long> searchModificationIds = new ArrayList<>();
+        List<Long> quantificationMethodIds = new ArrayList<>();
+        List<Long> quantificationReagentIds = new ArrayList<>();
         if (!runIds.isEmpty()) {
             proteinGroupIds = proteinGroupRepository.getConstraintLessProteinGroupIdsForRuns(runIds);
             proteinIds = proteinRepository.getConstraintLessProteinIdsForProteinGroups(proteinGroupIds);
@@ -77,6 +81,10 @@ public class DeleteServiceImpl implements DeleteService {
             searchParametersIds = searchParametersRepository.getConstraintLessSearchParameterIdsForRuns(runIds);
             if (!searchParametersIds.isEmpty()) {
                 searchModificationIds = searchModificationRepository.getConstraintLessSearchModIdsForSearchParams(searchParametersIds);
+            }
+            quantificationMethodIds = quantificationMethodRepository.getConstraintLessQuantMethodIdsForRuns(runIds);
+            if (!quantificationMethodIds.isEmpty()) {
+                quantificationReagentIds = quantificationReagentRepository.getConstraintLessQuantReagentIdsForQuantMethods(quantificationMethodIds);
             }
         }
 
@@ -108,12 +116,27 @@ public class DeleteServiceImpl implements DeleteService {
             SearchModification searchModificationToDelete = searchModificationRepository.findById(searchModificationId);
             searchModificationRepository.remove(searchModificationToDelete);
         }
+        //delete the quantification methods
+        for (Long quantificationMethodId : quantificationMethodIds) {
+            QuantificationMethod quantificationMethodToDelete = quantificationMethodRepository.findById(quantificationMethodId);
+            quantificationMethodRepository.remove(quantificationMethodToDelete);
+        }
+        //delete the quantification reagents
+        for (Long quantificationReagentId : quantificationReagentIds) {
+            QuantificationReagent quantificationReagentToDelete = quantificationReagentRepository.findById(quantificationReagentId);
+            quantificationReagentRepository.remove(quantificationReagentToDelete);
+        }
+
+        //cascade delete the entity up onto the analytical run level
+        if (!deleteDbTask.getDbEntityClass().equals(AnalyticalRun.class)) {
+            deleteEntity(deleteDbTask.getDbEntityClass(), deleteDbTask.getEntityId());
+        }
     }
 
     /**
      * Cascade delete the given entity from the database.
      *
-     * @param entityClass the class of the enitity to delete
+     * @param entityClass the class of the entity to delete
      * @param entityId    the entity ID
      */
     private void deleteEntity(Class entityClass, Long entityId) {

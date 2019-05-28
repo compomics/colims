@@ -8,7 +8,7 @@ import com.compomics.colims.core.service.ExperimentService;
 import com.compomics.colims.model.Experiment;
 import com.compomics.colims.model.ExperimentBinaryFile;
 import com.compomics.colims.repository.ExperimentRepository;
-import org.hibernate.LazyInitializationException;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,9 +66,7 @@ public class ExperimentServiceImpl implements ExperimentService {
 
     @Override
     public void fetchBinaryFiles(final Experiment experiment) {
-        try {
-            experiment.getBinaryFiles().size();
-        } catch (LazyInitializationException e) {
+        if (!Hibernate.isInitialized(experiment.getBinaryFiles())) {
             //fetch the binary files
             List<ExperimentBinaryFile> binaryFiles = experimentRepository.fetchBinaryFiles(experiment.getId());
             experiment.setBinaryFiles(binaryFiles);
