@@ -108,7 +108,7 @@ public class DbTaskErrorQueueTableModel extends AbstractTableModel {
                 return new SimpleDateFormat(DATE_TIME_FORMAT).format(new Date(dbTask.getSubmissionTimestamp()));
             case SAMPLE_INDEX:
                 if (dbTask instanceof PersistDbTask) {
-                    Sample sample = sampleService.findById(dbTask.getEntityId());
+                    Sample sample = sampleService.findById(dbTask.getEnitityId());
                     if(sample != null) {
                         return String.format("%s (%d)", sample.getName(), sample.getId());
                     }

@@ -95,9 +95,9 @@ public class SearchAndValidationSettingsServiceImpl implements SearchAndValidati
 
     @Override
     public SearchParameters getSearchParameters(SearchParameters foundSearchParameters, SearchParameters searchParameters) {
-//        //find SearchParameters by example
-//        List<SearchParameters> searchParameterses = searchParametersRepository.findByExample(searchParameters);
-////        List<SearchParameters> searchParameterses = new ArrayList<>();
+        //find SearchParameters by example
+        //List<SearchParameters> searchParameterses = searchParametersRepository.findByExample(searchParameters);
+        //List<SearchParameters> searchParameterses = new ArrayList<>();
         if (foundSearchParameters != null) {
             //check the cache the avoid duplicate objects that refer to the same database entity
             if (cachedSearchParameters.containsKey(foundSearchParameters.getId())) {

@@ -29,7 +29,7 @@ public abstract class DbTask extends QueueMessage {
      * The ID of the database entity. In case of a PersistDbTask, this is the ID
      * of the parent entity.
      */
-    protected Long entityId;
+    protected Long enitityId;
     /**
      * The submission timestamp of the database task.
      */
@@ -54,7 +54,7 @@ public abstract class DbTask extends QueueMessage {
      */
     public DbTask(Class dbEntityClass, Long entityId, Long userId) {
         this.dbEntityClass = dbEntityClass;
-        this.entityId = entityId;
+        this.enitityId = entityId;
         this.submissionTimestamp = System.currentTimeMillis();
         this.userId = userId;
     }
@@ -67,12 +67,12 @@ public abstract class DbTask extends QueueMessage {
         this.dbEntityClass = dbEntityClass;
     }
 
-    public Long getEntityId() {
-        return entityId;
+    public Long getEnitityId() {
+        return enitityId;
     }
 
-    public void setEntityId(Long entityId) {
-        this.entityId = entityId;
+    public void setEnitityId(Long enitityId) {
+        this.enitityId = enitityId;
     }
 
     public Long getSubmissionTimestamp() {
@@ -95,7 +95,7 @@ public abstract class DbTask extends QueueMessage {
     public int hashCode() {
         int hash = 3;
         hash = 79 * hash + Objects.hashCode(this.dbEntityClass);
-        hash = 79 * hash + Objects.hashCode(this.entityId);
+        hash = 79 * hash + Objects.hashCode(this.enitityId);
         hash = 79 * hash + Objects.hashCode(this.submissionTimestamp);
         hash = 79 * hash + Objects.hashCode(this.userId);
         return hash;
@@ -113,7 +113,7 @@ public abstract class DbTask extends QueueMessage {
         if (!Objects.equals(this.dbEntityClass, other.dbEntityClass)) {
             return false;
         }
-        if (!Objects.equals(this.entityId, other.entityId)) {
+        if (!Objects.equals(this.enitityId, other.enitityId)) {
             return false;
         }
         if (!Objects.equals(this.submissionTimestamp, other.submissionTimestamp)) {

@@ -244,6 +244,7 @@ public class ProteinOverviewController implements Controllable {
                     } else if (node.getUserObject() instanceof Sample) {
                         Sample selectedSample = (Sample) node.getUserObject();
                         selectedAnalyticalRuns.removeAll(selectedSample.getAnalyticalRuns());
+                        proteinGroupSelectionModel.clearSelection();
                     }
                 }
             }

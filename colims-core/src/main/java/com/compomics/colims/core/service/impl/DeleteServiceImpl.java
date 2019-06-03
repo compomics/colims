@@ -61,7 +61,7 @@ public class DeleteServiceImpl implements DeleteService {
     @Override
     public void delete(DeleteDbTask deleteDbTask) {
         //fetch the analytical runs of the entity to delete
-        List<AnalyticalRun> analyticalRuns = fetchAnalyticalRuns(deleteDbTask.getDbEntityClass(), deleteDbTask.getEntityId());
+        List<AnalyticalRun> analyticalRuns = fetchAnalyticalRuns(deleteDbTask.getDbEntityClass(), deleteDbTask.getEnitityId());
 
         //collect the IDs of the constraint less proteins, modifications, search parameters
         //that can be deleted after the deletion of the analytical runs
@@ -129,7 +129,7 @@ public class DeleteServiceImpl implements DeleteService {
 
         //cascade delete the entity up onto the analytical run level
         if (!deleteDbTask.getDbEntityClass().equals(AnalyticalRun.class)) {
-            deleteEntity(deleteDbTask.getDbEntityClass(), deleteDbTask.getEntityId());
+            deleteEntity(deleteDbTask.getDbEntityClass(), deleteDbTask.getEnitityId());
         }
     }
 

@@ -20,7 +20,7 @@ public class Playground {
 //        final PersistDbTask persistDbTask = new PersistDbTask();
 //        persistDbTask.setDbEntityClass(AnalyticalRun.class);
 //        persistDbTask.setMessageId("1234567");
-//        persistDbTask.setEntityId(1L);
+//        persistDbTask.setEnitityId(1L);
 //        persistDbTask.setSubmissionTimestamp(Long.MIN_VALUE);
 //        persistDbTask.setSubmissionTimestamp(System.currentTimeMillis());
 //
@@ -42,6 +42,6 @@ public class Playground {
 //        String s = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(dbTask);
 //
 //        PersistDbTask persistDbTask1 = objectMapper.readValue(s, PersistDbTask.class);
-        
+
     }
 }

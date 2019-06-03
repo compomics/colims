@@ -188,6 +188,7 @@ public class MaxQuantSearchSettingsParser {
         analyticalRuns.clear();
         isobaricLabels.clear();
         labelMods.clear();
+        searchModificationMapper.clear();
         psmFdr = null;
         proteinFdr = null;
     }

@@ -471,11 +471,11 @@ public class ProjectManagementController implements Controllable {
     @Subscribe
     public void onExperimentChangeEvent(ExperimentChangeEvent experimentChangeEvent) {
         if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.DELETED)) {
-            if (getSelectedExperiment() != null && getSelectedExperiment().getId().equals(experimentChangeEvent.getExperimentId())) {
+            //if (getSelectedExperiment() != null && getSelectedExperiment().getId().equals(experimentChangeEvent.getExperimentId())) {
                 //reset parent project selection
                 int selectedProjectIndex = getSelectedProjectIndex();
                 setSelectedProject(selectedProjectIndex);
-            }
+            //}
             //update the projects table UI
             projectManagementPanel.getProjectsTable().updateUI();
         } else if (experimentChangeEvent.getType().equals(EntityChangeEvent.Type.UPDATED)) {

@@ -61,6 +61,8 @@ public class UnimodMarshaller {
             } else {
                 modification = copyModification(clazz, foundModification);
             }
+            // set ID to null to avoid database issues
+            modification.setId(null);
         }
 
         return modification;
@@ -90,6 +92,8 @@ public class UnimodMarshaller {
             } else {
                 modification = copyModification(clazz, abstractModification);
             }
+            // set ID to null to avoid database issues
+            modification.setId(null);
         }
 
         return modification;

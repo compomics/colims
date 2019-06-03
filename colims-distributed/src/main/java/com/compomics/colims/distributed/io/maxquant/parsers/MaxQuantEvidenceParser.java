@@ -295,6 +295,7 @@ public class MaxQuantEvidenceParser {
         spectrumToPeptides.clear();
         peptideToProteinGroups.clear();
         runToMbrPeptides.clear();
+        modificationMapper.clear();
     }
 
     /**
@@ -330,9 +331,6 @@ public class MaxQuantEvidenceParser {
                 //non-terminal). Only non-terminal modifications have an
                 //additional probabilities entry.
                 //@// TODO: 29/09/16 ask for a good value for the terminal modification score
-                if(evidenceModification == null){
-                    System.out.println("eeeeeeeeeeeeeeee");
-                }
                 if (evidenceModification.isNTerminal()) {
                     PeptideHasModification peptideHasModification = createPeptideHasModification(0, null, null, peptide);
 
