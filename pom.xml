@@ -266,6 +266,19 @@
                 <scope>test</scope>
             </dependency>
 
+            <!-- jaxb dependencies to avoid class not found error for com.sun.xml.bind.v2.model.impl.Utils -->
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+
             <!-- Spring dependencies -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -570,6 +583,16 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
         </dependency>
     </dependencies>
 

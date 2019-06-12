@@ -220,6 +220,7 @@ public class MaxQuantDataImportController implements Controllable {
         maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
         maxQuantDataImportPanel.getContaminantsCheckBox().setSelected(false);
         maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().setSelected(false);
+        maxQuantDataImportPanel.getStoreRunsSequentiallyCheckBox().setSelected(false);
         //reset the file chooser directories
         Path experimentsDirectory = Paths.get(experimentsPath);
         maxQuantDataImportPanel.getMqparFileChooser().setCurrentDirectory(experimentsDirectory.toFile());
@@ -233,8 +234,8 @@ public class MaxQuantDataImportController implements Controllable {
      */
     public void populateView(MaxQuantImport maxQuantImport) {
         showView();
-        maxQuantDataImportPanel.getMqparFileTextField().setText(maxQuantImport.getMqParFile().toString());
-        maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(maxQuantImport.getCombinedDirectory().toString());
+        maxQuantDataImportPanel.getMqparFileTextField().setText(maxQuantImport.getMqParFile());
+        maxQuantDataImportPanel.getCombinedFolderDirectoryTextField().setText(maxQuantImport.getCombinedDirectory());
         if (maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0) != null) {
             primaryFastaDb = fastaDbService.findById(maxQuantImport.getFastaDbIds().get(FastaDbType.PRIMARY).get(0));
             maxQuantDataImportPanel.getPrimaryFastaDbTextField().setText(primaryFastaDb.getFilePath());
@@ -253,7 +254,12 @@ public class MaxQuantDataImportController implements Controllable {
             contaminantsFastaDb = null;
             maxQuantDataImportPanel.getContaminantsFastaDbTextField().setText("");
         }
-
+        includeContaminants = maxQuantImport.isIncludeContaminants();
+        maxQuantDataImportPanel.getContaminantsCheckBox().setSelected(maxQuantImport.isIncludeContaminants());
+        includeUnidentifiedSpectra = maxQuantImport.isIncludeUnidentifiedSpectra();
+        maxQuantDataImportPanel.getUnidentifiedSpectraCheckBox().setSelected(maxQuantImport.isIncludeUnidentifiedSpectra());
+        storeRunsSequentially = maxQuantImport.isStoreRunsSequentially();
+        maxQuantDataImportPanel.getStoreRunsSequentiallyCheckBox().setSelected(maxQuantImport.isStoreRunsSequentially());
     }
 
     /**

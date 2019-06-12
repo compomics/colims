@@ -143,7 +143,7 @@ public class ColimsPeptideMapper {
         //get the utilities ion type
         Integer ionType = PeptideFragmentIon.getIonType(fragmentIon.substring(0, 1));
         //get the ion fragment number
-        Integer ionNumber = Integer.valueOf(fragmentIon.substring(1, fragmentIon.length()));
+        Integer ionNumber = Integer.valueOf(fragmentIon.substring(1));
         //get the utilities neutral loss
         NeutralLoss[] neutralLosses;
         if (neutralLossString != null) {

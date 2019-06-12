@@ -65,6 +65,18 @@
                                     <directory>src/main/resources/config</directory>
                                     <filtering>true</filtering>
                                 </resource>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <includes>
+                                        <include>maxquant/*.json</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>../colims-core/src/main/resources/config</directory>
+                                    <includes>
+                                        <include>ontology-mapping.json</include>
+                                    </includes>
+                                </resource>
                             </resources>
                         </configuration>
                     </execution>
@@ -82,12 +94,6 @@
                                     <directory>${project.basedir}</directory>
                                     <includes>
                                         <include>LICENSE-2.0.txt</include>
-                                    </includes>
-                                </resource>
-                                <resource>
-                                    <directory>./</directory>
-                                    <includes>
-                                        <include>resources/conf</include>
                                     </includes>
                                 </resource>
                             </resources>
@@ -264,10 +270,6 @@
             <groupId>com.compomics</groupId>
             <artifactId>utilities</artifactId>
             <exclusions>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
                 <exclusion>
                     <groupId>xpp3</groupId>
                     <artifactId>xpp3</artifactId>

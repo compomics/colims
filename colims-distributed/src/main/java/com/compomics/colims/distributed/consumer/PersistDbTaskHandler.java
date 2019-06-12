@@ -192,6 +192,14 @@ public class PersistDbTaskHandler {
             completedTaskProducer.sendCompletedDbTask(new CompletedDbTask(started, System.currentTimeMillis(), persistDbTask));
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
+
+            try {
+                peptideShakerMapper.clear();
+            } catch (IOException | SQLException | InterruptedException e1) {
+                LOGGER.error(e.getMessage(), e);
+            }
+            maxQuantMapper.clear();
+
             //wrap the StorageTask in a StorageError and send it to the error queue
             try {
                 dbTaskErrorProducer.sendDbTaskError(new DbTaskError(started, System.currentTimeMillis(), persistDbTask, e));
@@ -285,10 +293,10 @@ public class PersistDbTaskHandler {
                     maxQuantMapper.clear();
                 } else {
                     //get the runs
-                    Set<String> runNames = maxQuantSequentialRunsMapper.getRunNames(maxQuantImport, fastasDirectory);
+                    Set<String> runNames = maxQuantSequentialRunsMapper.mapCommonData(maxQuantImport, fastasDirectory);
 
                     for (String runName : runNames) {
-                        mappedData = maxQuantSequentialRunsMapper.mapData(runName);
+                        mappedData = maxQuantSequentialRunsMapper.mapSingleRunData(runName);
 
                         persistService.persist(mappedData, sample, instrument, userName, persistDbTask.getPersistMetadata().getStartDate());
 

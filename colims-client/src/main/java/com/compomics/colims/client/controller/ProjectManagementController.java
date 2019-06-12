@@ -720,7 +720,7 @@ public class ProjectManagementController implements Controllable {
                 if (selectedSamples.size() == 1 && !selectedSample.getAnalyticalRuns().isEmpty()) {
                     analyticalRunsSearchSettingsController.updateView(selectedSample);
                 } else {
-                    eventBus.post(new MessageEvent("Sample selection", "Please select one and only sample with at least one run.", JOptionPane.INFORMATION_MESSAGE));
+                    eventBus.post(new MessageEvent("Sample selection", "Please select one and only one sample with at least one run.", JOptionPane.INFORMATION_MESSAGE));
                 }
             }
         }

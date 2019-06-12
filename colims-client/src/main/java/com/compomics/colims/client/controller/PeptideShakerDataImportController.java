@@ -183,7 +183,7 @@ public class PeptideShakerDataImportController implements Controllable {
             fastaDb = null;
             peptideShakerDataImportPanel.getFastaDbTextField().setText("");
         }
-        peptideShakerDataImportPanel.getCpsTextField().setText(peptideShakerImport.getPeptideShakerCpsxArchive().toString());
+        peptideShakerDataImportPanel.getCpsTextField().setText(peptideShakerImport.getPeptideShakerCpsxArchive());
 
         peptideShakerImport.getMgfFiles().forEach(mgfFileString -> mgfFileListModel.addElement(Paths.get(mgfFileString)));
     }

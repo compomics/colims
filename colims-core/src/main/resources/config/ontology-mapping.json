@@ -887,11 +887,12 @@
         "label": "Arg-&gt;Ala",
         "affected_AAs": "R"
       },
-      "Arg->Ala": {
+      "Propionamide (C)": {
         "ontology_prefix": "UNIMOD",
-        "obo_id": "UNIMOD:1189",
-        "label": "Arg-&gt;Ala",
-        "affected_AAs": "R"
+        "obo_id": "UNIMOD:24",
+        "label": "Propionamide",
+        "affected_AAs": "C",
+        "utilities_name": "Propionamide of C"
       }
     },
     "quantification_reagents": {

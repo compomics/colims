@@ -18,20 +18,22 @@ import java.util.Set;
 public interface SequentialRunsDataMapper<T extends DataImport> {
 
     /**
+     * Map the search and quantification settings and the protein data.
+     *
      * @param dataImport      the DataImport subclass instance
      * @param fastasDirectory the FASTA DBs parent directory
      * @return
      */
-    Set<String> getRunNames(T dataImport, Path fastasDirectory) throws IOException, JDOMException;
+    Set<String> mapCommonData(T dataImport, Path fastasDirectory) throws IOException, JDOMException;
 
     /**
-     * Map the search input and identification results.
+     * Map the search input and identification results of a single run.
      *
      * @param analyticalRun the analytical run to map
      * @return the mapped data (protein groups and analytical runs)
      * @throws MappingException thrown in case of an error during the mapping
      */
-    MappedData mapData(String analyticalRun) throws MappingException;
+    MappedData mapSingleRunData(String analyticalRun) throws MappingException;
 
     /**
      * Clear resources used during the import.

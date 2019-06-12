@@ -53,19 +53,19 @@ public class MaxQuantSequentialRunsMapper implements SequentialRunsDataMapper<Ma
     }
 
     @Override
-    public Set<String> getRunNames(MaxQuantImport dataImport, Path fastasDirectory) throws IOException, JDOMException {
+    public Set<String> mapCommonData(MaxQuantImport dataImport, Path fastasDirectory) throws IOException, JDOMException {
         this.maxQuantImport = dataImport;
 
         return maxQuantParser.parseSettingsAndProteins(dataImport, fastasDirectory);
     }
 
     @Override
-    public MappedData mapData(String analyticalRun) throws MappingException {
+    public MappedData mapSingleRunData(String analyticalRun) throws MappingException {
         LOGGER.info("started mapping folder: " + maxQuantImport.getMqParFile() + " for run " + analyticalRun);
 
         List<AnalyticalRun> analyticalRuns;
         try {
-            //parseSpectraAndPSMs the MaxQuant files
+            //parse the MaxQuant files
             maxQuantParser.parseSpectraAndPSMs(maxQuantImport, analyticalRun);
 
             analyticalRuns = maxQuantParser.getAnalyticalRuns();

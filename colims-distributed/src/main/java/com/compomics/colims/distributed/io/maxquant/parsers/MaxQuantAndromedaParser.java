@@ -126,7 +126,7 @@ public class MaxQuantAndromedaParser {
         //get the first entry
         Optional<Map.Entry<Path, Path>> first = this.aplFilePaths.entrySet().stream().findFirst();
         if (first.isPresent()) {
-            //parseSpectraAndPSMs the mass analyzer and fragmentation type
+            //parse the mass analyzer and fragmentation type
             parseMassAnalyzerAndFragmentationType(first.get().getKey());
         } else {
             fragmentationType = FragmentationType.UNKNOWN;

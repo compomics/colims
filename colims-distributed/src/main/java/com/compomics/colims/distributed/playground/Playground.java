@@ -79,10 +79,10 @@ public class Playground {
 //        fastaDbIds.put(FastaDbType.PRIMARY, new ArrayList<>(Arrays.asList(testFastaDb.getId())));
 //        fastaDbIds.put(FastaDbType.CONTAMINANTS, new ArrayList<>(Arrays.asList(contFastaDb.getId())));
 //
-//        // to parseSpectraAndPSMs everything
+//        // to parse everything
 //        MaxQuantImport maxQuantImport = new MaxQuantImport(Paths.get(parameterPath),Paths.get(combinedDirectory),Paths.get(combinedDirectory), fastaDbIds, false, true, new ArrayList<>(), "TMT");
 //        //@todo fix the nulls
-//        MappedData mappedData = maxQuantMapper.mapData(maxQuantImport, null, null);
+//        MappedData mappedData = maxQuantMapper.mapSingleRunData(maxQuantImport, null, null);
 //        List<AnalyticalRun> analyticalRuns = mappedData.getAnalyticalRuns();
 //
 //        String msmsFileDirectory = txtDirectory + File.separator + MaxQuantConstants.MSMS_FILE.value();
@@ -119,7 +119,7 @@ public class Playground {
         PersistMetadata persistMetadata = new PersistMetadata(PersistType.MAX_QUANT, "didid", new Date(), 1L);
         PersistDbTask persistDbTask = new PersistDbTask(AnalyticalRun.class, 2L, 1L, persistMetadata, maxQuantImport);
         persistDbTaskHandler.handlePersistDbTask(persistDbTask);
-        //maxQuantMapper.mapData(maxQuantImport, Paths.get("/home/niels/Desktop/experiments"), Paths.get("/home/niels/Desktop/fastas"));
+        //maxQuantMapper.mapSingleRunData(maxQuantImport, Paths.get("/home/niels/Desktop/experiments"), Paths.get("/home/niels/Desktop/fastas"));
     }
 
 }

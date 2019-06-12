@@ -36,6 +36,12 @@ public class MaxQuantParser {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(MaxQuantParser.class);
 
+    private static final String SILAC_LIGHT = "SILAC light";
+    private static final String SILAC_MEDIUM = "SILAC medium";
+    private static final String SILAC_HEAVY = "SILAC heavy";
+    private static final String ICAT_LIGHT = "ICAT light reagent";
+    private static final String ICAT_HEAVY = "ICAT heavy reagent";
+
     /**
      * The map of analytical runs (key: run name; value: the
      * {@link AnalyticalRun} instance);
@@ -139,23 +145,23 @@ public class MaxQuantParser {
         //populate the analytical runs map
         maxQuantSearchSettingsParser.getAnalyticalRuns().keySet().forEach((run -> analyticalRuns.put(run.getName(), run)));
 
-        //parseSpectraAndPSMs the quantification settings
+        //parse the quantification settings
         //for SILAC or ICAT experiments, we don't have any reagent name from MaxQuant.
         //Colims gives reagent names according to the number of samples.
         switch (maxQuantImport.getQuantificationMethod()) {
             case SILAC:
                 List<String> silacReagents = new ArrayList<>();
                 if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) {
-                    silacReagents.addAll(Arrays.asList("SILAC light", "SILAC medium", "SILAC heavy"));
+                    silacReagents.addAll(Arrays.asList(SILAC_LIGHT, SILAC_MEDIUM, SILAC_HEAVY));
                     maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), silacReagents);
                 } else if (maxQuantSearchSettingsParser.getLabelMods().size() == 2) {
-                    silacReagents.addAll(Arrays.asList("SILAC light", "SILAC heavy"));
+                    silacReagents.addAll(Arrays.asList(SILAC_LIGHT, SILAC_HEAVY));
                     maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), silacReagents);
                 }
                 break;
             case ICAT:
                 List<String> icatReagents = new ArrayList<>();
-                icatReagents.addAll(Arrays.asList("ICAT light reagent", "ICAT heavy reagent"));
+                icatReagents.addAll(Arrays.asList(ICAT_LIGHT, ICAT_HEAVY));
                 maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), icatReagents);
                 break;
             default:
@@ -163,8 +169,18 @@ public class MaxQuantParser {
                 maxQuantQuantificationSettingsParser.parse(new ArrayList<>(analyticalRuns.values()), maxQuantImport.getQuantificationMethod(), reagents);
                 break;
         }
-        //link the quantification settings to each analytical run
-        analyticalRuns.values().forEach(analyticalRun -> analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun)));
+
+        //set entity relations
+        analyticalRuns.values().forEach(analyticalRun -> {
+            //link the quantification settings to each analytical run
+            analyticalRun.setQuantificationSettings(maxQuantQuantificationSettingsParser.getRunsAndQuantificationSettings().get(analyticalRun));
+
+            //set the entity relation between run and search settings
+            analyticalRun.getSearchAndValidationSettings().setAnalyticalRun(analyticalRun);
+
+            //set the entity relation between run and quantification settings
+            analyticalRun.getQuantificationSettings().setAnalyticalRun(analyticalRun);
+        });
 
         //look for the MaxQuant txt directory
         txtDirectory = Paths.get(maxQuantImport.getCombinedDirectory() + File.separator + MaxQuantConstants.TXT_DIRECTORY.value());
@@ -172,7 +188,7 @@ public class MaxQuantParser {
             throw new FileNotFoundException("The MaxQuant txt file " + txtDirectory.toString() + " was not found.");
         }
 
-        //parseSpectraAndPSMs the protein groups file
+        //parse the protein groups file
         LOGGER.info("parsing proteinGroups.txt");
         Path proteinGroupsFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.PROTEIN_GROUPS_FILE.value());
         if (!Files.exists(proteinGroupsFile)) {
@@ -193,18 +209,16 @@ public class MaxQuantParser {
      * @throws UnparseableException in case of a problem occurred while parsing
      */
     public void parseSpectraAndPSMs(MaxQuantImport maxQuantImport, String rawFileName) throws IOException, UnparseableException {
-        if(rawFileName == null){
+        if (rawFileName == null) {
             LOGGER.info("parsing msms.txt and spectra");
-        }
-        else{
+        } else {
             LOGGER.info("parsing msms.txt and spectra for run " + rawFileName);
         }
         maxQuantSpectraParser.parse(Paths.get(maxQuantImport.getCombinedDirectory()), rawFileName, maxQuantImport.isIncludeUnidentifiedSpectra(), maxQuantProteinGroupsParser.getOmittedProteinGroupIds());
 
-        if(rawFileName == null){
+        if (rawFileName == null) {
             LOGGER.info("parsing evidence.txt");
-        }
-        else{
+        } else {
             LOGGER.info("parsing evidence.txt for run " + rawFileName);
         }
         Path evidenceFile = Paths.get(txtDirectory.toString(), MaxQuantConstants.EVIDENCE_FILE.value());
@@ -253,9 +267,9 @@ public class MaxQuantParser {
             spectra.forEach(spectrum -> spectrum.setAnalyticalRun(run));
         });
 
-        if (getSpectrumToPsms().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || maxQuantProteinGroupsParser.getProteinGroups().isEmpty()) {
-            throw new UnparseableException("One of the parsed files could not be read properly.");
-        }
+        //if (getSpectrumToPsms().isEmpty() || maxQuantEvidenceParser.getSpectrumToPeptides().isEmpty() || maxQuantProteinGroupsParser.getProteinGroups().isEmpty()) {
+        //    throw new UnparseableException("One of the parsed files could not be read properly.");
+        //}
     }
 
     /**
@@ -265,25 +279,23 @@ public class MaxQuantParser {
      * @param analyticalRun the {@link AnalyticalRun} instance
      */
     private void setRunRelations(String runName, AnalyticalRun analyticalRun) {
-        //set the entity relation between run and search settings
-        analyticalRun.getSearchAndValidationSettings().setAnalyticalRun(analyticalRun);
-
-        //set the entity relation between run and quantification settings
-        analyticalRun.getQuantificationSettings().setAnalyticalRun(analyticalRun);
-
         //get the spectrum apl keys for each run
         Set<String> aplKeys = maxQuantSpectraParser.getMaxQuantSpectra().getRunToSpectrums().get(runName);
-        aplKeys.forEach(aplKey -> {
-            //get the spectrum by it's key
-            AnnotatedSpectrum annotatedSpectrum = maxQuantSpectraParser.getMaxQuantSpectra().getSpectra().get(aplKey);
+        if (aplKeys != null) {
+            aplKeys.forEach(aplKey -> {
+                //get the spectrum by it's key
+                AnnotatedSpectrum annotatedSpectrum = maxQuantSpectraParser.getMaxQuantSpectra().getSpectra().get(aplKey);
 
-            //set the entity relations between run and spectrum
-            analyticalRun.getSpectrums().add(annotatedSpectrum.getSpectrum());
-            annotatedSpectrum.getSpectrum().setAnalyticalRun(analyticalRun);
+                //set the entity relations between run and spectrum
+                analyticalRun.getSpectrums().add(annotatedSpectrum.getSpectrum());
+                annotatedSpectrum.getSpectrum().setAnalyticalRun(analyticalRun);
 
-            //set the child entity relations for the spectrum
-            setSpectrumRelations(aplKey, annotatedSpectrum);
-        });
+                //set the child entity relations for the spectrum
+                setSpectrumRelations(aplKey, annotatedSpectrum);
+            });
+        } else {
+            LOGGER.warn("No spectra found for run: " + runName);
+        }
     }
 
     /**

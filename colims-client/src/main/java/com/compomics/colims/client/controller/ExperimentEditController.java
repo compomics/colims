@@ -155,9 +155,7 @@ public class ExperimentEditController implements Controllable {
         experimentBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, evt -> {
             ExperimentBinaryFile binaryFileToRemove = (ExperimentBinaryFile) evt.getNewValue();
 
-            if (experimentToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
-                experimentToEdit.getBinaryFiles().remove(binaryFileToRemove);
-            }
+            experimentToEdit.getBinaryFiles().remove(binaryFileToRemove);
 
             //update the experiment
             experimentToEdit = experimentService.merge(experimentToEdit);

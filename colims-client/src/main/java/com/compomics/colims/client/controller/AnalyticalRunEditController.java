@@ -135,9 +135,7 @@ public class AnalyticalRunEditController implements Controllable {
         analyticalRunBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, evt -> {
             AnalyticalRunBinaryFile binaryFileToRemove = (AnalyticalRunBinaryFile) evt.getNewValue();
 
-            if (analyticalRunToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
-                analyticalRunToEdit.getBinaryFiles().remove(binaryFileToRemove);
-            }
+            analyticalRunToEdit.getBinaryFiles().remove(binaryFileToRemove);
 
             //update the analytical run
             analyticalRunToEdit = analyticalRunService.merge(analyticalRunToEdit);

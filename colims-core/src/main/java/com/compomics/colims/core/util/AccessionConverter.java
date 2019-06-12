@@ -5,6 +5,7 @@
  */
 package com.compomics.colims.core.util;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.BufferedInputStream;
@@ -143,7 +144,7 @@ public class AccessionConverter {
         URL myURL = new URL(aUrl);
         HttpURLConnection c = (HttpURLConnection) myURL.openConnection();
         c.setConnectTimeout(500);
-        return new BufferedReader(new InputStreamReader(new BufferedInputStream(c.getInputStream()), "UTF-8"));
+        return new BufferedReader(new InputStreamReader(new BufferedInputStream(c.getInputStream()), StandardCharsets.UTF_8));
     }
 
     public static BufferedInputStream openStream(String aURL) throws IOException {

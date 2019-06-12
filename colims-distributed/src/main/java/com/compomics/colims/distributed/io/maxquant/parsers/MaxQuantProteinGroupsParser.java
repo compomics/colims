@@ -124,7 +124,7 @@ public class MaxQuantProteinGroupsParser {
         TabularFileIterator iterator = new TabularFileIterator(proteinGroupsFile, proteinGroupsHeaders.getMandatoryHeaders());
         this.quantificationMethod = quantificationMethod;
 
-        //parseSpectraAndPSMs the FASTA files
+        //parse the FASTA files
         proteinSequences = fastaDbParser.parse(fastaDbMap);
 
         while (iterator.hasNext()) {
@@ -333,7 +333,7 @@ public class MaxQuantProteinGroupsParser {
                         intensities.put(MaxQuantImport.NO_LABEL, Double.valueOf(intensityH));
                     }
                 }
-                if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) { //parseSpectraAndPSMs the medium label as well
+                if (maxQuantSearchSettingsParser.getLabelMods().size() == 3) { //parse the medium label as well
                     String intensityM = proteinGroupsEntry.get(String.format(INTENSITY_HEADER, proteinGroupsHeaders.get(ProteinGroupsHeader.INTENSITY_M), experimentName));
                     if (intensityM != null && NumberUtils.isNumber(intensityM)) {
                         if (maxQuantSearchSettingsParser.getLabelMods().get(1) != null) {

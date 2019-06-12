@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.DigestInputStream;
@@ -36,7 +37,7 @@ public final class SecurityUtils {
     public static byte[] md5DigestFasta(String fastaFile) throws NoSuchAlgorithmException, IOException {
         if (fastaFile != null) {
             MessageDigest digest = MessageDigest.getInstance("MD5");
-            digest.update(fastaFile.getBytes("UTF-8"));
+            digest.update(fastaFile.getBytes(StandardCharsets.UTF_8));
             return digest.digest();
         } else {
             throw new IOException("string could not be digested");
@@ -67,7 +68,7 @@ public final class SecurityUtils {
     public static byte[] sha1DigestFasta(String fastaFile) throws NoSuchAlgorithmException, IOException {
         if (fastaFile != null) {
             MessageDigest digest = MessageDigest.getInstance("SHA1");
-            digest.update(fastaFile.getBytes("UTF-8"));
+            digest.update(fastaFile.getBytes(StandardCharsets.UTF_8));
             return digest.digest();
         } else {
             throw new IOException("string could not be digested");

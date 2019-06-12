@@ -9,12 +9,9 @@ import com.compomics.colims.distributed.io.maxquant.MaxQuantConstants;
 import com.compomics.colims.distributed.io.maxquant.TabularFileIterator;
 import com.compomics.colims.distributed.io.maxquant.headers.MsmsHeader;
 import com.compomics.colims.distributed.io.maxquant.headers.MsmsHeaders;
-import com.compomics.colims.distributed.io.maxquant.parsers.MaxQuantAplParser;
 import com.compomics.colims.distributed.io.maxquant.parsers.ParseUtils;
 import com.compomics.util.experiment.massspectrometry.Peak;
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -97,7 +94,7 @@ public class AnnotatedSpectraParser {
      * Parse msms file only for given ID numbers.
      *
      * @param msmsFile the msms.txt file
-     * @param msmsIDs the list of msms IDs to parseSpectraAndPSMs
+     * @param msmsIDs the list of msms IDs to parse
      */
     private void parseMSMS(Path msmsFile, List<String> msmsIDs) throws IOException {
         TabularFileIterator valuesIterator = new TabularFileIterator(msmsFile, msmsHeaders.getMandatoryHeaders());
@@ -200,7 +197,7 @@ public class AnnotatedSpectraParser {
                     if (line.startsWith(APL_SPECTUM_START)) {
                         //go to the next line
                         line = bufferedReader.readLine();
-                        //parseSpectraAndPSMs spectrum header part
+                        //parse spectrum header part
                         while (!Character.isDigit(line.charAt(0))) {
                             String[] split = line.split(APL_HEADER_DELIMITER);
                             headers.put(split[0], split[1]);

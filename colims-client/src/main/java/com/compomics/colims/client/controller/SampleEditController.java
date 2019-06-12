@@ -179,9 +179,7 @@ public class SampleEditController implements Controllable {
         sampleBinaryFileDialog.getBinaryFileManagementPanel().addPropertyChangeListener(BinaryFileManagementPanel.REMOVE, evt -> {
             SampleBinaryFile binaryFileToRemove = (SampleBinaryFile) evt.getNewValue();
 
-            if (sampleToEdit.getBinaryFiles().contains(binaryFileToRemove)) {
-                sampleToEdit.getBinaryFiles().remove(binaryFileToRemove);
-            }
+            sampleToEdit.getBinaryFiles().remove(binaryFileToRemove);
 
             //update the sample
             sampleToEdit = sampleService.merge(sampleToEdit);

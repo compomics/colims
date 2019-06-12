@@ -339,7 +339,7 @@ public class AnalyticalRunsAdditionController implements Controllable {
      * @throws IOException in case of a proteinGroups.txt read problem
      */
     private void showLabelSelectionView() throws IOException {
-        Path proteinGroupsFile = Paths.get(maxQuantDataImportController.getDataImport().getFullCombinedDirectory().toString() + File.separator + "txt" + File.separator + "proteinGroups.txt");
+        Path proteinGroupsFile = Paths.get(maxQuantDataImportController.getDataImport().getFullCombinedDirectory() + File.separator + "txt" + File.separator + "proteinGroups.txt");
         proteinGroupsIntensityHeadersParser.parseProteinGroupHeaders(proteinGroupsFile);
         if (proteinGroupsIntensityHeadersParser.getProteinGroupsIntensityHeaders().size() > 0) {
             initLabelSelectionView();

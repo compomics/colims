@@ -828,7 +828,7 @@ public class MzTabExporter {
     private String getAmbiguityMembers(Long proteinGroupId) {
         List<ProteinGroupHasProtein> proteinGroupHasProteins = proteinGroupService.getAmbiguityMembers(proteinGroupId);
 
-        StringBuilder ambiguityMembers = new StringBuilder("");
+        StringBuilder ambiguityMembers = new StringBuilder();
         proteinGroupHasProteins.stream().forEach((proteinGroupHasProtein) -> ambiguityMembers.append(proteinGroupHasProtein.getProteinAccession()).append(","));
         if (ambiguityMembers.toString().equals("")) {
             return null;

@@ -42,7 +42,7 @@ public class PersistServiceImpl implements PersistService {
 
     @Override
     public void persist(MappedData mappedData, Sample sample, Instrument instrument, String userName, Date startDate) {
-        // first, cascade save or update the analytical run
+        // first, cascade save or update the analytical runs
         mappedData.getAnalyticalRuns().stream().filter(analyticalRun -> analyticalRun.getId() == null)
                 .forEach(analyticalRun -> {
                     SearchAndValidationSettings searchAndValidationSettings = analyticalRun.getSearchAndValidationSettings();
