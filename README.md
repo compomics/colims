@@ -17,7 +17,7 @@ The [CompOmics](http://www.compomics.com) LIMS system, designed as the next-gene
 
 ## Downloads
 
-Download the colims client [here](https://github.com/compomics/colims/releases/download/1.3.3-SNAPSHOT/colims-client-1.3.3-SNAPSHOT.zip) and the colims storage module [here](https://github.com/compomics/colims/releases/download/1.3.3-SNAPSHOT/colims-distributed-1.3.3-SNAPSHOT.zip). Go to the [ActiveMQ home page](http://activemq.apache.org/) for the latest version of ActiveMQ (Windows or Linux).
+Download the colims client [here](https://github.com/compomics/colims/releases/tag/client-1.3.3) and the colims storage module [here](https://github.com/compomics/colims/releases/tag/distributed-1.3.3). Go to the [ActiveMQ home page](http://activemq.apache.org/) for the latest version of ActiveMQ (Windows or Linux).
 
 [Go to top of page](#colims)
 
