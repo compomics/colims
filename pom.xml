@@ -95,7 +95,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--<org.springframework.version>4.3.20.RELEASE</org.springframework.version>-->
-        <org.springframework.version>5.1.6.RELEASE</org.springframework.version>
+        <org.springframework.version>5.3.18</org.springframework.version>
         <org.hibernate.version>5.4.2.Final</org.hibernate.version>
         <!--<sonar.jacoco.reportPath>target/jacoco.exec</sonar.jacoco.reportPath>-->
         <!--<sonar.jacoco.itReportPath>target/jacoco-it.exec</sonar.jacoco.itReportPath>-->
